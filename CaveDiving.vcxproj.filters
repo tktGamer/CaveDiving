@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>93c392d0-a4a6-4701-9126-848630d1199f</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>8f2b4709-46ad-4d92-a8b1-662b5c78ecea</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{40238d9a-5d19-4364-a0fe-f72541915ee1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common">
+      <UniqueIdentifier>{8cd36003-c223-4a5a-a684-a6c39bf41da7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object">
+      <UniqueIdentifier>{423b36b3-21c4-4ff8-a80d-5d943d2811b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene">
+      <UniqueIdentifier>{ab7850bb-96f8-4db8-88d1-bc13749d0fcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TKTLib">
+      <UniqueIdentifier>{6fb2f97a-786f-4274-a1ef-9cb28987e1e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Enemy">
+      <UniqueIdentifier>{2966478a-e851-42f7-ac58-aaca23f15731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Player">
+      <UniqueIdentifier>{398ccf8b-d265-463b-b0e3-1991d9c964d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Player\State">
+      <UniqueIdentifier>{56e3ba2c-1861-48ba-b5e5-5f0c63692a9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Gem">
+      <UniqueIdentifier>{a5070706-20ab-4173-833f-eacb35b77920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Interface">
+      <UniqueIdentifier>{f9260f9f-3eef-422d-af03-94d21149ac91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Message">
+      <UniqueIdentifier>{8af0af11-9763-4e59-99e9-3113580ba4c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{1887ddc4-61b7-442f-9ad3-6c8413576e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{e7c97d6d-5793-4521-b92e-4f23262a545a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\ModelShader">
+      <UniqueIdentifier>{5a4248c8-2cc0-4289-a287-f490a090d497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Collision">
+      <UniqueIdentifier>{349cac0d-f694-4abf-b269-7d4ca014d383}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="StepTimer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResources.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="TKTLib\TKTLib.h">
+      <Filter>TKTLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\ResourceManager.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Scene.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\SceneManager.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Sound.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\TitleScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Camera.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\Player.h">
+      <Filter>Game\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="TKTLib\ModelParams.h">
+      <Filter>TKTLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\Gem.h">
+      <Filter>Game\Object\Gem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\GemManager.h">
+      <Filter>Game\Object\Gem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Interface\IState.h">
+      <Filter>Game\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Interface\IObserver.h">
+      <Filter>Game\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Message\Message.h">
+      <Filter>Game\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Message\Messenger.h">
+      <Filter>Game\Message</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\GameObject.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\BinaryFile.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\State\PlayerIdling.h">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\State\PlayerMoving.h">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Light.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Stage.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Collision\Shape.h">
+      <Filter>Game\Common\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Collision\Sphere.h">
+      <Filter>Game\Common\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Collision\Box.h">
+      <Filter>Game\Common\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\Hand.h">
+      <Filter>Game\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Collision\DisplayCollision.h">
+      <Filter>Game\Common\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDraw.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\DebugFont.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Collision\CollisionManager.h">
+      <Filter>Game\Common\Collision</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="DeviceResources.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\ResourceManager.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Scene.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\SceneManager.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Sound.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\TitleScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Camera.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\GameObject.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\Player.cpp">
+      <Filter>Game\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="TKTLib\ModelParams.cpp">
+      <Filter>TKTLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\Gem.cpp">
+      <Filter>Game\Object\Gem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\GemManager.cpp">
+      <Filter>Game\Object\Gem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Message\Messenger.cpp">
+      <Filter>Game\Message</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\BinaryFile.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\State\PlayerIdling.cpp">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\State\PlayerMoving.cpp">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Light.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Stage.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Collision\Shape.cpp">
+      <Filter>Game\Common\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Collision\Sphere.cpp">
+      <Filter>Game\Common\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Collision\Box.cpp">
+      <Filter>Game\Common\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\Hand.cpp">
+      <Filter>Game\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Collision\DisplayCollision.cpp">
+      <Filter>Game\Common\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDraw.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\DebugFont.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Collision\CollisionManager.cpp">
+      <Filter>Game\Common\Collision</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Resources\Shaders\ModelShader\ModelShader.hlsli">
+      <Filter>Resources\Shaders\ModelShader</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\ModelShader\ModelVS.hlsl">
+      <Filter>Resources\Shaders\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ModelShader\ModelPS.hlsl">
+      <Filter>Resources\Shaders\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ModelShader\ModelGS.hlsl">
+      <Filter>Resources\Shaders\ModelShader</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

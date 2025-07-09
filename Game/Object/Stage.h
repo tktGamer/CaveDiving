@@ -1,0 +1,88 @@
+/**
+ * @file   Stage.h
+ *
+ * @brief  Stageに関するヘッダファイル
+ *
+ * @author 制作者名
+ *
+ * @date   日付
+ */
+
+ // 多重インクルードの防止 =====================================================
+#pragma once
+
+// ヘッダファイルの読み込み ===================================================
+#include"Game/Common/Graphics.h"
+#include "Game/Object/GameObject.h"
+#include "Game/Common/Collision/Box.h"
+// クラスの宣言 ===============================================================
+
+// クラスの定義 ===============================================================
+/**
+  * @brief Stage
+  */
+class Stage :public GameObject
+{
+// クラス定数の宣言 -------------------------------------------------
+public:
+	//	データ受け渡し用コンスタントバッファ(送信側)
+	struct ConstBuffer
+	{
+		DirectX::SimpleMath::Matrix		matWorld;
+		DirectX::SimpleMath::Matrix		matView;
+		DirectX::SimpleMath::Matrix		matProj;
+
+	};
+
+
+// データメンバの宣言 -----------------------------------------------
+private:
+	Graphics* m_graphics;	// グラフィックスクラスのポインタ
+	//	関数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
+	// オブジェクト番号
+	int m_objectNumber;
+	// メッセージID
+	Message::MessageID m_messageID;
+
+	// 当たり判定用の形状
+	Box m_box;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
+public:
+	// コンストラクタ
+	Stage();
+
+	// デストラクタ
+	~Stage();
+
+
+// 操作
+public:
+	void Initialize();
+
+	void Update(float elapsedTime) override;
+
+
+	void Draw() override;
+
+	void Finalize();
+
+	// メッセージを取得する
+	void OnMessegeAccepted(Message::MessageID messageID);
+
+	//　取得・設定
+public:
+	ID3D11InputLayout* GetInputLayout() const;
+	ID3D11Buffer* GetCBuffer() const;
+
+	int GetObjectNumber() override;
+
+//　内部操作
+private:
+
+};
+
