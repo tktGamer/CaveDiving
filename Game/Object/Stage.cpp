@@ -58,7 +58,7 @@ Stage::~Stage()
 void Stage::Initialize()
 {
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"block.sdkmesh"));
-	SetPosition(DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f));
+	SetPosition(DirectX::SimpleMath::Vector3(0.0f, -2.0f, 0.0f));
 	SetRotation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f));
 	SetScale(DirectX::SimpleMath::Vector3(50.0f, 1.0f, 50.0f));
 

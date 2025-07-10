@@ -181,6 +181,7 @@ namespace TKTLib
 		return m_model;
 	}
 
+
 	/**
 	 * @brief モデルの位置を取得する
 	 *
@@ -188,7 +189,7 @@ namespace TKTLib
 	 *
 	 * @return モデルの位置
 	 */
-	DirectX::SimpleMath::Vector3 ModelParams::GetPosition() const
+	DirectX::SimpleMath::Vector3& ModelParams::GetPosition() 
 	{
 		return m_position;
 	}
@@ -200,7 +201,7 @@ namespace TKTLib
 	 *
 	 * @return モデルの回転
 	 */
-	DirectX::SimpleMath::Vector3 ModelParams::GetRotation() const
+	DirectX::SimpleMath::Vector3& ModelParams::GetRotation() 
 	{
 		return m_rotation;
 	}
@@ -212,11 +213,11 @@ namespace TKTLib
 	 *
 	 * @return モデルの拡大率
 	 */
-	DirectX::SimpleMath::Vector3 ModelParams::GetScale() const
+	DirectX::SimpleMath::Vector3& ModelParams::GetScale()
 	{
 		return m_scale;
 	}
-	DirectX::SimpleMath::Quaternion ModelParams::GetQuaternion() const
+	DirectX::SimpleMath::Quaternion& ModelParams::GetQuaternion()
 	{
 		return m_quaternion;
 	}

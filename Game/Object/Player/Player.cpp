@@ -101,6 +101,7 @@ void Player::Initialize()
 	bd.CPUAccessFlags = 0;
 	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_cBuffer);
 
+
 }
 
 

@@ -18,6 +18,7 @@
 #include"Game/Object/Player/State/PlayerIdling.h"
 #include"Game/Object/Player/State/PlayerMoving.h"
 #include"Game/Common/Collision/Sphere.h"
+#include "Game/Object/Player/Hand.h"
 // クラスの宣言 ===============================================================
 class IState;
 // クラスの定義 ===============================================================
@@ -68,6 +69,8 @@ private:
 	//プレイヤーの向き
 	DirectX::SimpleMath::Vector3 m_initialeDirection;
 
+	//重力
+	float m_gravity = 9.8f; // 重力加速度
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

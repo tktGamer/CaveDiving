@@ -48,6 +48,15 @@ void PlayerIdling::Update(const float& elapsedTime)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::ATTACK);
 	}
+
+	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+	
+	v.y += -0.8f * elapsedTime;
+
+	m_player->SetVelocity(v);
+
+	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
+
 }
 
 // –ŒãXV‚·‚é

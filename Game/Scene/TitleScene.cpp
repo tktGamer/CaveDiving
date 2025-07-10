@@ -71,8 +71,8 @@ void TitleScene::Initialize()
 	m_length = 25.0f;
 	m_angle = 85.0f;
 	m_camera->Initialize({ 0,11.0f,10.0f });
-	m_camera->SetTartet(m_demoPlayerModelParams.GetPosition(), m_demoPlayerModelParams.GetQuaternion());
-	m_camera->SetTargetPos(m_demoPlayerModelParams.GetPosition());
+	m_camera->SetTartet(m_caveModelParams.GetPosition(), m_caveModelParams.GetQuaternion());
+
 }
 
 
@@ -87,7 +87,6 @@ void TitleScene::Initialize()
 void TitleScene::Update(float elapsedTime)
 {
 	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
-
 	float r = m_angle * 3.14f / 180.0f;
 	
 	if (traker->pressed.Space)
@@ -102,6 +101,7 @@ void TitleScene::Update(float elapsedTime)
 	{
 		m_angle = 0.0f;
 	}
+
 
 	m_camera->Update(elapsedTime);
 }

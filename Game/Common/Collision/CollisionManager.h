@@ -13,6 +13,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
+#include"Game/Common/Collision/Box.h"
+#include"Game/Common/Collision/Sphere.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -47,6 +49,8 @@ public:
 	void Draw();
 
 	void Finalize();
+	//押し出し処理
+	DirectX::SimpleMath::Vector3 PushOut(Box* shape1, Sphere* shape2);
 //　取得・設定
 public:
 

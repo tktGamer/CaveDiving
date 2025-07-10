@@ -37,7 +37,7 @@ namespace TKTLib
 		DirectX::SimpleMath::Vector3 m_scale = { 1.0f,1.0f,1.0f };	///< モデルの拡大率
 
 		// モデルのクォータニオン回転
-		DirectX::SimpleMath::Quaternion m_quaternion = { 0.0f,0.0f,0.0f,1.0f };
+		DirectX::SimpleMath::Quaternion m_quaternion = DirectX::SimpleMath::Quaternion::Identity;
 		// メンバ関数の宣言 -------------------------------------------------
 		// コンストラクタ/デストラクタ
 	public:
@@ -75,13 +75,13 @@ namespace TKTLib
 		// モデルデータの取得
 		DirectX::Model* GetModel();
 		// モデルの位置の取得
-		DirectX::SimpleMath::Vector3 GetPosition() const;
+		DirectX::SimpleMath::Vector3& GetPosition();
 		// モデルの回転の取得
-		DirectX::SimpleMath::Vector3 GetRotation() const;
+		DirectX::SimpleMath::Vector3& GetRotation();
 		// モデルの拡大率の取得
-		DirectX::SimpleMath::Vector3 GetScale() const;
+		DirectX::SimpleMath::Vector3& GetScale();
 		// モデルのクォータニオン回転の取得
-		DirectX::SimpleMath::Quaternion GetQuaternion() const;
+		DirectX::SimpleMath::Quaternion& GetQuaternion();
 		//　内部操作
 	private:
 

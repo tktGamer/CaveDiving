@@ -51,27 +51,25 @@ void PlayerMoving::Update(const float& elapsedTime)
 	if (key->GetLastState().Left)
 	{
 		v.x -= 1.0f*elapsedTime;
+		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(1.0f));
 	}
 	if (key->GetLastState().Right)
 	{
 		v.x += 1.0f*elapsedTime;
+		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-1.0f));
 	}
-	// ヨー
-	//if (key.Left) q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, XMConvertToRadians(1.0f));
-	//if (key.Right) q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, XMConvertToRadians(-1.0f));
 
-	// ロール
-	//if (kb.D) q *= SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitZ, XMConvertToRadians(1.0f));
-	//if (kb.A) q *= SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitZ, XMConvertToRadians(-1.0f));
 
 	// 姿勢に回転を加える
-	//obj->rotate = q * obj->rotate;
+	m_player->SetQuaternion(m_player->GetQuaternion() * q);
 
 	if(v.Length()<=0.001f)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}
 	v *= 0.96f;
+	v.y += -9.8f * elapsedTime;
+
 	m_player->SetVelocity(v);
 
 	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
@@ -95,7 +93,7 @@ void PlayerMoving::Render()
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	Player::ConstBuffer cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(m_player->GetPosition(), m_player->GetRotation(), m_player->GetScale()).Transpose();
+	cbuff.matWorld = TKTLib::GetWorldMatrix(m_player->GetPosition(), m_player->GetQuaternion(), m_player->GetScale()).Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 

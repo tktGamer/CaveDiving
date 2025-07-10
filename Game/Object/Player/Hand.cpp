@@ -20,6 +20,7 @@
  */
 Hand::Hand()
 	:m_graphics{Graphics::GetInstance()}
+	, GameObject(ObjectType::Player)
 {
 
 }
@@ -50,6 +51,7 @@ void Hand::Initialize()
 
 
 
+
 /**
  * @brief XVˆ—
  *
@@ -57,9 +59,8 @@ void Hand::Initialize()
  *
  * @return ‚È‚µ
  */
-void Hand::Update()
+void Hand::Update(float elapsedTime)
 {
-
 }
 
 
@@ -91,4 +92,13 @@ void Hand::Draw()
 void Hand::Finalize()
 {
 
+}
+
+void Hand::OnMessegeAccepted(Message::MessageID messageID)
+{
+}
+
+int Hand::GetObjectNumber()
+{
+	return 0;
 }

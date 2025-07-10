@@ -68,7 +68,7 @@ void GameScene::Initialize()
 	m_stage->Initialize();
 
 	m_camera->SetTartet(m_player->GetPosition(), m_player->GetQuaternion());
-	m_camera->SetTargetPos(m_player->GetPosition());
+
 }
 
 
@@ -82,6 +82,8 @@ void GameScene::Initialize()
  */
 void GameScene::Update(float elapsedTime)
 {
+
+
 	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
 	if (traker->pressed.Enter)
 	{
@@ -90,9 +92,17 @@ void GameScene::Update(float elapsedTime)
 	m_player->Update(elapsedTime);
 	m_stage->Update(elapsedTime);
 	//m_camera->SetEyePos(m_player->GetModelParams().GetPosition() + DirectX::SimpleMath::Vector3(0.0f, 1.0f, 5.0f));
-	m_camera->SetTargetPos(m_player->GetPosition());
 
 	m_camera->Update(elapsedTime);
+
+
+	if (m_stage->GetShape()->Intersects(m_player->GetShape()))
+	{
+		//‰Ÿ‚µo‚µˆ—
+		m_player->SetPosition(m_cM.PushOut(dynamic_cast<Box*>(m_stage->GetShape()),dynamic_cast<Sphere*>( m_player->GetShape())));
+
+		 
+	}
 }
 
 

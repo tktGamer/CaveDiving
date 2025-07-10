@@ -20,7 +20,7 @@
 /**
   * @brief Hand
   */
-class Hand
+class Hand : public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -43,13 +43,18 @@ public:
 public:
 	void Initialize();
 
-	void Update();
+	void Update(float elapsedTime) override;
 
-	void Draw();
+
+	void Draw() override;
 
 	void Finalize();
-//　取得・設定
+
+	// メッセージを取得する
+	void OnMessegeAccepted(Message::MessageID messageID);
+	//　取得・設定
 public:
+	int GetObjectNumber() override;
 
 //　内部操作
 private:

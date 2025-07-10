@@ -15,6 +15,7 @@ Camera::Camera()
     ,m_view{}
 	, m_eyePos{}
 	, m_targetPos{}
+	, m_targetRotate{}
 	, m_distance{ 0.0f, 0.0f, 10.0f } // デフォルトの距離を設定
 {
 }
@@ -47,14 +48,16 @@ void Camera::Initialize(DirectX::SimpleMath::Vector3 eyePos)
  */
 void Camera::Update(float elapsedTime)
 {
-    DirectX::SimpleMath::Vector3 pos = m_target + m_distance; // 本来到達しているべきカメラ位置
+	
+	DirectX::SimpleMath::Vector3 pos = *m_targetPos + m_distance; // 本来到達しているべきカメラ位置
     m_eyePos = DirectX::SimpleMath::Vector3::Lerp(m_eyePos, pos, elapsedTime * 3.0f); // Lerp減衰
+
+
     //自分で作成したビュー行列で設定する
     m_view = SimpleMath::Matrix::CreateLookAt(
         m_eyePos,       //カメラの位置
-        m_target,    //ターゲットの位置
+        *m_targetPos,    //ターゲットの位置
         m_up);          //カメラの上ベクトル
-
 
 
 }

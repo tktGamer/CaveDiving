@@ -111,12 +111,12 @@ public:
 	// モデルデータの取得
 	DirectX::Model* GetModel() { return m_model; }
 	// モデルの位置の取得
-	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
+	DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 	// モデルの回転の取得
-	DirectX::SimpleMath::Vector3 GetRotation() const { return m_rotation; }
-	DirectX::SimpleMath::Quaternion GetQuaternion()const { return m_quaternion; }
+	DirectX::SimpleMath::Vector3& GetRotation()  { return m_rotation; }
+	DirectX::SimpleMath::Quaternion& GetQuaternion() { return m_quaternion; }
 	// モデルの拡大率の取得
-	DirectX::SimpleMath::Vector3 GetScale() const { return m_scale; }
+	DirectX::SimpleMath::Vector3& GetScale()  { return m_scale; }
 
 	// オブジェクトの種類を取得する
 	ObjectType GetObjectType() const; 

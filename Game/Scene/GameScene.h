@@ -21,7 +21,7 @@
 #include"Game/Object/Player/Player.h"
 #include"Game/Object/Stage.h"
 #include"Game/Common/Collision/DisplayCollision.h"
-
+#include"Game/Common/Collision/CollisionManager.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 class SceneManager;       ///< シーンマネージャ
@@ -45,7 +45,7 @@ private:
 	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
 	//衝突表示オブジェクト
 	std::unique_ptr<Ito::DisplayCollision> m_displayCollision;
-
+	CollisionManager m_cM;
 	// オブジェクト関連
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
 	std::unique_ptr<Player> m_player;    ///< プレイヤーオブジェクト
