@@ -31,9 +31,6 @@ GameScene::GameScene(SceneManager* pSceneManager)
 {
 	TKTLib::ModelParams modelParams;
 
-	m_camera = std::make_unique<Camera>();
-	m_player = std::make_unique<Player>();
-	m_stage = std::make_unique<Stage>();
 	m_pResourceManager = ResourceManager::GetInstance();
 
 	m_displayCollision = std::make_unique<Ito::DisplayCollision>(
@@ -62,6 +59,10 @@ GameScene::~GameScene()
  */
 void GameScene::Initialize()
 {
+	m_camera = std::make_unique<Camera>();
+	m_player = std::make_unique<Player>(nullptr,DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f},DirectX::XMConvertToRadians(0.0f));
+	m_stage = std::make_unique<Stage>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
+
 	m_camera->Initialize({ 0,1.0f,25.0f });
 	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
 	m_player->Initialize();
@@ -89,8 +90,8 @@ void GameScene::Update(float elapsedTime)
 	{
 		ChangeScene("Title", false);
 	}
-	m_player->Update(elapsedTime);
-	m_stage->Update(elapsedTime);
+	m_player->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+	m_stage->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	//m_camera->SetEyePos(m_player->GetModelParams().GetPosition() + DirectX::SimpleMath::Vector3(0.0f, 1.0f, 5.0f));
 
 	m_camera->Update(elapsedTime);
@@ -100,8 +101,13 @@ void GameScene::Update(float elapsedTime)
 	{
 		//‰Ÿ‚µo‚µˆ—
 		m_player->SetPosition(m_cM.PushOut(dynamic_cast<Box*>(m_stage->GetShape()),dynamic_cast<Sphere*>( m_player->GetShape())));
+		DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+		v.y = 0.0f;
+		m_player->SetVelocity(v);
+		auto debugFont = Graphics::GetInstance()->GetDebugFont();
 
-		 
+		debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_player->GetPosition().y)), DirectX::SimpleMath::Vector2(0.0f, 30.0f));
+
 	}
 }
 
@@ -124,7 +130,7 @@ void GameScene::Render()
 
 	m_player->Draw();
 
-	m_player->GetShape()->AddDisplayCollision(m_displayCollision.get());
+	//m_player->GetShape()->AddDisplayCollision(m_displayCollision.get());
 
 	m_stage->Draw();
 	m_stage->GetShape()->AddDisplayCollision(m_displayCollision.get());
@@ -154,5 +160,8 @@ void GameScene::Finalize()
 {
 	m_player->Finalize();
 	m_stage->Finalize();
+	m_camera->Finalize();
+
+	Shader::GetInstance()->UnRegisterLight();
 }
 

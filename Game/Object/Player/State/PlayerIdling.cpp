@@ -76,7 +76,7 @@ void PlayerIdling::Render()
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	Player::ConstBuffer cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(m_player->GetPosition(),m_player->GetRotation(),m_player->GetScale()).Transpose();
+	cbuff.matWorld = TKTLib::GetWorldMatrix(m_player->GetCurrentPosition(),m_player->GetCurrentQuaternion(),m_player->GetScale()).Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 

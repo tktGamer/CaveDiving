@@ -59,7 +59,7 @@ void PlayerMoving::Update(const float& elapsedTime)
 		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-1.0f));
 	}
 
-
+	
 	// 姿勢に回転を加える
 	m_player->SetQuaternion(m_player->GetQuaternion() * q);
 
@@ -68,7 +68,7 @@ void PlayerMoving::Update(const float& elapsedTime)
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}
 	v *= 0.96f;
-	v.y += -9.8f * elapsedTime;
+	v.y += -0.8f * elapsedTime;
 
 	m_player->SetVelocity(v);
 
@@ -93,7 +93,7 @@ void PlayerMoving::Render()
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	Player::ConstBuffer cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(m_player->GetPosition(), m_player->GetQuaternion(), m_player->GetScale()).Transpose();
+	cbuff.matWorld = TKTLib::GetWorldMatrix(m_player->GetCurrentPosition(), m_player->GetCurrentQuaternion(), m_player->GetScale()).Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 

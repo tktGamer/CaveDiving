@@ -27,18 +27,20 @@ int GameObject::CountUpNumber() { return s_objectNumber++; }
  * @param[in]  modelParams モデルパラメータ
  * 
  */
-GameObject::GameObject(ObjectType objectType)
+GameObject::GameObject(ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	: m_objectType{ objectType }
 	, m_graphics{ Graphics::GetInstance() }
 	, m_texture{}
 	, m_model{ nullptr }
 	, m_pCurrentState{ nullptr }
 	, m_currentMessage{}
-	, m_position{ 0.0f, 0.0f, 0.0f } // 初期位置を設定
-	, m_rotation{ 0.0f, 0.0f, 0.0f } // 初期回転を設定
+	, m_position{initialPosition} // 初期位置を設定
+	, m_quaternion{ DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, initialAngle) } // 初期クォータニオンを設定
 	, m_scale{ 1.0f, 1.0f, 1.0f } // 初期拡大率を設定
+	, m_parent{ parent }
+	, m_currentPosition{}
+	, m_currentAngle{}
 {
-
 }
 
 /**

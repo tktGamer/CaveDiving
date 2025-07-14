@@ -18,14 +18,14 @@
  *
  * @param[in] なし
  */
-Light::Light(DirectX::SimpleMath::Vector3 pos)
-	:GameObject{ObjectType::Light}
+Light::Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+	:GameObject{ObjectType::Light,parent,initialPosition,initialAngle}
 	,m_graphics{Graphics::GetInstance()}
 	,m_objectNumber{CountUpNumber()}
 {
 	Messenger::GetInstance()->Register(m_objectNumber, this);
 
-	SetPosition(pos);
+	SetPosition(initialPosition);
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd;
 	ZeroMemory(&bd, sizeof(bd));
@@ -77,9 +77,9 @@ void Light::Initialize()
  *
  * @return なし
  */
-void Light::Update(float elapsedTime)
+void Light::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	m_lBuff.LightPosition = GetPosition();
+	m_lBuff.LightPosition =currentPosition + GetPosition();
 	m_lBuff.LightInvSqrRadius = 1.0f / (5000 * 5000); //ライトが届く距離（２乗の逆数）
 	m_lBuff.LightColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 	m_lBuff.LightIntensity = 3.0f;

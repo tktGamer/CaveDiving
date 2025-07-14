@@ -54,7 +54,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Stage();
+	Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
 	~Stage();
@@ -64,7 +64,7 @@ public:
 public:
 	void Initialize();
 
-	void Update(float elapsedTime) override;
+	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
 
 	void Draw() override;

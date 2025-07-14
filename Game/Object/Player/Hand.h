@@ -33,7 +33,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Hand();
+	Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
 	~Hand();
@@ -43,7 +43,7 @@ public:
 public:
 	void Initialize();
 
-	void Update(float elapsedTime) override;
+	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
 
 	void Draw() override;

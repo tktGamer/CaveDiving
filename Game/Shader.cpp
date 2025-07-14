@@ -199,6 +199,18 @@ void Shader::RegisterLight(Light* light)
 	m_lights.push_back(light);
 }
 
+void Shader::UnRegisterLight()
+{
+	for (auto& light : m_lights)
+	{
+		if (light)
+		{
+			light->Finalize();
+		}
+	}
+	m_lights.clear();
+}
+
 void Shader::CreateShader()
 {
 	// シェーダーのバイナリデータを読み込む
@@ -213,24 +225,6 @@ void Shader::CreateShader()
 		pixelShader.GetData(), pixelShader.GetSize(), nullptr, m_modelPS.ReleaseAndGetAddressOf());
 	m_graphics->GetDeviceResources()->GetD3DDevice()->CreateGeometryShader(
 		geometryShader.GetData(), geometryShader.GetSize(), nullptr, m_modelGS.ReleaseAndGetAddressOf());
-
-	//	//インプットレイアウトの作成
-	//m_graphics->GetDeviceResources()->GetD3DDevice()->CreateInputLayout(
-	//	&INPUT_LAYOUT[0],
-	//	static_cast<UINT>(INPUT_LAYOUT.size()),
-	//	vertexShader.GetData(),
-	//	vertexShader.GetSize(),
-	//	m_inputLayout.GetAddressOf());
-
-
-	////	シェーダーにデータを渡すためのコンスタントバッファ生成
-	//D3D11_BUFFER_DESC bd;
-	//ZeroMemory(&bd, sizeof(bd));
-	//bd.Usage = D3D11_USAGE_DEFAULT;
-	//bd.ByteWidth = sizeof(ConstBuffer);
-	//bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//bd.CPUAccessFlags = 0;
-	//m_graphics->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_cBuffer);
 
 
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成

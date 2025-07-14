@@ -124,6 +124,9 @@ public:
 
 	//ライト登録
 	void RegisterLight(Light* light);
+	//ライト解除
+	void UnRegisterLight();
+
 //　内部操作
 private:
 	//シェーダ作成

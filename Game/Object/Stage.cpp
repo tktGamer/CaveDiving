@@ -26,8 +26,8 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Stage::INPUT_LAYOUT =
  *
  * @param[in] なし
  */
-Stage::Stage()
-	: GameObject(ObjectType::Stage)
+Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+	: GameObject(ObjectType::Stage,parent,initialPosition,initialAngle)
 	, m_objectNumber{ CountUpNumber() }
 	, m_messageID{  }
 	, m_graphics{ Graphics::GetInstance() }
@@ -59,7 +59,7 @@ void Stage::Initialize()
 {
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"block.sdkmesh"));
 	SetPosition(DirectX::SimpleMath::Vector3(0.0f, -2.0f, 0.0f));
-	SetRotation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f));
+	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	SetScale(DirectX::SimpleMath::Vector3(50.0f, 1.0f, 50.0f));
 
 	
@@ -96,9 +96,9 @@ void Stage::Initialize()
  *
  * @return なし
  */
-void Stage::Update(float elapsedTime)
+void Stage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	m_box.SetCenter(GetPosition());
+	m_box.SetCenter(currentPosition + GetPosition());
 }
 
 
@@ -120,7 +120,7 @@ void Stage::Draw()
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	Stage::ConstBuffer cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetRotation(), GetScale()).Transpose();
+	cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale()).Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 

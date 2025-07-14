@@ -93,6 +93,14 @@ void CollisionManager::Finalize()
 
 }
 
+/**
+ * @brief 球とAABBの押し出し処理
+ *
+ * @param[in] box AABB
+ * @param[in] sphere 球(押し出される側)
+ *
+ * @return 押し出された球の中心位置
+ */
 DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Box* box, Sphere* sphere)
 {
     DirectX::SimpleMath::Vector3 boxMin = box->GetCenter() - box->GetHalfSize();
@@ -128,4 +136,44 @@ DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Box* box, Sphere* sphere)
         sphereCenter.z += collisionVector.z * overlap;
     }
 	return sphereCenter;
+}
+
+/**
+ * @brief AABB同士の押し出し処理
+ *
+ * @param[in] box AABB1
+ * @param[in] box2 AABB2 (押し出される側)
+ *
+ * @return 押し出されたAABB2の中心位置
+ */
+DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Box* box, Box* box2)
+{
+
+	DirectX::SimpleMath::Vector3 box1Min = box->GetCenter() - box->GetHalfSize();
+	DirectX::SimpleMath::Vector3 box1Max = box->GetCenter() + box->GetHalfSize();
+	DirectX::SimpleMath::Vector3 box2Min = box2->GetCenter() - box2->GetHalfSize();
+	DirectX::SimpleMath::Vector3 box2Max = box2->GetCenter() + box2->GetHalfSize();
+	// AABBの重なりを計算
+	float overlapX = std::min(box1Max.x, box2Max.x) - std::max(box1Min.x, box2Min.x);
+	float overlapY = std::min(box1Max.y, box2Max.y) - std::max(box1Min.y, box2Min.y);
+	float overlapZ = std::min(box1Max.z, box2Max.z) - std::max(box1Min.z, box2Min.z);
+	// 押し出し方向を決定
+	DirectX::SimpleMath::Vector3 pushOutDirection;
+	if (overlapX < overlapY && overlapX < overlapZ) {
+		pushOutDirection.x = (box1Max.x > box2Max.x) ? overlapX : -overlapX;
+		pushOutDirection.y = 0.0f;
+		pushOutDirection.z = 0.0f;
+	}
+	else if (overlapY < overlapX && overlapY < overlapZ) {
+		pushOutDirection.x = 0.0f;
+		pushOutDirection.y = (box1Max.y > box2Max.y) ? overlapY : -overlapY;
+		pushOutDirection.z = 0.0f;
+	}
+	else {
+		pushOutDirection.x = 0.0f;
+		pushOutDirection.y = 0.0f;
+		pushOutDirection.z = (box1Max.z > box2Max.z) ? overlapZ : -overlapZ;
+	}
+	// 押し出し処理
+	return box2->GetCenter() + pushOutDirection * 0.5f; // 中心位置を更新
 }

@@ -29,8 +29,8 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Player::INPUT_LAYOUT =
  *
  * @param[in] modelParms モデルパラメータ
  */
-Player::Player()
-	: GameObject(ObjectType::Player)
+Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+	: GameObject(ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_objectNumber{ CountUpNumber() }
 	, m_messageID{  }
 	, m_hp{100}
@@ -73,12 +73,12 @@ void Player::Initialize()
 
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"player.sdkmesh"));
 	SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f));
-	SetRotation(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f));
+	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	SetScale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
 
 	SetShape(&m_sphere);
 
-	m_light = std::make_unique<Light>(GetPosition());
+	m_light = std::make_unique<Light>(this,GetPosition(),DirectX::XMConvertToRadians(0.0f));
 
 	Shader::GetInstance()->RegisterLight(m_light.get());
 
@@ -102,6 +102,7 @@ void Player::Initialize()
 	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_cBuffer);
 
 
+	m_bodyParts.push_back(std::make_unique<Hand>(this,DirectX::SimpleMath::Vector3{1.5f,0.0f,0.0f},DirectX::XMConvertToRadians(0.0f)));
 }
 
 
@@ -113,14 +114,22 @@ void Player::Initialize()
  *
  * @return なし
  */
-void Player::Update(float elapsedTime)
+void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
 
 	GetState()->Update(elapsedTime);
-	m_sphere.SetCenter(GetPosition());
-	m_light->SetPosition(GetPosition());
-	m_light->Update(elapsedTime);
+	m_sphere.SetCenter(currentPosition + GetPosition());
+	m_light->Update(elapsedTime,currentPosition + GetPosition(), currentAngle * GetQuaternion());
+
+	m_currentPosition = currentPosition + GetPosition();
+	m_currentAngle = currentAngle * GetQuaternion();
+
+	for (std::unique_ptr<GameObject>& part : m_bodyParts)
+	{
+		part->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	}
+
 }
 
 
@@ -136,6 +145,15 @@ void Player::Update(float elapsedTime)
 void Player::Draw()
 {
 	GetState()->Render();
+
+	auto debugFont = Graphics::GetInstance()->GetDebugFont();
+
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_currentAngle.y)), DirectX::SimpleMath::Vector2(50.0f, 250.0f));
+
+	for (std::unique_ptr<GameObject>& part : m_bodyParts) 
+	{
+		part->Draw();
+	}
 }
 
 

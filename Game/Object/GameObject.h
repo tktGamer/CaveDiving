@@ -55,6 +55,8 @@ private:
 	// 当たり判定用の形状
 	Shape* m_shape; 
 
+
+
 	//テクスチャ
 	ID3D11ShaderResourceView** m_texture;
 	// モデルデータ
@@ -62,16 +64,22 @@ private:
 	// モデルの位置
 	DirectX::SimpleMath::Vector3 m_position = { 0.0f,0.0f,0.0f };	
 	// モデルの回転
-	DirectX::SimpleMath::Vector3 m_rotation = { 0.0f,0.0f,0.0f };
 	DirectX::SimpleMath::Quaternion m_quaternion = { 0.0f,0.0f,0.0f,1.0f }; // モデルのクォータニオン回転
 	// モデルの拡大率
 	DirectX::SimpleMath::Vector3 m_scale = { 1.0f,1.0f,1.0f };	
 
+protected:
+	// 親オブジェクトへのポインタ
+	GameObject* m_parent; 
+	// 現在の位置
+	DirectX::SimpleMath::Vector3 m_currentPosition;
+	// 現在の回転角
+	DirectX::SimpleMath::Quaternion m_currentAngle;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	GameObject(ObjectType m_objectType);
+	GameObject(ObjectType m_objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
 	~GameObject();
@@ -81,7 +89,7 @@ public:
 public:
 	void Initialize();
 
-	virtual void Update(float elapsedTime)=0;
+	virtual void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)=0;
 
 	virtual void Draw()=0;
 
@@ -98,7 +106,6 @@ public:
 	//座標の設定
 	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_position = position; }
 	//回転の設定
-	void SetRotation(const DirectX::SimpleMath::Vector3& rotation) { m_rotation = rotation; }
 	void SetQuaternion(const DirectX::SimpleMath::Quaternion& q) { m_quaternion = q; }
 	//拡大率の設定
 	void SetScale(const DirectX::SimpleMath::Vector3& scale) { m_scale = scale; }
@@ -113,11 +120,13 @@ public:
 	// モデルの位置の取得
 	DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 	// モデルの回転の取得
-	DirectX::SimpleMath::Vector3& GetRotation()  { return m_rotation; }
 	DirectX::SimpleMath::Quaternion& GetQuaternion() { return m_quaternion; }
 	// モデルの拡大率の取得
 	DirectX::SimpleMath::Vector3& GetScale()  { return m_scale; }
-
+	//
+	DirectX::SimpleMath::Vector3& GetCurrentPosition() { return m_currentPosition; }
+	DirectX::SimpleMath::Quaternion& GetCurrentQuaternion() { return m_currentAngle; }
+	
 	// オブジェクトの種類を取得する
 	ObjectType GetObjectType() const; 
 	// グラフィックスクラスのポインタを取得する
