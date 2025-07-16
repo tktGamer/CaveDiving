@@ -19,7 +19,7 @@
  * @param[in] なし
  */
 Light::Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
-	:GameObject{ObjectType::Light,parent,initialPosition,initialAngle}
+	:GameObject{Tag::ObjectType::Light,parent,initialPosition,initialAngle}
 	,m_graphics{Graphics::GetInstance()}
 	,m_objectNumber{CountUpNumber()}
 {
@@ -80,10 +80,10 @@ void Light::Initialize()
 void Light::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_lBuff.LightPosition =currentPosition + GetPosition();
-	m_lBuff.LightInvSqrRadius = 1.0f / (5000 * 5000); //ライトが届く距離（２乗の逆数）
+	m_lBuff.LightInvSqrRadius = 1.0f / (5 * 5); //ライトが届く距離（２乗の逆数）
 	m_lBuff.LightColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 	m_lBuff.LightIntensity = 3.0f;
-	m_lBuff.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.01f, 0.008f, 0.0f); // デフォルトの減衰
+	m_lBuff.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.1f, 0.006f, 0.0f); // デフォルトの減衰
 	m_graphics->GetDeviceResources()->GetD3DDeviceContext()->UpdateSubresource(m_lBuffer.Get(), 0, NULL, &m_lBuff, 0, 0);
 }
 

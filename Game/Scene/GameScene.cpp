@@ -36,6 +36,8 @@ GameScene::GameScene(SceneManager* pSceneManager)
 	m_displayCollision = std::make_unique<Ito::DisplayCollision>(
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
+
+	m_cM = CollisionManager::GetInstance();
 }
 
 
@@ -62,7 +64,7 @@ void GameScene::Initialize()
 	m_camera = std::make_unique<Camera>();
 	m_player = std::make_unique<Player>(nullptr,DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f},DirectX::XMConvertToRadians(0.0f));
 	m_stage = std::make_unique<Stage>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
-
+	m_bat = std::make_unique<Bat>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f));
 	m_camera->Initialize({ 0,1.0f,25.0f });
 	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
 	m_player->Initialize();
@@ -93,14 +95,14 @@ void GameScene::Update(float elapsedTime)
 	m_player->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_stage->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	//m_camera->SetEyePos(m_player->GetModelParams().GetPosition() + DirectX::SimpleMath::Vector3(0.0f, 1.0f, 5.0f));
-
+	m_bat->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_camera->Update(elapsedTime);
 
 
 	if (m_stage->GetShape()->Intersects(m_player->GetShape()))
 	{
 		//‰Ÿ‚µo‚µˆ—
-		m_player->SetPosition(m_cM.PushOut(dynamic_cast<Box*>(m_stage->GetShape()),dynamic_cast<Sphere*>( m_player->GetShape())));
+		m_player->SetPosition(m_cM->PushOut(dynamic_cast<Box*>(m_stage->GetShape()),dynamic_cast<Sphere*>( m_player->GetShape())));
 		DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
 		v.y = 0.0f;
 		m_player->SetVelocity(v);
@@ -126,17 +128,16 @@ void GameScene::Render()
 {
 	Graphics::GetInstance()->SetViewMatrix(m_camera->GetView());
 	//Graphics::GetInstance()->DrawPrimitiveBegin(m_camera->GetView(), Graphics::GetInstance()->GetProjectionMatrix());
-	Shader* shader = Shader::GetInstance();
 
 	m_player->Draw();
 
 	//m_player->GetShape()->AddDisplayCollision(m_displayCollision.get());
-
+	m_bat->Draw();
+	m_bat->GetShape()->AddDisplayCollision(m_displayCollision.get());
 	m_stage->Draw();
-	m_stage->GetShape()->AddDisplayCollision(m_displayCollision.get());
+	//m_stage->GetShape()->AddDisplayCollision(m_displayCollision.get());
 
-	m_displayCollision->DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
-		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
+	m_displayCollision->DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates(), Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
 	if (m_stage->GetShape()->Intersects(m_player->GetShape())) 
 	{

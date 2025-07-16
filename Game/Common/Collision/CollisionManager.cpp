@@ -1,9 +1,9 @@
 /**
  * @file   CollisionManager.cpp
  *
- * @brief  ＸＸＸＸに関するソースファイル
+ * @brief  当たり判定管理に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名 福地貴翔
  *
  * @date   日付
  */
@@ -11,6 +11,9 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "CollisionManager.h"
+
+// クラスの静的メンバ変数の初期化
+std::unique_ptr<CollisionManager> CollisionManager::s_collisionManager = nullptr;
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -36,6 +39,17 @@ CollisionManager::~CollisionManager()
 
 
 
+CollisionManager* const CollisionManager::GetInstance()
+{
+	if (s_collisionManager == nullptr)
+	{
+		//ResourceManagerオブジェクトを生成し、そのポインタをs_collisionManagerに格納する
+		s_collisionManager.reset(new CollisionManager());
+	}
+	return s_collisionManager.get();
+}
+
+
 /**
  * @brief 初期化処理
  *
@@ -43,9 +57,8 @@ CollisionManager::~CollisionManager()
  *
  * @return なし
  */
-void CollisionManager::Initialize()
+void CollisionManager::Register()
 {
-
 }
 
 

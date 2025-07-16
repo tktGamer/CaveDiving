@@ -30,7 +30,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Player::INPUT_LAYOUT =
  * @param[in] modelParms モデルパラメータ
  */
 Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
-	: GameObject(ObjectType::Player,parent,initialPosition,initialAngle)
+	: GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_objectNumber{ CountUpNumber() }
 	, m_messageID{  }
 	, m_hp{100}
@@ -66,6 +66,7 @@ void Player::Initialize()
 	// 状態の初期化
 	m_idlingState = std::make_unique<PlayerIdling>(this);
 	m_movingState = std::make_unique<PlayerMoving>(this);
+	m_attackState = std::make_unique<PlayerAttack>(this);
 
 	SetState(m_idlingState.get());
 
@@ -102,7 +103,9 @@ void Player::Initialize()
 	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_cBuffer);
 
 
-	m_bodyParts.push_back(std::make_unique<Hand>(this,DirectX::SimpleMath::Vector3{1.5f,0.0f,0.0f},DirectX::XMConvertToRadians(0.0f)));
+	m_bodyParts.push_back(std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f)));
+	m_bodyParts.back()->Initialize();
+	m_bodyParts.push_back(std::make_unique<Hand>(this,DirectX::SimpleMath::Vector3{-1.5f,0.0f,0.0f},DirectX::XMConvertToRadians(0.0f)));
 }
 
 
@@ -124,10 +127,11 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 
 	m_currentPosition = currentPosition + GetPosition();
 	m_currentAngle = currentAngle * GetQuaternion();
+	
 
 	for (std::unique_ptr<GameObject>& part : m_bodyParts)
 	{
-		part->Update(elapsedTime, m_currentPosition, m_currentAngle);
+		part->Update(elapsedTime,m_currentPosition,m_currentAngle);
 	}
 
 }
@@ -180,6 +184,7 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 		GameObject::ChangeState(m_movingState.get());
 		break;
 	case Message::ATTACK:
+		GameObject::ChangeState(m_attackState.get());
 		break;
 	case Message::AVOIDANCE:
 		break;

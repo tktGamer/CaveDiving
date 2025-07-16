@@ -29,12 +29,23 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
+	// ResourceManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
+	static std::unique_ptr<CollisionManager> s_collisionManager;
+
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	CollisionManager();
+	// インスタンスをコピーすることを禁止する
+	void operator=(const CollisionManager&) = delete;
+	// インスタンスをムーブすることを禁止する
+	CollisionManager& operator= (CollisionManager&&) = delete;
+	// コピーコンストラクタは禁止する
+	CollisionManager(const CollisionManager&) = delete;
+	// ムーブコンストラクタは禁止する
+	CollisionManager(CollisionManager&&) = delete;
 
 	// デストラクタ
 	~CollisionManager();
@@ -42,7 +53,10 @@ public:
 
 // 操作
 public:
-	void Initialize();
+	// CollisionManagerクラスのインスタンスを取得する
+	static CollisionManager* const GetInstance();
+
+	void Register();
 
 	void Update();
 

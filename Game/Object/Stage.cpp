@@ -27,7 +27,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Stage::INPUT_LAYOUT =
  * @param[in] ‚È‚µ
  */
 Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
-	: GameObject(ObjectType::Stage,parent,initialPosition,initialAngle)
+	: GameObject(Tag::ObjectType::Stage,parent,initialPosition,initialAngle)
 	, m_objectNumber{ CountUpNumber() }
 	, m_messageID{  }
 	, m_graphics{ Graphics::GetInstance() }

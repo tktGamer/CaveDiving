@@ -18,10 +18,11 @@
 #include "Game/Common/Scene.h"
 #include"Game/Common/Sound.h"
 #include"Game/Object/Camera.h"
-#include"Game/Object/Player/Player.h"
-#include"Game/Object/Stage.h"
 #include"Game/Common/Collision/DisplayCollision.h"
 #include"Game/Common/Collision/CollisionManager.h"
+#include"Game/Object/Player/Player.h"
+#include"Game/Object/Stage.h"
+#include "Game/Object/Enemy/Bat.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 class SceneManager;       ///< シーンマネージャ
@@ -45,11 +46,12 @@ private:
 	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
 	//衝突表示オブジェクト
 	std::unique_ptr<Ito::DisplayCollision> m_displayCollision;
-	CollisionManager m_cM;
+	CollisionManager* m_cM;
 	// オブジェクト関連
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
 	std::unique_ptr<Player> m_player;    ///< プレイヤーオブジェクト
 	std::unique_ptr<Stage> m_stage;    ///< ステージオブジェクト
+	std::unique_ptr<Bat> m_bat;    ///< コウモリの敵オブジェクト
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

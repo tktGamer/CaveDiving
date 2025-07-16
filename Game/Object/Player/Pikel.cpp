@@ -1,7 +1,7 @@
 /**
- * @file   Hand.cpp
+ * @file   Pikel.cpp
  *
- * @brief  プレイヤーの手に関するソースファイル
+ * @brief  つるはし（プレイヤーの武器）に関するソースファイル
  *
  * @author 制作者名
  *
@@ -10,7 +10,7 @@
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "Hand.h"
+#include "Pikel.h"
 #include"../CaveDiving/Game/Object/Player/Player.h"
 // メンバ関数の定義 ===========================================================
 /**
@@ -18,21 +18,25 @@
  *
  * @param[in] なし
  */
-Hand::Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Pikel::Pikel(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
 	, GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
+	, m_sphere{ GetPosition(), 1.5f}
+	,m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+		Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext()}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"hand.png"));
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"hand.sdkmesh"));
+	SetModel(ResourceManager::GetInstance()->RequestModel(L"pikel.sdkmesh"));
 
 }
+
 
 
 
 /**
  * @brief デストラクタ
  */
-Hand::~Hand()
+Pikel::~Pikel()
 {
 
 }
@@ -46,10 +50,8 @@ Hand::~Hand()
  *
  * @return なし
  */
-void Hand::Initialize()
+void Pikel::Initialize()
 {
-	m_pikel = std::make_unique<Pikel>(this, DirectX::SimpleMath::Vector3(0.0f,0.0f,0.0f), DirectX::XMConvertToRadians(0.0f));
-
 }
 
 
@@ -62,14 +64,13 @@ void Hand::Initialize()
  *
  * @return なし
  */
-void Hand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Pikel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	SetQuaternion(GetQuaternion() * DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(1.0f)));
 	m_currentAngle = GetQuaternion() * currentAngle;
-	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition, m_currentAngle)+ currentPosition + GetPosition();
-	
-	if(m_pikel)
-	m_pikel->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
+
+	m_sphere.SetCenter(m_currentPosition +DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f,1.0f,0.0f),m_currentAngle));
+	SetShape(&m_sphere);
 }
 
 
@@ -82,7 +83,7 @@ void Hand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& current
  *
  * @return なし
  */
-void Hand::Draw()
+void Pikel::Draw()
 {
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
@@ -139,8 +140,10 @@ void Hand::Draw()
 
 	//	});
 	//Shader::GetInstance()->EndShader();
-	if (m_pikel)
-	m_pikel->Draw();
+	m_sphere.AddDisplayCollision(&m_display);
+	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
+		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
+
 }
 
 
@@ -152,16 +155,16 @@ void Hand::Draw()
  *
  * @return なし
  */
-void Hand::Finalize()
+void Pikel::Finalize()
 {
 
 }
 
-void Hand::OnMessegeAccepted(Message::MessageID messageID)
+void Pikel::OnMessegeAccepted(Message::MessageID messageID)
 {
 }
 
-int Hand::GetObjectNumber()
+int Pikel::GetObjectNumber()
 {
 	return 0;
 }

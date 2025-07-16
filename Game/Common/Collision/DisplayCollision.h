@@ -148,6 +148,8 @@ namespace Ito
 		// 入力レイアウト（ライン用）
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_lineInputLayout;
 
+
+
 	private:
 
 		// コリジョンモデルの描画関数

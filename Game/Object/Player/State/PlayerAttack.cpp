@@ -1,87 +1,59 @@
 #include "pch.h"
-#include "Game/Object/Player/State/PlayerMoving.h"
+#include "Game/Object/Player/State/PlayerAttack.h"
 #include "Game/Object/Player/Player.h"
 
 // コンストラクタ
-PlayerMoving::PlayerMoving(Player* player)
-	: m_player(player)
-	, m_graphics{}
+PlayerAttack::PlayerAttack(Player* player)
+	:
+	m_player(player),
+	m_graphics{},
+	m_context{}
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
+	// コンテキストを取得する
+	m_context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
 }
 // デストラクタ
-PlayerMoving::~PlayerMoving()
+PlayerAttack::~PlayerAttack()
 {
 }
 
 // 初期化する
-void PlayerMoving::Initialize()
+void PlayerAttack::Initialize()
 {
 	PreUpdate();
 }
 
 // 事前更新する
-void PlayerMoving::PreUpdate()
+void PlayerAttack::PreUpdate()
 {
 }
 
 // 更新する
-void PlayerMoving::Update(const float& elapsedTime)
+void PlayerAttack::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
 	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
 
-	DirectX::SimpleMath::Quaternion q;
+	m_player->SetVelocity(m_player->GetVelocity()*0.98f);
 
-	if (key->GetLastState().Up) 
-	{
-		v.z -= 1.0f*elapsedTime;
-	}
-	if (key->GetLastState().Down)
-	{
-		v.z += 1.0f*elapsedTime;
-	}
-	if (key->GetLastState().Left)
-	{
-		v.x -= 1.0f*elapsedTime;
-		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(1.0f));
-	}
-	if (key->GetLastState().Right)
-	{
-		v.x += 1.0f*elapsedTime;
-		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-1.0f));
-	}
-	if (key->IsKeyPressed(DirectX::Keyboard::Z)) 
+	if(m_player->GetVelocity().Length()<=0.001f)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}
-	
-	// 姿勢に回転を加える
-	m_player->SetQuaternion(m_player->GetQuaternion() * q);
-
-	if(v.Length()<=0.001f)
-	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
-	}
-	v *= 0.96f;
-	v.y += -0.8f * elapsedTime;
-
-	m_player->SetVelocity(v);
-
 	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
 
 }
 
 // 事後更新する
-void PlayerMoving::PostUpdate()
+void PlayerAttack::PostUpdate()
 {
 }
 
 // 描画する
-void PlayerMoving::Render()
+void PlayerAttack::Render()
 {
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
@@ -144,6 +116,6 @@ void PlayerMoving::Render()
 }
 
 // 後処理を行う
-void PlayerMoving::Finalize()
+void PlayerAttack::Finalize()
 {
 }

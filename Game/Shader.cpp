@@ -247,7 +247,7 @@ void Shader::SetModelShader(ID3D11Buffer* cBuffer)
 
 	LightBuffer lbuff;
 	lbuff.LightPosition = DirectX::SimpleMath::Vector3(0.0f, 2.0f, 0.0f);
-	lbuff.LightInvSqrRadius = 1.0f / (100.0f * 100.0f); //ライトが届く距離（２乗の逆数）
+	lbuff.LightInvSqrRadius = 1.0f / (10.0f * 10.0f); //ライトが届く距離（２乗の逆数）
 	lbuff.LightColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 	lbuff.LightIntensity = 3.0f;
 	lbuff.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.005f, 0.0f); // デフォルトの減衰

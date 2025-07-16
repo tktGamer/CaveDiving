@@ -161,6 +161,18 @@
     <ClInclude Include="Game\Common\Collision\CollisionManager.h">
       <Filter>Game\Common\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Object\Player\Pikel.h">
+      <Filter>Game\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\State\PlayerAttack.h">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Bat.h">
+      <Filter>Game\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Tag.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -254,6 +266,15 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Collision\CollisionManager.cpp">
       <Filter>Game\Common\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\Pikel.cpp">
+      <Filter>Game\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\State\PlayerAttack.cpp">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Bat.cpp">
+      <Filter>Game\Object\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

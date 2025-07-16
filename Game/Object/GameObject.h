@@ -18,6 +18,7 @@
 #include"Game/Interface/IState.h"
 #include"Game/Shader.h"
 #include"Game/Common/Collision/Shape.h"
+#include"Game/Tag.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -28,16 +29,6 @@ class GameObject : public IObserver
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	// オブジェクトの種類
-	enum class ObjectType
-	{
-		None,	// なし
-		Player,	// プレイヤー
-		Enemy,	// 敵
-		Item,	// アイテム
-		Light,
-		Stage,
-	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -47,9 +38,8 @@ private:
 	static int s_objectNumber;
 	// 現在のメッセージ
 	Message m_currentMessage;
-
 	// オブジェクトの種類
-	ObjectType m_objectType; 
+	Tag::ObjectType m_objectType;
 	// グラフィックスクラスのポインタ
 	Graphics* m_graphics; 
 	// 当たり判定用の形状
@@ -71,15 +61,21 @@ private:
 protected:
 	// 親オブジェクトへのポインタ
 	GameObject* m_parent; 
+	//初期座標
+	DirectX::SimpleMath::Vector3 m_initialPosition;
+	//初期回転角
+	DirectX::SimpleMath::Quaternion m_initialAngle;
 	// 現在の位置
 	DirectX::SimpleMath::Vector3 m_currentPosition;
 	// 現在の回転角
 	DirectX::SimpleMath::Quaternion m_currentAngle;
+
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	GameObject(ObjectType m_objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	GameObject(Tag::ObjectType m_objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
 	~GameObject();
@@ -87,13 +83,16 @@ public:
 
 // 操作
 public:
-	void Initialize();
+	virtual void Initialize();
 
 	virtual void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)=0;
 
 	virtual void Draw()=0;
 
 	void Finalize();
+
+	//衝突応答分岐
+	
 //　取得・設定
 public:
 	
@@ -128,7 +127,7 @@ public:
 	DirectX::SimpleMath::Quaternion& GetCurrentQuaternion() { return m_currentAngle; }
 	
 	// オブジェクトの種類を取得する
-	ObjectType GetObjectType() const; 
+	Tag::ObjectType GetObjectType() const; 
 	// グラフィックスクラスのポインタを取得する
 	Graphics* GetGraphics() const; 
 

@@ -17,6 +17,7 @@
 #include "Game/Object/Light.h"
 #include"Game/Object/Player/State/PlayerIdling.h"
 #include"Game/Object/Player/State/PlayerMoving.h"
+#include"Game/Object/Player/State/PlayerAttack.h"
 #include"Game/Common/Collision/Sphere.h"
 #include "Game/Object/Player/Hand.h"
 // クラスの宣言 ===============================================================
@@ -63,6 +64,7 @@ private:
 	std::unique_ptr<IState> m_pCurrentState; // 現在の状態
 	std::unique_ptr<IState> m_idlingState; // 待機状態 
 	std::unique_ptr<IState> m_movingState; // 移動状態
+	std::unique_ptr<IState> m_attackState; // 攻撃状態
 
 	// プレイヤーの体のパーツ
 	std::vector<std::unique_ptr<GameObject>> m_bodyParts; 

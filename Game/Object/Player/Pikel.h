@@ -1,7 +1,7 @@
 /**
- * @file   Hand.h
+ * @file   Pikel.h
  *
- * @brief  手に関するヘッダファイル
+ * @brief  つるはし（プレイヤーの武器）に関するヘッダファイル
  *
  * @author 制作者名
  *
@@ -13,14 +13,16 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Object/GameObject.h"
-#include"Game/Object/Player/Pikel.h"
+#include"Game/Common/Collision/DisplayCollision.h"
+#include"Game/Common/Collision/Sphere.h"
+
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Hand
+  * @brief Pikel
   */
-class Hand : public GameObject
+class Pikel : public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -32,21 +34,23 @@ private:
 
 	DirectX::SimpleMath::Matrix m_world;
 
-	std::unique_ptr<Pikel> m_pikel;
+	Ito::DisplayCollision m_display;
+	//当たり判定
+	Sphere m_sphere;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Pikel(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
-	~Hand();
+	~Pikel();
 
 
 // 操作
 public:
-	void Initialize() override;
+	void Initialize();
 
 	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 

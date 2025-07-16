@@ -1,18 +1,18 @@
 #pragma once
-#ifndef PLAYER_MOVING_DEFINED
-#define PLAYER_MOVING_DEFINED
+#ifndef PLAYER_ATTACK_DEFINED
+#define PLAYER_ATTACK_DEFINED
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
 
 class Player;
-// PlayerMovingクラスを定義する
-class PlayerMoving : public IState
+// PlayerAttackクラスを定義する
+class PlayerAttack : public IState
 {
 public:
 	// コンストラクタ
-	PlayerMoving(Player* soldier);
+	PlayerAttack(Player* player);
 	// デストラクタ
-	~PlayerMoving();
+	~PlayerAttack();
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -27,11 +27,16 @@ public:
 	void Finalize();
 
 private:
-	// プレイヤー
+	// ソルジャー
 	Player* m_player;
 	// グラフィックス
 	Graphics* m_graphics;
+	// デバイスコンテキスト
+	ID3D11DeviceContext* m_context;
 	// ワールドマトリックス
 	DirectX::SimpleMath::Matrix m_worldMatrix;
+	// プレイヤーモデル
+	DirectX::Model* m_playerModel;
 };
+
 #endif		// SOLDIER_IDLING_DEFINED
