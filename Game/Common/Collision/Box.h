@@ -62,7 +62,9 @@ public:
 	DirectX::SimpleMath::Vector3 GetHalfSize() const;
 //@“à•”‘€ì
 private:
+	//AABB‚Æ‚Ì“–‚½‚è”»’è
 	bool IntersectBox(Box* other);
+	//‹…‚Æ‚Ì“–‚½‚è”»’è
 	bool IntersectSphere(Sphere* other) const;
 
 };

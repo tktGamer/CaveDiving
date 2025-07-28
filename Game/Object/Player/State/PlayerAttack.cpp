@@ -1,45 +1,81 @@
+/**
+ * @file   PlayerAttack.cpp
+ *
+ * @brief  プレイヤーの攻撃状態に関するソースファイル
+ *
+ * @author 制作者名 福地貴翔
+ *
+ * @date   日付
+ */
+
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerAttack.h"
 #include "Game/Object/Player/Player.h"
 
-// コンストラクタ
-PlayerAttack::PlayerAttack(Player* player)
-	:
-	m_player(player),
-	m_graphics{},
-	m_context{}
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] player プレイヤーのポインタ
+ */
+PlayerAttack::PlayerAttack(Player* player, Hand* hand)
+	:m_player(player)
+	,m_graphics{}
+	,m_pHand{hand}
+	,m_motionLerp{}
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
-	// コンテキストを取得する
-	m_context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
 }
-// デストラクタ
+/**
+ * @brief デストラクタ
+ */
 PlayerAttack::~PlayerAttack()
 {
 }
 
-// 初期化する
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerAttack::Initialize()
 {
 	PreUpdate();
 }
 
-// 事前更新する
+/**
+ * @brief 事前処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerAttack::PreUpdate()
 {
+	m_pHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
+	m_motionLerp = 0.0f;
 }
 
-// 更新する
+/**
+ * @brief 更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerAttack::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
 	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
 
-	m_player->SetVelocity(m_player->GetVelocity()*0.98f);
+	m_player->SetVelocity(m_player->GetVelocity()*0.8f);
 
-	if(m_player->GetVelocity().Length()<=0.001f)
+	if(Motion())
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}
@@ -47,12 +83,26 @@ void PlayerAttack::Update(const float& elapsedTime)
 
 }
 
-// 事後更新する
+/**
+ * @brief 事後更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerAttack::PostUpdate()
 {
+	m_pHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-50.0f)));
+	m_pHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 }
 
-// 描画する
+/**
+ * @brief 描画処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerAttack::Render()
 {
 	Graphics* graphics = Graphics::GetInstance();
@@ -68,11 +118,11 @@ void PlayerAttack::Render()
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_player->GetCBuffer(), 0, NULL, &cbuff, 0, 0);
-
-
 	Shader* shader = Shader::GetInstance();
+	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+
+
 
 	m_player->GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -103,9 +153,9 @@ void PlayerAttack::Render()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, m_player->GetCBuffer());
+			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
 
-			context->IASetInputLayout(m_player->GetInputLayout());
+			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
 
 		});
 	Shader::GetInstance()->EndShader();
@@ -115,7 +165,38 @@ void PlayerAttack::Render()
 
 }
 
-// 後処理を行う
+/**
+ * @brief 終了処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerAttack::Finalize()
 {
+}
+
+bool PlayerAttack::Motion()
+{
+	DirectX::SimpleMath::Quaternion start = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f));
+	DirectX::SimpleMath::Quaternion end = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(170.0f));
+	DirectX::SimpleMath::Quaternion q =
+		//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
+		//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
+		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f));
+
+	q = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f));
+	q = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(145.0f));
+
+	DirectX::SimpleMath::Quaternion::Lerp(start, end, m_motionLerp, q);
+	m_motionLerp += 1.0f *Messenger::GetInstance()->GetElapsedTime();
+	//m_pHand->SetQuaternion()
+	m_pHand->SetMotionAngle(q);
+
+
+	if (m_motionLerp >= 1.0f) 
+	{
+		return true;
+	}
+	return false;
 }

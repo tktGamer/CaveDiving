@@ -19,6 +19,7 @@ public:
 	{
 		None,	// なし
 		Player,	// プレイヤー
+		Pikel,  // つるはし
 		Enemy,	// 敵
 		Item,	// アイテム
 		Light,

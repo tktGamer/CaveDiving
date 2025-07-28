@@ -40,8 +40,6 @@ private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 	//	関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 	// オブジェクト番号
 	int m_objectNumber;
@@ -76,8 +74,6 @@ public:
 
 	//　取得・設定
 public:
-	ID3D11InputLayout* GetInputLayout() const;
-	ID3D11Buffer* GetCBuffer() const;
 
 	int GetObjectNumber() override;
 

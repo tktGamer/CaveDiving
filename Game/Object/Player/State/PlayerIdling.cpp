@@ -1,36 +1,68 @@
+/**
+ * @file   PlayerIdling.cpp
+ *
+ * @brief  プレイヤーの待機状態に関するソースファイル
+ *
+ * @author 制作者名 福地貴翔
+ *
+ * @date   日付
+ */
+
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerIdling.h"
 #include "Game/Object/Player/Player.h"
 
-// コンストラクタ
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] player プレイヤーのポインタ
+ */
 PlayerIdling::PlayerIdling(Player* player)
-	:
-	m_player(player),
-	m_graphics{},
-	m_context{}
+	:m_player(player)
+	,m_graphics{}
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
-	// コンテキストを取得する
-	m_context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
 }
-// デストラクタ
+/**
+ * @brief デストラクタ
+ */
 PlayerIdling::~PlayerIdling()
 {
 }
 
-// 初期化する
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerIdling::Initialize()
 {
 	PreUpdate();
 }
 
-// 事前更新する
+/**
+ * @brief 事前処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerIdling::PreUpdate()
 {
 }
 
-// 更新する
+/**
+ * @brief 更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerIdling::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
@@ -59,14 +91,27 @@ void PlayerIdling::Update(const float& elapsedTime)
 
 }
 
-// 事後更新する
+/**
+ * @brief 事後更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerIdling::PostUpdate()
 {
 }
 
-// 描画する
+/**
+ * @brief 描画処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerIdling::Render()
 {
+	Shader* shader = Shader::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext*		 context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states  = graphics->GetCommonStates();
@@ -81,10 +126,9 @@ void PlayerIdling::Render()
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_player->GetCBuffer(), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
 
 
-	Shader* shader = Shader::GetInstance();
 
 	m_player->GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -115,9 +159,9 @@ void PlayerIdling::Render()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 			
-			Shader::GetInstance()->StartShader(Shader::Model,m_player->GetCBuffer());
+			Shader::GetInstance()->StartShader(Shader::Model,shader->GetCBuffer(Shader::Model));
 			
-			context->IASetInputLayout(m_player->GetInputLayout());
+			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
 
 		});
 	Shader::GetInstance()->EndShader();
@@ -126,7 +170,13 @@ void PlayerIdling::Render()
 
 }
 
-// 後処理を行う
+/**
+ * @brief 終了処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void PlayerIdling::Finalize()
 {
 }

@@ -22,7 +22,7 @@
 #include"Game/Common/Collision/CollisionManager.h"
 #include"Game/Object/Player/Player.h"
 #include"Game/Object/Stage.h"
-#include "Game/Object/Enemy/Bat.h"
+#include"../Object/Enemy/EnemyManager.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 class SceneManager;       ///< シーンマネージャ
@@ -48,10 +48,10 @@ private:
 	std::unique_ptr<Ito::DisplayCollision> m_displayCollision;
 	CollisionManager* m_cM;
 	// オブジェクト関連
+	std::unique_ptr<EnemyManager> m_enemyManager; //<敵管理オブジェクト
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
 	std::unique_ptr<Player> m_player;    ///< プレイヤーオブジェクト
 	std::unique_ptr<Stage> m_stage;    ///< ステージオブジェクト
-	std::unique_ptr<Bat> m_bat;    ///< コウモリの敵オブジェクト
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

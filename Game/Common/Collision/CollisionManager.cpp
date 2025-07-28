@@ -50,15 +50,17 @@ CollisionManager* const CollisionManager::GetInstance()
 }
 
 
+
 /**
- * @brief 初期化処理
+ * @brief オブジェクトの登録
  *
- * @param[in] なし
+ * @param[in] obj オブジェクト
  *
  * @return なし
  */
-void CollisionManager::Register()
+void CollisionManager::Register(GameObject* obj)
 {
+	m_objects.push_back(obj);
 }
 
 
@@ -75,22 +77,38 @@ void CollisionManager::Update()
 
 }
 
-
-
 /**
- * @brief 描画処理
+ * @brief 当たり判定総チェック
  *
  * @param[in] なし
  *
  * @return なし
  */
-void CollisionManager::Draw()
+void CollisionManager::CollisionCheck()
 {
-	ID3D11DeviceContext*		 context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = m_graphics->GetProjectionMatrix();
+	// ここで登録されたすべてのオブジェクトに対して当たり判定を行う
+	for (std::list<GameObject*>::iterator it1 = m_objects.begin(); it1 != m_objects.end(); ++it1)
+	{
+		for (std::list<GameObject*>::iterator it2 = std::next(it1); it2 != m_objects.end(); ++it2)
+		{
+			GameObject* obj1 = *it1;
+			GameObject* obj2 = *it2;
+			// オブジェクト同士の当たり判定を行う
+			if (obj1->GetShape() && obj2->GetShape()) 
+			{
+				if (obj1->GetShape()->Intersects(obj2->GetShape())) 
+				{
+					// 当たり判定が発生した場合の処理
+					obj1->CollisionResponce(obj2);
+					obj2->CollisionResponce(obj1);
+				}
+			}
+		}
+	}
 }
+
+
+
 
 
 

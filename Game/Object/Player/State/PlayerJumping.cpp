@@ -1,7 +1,7 @@
 /**
- * @file   PlayerMoving.cpp
+ * @file   PlayerJumping.cpp
  *
- * @brief  プレイヤーの移動状態に関するソースファイル
+ * @brief  プレイヤーのジャンプ状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
@@ -10,7 +10,7 @@
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "Game/Object/Player/State/PlayerMoving.h"
+#include "Game/Object/Player/State/PlayerJumping.h"
 #include "Game/Object/Player/Player.h"
 
 // メンバ関数の定義 ===========================================================
@@ -19,7 +19,7 @@
  *
  * @param[in] player プレイヤーのポインタ
  */
-PlayerMoving::PlayerMoving(Player* player)
+PlayerJumping::PlayerJumping(Player* player)
 	: m_player(player)
 	, m_graphics{}
 {
@@ -29,7 +29,7 @@ PlayerMoving::PlayerMoving(Player* player)
 /**
  * @brief デストラクタ
  */
-PlayerMoving::~PlayerMoving()
+PlayerJumping::~PlayerJumping()
 {
 }
 
@@ -40,7 +40,7 @@ PlayerMoving::~PlayerMoving()
  *
  * @return なし
  */
-void PlayerMoving::Initialize()
+void PlayerJumping::Initialize()
 {
 	PreUpdate();
 }
@@ -52,7 +52,7 @@ void PlayerMoving::Initialize()
  *
  * @return なし
  */
-void PlayerMoving::PreUpdate()
+void PlayerJumping::PreUpdate()
 {
 }
 
@@ -63,7 +63,7 @@ void PlayerMoving::PreUpdate()
  *
  * @return なし
  */
-void PlayerMoving::Update(const float& elapsedTime)
+void PlayerJumping::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
@@ -94,11 +94,7 @@ void PlayerMoving::Update(const float& elapsedTime)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::ATTACK);
 	}
-	if (key->pressed.Space)
-	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
-	}
-
+	
 	// 姿勢に回転を加える
 	m_player->SetQuaternion(m_player->GetQuaternion() * q);
 
@@ -122,7 +118,7 @@ void PlayerMoving::Update(const float& elapsedTime)
  *
  * @return なし
  */
-void PlayerMoving::PostUpdate()
+void PlayerJumping::PostUpdate()
 {
 }
 
@@ -133,10 +129,8 @@ void PlayerMoving::PostUpdate()
  *
  * @return なし
  */
-void PlayerMoving::Render()
+void PlayerJumping::Render()
 {
-	Shader* shader = Shader::GetInstance();
-
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
@@ -150,6 +144,7 @@ void PlayerMoving::Render()
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
+	Shader* shader = Shader::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
 
@@ -184,7 +179,7 @@ void PlayerMoving::Render()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model,shader->GetCBuffer(Shader::Model));
+			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
 
 			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
 
@@ -203,6 +198,6 @@ void PlayerMoving::Render()
  *
  * @return なし
  */
-void PlayerMoving::Finalize()
+void PlayerJumping::Finalize()
 {
 }

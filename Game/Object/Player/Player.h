@@ -42,11 +42,6 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
-	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 	// オブジェクト番号
 	int m_objectNumber;
@@ -55,7 +50,11 @@ private:
 
 	Gem* m_pGem[3]; // 所持している宝石
 	DirectX::SimpleMath::Vector3 m_velocity; // 速度 
+
+	//ステータス
 	int m_hp; // HP
+	int m_power; // 攻撃力
+	int m_diffence; // 防御力
 	std::unique_ptr<Light> m_light;
 
 	//当たり判定
@@ -99,8 +98,6 @@ public:
 
 //　取得・設定
 public:
-	ID3D11InputLayout* GetInputLayout() const;
-	ID3D11Buffer* GetCBuffer() const;
 	
 	//宝石をセット
 	void SetGem(Gem* gem,int index);

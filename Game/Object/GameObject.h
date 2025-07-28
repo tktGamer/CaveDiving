@@ -92,7 +92,7 @@ public:
 	void Finalize();
 
 	//Õ“Ë‰“š•ªŠò
-	
+	void CollisionResponce(GameObject* other) {};
 //@æ“¾Eİ’è
 public:
 	

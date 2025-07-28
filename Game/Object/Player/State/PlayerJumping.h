@@ -1,18 +1,18 @@
 #pragma once
-#ifndef PLAYER_IDLING_DEFINED
-#define PLAYER_IDLING_DEFINED
+#ifndef PLAYER_JUMPING_DEFINED
+#define PLAYER_JUMPING_DEFINED
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
-class Player;
 
-// PlayerIdlingクラスを定義する
-class PlayerIdling : public IState
+class Player;
+// PlayerJumpingクラスを定義する
+class PlayerJumping : public IState
 {
 public:
 	// コンストラクタ
-	PlayerIdling(Player* soldier);
+	PlayerJumping(Player* soldier);
 	// デストラクタ
-	~PlayerIdling();
+	~PlayerJumping();
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -34,5 +34,4 @@ private:
 	// ワールドマトリックス
 	DirectX::SimpleMath::Matrix m_worldMatrix;
 };
-
 #endif		// SOLDIER_IDLING_DEFINED
