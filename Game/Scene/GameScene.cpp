@@ -64,8 +64,7 @@ void GameScene::Initialize()
 	m_camera = std::make_unique<Camera>();
 	m_player = std::make_unique<Player>(nullptr,DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f},DirectX::XMConvertToRadians(0.0f));
 	m_stage = std::make_unique<Stage>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
-	m_enemyManager = std::make_unique<EnemyManager>();
-	m_enemyManager->Spawn();
+	m_bat = std::make_unique<Bat>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f));
 	m_camera->Initialize({ 0,1.0f,25.0f });
 	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
 	m_player->Initialize();
@@ -96,7 +95,7 @@ void GameScene::Update(float elapsedTime)
 	m_player->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_stage->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	//m_camera->SetEyePos(m_player->GetModelParams().GetPosition() + DirectX::SimpleMath::Vector3(0.0f, 1.0f, 5.0f));
-	m_enemyManager->Update();
+	m_bat->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_camera->Update(elapsedTime);
 
 
@@ -133,7 +132,8 @@ void GameScene::Render()
 	m_player->Draw();
 
 	//m_player->GetShape()->AddDisplayCollision(m_displayCollision.get());
-	m_enemyManager->Draw();
+	m_bat->Draw();
+	m_bat->GetShape()->AddDisplayCollision(m_displayCollision.get());
 	m_stage->Draw();
 	//m_stage->GetShape()->AddDisplayCollision(m_displayCollision.get());
 
@@ -162,7 +162,6 @@ void GameScene::Finalize()
 	m_player->Finalize();
 	m_stage->Finalize();
 	m_camera->Finalize();
-	m_enemyManager->Finalize();
 
 	Shader::GetInstance()->UnRegisterLight();
 }

@@ -31,8 +31,12 @@ private:
 	Player* m_player;
 	// グラフィックス
 	Graphics* m_graphics;
+	// デバイスコンテキスト
+	ID3D11DeviceContext* m_context;
 	// ワールドマトリックス
 	DirectX::SimpleMath::Matrix m_worldMatrix;
+	// プレイヤーモデル
+	DirectX::Model* m_playerModel;
 };
 
 #endif		// SOLDIER_IDLING_DEFINED

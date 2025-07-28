@@ -16,6 +16,12 @@
 #include"Game/Shader.h"
 #include"Game/Common/Collision/Sphere.h"
 
+const std::vector<D3D11_INPUT_ELEMENT_DESC> Player::INPUT_LAYOUT =
+{
+	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "NORMAL",	    0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+};
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -57,16 +63,11 @@ Player::~Player()
  */
 void Player::Initialize()
 {
-	std::unique_ptr<Hand> handR = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
-	std::unique_ptr<Hand> handL = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
 	// 状態の初期化
 	m_idlingState = std::make_unique<PlayerIdling>(this);
 	m_movingState = std::make_unique<PlayerMoving>(this);
-	m_attackState = std::make_unique<PlayerAttack>(this,handR.get());
+	m_attackState = std::make_unique<PlayerAttack>(this);
 
-	m_bodyParts.emplace_back(std::move(handR));
-	m_bodyParts.back()->Initialize();
-	m_bodyParts.push_back(std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f)));
 	SetState(m_idlingState.get());
 
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("player.png"));
@@ -82,8 +83,29 @@ void Player::Initialize()
 
 	Shader::GetInstance()->RegisterLight(m_light.get());
 
+	BinaryFile VSData = ResourceManager::GetInstance()->RequestBinaryFile(L"Resources/Shaders/ModelShader/ModelVS.cso");
+
+	//インプットレイアウトの作成
+	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateInputLayout(
+		&INPUT_LAYOUT[0],
+		static_cast<UINT>(INPUT_LAYOUT.size()),
+		VSData.GetData(),
+		VSData.GetSize(),
+		m_inputLayout.GetAddressOf());
+
+	//	シェーダーにデータを渡すためのコンスタントバッファ生成
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(ConstBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.CPUAccessFlags = 0;
+	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_cBuffer);
 
 
+	m_bodyParts.push_back(std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f)));
+	m_bodyParts.back()->Initialize();
+	m_bodyParts.push_back(std::make_unique<Hand>(this,DirectX::SimpleMath::Vector3{-1.5f,0.0f,0.0f},DirectX::XMConvertToRadians(0.0f)));
 }
 
 
@@ -91,9 +113,7 @@ void Player::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime     フレーム間時間
- * @param[in] currentPosition 親の座標
- * @param[in] currentAngle    親の角度
+ * @param[in] なし
  *
  * @return なし
  */
@@ -153,7 +173,6 @@ void Player::Finalize()
 {
 }
 
-
 void Player::OnMessegeAccepted(Message::MessageID messageID)
 {
 	switch (messageID)
@@ -176,6 +195,15 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 	}
 }
 
+ID3D11InputLayout* Player::GetInputLayout() const
+{
+	return m_inputLayout.Get();
+}
+
+ID3D11Buffer* Player::GetCBuffer() const
+{
+	return m_cBuffer.Get();
+}
 
 void Player::SetGem(Gem* gem, int index)
 {

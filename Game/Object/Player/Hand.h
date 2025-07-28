@@ -29,14 +29,11 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	// オブジェクト番号
-	int m_objectNumber;
 
 	DirectX::SimpleMath::Matrix m_world;
 
 	std::unique_ptr<Pikel> m_pikel;
 
-	DirectX::SimpleMath::Quaternion m_motionAngle;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -64,8 +61,6 @@ public:
 public:
 	int GetObjectNumber() override;
 
-	DirectX::SimpleMath::Quaternion GetMotionAngle();
-	void SetMotionAngle(DirectX::SimpleMath::Quaternion angle);
 //　内部操作
 private:
 

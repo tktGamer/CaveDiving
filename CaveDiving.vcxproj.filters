@@ -53,9 +53,6 @@
     <Filter Include="Game\Common\Collision">
       <UniqueIdentifier>{349cac0d-f694-4abf-b269-7d4ca014d383}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Object\Enemy\Bat">
-      <UniqueIdentifier>{c74c940e-c231-4f20-9cf8-77389c735f5b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -170,17 +167,11 @@
     <ClInclude Include="Game\Object\Player\State\PlayerAttack.h">
       <Filter>Game\Object\Player\State</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Bat.h">
+      <Filter>Game\Object\Enemy</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Tag.h">
       <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Player\State\PlayerJumping.h">
-      <Filter>Game\Object\Player\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Enemy\Bat\Bat.h">
-      <Filter>Game\Object\Enemy\Bat</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Enemy\EnemyManager.h">
-      <Filter>Game\Object\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -282,13 +273,7 @@
     <ClCompile Include="Game\Object\Player\State\PlayerAttack.cpp">
       <Filter>Game\Object\Player\State</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Player\State\PlayerJumping.cpp">
-      <Filter>Game\Object\Player\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object\Enemy\Bat\Bat.cpp">
-      <Filter>Game\Object\Enemy\Bat</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object\Enemy\EnemyManager.cpp">
+    <ClCompile Include="Game\Object\Enemy\Bat.cpp">
       <Filter>Game\Object\Enemy</Filter>
     </ClCompile>
   </ItemGroup>

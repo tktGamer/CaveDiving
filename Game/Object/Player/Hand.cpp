@@ -21,8 +21,6 @@
 Hand::Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
 	, GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
-	,m_objectNumber{CountUpNumber()}
-	,m_motionAngle{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"hand.png"));
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"hand.sdkmesh"));
@@ -52,14 +50,6 @@ void Hand::Initialize()
 {
 	m_pikel = std::make_unique<Pikel>(this, DirectX::SimpleMath::Vector3(0.0f,0.0f,0.0f), DirectX::XMConvertToRadians(0.0f));
 
-	//DirectX::SimpleMath::Quaternion q = 
-	//	//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
-	//	//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
-	//	 DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f));
-	//SetQuaternion(q);
-
-
-
 }
 
 
@@ -74,12 +64,9 @@ void Hand::Initialize()
  */
 void Hand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	static DirectX::SimpleMath::Quaternion q;
-	//q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(1.0f));
-	q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(1.0f));
-	SetQuaternion(GetQuaternion());
-	m_currentAngle = GetQuaternion() * m_motionAngle * currentAngle;
-	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition, m_motionAngle* currentAngle)+ currentPosition + GetPosition();
+	SetQuaternion(GetQuaternion() * DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(1.0f)));
+	m_currentAngle = GetQuaternion() * currentAngle;
+	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition, m_currentAngle)+ currentPosition + GetPosition();
 	
 	if(m_pikel)
 	m_pikel->Update(elapsedTime, m_currentPosition, m_currentAngle);
@@ -97,7 +84,6 @@ void Hand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& current
  */
 void Hand::Draw()
 {
-	Shader* shader = Shader::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
@@ -112,45 +98,47 @@ void Hand::Draw()
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	//context->UpdateSubresource(GetCBuffer(), 0, NULL, &cbuff, 0, 0);
 
 
+	Shader* shader = Shader::GetInstance();
 
-	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
-		{
-			//	モデル表示をするための自作シェーダに関連する設定を行う
+	GetModel()->Draw(context, *states, world, view, proj);
+	//GetModel()->Draw(context, *states, world, view, proj, false, [&]()
+	//	{
+	//		//	モデル表示をするための自作シェーダに関連する設定を行う
 
 
-			//	画像用サンプラーの登録
-			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
-			context->PSSetSamplers(0, 1, sampler);
+	//		//	画像用サンプラーの登録
+	//		ID3D11SamplerState* sampler[1] = { states->PointWrap() };
+	//		context->PSSetSamplers(0, 1, sampler);
 
-			if (GetTexture() != nullptr)
-			{
-				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
-			}
+	//		if (GetTexture() != nullptr)
+	//		{
+	//			//	読み込んだ画像をピクセルシェーダに伝える
+	//			//	自作VSはt0を使っているため、
+	//			//	t0がメインで使われていると勝手に想定。
+	//			context->PSSetShaderResources(0, 1, GetTexture());
+	//		}
 
-			//	半透明描画指定
-			ID3D11BlendState* blendstate = states->NonPremultiplied();
+	//		//	半透明描画指定
+	//		ID3D11BlendState* blendstate = states->NonPremultiplied();
 
-			//	透明判定処理
-			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+	//		//	透明判定処理
+	//		context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
-			//	深度バッファに書き込み参照する
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	//		//	深度バッファに書き込み参照する
+	//		context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
-			//	カリングはなし
-			context->RSSetState(states->CullClockwise());
+	//		//	カリングはなし
+	//		context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+	//		Shader::GetInstance()->StartShader(Shader::Model, GetCBuffer());
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+	//		context->IASetInputLayout();
 
-		});
-	Shader::GetInstance()->EndShader();
+	//	});
+	//Shader::GetInstance()->EndShader();
 	if (m_pikel)
 	m_pikel->Draw();
 }
@@ -176,14 +164,4 @@ void Hand::OnMessegeAccepted(Message::MessageID messageID)
 int Hand::GetObjectNumber()
 {
 	return 0;
-}
-
-DirectX::SimpleMath::Quaternion Hand::GetMotionAngle()
-{
-	return m_motionAngle;
-}
-
-void Hand::SetMotionAngle(DirectX::SimpleMath::Quaternion angle)
-{
-	m_motionAngle = angle;
 }

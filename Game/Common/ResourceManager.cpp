@@ -33,13 +33,6 @@ ResourceManager::~ResourceManager()
 
 
 
-/**
- * @brief インスタンスの取得
- *
- * @param[in] なし
- *
- * @return 　リソースマネージャーのポインタ
- */
 ResourceManager* const ResourceManager::GetInstance()
 {
 	

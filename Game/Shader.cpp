@@ -24,25 +24,6 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Shader::INPUT_LAYOUT =
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
-
-
-/**
- * @brief クラスのインスタンスを取得する
- *
- * @param[in] なし
- *
- * @return クラスのインスタンスへのポインタ
- */
-Shader* const Shader::GetInstance()
-{
-	if (!s_shader)
-	{
-		s_shader.reset(new Shader());
-	}
-	return s_shader.get();
-}
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -51,12 +32,8 @@ Shader* const Shader::GetInstance()
  */
 Shader::Shader()
 	:m_graphics{Graphics::GetInstance()}
-	//モデルシェーダー用変数
-	,m_modelInputLayout{}				// 入力レイアウト
-	,m_modelCBuffer{}
-	,m_modelVS{}
-	,m_modelPS{}
-	,m_modelGS{}
+	,m_inputLayout{}				// 入力レイアウト
+
 {
 	CreateShader();
 }
@@ -149,50 +126,33 @@ void Shader::Finalize()
 }
 
 
-
-
 /**
- * @brief インプットレイアウトの取得
+ * @brief クラスのインスタンスを取得する
  *
- * @param[in] type 取得するインプットレイアウトの種類
+ * @param[in] なし
  *
- * @return インプットレイアウトのポインタ
+ * @return クラスのインスタンスへのポインタ
  */
-ID3D11InputLayout* Shader::GetInputLayout(ShaderType type)
+Shader* const Shader::GetInstance()
 {
-	switch (type)
+	if (!s_shader)
 	{
-	case Shader::Model:
-		return m_modelInputLayout.Get();
-		break;
-	case Shader::UI:
-		break;
-	default:
-		break;
+		s_shader.reset(new Shader());
 	}
-	return nullptr;
+	return s_shader.get();
 }
 
+
 /**
- * @brief コンスタントバッファの取得
+ * @brief 終了処理
  *
- * @param[in] type 取得するコンスタントバッファの種類
+ * @param[in] なし
  *
- * @return コンスタントバッファのポインタ
+ * @return なし
  */
-ID3D11Buffer* Shader::GetCBuffer(ShaderType type)
+ID3D11InputLayout* Shader::GetInputLayout()
 {
-	switch (type)
-	{
-	case Shader::Model:
-		return m_modelCBuffer.Get();
-		break;
-	case Shader::UI:
-		break;
-	default:
-		break;
-	}
-	return nullptr;
+	return m_inputLayout.Get();
 }
 
 
@@ -266,22 +226,6 @@ void Shader::CreateShader()
 	m_graphics->GetDeviceResources()->GetD3DDevice()->CreateGeometryShader(
 		geometryShader.GetData(), geometryShader.GetSize(), nullptr, m_modelGS.ReleaseAndGetAddressOf());
 
-	//インプットレイアウトの作成
-	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateInputLayout(
-		&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
-		vertexShader.GetData(),
-		vertexShader.GetSize(),
-		m_modelInputLayout.GetAddressOf());
-
-	//	シェーダーにデータを渡すためのコンスタントバッファ生成
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_modelCBuffer);
 
 	//	シェーダーにデータを渡すためのコンスタントバッファ生成
 	D3D11_BUFFER_DESC bd2;

@@ -52,7 +52,6 @@ public:
 	virtual void AddDisplayCollision(Ito::DisplayCollision* dC)=0;
 //　取得・設定
 public:
-	//形状の種類を取得
 	ShapeType GetShapeType() const { return m_shapeType; }
 //　内部操作
 private:

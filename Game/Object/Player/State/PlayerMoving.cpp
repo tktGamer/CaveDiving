@@ -1,24 +1,8 @@
-/**
- * @file   PlayerMoving.cpp
- *
- * @brief  プレイヤーの移動状態に関するソースファイル
- *
- * @author 制作者名 福地貴翔
- *
- * @date   日付
- */
-
- // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerMoving.h"
 #include "Game/Object/Player/Player.h"
 
-// メンバ関数の定義 ===========================================================
-/**
- * @brief コンストラクタ
- *
- * @param[in] player プレイヤーのポインタ
- */
+// コンストラクタ
 PlayerMoving::PlayerMoving(Player* player)
 	: m_player(player)
 	, m_graphics{}
@@ -26,43 +10,23 @@ PlayerMoving::PlayerMoving(Player* player)
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
 }
-/**
- * @brief デストラクタ
- */
+// デストラクタ
 PlayerMoving::~PlayerMoving()
 {
 }
 
-/**
- * @brief 初期化処理
- *
- * @param[in] なし
- *
- * @return なし
- */
+// 初期化する
 void PlayerMoving::Initialize()
 {
 	PreUpdate();
 }
 
-/**
- * @brief 事前処理
- *
- * @param[in] なし
- *
- * @return なし
- */
+// 事前更新する
 void PlayerMoving::PreUpdate()
 {
 }
 
-/**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
+// 更新する
 void PlayerMoving::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
@@ -92,13 +56,9 @@ void PlayerMoving::Update(const float& elapsedTime)
 	}
 	if (key->IsKeyPressed(DirectX::Keyboard::Z)) 
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::ATTACK);
+		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}
-	if (key->pressed.Space)
-	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
-	}
-
+	
 	// 姿勢に回転を加える
 	m_player->SetQuaternion(m_player->GetQuaternion() * q);
 
@@ -115,28 +75,14 @@ void PlayerMoving::Update(const float& elapsedTime)
 
 }
 
-/**
- * @brief 事後更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
+// 事後更新する
 void PlayerMoving::PostUpdate()
 {
 }
 
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
+// 描画する
 void PlayerMoving::Render()
 {
-	Shader* shader = Shader::GetInstance();
-
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
@@ -151,9 +97,10 @@ void PlayerMoving::Render()
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(m_player->GetCBuffer(), 0, NULL, &cbuff, 0, 0);
 
 
+	Shader* shader = Shader::GetInstance();
 
 	m_player->GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -184,9 +131,9 @@ void PlayerMoving::Render()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model,shader->GetCBuffer(Shader::Model));
+			Shader::GetInstance()->StartShader(Shader::Model, m_player->GetCBuffer());
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(m_player->GetInputLayout());
 
 		});
 	Shader::GetInstance()->EndShader();
@@ -196,13 +143,7 @@ void PlayerMoving::Render()
 
 }
 
-/**
- * @brief 終了処理
- *
- * @param[in] なし
- *
- * @return なし
- */
+// 後処理を行う
 void PlayerMoving::Finalize()
 {
 }

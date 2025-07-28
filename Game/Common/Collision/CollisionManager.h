@@ -12,10 +12,9 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/Graphics.h"
-#include "Game/Common/Collision/Box.h"
-#include "Game/Common/Collision/Sphere.h"
-#include "Game/Object/GameObject.h"
+#include"Game/Common/Graphics.h"
+#include"Game/Common/Collision/Box.h"
+#include"Game/Common/Collision/Sphere.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -34,8 +33,6 @@ private:
 	static std::unique_ptr<CollisionManager> s_collisionManager;
 
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-
-	std::list<GameObject*> m_objects;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -59,11 +56,11 @@ public:
 	// CollisionManagerクラスのインスタンスを取得する
 	static CollisionManager* const GetInstance();
 
-	void Register(GameObject* obj);
+	void Register();
 
 	void Update();
 
-	void CollisionCheck();
+	void Draw();
 
 	void Finalize();
 	//押し出し処理

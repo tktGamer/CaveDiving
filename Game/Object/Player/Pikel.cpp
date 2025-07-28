@@ -20,12 +20,12 @@
  */
 Pikel::Pikel(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, GameObject(Tag::ObjectType::Pikel,parent,initialPosition,initialAngle)
+	, GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_sphere{ GetPosition(), 1.5f}
 	,m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext()}
 {
-	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"pikel.png"));
+	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"hand.png"));
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"pikel.sdkmesh"));
 
 }
@@ -85,7 +85,6 @@ void Pikel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
  */
 void Pikel::Draw()
 {
-	Shader* shader = Shader::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
@@ -100,44 +99,47 @@ void Pikel::Draw()
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	//context->UpdateSubresource(GetCBuffer(), 0, NULL, &cbuff, 0, 0);
 
 
-	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
-		{
-			//	モデル表示をするための自作シェーダに関連する設定を行う
+	Shader* shader = Shader::GetInstance();
+
+	GetModel()->Draw(context, *states, world, view, proj);
+	//GetModel()->Draw(context, *states, world, view, proj, false, [&]()
+	//	{
+	//		//	モデル表示をするための自作シェーダに関連する設定を行う
 
 
-			//	画像用サンプラーの登録
-			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
-			context->PSSetSamplers(0, 1, sampler);
+	//		//	画像用サンプラーの登録
+	//		ID3D11SamplerState* sampler[1] = { states->PointWrap() };
+	//		context->PSSetSamplers(0, 1, sampler);
 
-			if (GetTexture() != nullptr)
-			{
-				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
-			}
+	//		if (GetTexture() != nullptr)
+	//		{
+	//			//	読み込んだ画像をピクセルシェーダに伝える
+	//			//	自作VSはt0を使っているため、
+	//			//	t0がメインで使われていると勝手に想定。
+	//			context->PSSetShaderResources(0, 1, GetTexture());
+	//		}
 
-			//	半透明描画指定
-			ID3D11BlendState* blendstate = states->NonPremultiplied();
+	//		//	半透明描画指定
+	//		ID3D11BlendState* blendstate = states->NonPremultiplied();
 
-			//	透明判定処理
-			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+	//		//	透明判定処理
+	//		context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
-			//	深度バッファに書き込み参照する
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	//		//	深度バッファに書き込み参照する
+	//		context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
-			//	カリングはなし
-			context->RSSetState(states->CullClockwise());
+	//		//	カリングはなし
+	//		context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+	//		Shader::GetInstance()->StartShader(Shader::Model, GetCBuffer());
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+	//		context->IASetInputLayout();
 
-		});
-	Shader::GetInstance()->EndShader();
+	//	});
+	//Shader::GetInstance()->EndShader();
 	m_sphere.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
 		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
