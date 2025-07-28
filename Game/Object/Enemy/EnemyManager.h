@@ -1,59 +1,61 @@
 /**
- * @file   Shape.h
+ * @file   EnemyManager.h
  *
- * @brief  当たり判定の基底クラスに関するヘッダファイル
+ * @brief  敵管理に関するヘッダファイル
  *
- * @author 制作者名 福地貴翔
+ * @author 制作者名
  *
- * @date   日付 2025/7/02
+ * @date   日付
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/Collision/DisplayCollision.h"
-
+#include"Game/Common/Graphics.h"
+#include"../Enemy/Bat/Bat.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief 当たり判定の基底クラス
+  * @brief EnemyManager
   */
-class Shape
+class EnemyManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//形状の種類
-	enum class ShapeType 
-	{
-		Box,        ///< ボックス
-		Sphere,     ///< 球
-		Capsule,    ///< カプセル
-	};
+
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	ShapeType m_shapeType; ///< 形状の種類
+	Graphics* m_graphics;	// グラフィックスクラスのポインタ
+
+	//敵配列
+	std::vector<std::unique_ptr<GameObject>> m_enemies;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Shape(ShapeType type);
+	EnemyManager();
 
 	// デストラクタ
-	~Shape();
+	~EnemyManager();
 
 
 // 操作
 public:
-	virtual bool Intersects(Shape* other) = 0;
+	void Initialize();
 
-	virtual void AddDisplayCollision(Ito::DisplayCollision* dC)=0;
+	void Update();
+
+	void Draw();
+
+	void Finalize();
+
+	void Spawn();
 //　取得・設定
 public:
-	//形状の種類を取得
-	ShapeType GetShapeType() const { return m_shapeType; }
+
 //　内部操作
 private:
 

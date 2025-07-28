@@ -58,10 +58,10 @@ private:
 	static std::unique_ptr<Shader> s_shader;
 
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
+	//モデルシェーダーに関する変数
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_modelCBuffer;
 	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_modelInputLayout;
 	//	頂点シェーダ
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_modelVS;
 	//	ピクセルシェーダ
@@ -71,14 +71,14 @@ private:
 
 	//ライト配列
 	std::vector<Light*> m_lights;
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_lBuffer;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
+	//	頂点情報関数
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// コンストラクタ
 	Shader();
 	// インスタンスをコピーすることを禁止する
@@ -115,7 +115,10 @@ public:
 public:
 	static  Shader* const GetInstance();
 
-	ID3D11InputLayout* GetInputLayout();
+	//インプットレイアウトの取得
+	ID3D11InputLayout* GetInputLayout(ShaderType type);
+	//コンスタントバッファの取得
+	ID3D11Buffer* GetCBuffer(ShaderType type);
 	//シェーダーの取得
 	//モデルの頂点シェーダ
 	ID3D11VertexShader*   GetModelVS();

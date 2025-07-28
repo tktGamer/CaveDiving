@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "Stage.h"
 
-
+//頂点情報
 const std::vector<D3D11_INPUT_ELEMENT_DESC> Stage::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -24,7 +24,9 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Stage::INPUT_LAYOUT =
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] parent 親オブジェクトのポインタ(なし)
+ * @param[in] initialPosition 初期位置
+ * @param[in] initialAngle    初期角度
  */
 Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	: GameObject(Tag::ObjectType::Stage,parent,initialPosition,initialAngle)
@@ -61,28 +63,10 @@ void Stage::Initialize()
 	SetPosition(DirectX::SimpleMath::Vector3(0.0f, -2.0f, 0.0f));
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	SetScale(DirectX::SimpleMath::Vector3(50.0f, 1.0f, 50.0f));
-
+	SetTexture(ResourceManager::GetInstance()->RequestTexture("block.png"));
 	
 	SetShape(&m_box);
 
-	BinaryFile VSData = ResourceManager::GetInstance()->RequestBinaryFile(L"Resources/Shaders/ModelShader/ModelVS.cso");
-
-	//インプットレイアウトの作成
-	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateInputLayout(
-		&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
-		VSData.GetData(),
-		VSData.GetSize(),
-		m_inputLayout.GetAddressOf());
-
-	//	シェーダーにデータを渡すためのコンスタントバッファ生成
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_cBuffer);
 
 }
 
@@ -112,7 +96,8 @@ void Stage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
  */
 void Stage::Draw()
 {
-	ID3D11DeviceContext*		 context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
+	Shader* shader = Shader::GetInstance();	
+	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj    = m_graphics->GetProjectionMatrix();
@@ -125,7 +110,7 @@ void Stage::Draw()
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_cBuffer.Get(), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -136,12 +121,12 @@ void Stage::Draw()
 			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
 			context->PSSetSamplers(0, 1, sampler);
 
-			if (ResourceManager::GetInstance()->RequestTexture("block.png") != nullptr)
+			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
 				//	自作VSはt0を使っているため、
 				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, ResourceManager::GetInstance()->RequestTexture("block.png"));
+				context->PSSetShaderResources(0, 1, GetTexture());
 			}
 
 			//	半透明描画指定
@@ -156,9 +141,9 @@ void Stage::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, m_cBuffer.Get());
+			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
 
-			context->IASetInputLayout(m_inputLayout.Get());
+			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
 		});
 	Shader::GetInstance()->EndShader();
 
@@ -183,15 +168,6 @@ void Stage::OnMessegeAccepted(Message::MessageID messageID)
 
 }
 
-ID3D11InputLayout* Stage::GetInputLayout() const
-{
-	return nullptr;
-}
-
-ID3D11Buffer* Stage::GetCBuffer() const
-{
-	return nullptr;
-}
 
 int Stage::GetObjectNumber()
 {

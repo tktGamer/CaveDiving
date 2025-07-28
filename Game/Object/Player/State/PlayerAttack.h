@@ -3,6 +3,7 @@
 #define PLAYER_ATTACK_DEFINED
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
+#include"Game/Object/Player/Hand.h"
 
 class Player;
 // PlayerAttackクラスを定義する
@@ -10,7 +11,7 @@ class PlayerAttack : public IState
 {
 public:
 	// コンストラクタ
-	PlayerAttack(Player* player);
+	PlayerAttack(Player* player,Hand* hand);
 	// デストラクタ
 	~PlayerAttack();
 	// 初期化する
@@ -26,17 +27,20 @@ public:
 	// 後処理を行う
 	void Finalize();
 
+
+	bool Motion();
 private:
-	// ソルジャー
+	// プレイヤー
 	Player* m_player;
 	// グラフィックス
 	Graphics* m_graphics;
-	// デバイスコンテキスト
-	ID3D11DeviceContext* m_context;
 	// ワールドマトリックス
 	DirectX::SimpleMath::Matrix m_worldMatrix;
-	// プレイヤーモデル
-	DirectX::Model* m_playerModel;
+
+	//モーションさせる手
+	Hand* m_pHand;
+	//
+	float m_motionLerp;
 };
 
 #endif		// SOLDIER_IDLING_DEFINED

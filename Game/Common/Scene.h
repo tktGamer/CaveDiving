@@ -28,7 +28,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Scene(SceneManager* m_pSceneManager);
+	Scene(SceneManager* pSceneManager);
 
 	// デストラクタ
 	virtual ~Scene();
