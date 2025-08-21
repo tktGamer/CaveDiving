@@ -20,6 +20,7 @@
  */
 Shape::Shape(ShapeType type)
 	:m_shapeType(type)
+	,m_isEnabled(true)
 {
 }
 

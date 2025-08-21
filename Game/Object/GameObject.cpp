@@ -14,7 +14,7 @@
 
 
 // オブジェクト番号
-int GameObject::s_objectNumber = -1;
+int GameObject::s_objectNumber = 0;
 
 // オブジェクトをカウントアップする
 int GameObject::CountUpNumber() { return s_objectNumber++; }

@@ -34,7 +34,10 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	ShapeType m_shapeType; ///< 形状の種類
+	// 形状の種類
+	ShapeType m_shapeType; 
+	//当たり判定が有効か
+	bool m_isEnabled;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -54,6 +57,10 @@ public:
 public:
 	//形状の種類を取得
 	ShapeType GetShapeType() const { return m_shapeType; }
+	//当たり判定が有効かを取得
+	bool IsEnabled() const { return m_isEnabled; }
+	//当たり判定が有効かを設定
+	void SetEnabled(bool enable) { m_isEnabled = enable; }
 //　内部操作
 private:
 

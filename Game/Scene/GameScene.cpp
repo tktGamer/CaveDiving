@@ -11,7 +11,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GameScene.h"
-
+#include"../Scene/TitleScene.h"
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
 
@@ -22,12 +22,10 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] sceneManager    シーンを管理しているマネージャ
- * @param[in] resourceManager リソースを管理しているマネージャ
+ * @param[in] なし
  */
-GameScene::GameScene(SceneManager* pSceneManager)
-	: Scene{ pSceneManager }
-	, m_pResourceManager{}
+GameScene::GameScene()
+	:  m_pResourceManager{}
 {
 	TKTLib::ModelParams modelParams;
 
@@ -61,18 +59,37 @@ GameScene::~GameScene()
  */
 void GameScene::Initialize()
 {
+	Messenger::GetInstance()->DestroyInstance();
+
+
 	m_camera = std::make_unique<Camera>();
 	m_player = std::make_unique<Player>(nullptr,DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f},DirectX::XMConvertToRadians(0.0f));
+	m_player->Initialize();
 	m_stage = std::make_unique<Stage>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
 	m_enemyManager = std::make_unique<EnemyManager>();
 	m_enemyManager->Spawn();
 	m_camera->Initialize({ 0,1.0f,25.0f });
 	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
-	m_player->Initialize();
 	m_stage->Initialize();
 
 	m_camera->SetTartet(m_player->GetPosition(), m_player->GetQuaternion());
 
+	m_cM->Register(m_stage.get());
+	m_cM->Register(m_player.get());
+
+
+	int w, h;
+	Graphics::GetInstance()->GetScreenSize(w, h);
+	m_gemSelectUI = std::make_unique<GemSelect>();
+	m_gemSelectUI->Initialize(w,h);
+	m_gemSelectUI->Randomize();
+
+	m_hpGauge = std::make_unique<Gauge>();
+	m_hpGauge->Initialize(w, h);
+	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
+
+	CreateDeviceDependentResources();
+	CreateWindowSizeDependentResources();
 }
 
 
@@ -86,12 +103,15 @@ void GameScene::Initialize()
  */
 void GameScene::Update(float elapsedTime)
 {
+	m_gemSelectUI->Update();
+	m_hpGauge->Update();
 
+	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 
-	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
-	if (traker->pressed.Enter)
+	 std::list<std::unique_ptr<GameObject>>& enemies =  m_enemyManager->GetEnemies();
+	if (traker->pressed.Enter || enemies.size()==0)
 	{
-		ChangeScene("Title", false);
+		ChangeScene<TitleScene>();
 	}
 	m_player->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_stage->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
@@ -99,19 +119,9 @@ void GameScene::Update(float elapsedTime)
 	m_enemyManager->Update();
 	m_camera->Update(elapsedTime);
 
+	m_player->Damage(6);
 
-	if (m_stage->GetShape()->Intersects(m_player->GetShape()))
-	{
-		//押し出し処理
-		m_player->SetPosition(m_cM->PushOut(dynamic_cast<Box*>(m_stage->GetShape()),dynamic_cast<Sphere*>( m_player->GetShape())));
-		DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
-		v.y = 0.0f;
-		m_player->SetVelocity(v);
-		auto debugFont = Graphics::GetInstance()->GetDebugFont();
-
-		debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_player->GetPosition().y)), DirectX::SimpleMath::Vector2(0.0f, 30.0f));
-
-	}
+	m_cM->CollisionCheck();
 }
 
 
@@ -139,6 +149,9 @@ void GameScene::Render()
 
 	m_displayCollision->DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates(), Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
+	m_gemSelectUI->Render();
+	m_hpGauge->Render();
+
 	if (m_stage->GetShape()->Intersects(m_player->GetShape())) 
 	{
 		auto debugFont = Graphics::GetInstance()->GetDebugFont();
@@ -159,11 +172,25 @@ void GameScene::Render()
  */
 void GameScene::Finalize()
 {
+	m_cM->AllRelease();
 	m_player->Finalize();
 	m_stage->Finalize();
 	m_camera->Finalize();
 	m_enemyManager->Finalize();
 
 	Shader::GetInstance()->UnRegisterLight();
+}
+
+void GameScene::CreateDeviceDependentResources()
+{
+	//std::this_thread::sleep_for(std::chrono::seconds{ 3 });
+}
+
+void GameScene::CreateWindowSizeDependentResources()
+{
+}
+
+void GameScene::OnDeviceLost()
+{
 }
 

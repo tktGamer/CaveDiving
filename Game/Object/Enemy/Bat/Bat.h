@@ -13,15 +13,19 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
-#include "Game/Object/GameObject.h"
+#include "Game/Object/Character.h"
 #include"Game/Common/Collision/Sphere.h"
+#include "../Bat/Wing.h"
+#include"Game/Object/Enemy/Bat/State/BatIdling.h"
+#include"Game/Object/Enemy/Bat/State/BatAttack.h"
+#include"Game/Object/Enemy/Bat/State/BatMoving.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
   * @brief Bat
   */
-class Bat :public GameObject
+class Bat :public Character
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -37,11 +41,6 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cBuffer;
-	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 	// オブジェクト番号
 	int m_objectNumber;
@@ -51,6 +50,20 @@ private:
 	//当たり判定
 	Sphere m_sphere;
 
+	DirectX::SimpleMath::Vector3 m_velocity; // 速度 
+
+	//生きているか
+	bool m_isAlive;
+
+	//状態
+	std::unique_ptr<IState> m_pCurrentState; // 現在の状態
+	std::unique_ptr<IState> m_idlingState; // 待機状態 
+	std::unique_ptr<IState> m_movingState; // 移動状態
+	std::unique_ptr<IState> m_attackState; // 攻撃状態
+
+	//羽
+	std::unique_ptr<Wing> m_rightWing; //右翼
+	std::unique_ptr<Wing> m_leftWing;//左翼
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -72,15 +85,17 @@ public:
 
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
+	//衝突応答分岐
+	void CollisionResponce(GameObject* other);
 
 	//　取得・設定
 public:
-	ID3D11InputLayout* GetInputLayout() const;
-	ID3D11Buffer* GetCBuffer() const;
 
 	int GetObjectNumber() override;
-	//DirectX::SimpleMath::Vector3 GetVelocity();
-	//void SetVelocity(DirectX::SimpleMath::Vector3 v);
+	DirectX::SimpleMath::Vector3 GetVelocity();
+	void SetVelocity(DirectX::SimpleMath::Vector3 v);
+	//生きているか
+	bool IsAlive() const;
 	//　内部操作
 private:
 

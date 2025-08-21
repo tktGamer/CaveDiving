@@ -54,6 +54,11 @@ void PlayerJumping::Initialize()
  */
 void PlayerJumping::PreUpdate()
 {
+	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+	//ƒWƒƒƒ“ƒv‚Ì‘¬“x‚ðÝ’è
+	v.y = 0.5f;
+	m_player->SetVelocity(v);
+
 }
 
 /**
@@ -70,35 +75,38 @@ void PlayerJumping::Update(const float& elapsedTime)
 	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
 	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
 
-	DirectX::SimpleMath::Quaternion q;
+	DirectX::SimpleMath::Quaternion q = DirectX::SimpleMath::Quaternion::Identity;
 
-	if (key->GetLastState().Up) 
+	if (key->GetLastState().Up)
 	{
-		v.z -= 1.0f*elapsedTime;
+		v -= DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f) * elapsedTime, m_player->GetQuaternion());
 	}
 	if (key->GetLastState().Down)
 	{
-		v.z += 1.0f*elapsedTime;
+		v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f) * elapsedTime, m_player->GetQuaternion());
+
 	}
 	if (key->GetLastState().Left)
 	{
-		v.x -= 1.0f*elapsedTime;
-		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(1.0f));
+		v -= DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f) * elapsedTime, m_player->GetQuaternion());
+
+		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(3.0f));
 	}
 	if (key->GetLastState().Right)
 	{
-		v.x += 1.0f*elapsedTime;
-		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-1.0f));
+		v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f) * elapsedTime, m_player->GetQuaternion());
+
+		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-3.0f));
 	}
-	if (key->IsKeyPressed(DirectX::Keyboard::Z)) 
+	if (key->IsKeyPressed(DirectX::Keyboard::Z))
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::ATTACK);
 	}
-	
+
 	// Žp¨‚É‰ñ“]‚ð‰Á‚¦‚é
 	m_player->SetQuaternion(m_player->GetQuaternion() * q);
 
-	if(v.Length()<=0.001f)
+	if (v.Length() <= 0.001f)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}

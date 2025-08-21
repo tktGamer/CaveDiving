@@ -13,26 +13,28 @@
 #include "TitleScene.h"
 
 #include "Game/Common/ResourceManager.h"
-#include "Game/Common/SceneManager.h"
 
-
+#include"../Scene/GameScene.h"
+#include "../Scene/LoadScene.h"
 
 
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] sceneManager    シーンを管理しているマネージャ
- * @param[in] resourceManager リソースを管理しているマネージャ
+ * @param[in] なし
  */
-TitleScene::TitleScene(SceneManager* pSceneManager)
-	: Scene{ pSceneManager }
-	, m_pResourceManager{}
+TitleScene::TitleScene()
+	: m_pResourceManager{}
 	, m_caveModelParams{}
 	, m_demoPlayerModelParams{}
+	, m_angle{}
+	, m_length{}
 {
 	m_camera = std::make_unique<Camera>();
 	m_pResourceManager = ResourceManager::GetInstance();
+
+
 }
 
 
@@ -56,7 +58,9 @@ TitleScene::~TitleScene()
  */
 void TitleScene::Initialize()
 {
+
 	m_titleTexture = *m_pResourceManager->RequestTexture("title.png");
+	m_pressSpaceTexture = *m_pResourceManager->RequestTexture("pressspace.png");
 	m_demoPlayerModelParams.SetModelParams(m_pResourceManager->RequestModel("player.sdkmesh"));
 	DirectX::SimpleMath::Vector3 position = DirectX::SimpleMath::Vector3{ 0.0f,0.5f,6.5f };
 	DirectX::SimpleMath::Vector3 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
@@ -72,6 +76,9 @@ void TitleScene::Initialize()
 	m_angle = 85.0f;
 	m_camera->Initialize({ 0,11.0f,10.0f });
 	m_camera->SetTartet(m_caveModelParams.GetPosition(), m_caveModelParams.GetQuaternion());
+	CreateDeviceDependentResources();
+	CreateWindowSizeDependentResources();
+
 
 }
 
@@ -86,12 +93,12 @@ void TitleScene::Initialize()
  */
 void TitleScene::Update(float elapsedTime)
 {
-	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
+	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 	float r = m_angle * 3.14f / 180.0f;
 	
 	if (traker->pressed.Space)
 	{
-		ChangeScene("Game");
+		ChangeScene<GameScene,LoadScene>();
 	}
 	/*m_camera->SetEyePosX(m_length * std::cos(r));
 	m_camera->SetEyePosZ(m_length * std::sin(r));*/
@@ -102,7 +109,7 @@ void TitleScene::Update(float elapsedTime)
 		m_angle = 0.0f;
 	}
 
-
+	//m_gem->Update();
 	m_camera->Update(elapsedTime);
 }
 
@@ -117,9 +124,10 @@ void TitleScene::Update(float elapsedTime)
  */
 void TitleScene::Render()
 {
-	ID3D11DeviceContext* context = GetGraphics()->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states = GetGraphics()->GetCommonStates();
-	DirectX::SimpleMath::Matrix proj = GetGraphics()->GetProjectionMatrix();
+	Graphics* graphics = Graphics::GetInstance();
+	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
+	DirectX::SimpleMath::Matrix proj = graphics->GetProjectionMatrix();
 
 	auto view=m_camera->GetView();
 	//m_testPlayer.Draw(*context, *states, view, proj);
@@ -127,11 +135,15 @@ void TitleScene::Render()
 	m_demoPlayerModelParams.GetModel()->Draw(context, *states, m_demoPlayerModelParams.GetWorldMatrix(), view, proj);
 	m_caveModelParams.GetModel()->Draw(context, *states, m_caveModelParams.GetWorldMatrix(), view, proj);
 
-	DirectX::SpriteBatch* spriteBatch = GetGraphics()->GetSpriteBatch();
+	DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
 
 	spriteBatch->Begin();
 	spriteBatch->Draw(m_titleTexture, DirectX::SimpleMath::Vector2(400, 100));
+	spriteBatch->Draw(m_pressSpaceTexture, DirectX::SimpleMath::Vector2(400, 550));
+
+	
 	spriteBatch->End();
+
 }
 
 
@@ -146,4 +158,16 @@ void TitleScene::Render()
 void TitleScene::Finalize()
 {
 	
+}
+
+void TitleScene::CreateDeviceDependentResources()
+{
+}
+
+void TitleScene::CreateWindowSizeDependentResources()
+{
+}
+
+void TitleScene::OnDeviceLost()
+{
 }

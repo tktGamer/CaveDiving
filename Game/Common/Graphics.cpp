@@ -55,7 +55,7 @@ Graphics::Graphics()
 	m_device{},						// デバイス
 	m_context{}						// デバイスコンテキスト
 {
-	// ここでDeviceResourcesクラスのインスタンスを生成する
+	// DeviceResourcesクラスのインスタンスを生成する
 	m_deviceResources = std::make_unique<DX::DeviceResources>();
 }
 

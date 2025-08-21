@@ -31,7 +31,7 @@ private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
 	//敵配列
-	std::vector<std::unique_ptr<GameObject>> m_enemies;
+	std::list<std::unique_ptr<GameObject>> m_enemies;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -55,7 +55,8 @@ public:
 	void Spawn();
 //　取得・設定
 public:
-
+	//敵を取得
+	std::list<std::unique_ptr<GameObject>>& GetEnemies() { return m_enemies; }
 //　内部操作
 private:
 

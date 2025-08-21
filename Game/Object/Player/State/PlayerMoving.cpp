@@ -68,28 +68,7 @@ void PlayerMoving::Update(const float& elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
 	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
 
-	DirectX::SimpleMath::Quaternion q;
-
-	if (key->GetLastState().Up) 
-	{
-		v.z -= 1.0f*elapsedTime;
-	}
-	if (key->GetLastState().Down)
-	{
-		v.z += 1.0f*elapsedTime;
-	}
-	if (key->GetLastState().Left)
-	{
-		v.x -= 1.0f*elapsedTime;
-		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(1.0f));
-	}
-	if (key->GetLastState().Right)
-	{
-		v.x += 1.0f*elapsedTime;
-		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-1.0f));
-	}
 	if (key->IsKeyPressed(DirectX::Keyboard::Z)) 
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::ATTACK);
@@ -97,6 +76,36 @@ void PlayerMoving::Update(const float& elapsedTime)
 	if (key->pressed.Space)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
+	}
+
+	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+
+	DirectX::SimpleMath::Quaternion q = DirectX::SimpleMath::Quaternion::Identity;
+	//移動
+	if (key->GetLastState().Up) 
+	{
+		v -= DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f,0.0f,1.0f) * elapsedTime, m_player->GetQuaternion());
+		//rotateVelocity = DirectX::SimpleMath::Vector3::Transform(v, m_player->GetQuaternion());
+	}
+	if (key->GetLastState().Down)
+	{
+		//v.z += 1.0f*elapsedTime;
+		v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f) * elapsedTime, m_player->GetQuaternion());
+
+	}
+	if (key->GetLastState().Left)
+	{
+		//v.x -= 1.0f*elapsedTime;
+		v -= DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f) * elapsedTime, m_player->GetQuaternion());
+
+		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(2.0f));
+	}
+	if (key->GetLastState().Right)
+	{
+		//v.x += 1.0f*elapsedTime;
+		v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f)*elapsedTime, m_player->GetQuaternion());
+
+		q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-2.0f));
 	}
 
 	// 姿勢に回転を加える
@@ -112,6 +121,8 @@ void PlayerMoving::Update(const float& elapsedTime)
 	m_player->SetVelocity(v);
 
 	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
+
+
 
 }
 

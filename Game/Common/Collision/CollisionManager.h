@@ -20,7 +20,7 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief CollisionManager
+  * @brief 当たり判定管理
   */
 class CollisionManager
 {
@@ -35,6 +35,7 @@ private:
 
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
+	//当たり判定するオブジェクトのリスト
 	std::list<GameObject*> m_objects;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -59,8 +60,10 @@ public:
 	// CollisionManagerクラスのインスタンスを取得する
 	static CollisionManager* const GetInstance();
 
+	//オブジェクトの登録
 	void Register(GameObject* obj);
-
+	//オブジェクトの削除
+	void AllRelease();
 	void Update();
 
 	void CollisionCheck();

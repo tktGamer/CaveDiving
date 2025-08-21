@@ -15,14 +15,15 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/Scene.h"
+#include"../Common/SceneManager.h"
+#include"Game/UserResources.h"
 #include"Game/Object/Camera.h"
 
 #include"math.h"
 
+#include"Game/UI/GemSelect/GemSelect.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
-class SceneManager;       ///< シーンマネージャ
 
 
 
@@ -31,7 +32,7 @@ class SceneManager;       ///< シーンマネージャ
 /**
  * @brief ロゴシーン
  */
-class TitleScene : public Scene
+class TitleScene : public Scene<UserResources>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -48,6 +49,7 @@ private:
 	// オブジェクト関連
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
 	ID3D11ShaderResourceView* m_titleTexture;	///< タイトル画像
+	ID3D11ShaderResourceView* m_pressSpaceTexture;	///< PRESS SPACE画像
 
 	TKTLib::ModelParams m_caveModelParams;    ///< 洞窟モデルパラメータ
 	TKTLib::ModelParams m_demoPlayerModelParams;    ///< プレイヤーモデルパラメータ
@@ -56,7 +58,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	TitleScene(SceneManager* pSceneManager);
+	TitleScene();
 
 	// デストラクタ
 	~TitleScene();
@@ -76,6 +78,14 @@ public:
 	// 終了処理
 	void Finalize() override;
 
+	// デバイスに依存するリソースを作成する関数
+	void CreateDeviceDependentResources() override;
+
+	// ウインドウサイズに依存するリソースを作成する関数
+	void CreateWindowSizeDependentResources() override;
+
+	// デバイスロストした時に呼び出される関数
+	void OnDeviceLost() override;
 
 // 取得/設定
 public:

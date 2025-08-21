@@ -75,7 +75,7 @@ protected:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	GameObject(Tag::ObjectType m_objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
 	~GameObject();
@@ -92,7 +92,7 @@ public:
 	void Finalize();
 
 	//衝突応答分岐
-	void CollisionResponce(GameObject* other) {};
+	virtual void CollisionResponce(GameObject* other) {};
 //　取得・設定
 public:
 	

@@ -38,8 +38,18 @@ public:
 		std::string m_discription; ///< 宝石の効果説明
 
 	};
+
+	//文字画像
+	struct GemImagePath
+	{
+		//宝石の画像パス
+		const wchar_t* panel;
+		
+	};
+
 // データメンバの宣言 -----------------------------------------------
 private:
+	GemImagePath m_gemImage; ///< 宝石の画像のパス
 	GemAbility m_ability; ///< 宝石の能力値
 	// メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -48,7 +58,7 @@ public:
 	Gem();
 	// 宝石の種類と効果値を指定して初期化
 	Gem(Type type,int value,std::string discription);
-	Gem(GemAbility ability);
+	Gem(GemAbility ability,GemImagePath image);
 
 	// デストラクタ
 	~Gem();
@@ -66,6 +76,7 @@ public:
 //取得・設定
 public:
 	GemAbility GetAbility() const;
+	GemImagePath GetImagePath() const;
 //内部操作
 private:
 

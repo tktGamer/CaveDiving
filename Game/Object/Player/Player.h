@@ -13,20 +13,22 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Object/GameObject.h"
+#include"Game/Object/Character.h"
 #include "Game/Object/Gem/Gem.h"
 #include "Game/Object/Light.h"
 #include"Game/Object/Player/State/PlayerIdling.h"
 #include"Game/Object/Player/State/PlayerMoving.h"
 #include"Game/Object/Player/State/PlayerAttack.h"
+#include"Game/Object/Player/State/PlayerJumping.h"
 #include"Game/Common/Collision/Sphere.h"
 #include "Game/Object/Player/Hand.h"
 // クラスの宣言 ===============================================================
 class IState;
 // クラスの定義 ===============================================================
 /**
-  * @brief Player
+  * @brief プレイヤー
   */
-class Player : public GameObject
+class Player : public Character
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -51,10 +53,6 @@ private:
 	Gem* m_pGem[3]; // 所持している宝石
 	DirectX::SimpleMath::Vector3 m_velocity; // 速度 
 
-	//ステータス
-	int m_hp; // HP
-	int m_power; // 攻撃力
-	int m_diffence; // 防御力
 	std::unique_ptr<Light> m_light;
 
 	//当たり判定
@@ -64,6 +62,7 @@ private:
 	std::unique_ptr<IState> m_idlingState; // 待機状態 
 	std::unique_ptr<IState> m_movingState; // 移動状態
 	std::unique_ptr<IState> m_attackState; // 攻撃状態
+	std::unique_ptr<IState> m_jumpingState; // ジャンプ状態
 
 	// プレイヤーの体のパーツ
 	std::vector<std::unique_ptr<GameObject>> m_bodyParts; 
@@ -95,6 +94,8 @@ public:
 
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
+	//衝突応答分岐
+	void CollisionResponce(GameObject* other);
 
 //　取得・設定
 public:

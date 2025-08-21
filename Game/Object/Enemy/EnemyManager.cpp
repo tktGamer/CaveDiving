@@ -11,7 +11,7 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "EnemyManager.h"
-
+#include"Game/Common/Collision/CollisionManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -60,9 +60,13 @@ void EnemyManager::Initialize()
 void EnemyManager::Update()
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
+
+
 	for (std::unique_ptr<GameObject>& enemy : m_enemies)
 	{
 		enemy->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+
+		
 	}
 }
 
@@ -106,4 +110,7 @@ void EnemyManager::Finalize()
 void EnemyManager::Spawn()
 {
 	m_enemies.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
+	m_enemies.back()->Initialize();
+	CollisionManager::GetInstance()->Register(m_enemies.back().get());
+
 }

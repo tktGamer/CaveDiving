@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "Pikel.h"
 #include"../CaveDiving/Game/Object/Player/Player.h"
+#include"Game/Common/Collision/CollisionManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -21,6 +22,8 @@
 Pikel::Pikel(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
 	, GameObject(Tag::ObjectType::Pikel,parent,initialPosition,initialAngle)
+	, m_objectNumber{ CountUpNumber() }
+	, m_messageID{}
 	, m_sphere{ GetPosition(), 1.5f}
 	,m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext()}
@@ -28,6 +31,10 @@ Pikel::Pikel(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosi
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"pikel.png"));
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"pikel.sdkmesh"));
 
+	m_sphere.SetEnabled(false);
+	Messenger::GetInstance()->Register(m_objectNumber, this);
+
+	CollisionManager::GetInstance()->Register(this);
 }
 
 
@@ -99,9 +106,10 @@ void Pikel::Draw()
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
+	//GetModel()->Draw(context, *states, world, view, proj);
+
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
-
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -138,7 +146,8 @@ void Pikel::Draw()
 
 		});
 	Shader::GetInstance()->EndShader();
-	m_sphere.AddDisplayCollision(&m_display);
+	
+	//m_sphere.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
 		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
@@ -160,6 +169,15 @@ void Pikel::Finalize()
 
 void Pikel::OnMessegeAccepted(Message::MessageID messageID)
 {
+	switch (messageID)
+	{
+	case Message::COLLISIONVALID:
+		m_sphere.SetEnabled(true);
+		break;
+	case Message::COLLISIONINVALID:
+		m_sphere.SetEnabled(false);
+		break;
+	}
 }
 
 int Pikel::GetObjectNumber()

@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "Hand.h"
 #include"../CaveDiving/Game/Object/Player/Player.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -26,6 +27,7 @@ Hand::Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPositi
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"hand.png"));
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"hand.sdkmesh"));
+	Messenger::GetInstance()->Register(m_objectNumber, this);
 
 }
 
@@ -111,10 +113,11 @@ void Hand::Draw()
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
+
+	//GetModel()->Draw(context, *states, world, view, proj);
+
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
-
-
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{

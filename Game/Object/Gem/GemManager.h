@@ -29,15 +29,31 @@ public:
 	//宝石データ項目
 	struct GemData
 	{
-		int id=0;		// 名前
-		std::string type;	// 種類
-		std::string item;   //強化項目
-		int			effect=0;		// 効果
-		std::string description;	// 説明
+		// ID
+		int id=0;		
+		// 種類
+		std::string type;	
+		//強化項目
+		std::string item;   
+		// 効果
+		int			effect=0;		
+		// 説明
+		std::string description;	
+
+		//宝石の画像パス
+		std::string  gem;
+		//名前の画像パス
+		std::string  name;
+		//説明の画像パス
+		std::string  explanation;
+
 	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
+	// GemManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
+	static std::unique_ptr<GemManager> s_gemManager;
+
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
 	std::vector<std::unique_ptr<Gem>> m_gemList;	// 宝石のリスト
@@ -46,6 +62,15 @@ private:
 public:
 	// コンストラクタ
 	GemManager();
+	// インスタンスをコピーすることを禁止する
+	void operator=(const GemManager&) = delete;
+	// インスタンスをムーブすることを禁止する
+	GemManager& operator= (GemManager&&) = delete;
+	// コピーコンストラクタは禁止する
+	GemManager(const GemManager&) = delete;
+	// ムーブコンストラクタは禁止する
+	GemManager(GemManager&&) = delete;
+
 
 	// デストラクタ
 	~GemManager();
@@ -53,22 +78,24 @@ public:
 
 // 操作
 public:
-	void Initialize();
+	// GemManagerクラスのインスタンスを取得する
+	static GemManager* const GetInstance();
+
+	// 宝石データの読み込み
+	void LoadGemData();
 
 	void Update();
 
-	void Draw();
 
 	void Finalize();
 
-	
+	//ランダムに宝石を選択する
+	Gem* RandomSelection();
 //　取得・設定
 public:
 	//宝石の種類を決定する
 	Gem::Type DecisinType(const std::string& type);
 //　内部操作
 private:
-	// 宝石データの読み込み
-	void LoadGemData();
 };
 

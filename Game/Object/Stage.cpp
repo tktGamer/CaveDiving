@@ -109,6 +109,10 @@ void Stage::Draw()
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
+
+	//world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
+	//GetModel()->Draw(context, *states, world, view, proj);
+	
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
 

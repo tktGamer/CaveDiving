@@ -65,6 +65,11 @@ void CollisionManager::Register(GameObject* obj)
 
 
 
+void CollisionManager::AllRelease()
+{
+	m_objects.clear();
+}
+
 /**
  * @brief 更新処理
  *
@@ -89,19 +94,30 @@ void CollisionManager::CollisionCheck()
 	// ここで登録されたすべてのオブジェクトに対して当たり判定を行う
 	for (std::list<GameObject*>::iterator it1 = m_objects.begin(); it1 != m_objects.end(); ++it1)
 	{
+		//当たり判定が有効ではなかったらスキップ
+		if (!(*it1)->GetShape()->IsEnabled()) 
+		{
+			continue;
+		}
+		
 		for (std::list<GameObject*>::iterator it2 = std::next(it1); it2 != m_objects.end(); ++it2)
 		{
+			//当たり判定が有効ではなかったらスキップ
+			if (!(*it2)->GetShape()->IsEnabled())
+			{
+				continue;
+			}
+
+
 			GameObject* obj1 = *it1;
 			GameObject* obj2 = *it2;
 			// オブジェクト同士の当たり判定を行う
-			if (obj1->GetShape() && obj2->GetShape()) 
+			if (obj1->GetShape()->Intersects(obj2->GetShape())) 
 			{
-				if (obj1->GetShape()->Intersects(obj2->GetShape())) 
-				{
-					// 当たり判定が発生した場合の処理
-					obj1->CollisionResponce(obj2);
-					obj2->CollisionResponce(obj1);
-				}
+				// 当たり判定が発生した場合の処理
+				obj1->CollisionResponce(obj2);
+				obj2->CollisionResponce(obj1);	
+				
 			}
 		}
 	}

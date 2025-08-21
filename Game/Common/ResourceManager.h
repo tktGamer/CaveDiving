@@ -1,3 +1,13 @@
+/**
+ * @file   ResourceManager.h
+ *
+ * @brief  リソースの管理に関するヘッダファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付
+ */
+ // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
 #include<unordered_map>
@@ -67,7 +77,8 @@ public:
 	//画像データ要求
 	ID3D11ShaderResourceView** RequestTexture(wchar_t const*     filename);
 	ID3D11ShaderResourceView** RequestTexture(const std::string& filename);
-
+	//画像サイズ取得
+	void GetTextureSize(wchar_t const* filename, int& width, int& hight);
 	//音データ要求
 	DirectX::SoundEffect* RequestSound(wchar_t const*     filename);
 	DirectX::SoundEffect* RequestSound(const std::string& filename);

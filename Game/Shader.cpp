@@ -17,11 +17,17 @@
 
 std::unique_ptr<Shader> Shader::s_shader = nullptr;
 
-const std::vector<D3D11_INPUT_ELEMENT_DESC> Shader::INPUT_LAYOUT =
+const std::vector<D3D11_INPUT_ELEMENT_DESC> Shader::MODEL_INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "NORMAL",	    0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+};
+const std::vector<D3D11_INPUT_ELEMENT_DESC> Shader::UI_INPUT_LAYOUT =
+{
+	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(DirectX::SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::SimpleMath::Vector3) + sizeof(DirectX::SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
 
@@ -97,6 +103,7 @@ void Shader::StartShader(ShaderType type, ID3D11Buffer* cBuffer)
 		SetModelShader(cBuffer);
 		break;
 	case Shader::UI:
+		SetUIShader(cBuffer);
 		break;
 	default:
 		break;
@@ -166,6 +173,7 @@ ID3D11InputLayout* Shader::GetInputLayout(ShaderType type)
 		return m_modelInputLayout.Get();
 		break;
 	case Shader::UI:
+		return m_UIInputLayout.Get();
 		break;
 	default:
 		break;
@@ -188,6 +196,7 @@ ID3D11Buffer* Shader::GetCBuffer(ShaderType type)
 		return m_modelCBuffer.Get();
 		break;
 	case Shader::UI:
+		return m_UICBuffer.Get();
 		break;
 	default:
 		break;
@@ -251,7 +260,28 @@ void Shader::UnRegisterLight()
 	m_lights.clear();
 }
 
+
+/**
+ * @brief シェーダーの作成
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Shader::CreateShader()
+{
+	LoadModelShader();
+	LoadUIShader();
+}
+
+/**
+ * @brief モデルシェーダーの作成
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void Shader::LoadModelShader()
 {
 	// シェーダーのバイナリデータを読み込む
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
@@ -268,8 +298,8 @@ void Shader::CreateShader()
 
 	//インプットレイアウトの作成
 	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateInputLayout(
-		&INPUT_LAYOUT[0],
-		static_cast<UINT>(INPUT_LAYOUT.size()),
+		&MODEL_INPUT_LAYOUT[0],
+		static_cast<UINT>(MODEL_INPUT_LAYOUT.size()),
 		vertexShader.GetData(),
 		vertexShader.GetSize(),
 		m_modelInputLayout.GetAddressOf());
@@ -291,6 +321,48 @@ void Shader::CreateShader()
 	bd2.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd2.CPUAccessFlags = 0;
 	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd2, nullptr, &m_lBuffer);
+
+}
+
+/**
+ * @brief UIシェーダーの作成
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void Shader::LoadUIShader()
+{
+	// シェーダーのバイナリデータを読み込む
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	BinaryFile VSData = resourceManager->RequestBinaryFile(L"Resources/Shaders/UIShader/UIVS.cso");
+	BinaryFile PSData = resourceManager->RequestBinaryFile(L"Resources/Shaders/UIShader/UIPS.cso");
+	BinaryFile GSData = resourceManager->RequestBinaryFile(L"Resources/Shaders/UIShader/UIGS.cso");
+	// シェーダーを作成する
+	m_graphics->GetDeviceResources()->GetD3DDevice()->CreateVertexShader(
+		VSData.GetData(), VSData.GetSize(), nullptr, m_UIVS.ReleaseAndGetAddressOf());
+	m_graphics->GetDeviceResources()->GetD3DDevice()->CreatePixelShader(
+		PSData.GetData(), PSData.GetSize(), nullptr, m_UIPS.ReleaseAndGetAddressOf());
+	m_graphics->GetDeviceResources()->GetD3DDevice()->CreateGeometryShader(
+		GSData.GetData(), GSData.GetSize(), nullptr, m_UIGS.ReleaseAndGetAddressOf());
+
+	//インプットレイアウトの作成
+	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateInputLayout(
+		&UI_INPUT_LAYOUT[0],
+		static_cast<UINT>(UI_INPUT_LAYOUT.size()),
+		VSData.GetData(),
+		VSData.GetSize(),
+		m_UIInputLayout.GetAddressOf());
+
+	//	シェーダーにデータを渡すためのコンスタントバッファ生成
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(UIConstBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.CPUAccessFlags = 0;
+	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_UICBuffer);
+
 
 }
 
@@ -324,5 +396,24 @@ void Shader::SetModelShader(ID3D11Buffer* cBuffer)
 	context->VSSetShader(m_modelVS.Get(), nullptr, 0);
 	context->PSSetShader(m_modelPS.Get(), nullptr, 0);
 	context->GSSetShader(m_modelGS.Get(), nullptr, 0);
+
+}
+
+void Shader::SetUIShader(ID3D11Buffer* cBuffer)
+{
+	
+	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
+	//	シェーダーにバッファを渡す
+	ID3D11Buffer* cb[1] = { cBuffer };
+
+	// コンスタントバッファを設定
+	context->VSSetConstantBuffers(0, 1, cb);
+	context->PSSetConstantBuffers(0, 1, cb);
+	context->GSSetConstantBuffers(0, 1, cb);
+	// シェーダーを設定
+	context->VSSetShader(m_UIVS.Get(), nullptr, 0);
+	context->PSSetShader(m_UIPS.Get(), nullptr, 0);
+	context->GSSetShader(m_UIGS.Get(), nullptr, 0);
+
 
 }

@@ -31,6 +31,12 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
+	// オブジェクト番号
+	int m_objectNumber;
+	// メッセージID
+	Message::MessageID m_messageID;
+
+
 
 	DirectX::SimpleMath::Matrix m_world;
 

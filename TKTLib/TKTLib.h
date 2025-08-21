@@ -98,6 +98,38 @@ namespace TKTLib
 	}
 
 
+	/**
+	 * @brief 線形補間
+	 *
+	 * @param[in] start 開始値
+	 * @param[in] end   終了値
+	 * @param[in] t     補間係数(0.0～1.0)
+	 *
+	 * @return 補間結果
+	 */
+	template<typename T>
+	inline T Lerp(T start, T end, float t) 
+	{
+		return start + (end - start) * t;
+	}
+
+
+	/**
+	 * @brief 
+	 *
+	 * @param[in] t     値
+	 * @param[in] min   最小値
+	 * @param[in] max   最大値
+	 *
+	 * @return 
+	 */
+	template<typename T>
+	inline T Clamp(T t,T min, T max) 
+	{
+		return std::min(std::max(t, min), max);
+	}
+
+
 
 	/**
 	 * @brief wchar_tからstringに変換

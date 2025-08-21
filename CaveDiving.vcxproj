@@ -190,16 +190,21 @@
     <ClInclude Include="Game\Common\DebugFont.h" />
     <ClInclude Include="Game\Common\Graphics.h" />
     <ClInclude Include="Game\Common\ResourceManager.h" />
-    <ClInclude Include="Game\Common\Scene.h" />
     <ClInclude Include="Game\Common\SceneManager.h" />
     <ClInclude Include="Game\Common\Sound.h" />
+    <ClInclude Include="Game\Fuctory\CharacterFactory.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Interface\IObserver.h" />
     <ClInclude Include="Game\Interface\IState.h" />
     <ClInclude Include="Game\Message\Message.h" />
     <ClInclude Include="Game\Message\Messenger.h" />
     <ClInclude Include="Game\Object\Camera.h" />
+    <ClInclude Include="Game\Object\Character.h" />
     <ClInclude Include="Game\Object\Enemy\Bat\Bat.h" />
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatAttack.h" />
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatIdling.h" />
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatMoving.h" />
+    <ClInclude Include="Game\Object\Enemy\Bat\Wing.h" />
     <ClInclude Include="Game\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Object\GameObject.h" />
     <ClInclude Include="Game\Object\Gem\Gem.h" />
@@ -208,15 +213,21 @@
     <ClInclude Include="Game\Object\Player\Hand.h" />
     <ClInclude Include="Game\Object\Player\Pikel.h" />
     <ClInclude Include="Game\Object\Player\Player.h" />
+    <ClInclude Include="Game\Object\Player\State\AttackMotion\AttackMotion.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerAttack.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerIdling.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerJumping.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerMoving.h" />
     <ClInclude Include="Game\Object\Stage.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
+    <ClInclude Include="Game\Scene\LoadScene.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Shader.h" />
     <ClInclude Include="Game\Tag.h" />
+    <ClInclude Include="Game\UI\Gauge\Gauge.h" />
+    <ClInclude Include="Game\UI\GemSelect\GemSelect.h" />
+    <ClInclude Include="Game\UI\UserInterface.h" />
+    <ClInclude Include="Game\UserResources.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="TKTLib\ModelParams.h" />
@@ -234,13 +245,17 @@
     <ClCompile Include="Game\Common\DebugFont.cpp" />
     <ClCompile Include="Game\Common\Graphics.cpp" />
     <ClCompile Include="Game\Common\ResourceManager.cpp" />
-    <ClCompile Include="Game\Common\Scene.cpp" />
-    <ClCompile Include="Game\Common\SceneManager.cpp" />
     <ClCompile Include="Game\Common\Sound.cpp" />
+    <ClCompile Include="Game\Fuctory\CharacterFactory.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\Message\Messenger.cpp" />
     <ClCompile Include="Game\Object\Camera.cpp" />
+    <ClCompile Include="Game\Object\Character.cpp" />
     <ClCompile Include="Game\Object\Enemy\Bat\Bat.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatAttack.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatIdling.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatMoving.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Bat\Wing.cpp" />
     <ClCompile Include="Game\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Object\GameObject.cpp" />
     <ClCompile Include="Game\Object\Gem\Gem.cpp" />
@@ -249,14 +264,19 @@
     <ClCompile Include="Game\Object\Player\Hand.cpp" />
     <ClCompile Include="Game\Object\Player\Pikel.cpp" />
     <ClCompile Include="Game\Object\Player\Player.cpp" />
+    <ClCompile Include="Game\Object\Player\State\AttackMotion\AttackMotion.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerAttack.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerIdling.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerJumping.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerMoving.cpp" />
     <ClCompile Include="Game\Object\Stage.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp" />
+    <ClCompile Include="Game\Scene\LoadScene.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Game\Shader.cpp" />
+    <ClCompile Include="Game\UI\Gauge\Gauge.cpp" />
+    <ClCompile Include="Game\UI\GemSelect\GemSelect.cpp" />
+    <ClCompile Include="Game\UI\UserInterface.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -278,6 +298,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\Shaders\ModelShader\ModelShader.hlsli" />
+    <None Include="Resources\Shaders\UIShader\UI.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\ModelShader\ModelGS.hlsl">
@@ -299,6 +320,26 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ModelShader\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ModelShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIShader\UIGS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\UIShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\UIShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIShader\UIPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\UIShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\UIShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIShader\UIVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\UIShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\UIShader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

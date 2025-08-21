@@ -12,6 +12,10 @@
 #include "pch.h"
 #include "GemManager.h"
 
+
+// クラスの静的メンバ変数の初期化
+std::unique_ptr<GemManager> GemManager::s_gemManager = nullptr;
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -34,19 +38,24 @@ GemManager::~GemManager()
 
 }
 
-
-
 /**
- * @brief 初期化処理
+ * @brief インスタンスの取得
  *
  * @param[in] なし
  *
- * @return なし
+ * @return 　宝石マネージャーのポインタ
  */
-void GemManager::Initialize()
+GemManager* const GemManager::GetInstance()
 {
-	LoadGemData();
+
+	if (s_gemManager == nullptr)
+	{
+		//GemManagerオブジェクトを生成し、そのポインタをs_gemManagerに格納する
+		s_gemManager.reset(new GemManager());
+	}
+	return s_gemManager.get();
 }
+
 
 
 
@@ -64,20 +73,6 @@ void GemManager::Update()
 
 
 
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void GemManager::Draw()
-{
-	ID3D11DeviceContext*		 context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = m_graphics->GetProjectionMatrix();
-}
 
 
 
@@ -91,6 +86,21 @@ void GemManager::Draw()
 void GemManager::Finalize()
 {
 
+}
+
+Gem* GemManager::RandomSelection()
+{
+	if (m_gemList.empty()) 
+	{
+		return nullptr;
+	}
+	//ランダムに宝石を選択
+	//要素の最大数
+	int maxIndex = m_gemList.size() - 1;
+	//ランダムな要素
+	int randomIndex = TKTLib::GetRand(0, maxIndex);
+
+	return m_gemList[randomIndex].get();
 }
 
 /**
@@ -162,10 +172,16 @@ void GemManager::LoadGemData()
 		ifs >> gemData.effect;
 		ifs.ignore();
 
-		std::getline(ifs, gemData.description, '\n'); //説明文を読み込む
+		//説明文を読み込む
+		std::getline(ifs, gemData.description, ','); 
+		//画像パスを読み込む
+		std::getline(ifs, gemData.gem, '\n'); 
 
+		Gem::GemAbility ability = { DecisinType(gemData.item), gemData.effect, gemData.description };
+		const wchar_t* gemPath = TKTLib::StringToWchar(gemData.gem);
+		Gem::GemImagePath imagePath = { gemPath};
 		//宝石データを作成
-		m_gemList.emplace_back(std::make_unique<Gem>(DecisinType(gemData.item), gemData.effect, gemData.description));
+		m_gemList.emplace_back(std::make_unique<Gem>(ability,imagePath));
 	}
 	ifs.close();
 	return;

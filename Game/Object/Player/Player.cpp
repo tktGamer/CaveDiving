@@ -15,7 +15,7 @@
 #include "Game/Interface/IState.h"
 #include"Game/Shader.h"
 #include"Game/Common/Collision/Sphere.h"
-
+#include"Game/Common/Collision/CollisionManager.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -24,10 +24,9 @@
  * @param[in] modelParms モデルパラメータ
  */
 Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
-	: GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
-	, m_objectNumber{ CountUpNumber() }
+	: Character(100,10,10,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
+	, m_objectNumber{ -1 }
 	, m_messageID{  }
-	, m_hp{100}
 	, m_velocity{ 0.0f, 0.0f, 0.0f }
 	, m_pGem{}
 	, m_initialeDirection{ 0.0f, 0.0f, -1.0f }
@@ -63,12 +62,14 @@ void Player::Initialize()
 	m_idlingState = std::make_unique<PlayerIdling>(this);
 	m_movingState = std::make_unique<PlayerMoving>(this);
 	m_attackState = std::make_unique<PlayerAttack>(this,handR.get());
+	m_jumpingState = std::make_unique<PlayerJumping>(this);
 
 	m_bodyParts.emplace_back(std::move(handR));
 	m_bodyParts.back()->Initialize();
-	m_bodyParts.push_back(std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f)));
+	m_bodyParts.emplace_back(std::move(handL));
 	SetState(m_idlingState.get());
 
+	
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("player.png"));
 
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"player.sdkmesh"));
@@ -100,7 +101,7 @@ void Player::Initialize()
 void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
-
+	
 	GetState()->Update(elapsedTime);
 	m_sphere.SetCenter(currentPosition + GetPosition());
 	m_light->Update(elapsedTime,currentPosition + GetPosition(), currentAngle * GetQuaternion());
@@ -130,9 +131,19 @@ void Player::Draw()
 {
 	GetState()->Render();
 
-	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_currentAngle.y)), DirectX::SimpleMath::Vector2(50.0f, 250.0f));
+	auto debugFont = Graphics::GetInstance()->GetDebugFont();
+	//Y軸
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_currentAngle.y)), DirectX::SimpleMath::Vector2(50.0f, 50.0f));
+	//現在の体力
+	debugFont->AddString(L"NowHP::", DirectX::SimpleMath::Vector2(0.0f, 100.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentHP())), DirectX::SimpleMath::Vector2(100.0f, 100.0f));
+	//攻撃力
+	debugFont->AddString(L"Attack::", DirectX::SimpleMath::Vector2(0.0f, 150.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetAttackPower())), DirectX::SimpleMath::Vector2(100.0f, 150.0f));
+	//防御力
+	debugFont->AddString(L"Diffence::", DirectX::SimpleMath::Vector2(0.0f, 200.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetDiffence())), DirectX::SimpleMath::Vector2(100.0f, 200.0f));
 
 	for (std::unique_ptr<GameObject>& part : m_bodyParts) 
 	{
@@ -171,6 +182,38 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 		break;
 	case Message::DAMAGED:
 		break;
+	case Message::JUMPING:
+		GameObject::ChangeState(m_jumpingState.get());
+		break;
+	default:
+		break;
+	}
+}
+
+void Player::CollisionResponce(GameObject* other)
+{
+	switch (other->GetObjectType())
+	{
+		case Tag::ObjectType::Enemy:
+		{
+			// ダメージを受ける
+			
+		}
+		break;
+		case Tag::ObjectType::Stage:
+		{
+			//ステージとの衝突応答　押し出し
+			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere));
+			//速度をリセット
+			m_velocity.y = 0.0f;
+			//ジャンプ状態なら待機状態へ移行
+			if (GetState() == m_jumpingState.get()) 
+			{
+				OnMessegeAccepted(Message::IDLING);
+			}
+
+			break;
+		}
 	default:
 		break;
 	}

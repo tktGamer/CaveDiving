@@ -1,14 +1,51 @@
+/**
+ * @file   PlayerAttack.h
+ *
+ * @brief  プレイヤーの攻撃状態に関するヘッダファイル
+ *
+ * @author 制作者名 福地貴翔
+ *
+ * @date   日付 2025/
+ */
+
+ // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef PLAYER_ATTACK_DEFINED
 #define PLAYER_ATTACK_DEFINED
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
 #include"Game/Object/Player/Hand.h"
-
+#include"../State/AttackMotion/AttackMotion.h"
+// クラスの宣言 ===============================================================
 class Player;
-// PlayerAttackクラスを定義する
+
+// クラスの定義 ===============================================================
+/**
+  * @brief 攻撃状態
+  */
 class PlayerAttack : public IState
 {
+// クラス定数の宣言 -------------------------------------------------
+public:
+
+// データメンバの宣言 -----------------------------------------------
+private:
+	// プレイヤー
+	Player* m_player;
+	// グラフィックス
+	Graphics* m_graphics;
+	// ワールドマトリックス
+	DirectX::SimpleMath::Matrix m_worldMatrix;
+
+	//モーションさせる手
+	Hand* m_pHand;
+	//
+	float m_motionLerp;
+
+	AttackMotion m_attackMotion;
+
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	PlayerAttack(Player* player,Hand* hand);
@@ -29,18 +66,9 @@ public:
 
 
 	bool Motion();
-private:
-	// プレイヤー
-	Player* m_player;
-	// グラフィックス
-	Graphics* m_graphics;
-	// ワールドマトリックス
-	DirectX::SimpleMath::Matrix m_worldMatrix;
+	bool Motion2();
+	bool Motion3();
 
-	//モーションさせる手
-	Hand* m_pHand;
-	//
-	float m_motionLerp;
 };
 
-#endif		// SOLDIER_IDLING_DEFINED
+#endif		// PLAYER_IDLING_DEFINED

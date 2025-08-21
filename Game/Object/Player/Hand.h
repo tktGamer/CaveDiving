@@ -12,7 +12,7 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Object/GameObject.h"
+#include"Game/Object/GameObject.h"
 #include"Game/Object/Player/Pikel.h"
 // クラスの宣言 ===============================================================
 

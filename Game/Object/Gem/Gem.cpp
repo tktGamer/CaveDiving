@@ -20,10 +20,6 @@
 Gem::Gem()
 {
 }
-Gem::Gem(GemAbility ability)
-	:m_ability{ ability }
-{
-}
 /**
  * @brief コンストラクタ
  *
@@ -33,6 +29,12 @@ Gem::Gem(GemAbility ability)
  */
 Gem::Gem(Type type, int value, std::string discription)
 	:m_ability{ type, value, discription }
+{
+}
+
+Gem::Gem(GemAbility ability, GemImagePath image)
+	:m_ability{ ability }
+	, m_gemImage{ image }
 {
 }
 
@@ -114,4 +116,9 @@ void Gem::Finalize()
 Gem::GemAbility Gem::GetAbility() const
 {
 	return m_ability;
+}
+
+Gem::GemImagePath Gem::GetImagePath() const
+{
+	return m_gemImage;
 }

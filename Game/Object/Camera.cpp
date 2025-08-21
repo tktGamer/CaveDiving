@@ -49,8 +49,12 @@ void Camera::Initialize(DirectX::SimpleMath::Vector3 eyePos)
 void Camera::Update(float elapsedTime)
 {
 	
-	DirectX::SimpleMath::Vector3 pos = *m_targetPos + m_distance; // 本来到達しているべきカメラ位置
-    m_eyePos = DirectX::SimpleMath::Vector3::Lerp(m_eyePos, pos, elapsedTime * 3.0f); // Lerp減衰
+	// ターゲットの位置
+	DirectX::SimpleMath::Vector3 targetpos = *m_targetPos; 
+	//　ターゲットの回転を考慮してカメラの位置を加算
+	targetpos += DirectX::SimpleMath::Vector3::Transform(m_distance,*m_targetRotate);
+	//
+    m_eyePos = DirectX::SimpleMath::Vector3::Lerp(m_eyePos, targetpos, elapsedTime * 5.0f); // Lerp減衰
 
 
     //自分で作成したビュー行列で設定する

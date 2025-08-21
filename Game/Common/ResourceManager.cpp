@@ -85,6 +85,33 @@ ID3D11ShaderResourceView** ResourceManager::RequestTexture(const std::string& fi
 
 }
 
+void ResourceManager::GetTextureSize(wchar_t const* filename, int& width, int& hight)
+{
+	std::string stringFilename = TKTLib::WcharToString(filename);
+
+	//未登録の場合
+	if (m_texture.count(stringFilename) == 0)
+	{
+		width = 0;
+		hight = 0;
+		return;
+	}
+
+	Microsoft::WRL::ComPtr<ID3D11Resource> resource;
+	//画像データのハンドルを取得
+	m_texture[stringFilename]->GetResource(&resource);
+	//リソースをID3D11Texture2Dに変換
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;
+	resource.As(&tex);
+	//画像サイズ取得
+	D3D11_TEXTURE2D_DESC desc;
+	tex->GetDesc(&desc);
+
+	width = desc.Width;
+	hight = desc.Height;
+
+}
+
 /**
  * @brief 音データの要求
  *
@@ -233,7 +260,7 @@ void ResourceManager::LoadSound(const std::string& filename)
 		//画像データのハンドルを登録
 		m_sounds.insert(std::make_pair(filename, std::move(soundEffect)));
 	}
-	catch (const std::exception& e)
+	catch (const std::exception& )
 	{
 		//エラーメッセージの表示
 		TKTLib::ShowErrorMessage(filename, fullPath, TKTLib::ErrorType::FileNotFound);
@@ -262,15 +289,15 @@ void ResourceManager::LoadTexture(const std::string& filename)
 	{
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> textureHandle;
 		ID3D11Device* device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
-		ID3D11DeviceContext* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
+		//ID3D11DeviceContext* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 		//画像データ読み込み
-		CreateWICTextureFromFile(
+		 CreateWICTextureFromFile(
 			device,
-			context,
+			//context,
 			TKTLib::StringToWchar(fullPath),
 			nullptr,
 			textureHandle.ReleaseAndGetAddressOf());
-		
+
 		if (!textureHandle)
 		{
 			throw std::runtime_error("ファイルが見つからなかった");
@@ -278,7 +305,7 @@ void ResourceManager::LoadTexture(const std::string& filename)
 		//画像データのハンドルを登録
 		m_texture.insert(std::make_pair(filename, std::move(textureHandle)));
 	}
-	catch (const std::exception& e)
+	catch (const std::exception& )
 	{
 		//エラーメッセージの表示
 		TKTLib::ShowErrorMessage(filename, fullPath, TKTLib::ErrorType::FileNotFound);

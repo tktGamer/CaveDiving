@@ -46,6 +46,15 @@ public:
 
 	};
 
+	//データ受け渡し用コンスタントバッファ(送信側)
+	struct UIConstBuffer
+	{
+		DirectX::SimpleMath::Vector2	windowSize;
+		float AlphaData;
+		float dammy;
+	};
+
+
 	enum ShaderType 
 	{
 		Model, //モデルシェーダー
@@ -69,6 +78,17 @@ private:
 	//ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_modelGS;
 
+	//UIシェーダーに関する変数
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_UICBuffer;
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_UIInputLayout;
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_UIVS;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_UIPS;
+	//ジオメトリシェーダ
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_UIGS;
+
 	//ライト配列
 	std::vector<Light*> m_lights;
 
@@ -78,7 +98,8 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	//	頂点情報関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> MODEL_INPUT_LAYOUT;
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> UI_INPUT_LAYOUT;
 	// コンストラクタ
 	Shader();
 	// インスタンスをコピーすることを禁止する
@@ -134,8 +155,14 @@ public:
 private:
 	//シェーダ作成
 	void CreateShader();
-
+	//モデルシェーダー読み込み
+	void LoadModelShader();
+	//UIシェーダー読み込み
+	void LoadUIShader();
+	
 	//モデルシェーダー設定
 	void SetModelShader(ID3D11Buffer* cBuffer);
+	//UIシェーダー設定
+	void SetUIShader(ID3D11Buffer* cBuffer);
 };
 

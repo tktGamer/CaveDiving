@@ -58,13 +58,11 @@ void Game::Initialize(HWND window, int width, int height)
 
     m_graphics->Initialize();
 
-	m_gemManager = std::make_unique<GemManager>();
-	m_gemManager->Initialize();
-    //シーン生成
-	m_sceneManager->Register("Title", std::make_unique<TitleScene>(m_sceneManager.get()));
-	m_sceneManager->Register("Game", std::make_unique<GameScene>(m_sceneManager.get()));
-    //開始シーン設定
-	m_sceneManager->SetStratScene("Title");
+	m_gemManager = GemManager::GetInstance();
+	m_gemManager->LoadGemData();
+
+    // 起動シーン設定
+    m_sceneManager->SetScene<TitleScene>();
 }
 
 #pragma region Frame Update
@@ -85,10 +83,15 @@ void Game::Update(DX::StepTimer const& timer)
     float elapsedTime = float(timer.GetElapsedSeconds());
     // メッセンジャーに経過時間を設定する
     Messenger::GetInstance()->SetElapsedTime(elapsedTime);
+    m_graphics->UpdateKeyboardTracker(Keyboard::Get().GetState());
 
 
-    auto key = Keyboard::Get().GetState();
-	m_graphics->UpdateKeyboardTracker(key);
+    // キーボードステートトラッカーの更新
+    m_keyboardTracker.Update(Keyboard::Get().GetState());
+
+    // マウスステートトラッカーの更新
+    m_mouseTracker.Update(Mouse::Get().GetState());
+
     //シーンの更新
     m_sceneManager->Update(elapsedTime);
 
@@ -227,15 +230,25 @@ void Game::CreateDeviceDependentResources()
 
     // TODO: Initialize device dependent objects here (independent of window size).
     device;
+    m_debugFont = std::make_unique<Ito::DebugFont>(device, context, L"Resources\\Font\\SegoeUI_18.spritefont");
 
     //マネージャー生成
     m_resourceManager = ResourceManager::GetInstance();
-    m_sceneManager = std::make_unique<SceneManager>();
+    // ユーザーリソースの作成
+    if (!m_userResources) m_userResources = std::make_unique<UserResources>();
+
+    // シーンマネージャーの作成
+    if (!m_sceneManager) m_sceneManager = std::make_unique<SceneManager<UserResources>>();
+
+    // シーンへ渡すユーザーリソースの設定
+    m_userResources->SetDebugFont(m_debugFont.get());
+    m_userResources->SetKeyboardStateTracker(&m_keyboardTracker);
+    m_userResources->SetMouseStateTracker(&m_mouseTracker);
+    m_userResources->SetStepTimerStates(&m_timer);
 
 	m_resourceManager->SetAudioEngine(m_audioEngine.get());
 
     Shader* shader = Shader::GetInstance();
-    m_debugFont = std::make_unique<Ito::DebugFont>(device, context, L"Resources\\Font\\SegoeUI_18.spritefont");
 
 	m_graphics->SetDebugFont(m_debugFont.get());
 }
@@ -253,7 +266,7 @@ void Game::CreateWindowSizeDependentResources()
         , static_cast<float>(rect.right) / static_cast<float>(rect.bottom)
         , 0.1f, 100.0f);
     m_graphics->SetProjectionMatrix(proj);
-
+    m_graphics->SetScreenSize(rect.right, rect.bottom);
 }
 
 void Game::OnDeviceLost()

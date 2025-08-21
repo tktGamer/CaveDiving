@@ -98,5 +98,6 @@ namespace DX
 #include "DDSTextureLoader.h"
 #include "WICTextureLoader.h"
 #include "Audio.h"
-//é©çÏ
+//
+#include"Game/Common/Graphics.h"
 #include"TKTLib/TKTLib.h"

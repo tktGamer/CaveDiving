@@ -56,6 +56,27 @@
     <Filter Include="Game\Object\Enemy\Bat">
       <UniqueIdentifier>{c74c940e-c231-4f20-9cf8-77389c735f5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Enemy\Bat\State">
+      <UniqueIdentifier>{da2e2099-2fc5-41e5-b191-726d0d5d3824}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Factory">
+      <UniqueIdentifier>{89398724-c6a8-4b16-9028-72b4f8fe279e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Player\State\AttackMotion">
+      <UniqueIdentifier>{4e4fa2a4-2583-4616-9d84-da3577a3901b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI">
+      <UniqueIdentifier>{423e0a96-e9c2-494d-8e6a-aa2419d4c39a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\UIShader">
+      <UniqueIdentifier>{5c1f3135-db7a-4120-9be7-c38a97514879}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\GemSelect">
+      <UniqueIdentifier>{f4205151-49ab-47b6-830a-697b01b664a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\Gauge">
+      <UniqueIdentifier>{9d4a29f1-e527-43f3-aa7e-87a19e2a0c09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -75,9 +96,6 @@
       <Filter>Game\Common</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\ResourceManager.h">
-      <Filter>Game\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Scene.h">
       <Filter>Game\Common</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\SceneManager.h">
@@ -179,8 +197,42 @@
     <ClInclude Include="Game\Object\Enemy\Bat\Bat.h">
       <Filter>Game\Object\Enemy\Bat</Filter>
     </ClInclude>
+    <ClInclude Include="Game\UserResources.h" />
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatAttack.h">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatIdling.h">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatMoving.h">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Object\Enemy\EnemyManager.h">
       <Filter>Game\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\LoadScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\State\AttackMotion\AttackMotion.h">
+      <Filter>Game\Object\Player\State\AttackMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\UserInterface.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Fuctory\CharacterFactory.h">
+      <Filter>Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Character.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\GemSelect\GemSelect.h">
+      <Filter>Game\UI\GemSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Bat\Wing.h">
+      <Filter>Game\Object\Enemy\Bat</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Gauge\Gauge.h">
+      <Filter>Game\UI\Gauge</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -196,12 +248,6 @@
       <Filter>Game\Common</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\ResourceManager.cpp">
-      <Filter>Game\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Scene.cpp">
-      <Filter>Game\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\SceneManager.cpp">
       <Filter>Game\Common</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Sound.cpp">
@@ -291,6 +337,39 @@
     <ClCompile Include="Game\Object\Enemy\EnemyManager.cpp">
       <Filter>Game\Object\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatAttack.cpp">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatIdling.cpp">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatMoving.cpp">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\LoadScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\State\AttackMotion\AttackMotion.cpp">
+      <Filter>Game\Object\Player\State\AttackMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\UserInterface.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Fuctory\CharacterFactory.cpp">
+      <Filter>Game\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Character.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\GemSelect\GemSelect.cpp">
+      <Filter>Game\UI\GemSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Bat\Wing.cpp">
+      <Filter>Game\Object\Enemy\Bat</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Gauge\Gauge.cpp">
+      <Filter>Game\UI\Gauge</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -310,6 +389,9 @@
     <None Include="Resources\Shaders\ModelShader\ModelShader.hlsli">
       <Filter>Resources\Shaders\ModelShader</Filter>
     </None>
+    <None Include="Resources\Shaders\UIShader\UI.hlsli">
+      <Filter>Resources\Shaders\UIShader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\ModelShader\ModelVS.hlsl">
@@ -320,6 +402,15 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\ModelShader\ModelGS.hlsl">
       <Filter>Resources\Shaders\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIShader\UIGS.hlsl">
+      <Filter>Resources\Shaders\UIShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIShader\UIPS.hlsl">
+      <Filter>Resources\Shaders\UIShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIShader\UIVS.hlsl">
+      <Filter>Resources\Shaders\UIShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
