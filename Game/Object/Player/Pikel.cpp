@@ -19,10 +19,9 @@
  *
  * @param[in] ‚È‚µ
  */
-Pikel::Pikel(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Pikel::Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, GameObject(Tag::ObjectType::Pikel,parent,initialPosition,initialAngle)
-	, m_objectNumber{ CountUpNumber() }
+	, Weapon(owner,Tag::ObjectType::Weapon,parent,initialPosition,initialAngle)
 	, m_messageID{}
 	, m_sphere{ GetPosition(), 1.5f}
 	,m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
@@ -32,7 +31,7 @@ Pikel::Pikel(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosi
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"pikel.sdkmesh"));
 
 	m_sphere.SetEnabled(false);
-	Messenger::GetInstance()->Register(m_objectNumber, this);
+	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
 	CollisionManager::GetInstance()->Register(this);
 }
@@ -177,10 +176,22 @@ void Pikel::OnMessegeAccepted(Message::MessageID messageID)
 	case Message::COLLISIONINVALID:
 		m_sphere.SetEnabled(false);
 		break;
+	default:
+		break;
+
 	}
 }
 
-int Pikel::GetObjectNumber()
+void Pikel::CollisionResponce(GameObject* other)
 {
-	return 0;
+	switch (other->GetObjectType()) 
+	{
+	case Tag::Enemy:
+		
+		break;
+	default:
+		break;
+
+	}
 }
+

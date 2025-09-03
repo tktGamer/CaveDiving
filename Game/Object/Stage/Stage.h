@@ -1,11 +1,11 @@
 /**
  * @file   Stage.h
  *
- * @brief  Stageに関するヘッダファイル
+ * @brief  ステージに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/08/27
  */
 
  // 多重インクルードの防止 =====================================================
@@ -13,15 +13,15 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
-#include "Game/Object/GameObject.h"
-#include "Game/Common/Collision/Box.h"
+#include"../Stage/Ground.h"
+#include"../Stage/Wall.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
   * @brief Stage
   */
-class Stage :public GameObject
+class Stage
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -37,17 +37,15 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	//	関数
-	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
-
-	// オブジェクト番号
-	int m_objectNumber;
 	// メッセージID
 	Message::MessageID m_messageID;
 
-	// 当たり判定用の形状
-	Box m_box;
+
+	//外壁
+	TKTLib::ModelParams m_cave;
+	std::unique_ptr<Wall> m_wall;
+	//地面
+	std::unique_ptr<Ground> m_ground;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -62,20 +60,20 @@ public:
 public:
 	void Initialize();
 
-	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle);
 
 
-	void Draw() override;
+	void Draw();
 
 	void Finalize();
 
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 
+
 	//　取得・設定
 public:
 
-	int GetObjectNumber() override;
 
 //　内部操作
 private:

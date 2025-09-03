@@ -12,7 +12,7 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Object/GameObject.h"
+#include"../Weapon.h"
 #include"Game/Common/Collision/DisplayCollision.h"
 #include"Game/Common/Collision/Sphere.h"
 
@@ -20,9 +20,9 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Pikel
+  * @brief つるはし（プレイヤーの武器）
   */
-class Pikel : public GameObject
+class Pikel : public Weapon
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -31,8 +31,7 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	// オブジェクト番号
-	int m_objectNumber;
+
 	// メッセージID
 	Message::MessageID m_messageID;
 
@@ -48,7 +47,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Pikel(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
 	~Pikel();
@@ -67,9 +66,12 @@ public:
 
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
+
+	//衝突応答分岐
+	void CollisionResponce(GameObject* other) override;
+
 	//　取得・設定
 public:
-	int GetObjectNumber() override;
 
 //　内部操作
 private:

@@ -54,6 +54,9 @@ void PlayerIdling::Initialize()
  */
 void PlayerIdling::PreUpdate()
 {
+	DirectX::SimpleMath::Vector3 velocity = m_player->GetVelocity();
+
+	
 }
 
 /**
@@ -79,6 +82,10 @@ void PlayerIdling::Update(const float& elapsedTime)
 	if (key->pressed.Z) 
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::ATTACK);
+	}
+	if (key->pressed.X) 
+	{
+		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
 	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
@@ -111,62 +118,66 @@ void PlayerIdling::PostUpdate()
  */
 void PlayerIdling::Render()
 {
-	Shader* shader = Shader::GetInstance();
-	Graphics* graphics = Graphics::GetInstance();
-	ID3D11DeviceContext*		 context = graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = graphics->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = graphics->GetProjectionMatrix();
+	//Shader* shader = Shader::GetInstance();
+	//Graphics* graphics = Graphics::GetInstance();
+	//ID3D11DeviceContext*		 context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	//DirectX::DX11::CommonStates* states  = graphics->GetCommonStates();
+	//DirectX::SimpleMath::Matrix  view    = graphics->GetViewMatrix();
+	//DirectX::SimpleMath::Matrix  proj    = graphics->GetProjectionMatrix();
 
-	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Player::ConstBuffer cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(m_player->GetCurrentPosition(),m_player->GetCurrentQuaternion(),m_player->GetScale()).Transpose();
-	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
+	//DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
+	////	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	//Player::ConstBuffer cbuff;
+	//cbuff.matWorld = TKTLib::GetWorldMatrix(m_player->GetCurrentPosition(),m_player->GetCurrentQuaternion(),m_player->GetScale()).Transpose();
+	//cbuff.matView = m_graphics->GetViewMatrix().Transpose();
+	//cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 
 
-	//world = TKTLib::GetWorldMatrix(m_player->GetCurrentPosition(), m_player->GetCurrentQuaternion(), m_player->GetScale());
-	//m_player->GetModel()->Draw(context, *states, world, view, proj);
+	////world = TKTLib::GetWorldMatrix(m_player->GetCurrentPosition(), m_player->GetCurrentQuaternion(), m_player->GetScale());
+	////m_player->GetModel()->Draw(context, *states, world, view, proj);
 
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	////	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	//context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
 
-	m_player->GetModel()->Draw(context, *states, world, view, proj, false, [&]()
-		{
-			//	モデル表示をするための自作シェーダに関連する設定を行う
-			
+	//m_player->GetModel()->Draw(context, *states, world, view, proj, false, [&]()
+	//	{
+	//		//	モデル表示をするための自作シェーダに関連する設定を行う
+	//		
 
-			//	画像用サンプラーの登録
-			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
-			context->PSSetSamplers(0, 1, sampler);
+	//		//	画像用サンプラーの登録
+	//		ID3D11SamplerState* sampler[1] = { states->PointWrap() };
+	//		context->PSSetSamplers(0, 1, sampler);
 
-			if (m_player->GetTexture() != nullptr)
-			{
-				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, m_player->GetTexture());
-			}
+	//		if (m_player->GetTexture() != nullptr)
+	//		{
+	//			//	読み込んだ画像をピクセルシェーダに伝える
+	//			//	自作VSはt0を使っているため、
+	//			//	t0がメインで使われていると勝手に想定。
+	//			context->PSSetShaderResources(0, 1, m_player->GetTexture());
+	//		}
 
-			//	半透明描画指定
-			ID3D11BlendState* blendstate = states->NonPremultiplied();
+	//		//	半透明描画指定
+	//		ID3D11BlendState* blendstate = states->NonPremultiplied();
 
-			//	透明判定処理
-			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+	//		//	透明判定処理
+	//		context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
-			//	深度バッファに書き込み参照する
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	//		//	深度バッファに書き込み参照する
+	//		context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
-			//	カリングはなし
-			context->RSSetState(states->CullClockwise());
-			
-			Shader::GetInstance()->StartShader(Shader::Model,shader->GetCBuffer(Shader::Model));
-			
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+	//		//	カリングはなし
+	//		context->RSSetState(states->CullClockwise());
+	//		
+	//		Shader::GetInstance()->StartShader(Shader::Model,shader->GetCBuffer(Shader::Model));
+	//		
+	//		context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
 
-		});
-	Shader::GetInstance()->EndShader();
+	//	});
+	//Shader::GetInstance()->EndShader();
+
+	auto debugFont = Graphics::GetInstance()->GetDebugFont();
+	
+	debugFont->AddString(L"Idling", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 #ifdef _DEBUG
 #endif // DEBUG
 

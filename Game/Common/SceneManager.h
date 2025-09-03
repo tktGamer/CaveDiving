@@ -64,6 +64,13 @@ public:
 	template <typename U, typename V>
 	void ChangeScene();
 
+	//シーンのスタック処理
+	template <typename U>
+	void StackScene();
+
+	//現在のシーンを削除
+	template <typename U>
+	void PopScene();
 
 };
 
@@ -74,9 +81,12 @@ class SceneManager
 {
 private:
 
-
+	//生成したシーンをスタックするか
+	bool m_isStackNextScene;
+	//現在のシーンを削除するか
+	bool m_isScenePop;
 	// 実行中のシーンへのポインタ
-	std::unique_ptr<Scene<T>> m_scene;
+	std::stack<std::unique_ptr<Scene<T>>> m_scene;
 	//std::stack<Scene<T>> m_pCurrentScene;//現在のシーン
 
 
@@ -103,16 +113,16 @@ private:
 	////スレッド＋共有変数（mutexによる排他制御）
 	std::future<void> m_loadingFuture;
 
-	// シーン削除関数
-	void DeleteScene();
 
 public:
 
 	// コンストラクタ
 	SceneManager(T* graphics=nullptr)
-		: m_scene()
-		, m_nextScene()
-		, m_loadingScreen()
+		: m_scene{}
+		, m_nextScene{}
+		, m_loadingScreen{}
+		,m_isStackNextScene{}
+		,m_isScenePop{}
 	{
 	};
 
@@ -154,6 +164,7 @@ public:
 	template <typename U, typename V>
 	bool RequestSceneChange();
 
+	//　現在のシーンにスタックする
 	template <typename U>
 	bool RequestSceneStack();
 
@@ -161,6 +172,16 @@ public:
 	void PrepareNextScene(std::function<std::unique_ptr<Scene<T>>()> sceneFactory);
 
 	bool IsLoading();
+
+	void PopScene();
+//内部処理
+private:
+	// シーン削除関数
+	void DeleteScene();
+	//シーンの切り替え処理
+	void ChangeScene();
+	//シーンのスタック処理
+	void StackScene();
 
 };
 
@@ -179,6 +200,20 @@ void Scene<T>::ChangeScene()
 	m_sceneManager->RequestSceneChange<U, V>();
 }
 
+template<typename T>
+template<typename U>
+inline void Scene<T>::StackScene()
+{
+	m_sceneManager->RequestSceneStack<U>();
+
+}
+
+template<typename T>
+template<typename U>
+inline void Scene<T>::PopScene()
+{
+	m_sceneManager->PopScene();
+}
 
 
 // シーンの設定関数
@@ -186,7 +221,7 @@ template <typename T>
 template <typename U>
 void SceneManager<T>::SetScene()
 {
-	assert(m_scene == nullptr);
+	assert(m_scene.empty());
 
 	RequestSceneChange<U>();
 }
@@ -225,6 +260,15 @@ template<typename T>
 template<typename U>
 inline bool SceneManager<T>::RequestSceneStack()
 {
+	if (!m_nextScene)
+	{
+		// シーンを生成
+		PrepareNextScene([]() {return std::make_unique<U>(); });
+
+		m_isStackNextScene = true;
+		return true;
+	}
+
 	return false;
 }
 
@@ -236,24 +280,29 @@ void SceneManager<T>::Update(float elapsedTime)
 	auto kb = DirectX::Keyboard::Get().GetState();
 	if (kb.Escape) PostQuitMessage(0);
 
-	// シーンの切り替え処理
-	if (!IsLoading() && m_nextScene)
+	//次のシーンがあるなら
+	if (m_nextScene !=nullptr)
+	{
+
+		// シーンをスタックする
+		if (m_isStackNextScene) 
+		{
+			StackScene();
+		}
+
+		// シーンの切り替え処理
+		if (!IsLoading()) 
+		{
+			ChangeScene();
+
+		}
+
+	}
+	//現在のシーンをポップするなら
+	if (m_isScenePop) 
 	{
 		DeleteScene();
-
-		assert(m_scene == nullptr);
-
-		// シーンを切り替え
-		m_scene = std::move(m_nextScene);
-
-		if (m_loadingScreen)
-		{
-			m_loadingScreen->Finalize();
-			m_loadingScreen.reset();
-		}
 	}
-
-
 
 	if (m_loadingScreen)
 	{
@@ -262,7 +311,7 @@ void SceneManager<T>::Update(float elapsedTime)
 	}
 
 	// シーンの更新
- 	if (m_scene) m_scene->Update(elapsedTime);
+ 	if (!m_scene.empty()) m_scene.top()->Update(elapsedTime);
 
 }
 
@@ -277,8 +326,11 @@ void SceneManager<T>::Render()
 	}
 
 	// シーンの描画
-	if (m_scene) m_scene->Render();
+	if (!m_scene.empty()) 
+	{
 
+		m_scene.top()->Render();
+	}
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 
 
@@ -288,32 +340,32 @@ void SceneManager<T>::Render()
 template <typename T>
 void SceneManager<T>::CreateDeviceDependentResources()
 {
-	if (m_scene) m_scene->CreateDeviceDependentResources();
+	if (!m_scene.empty()) m_scene.top()->CreateDeviceDependentResources();
 }
 
 // ウインドウサイズに依存するリソースを作成する関数
 template <typename T>
 void SceneManager<T>::CreateWindowSizeDependentResources()
 {
-	if (m_scene) m_scene->CreateWindowSizeDependentResources();
+	if (!m_scene.empty()) m_scene.top()->CreateWindowSizeDependentResources();
 }
 
 // デバイスロストした時に呼び出される関数
 template <typename T>
 void SceneManager<T>::OnDeviceLost()
 {
-	if (m_scene) m_scene->OnDeviceLost();
+	if (!m_scene.empty()) m_scene.top()->OnDeviceLost();
 }
 
 // シーンの削除関数
 template <typename T>
 void SceneManager<T>::DeleteScene()
 {
-	if (m_scene)
+	if (!m_scene.empty())
 	{
-		m_scene->Finalize();
+		m_scene.top()->Finalize();
 
-		m_scene.reset();
+		m_scene.pop();
 	}
 }
 
@@ -373,4 +425,45 @@ inline bool SceneManager<T>::IsLoading()
 
 	std::future_status status = m_loadingFuture.wait_for(std::chrono::nanoseconds::zero());
 	return (status != std::future_status::ready);
+}
+
+template<typename T>
+inline void SceneManager<T>::ChangeScene() 
+{
+	//シーンを消去
+	DeleteScene();
+
+	assert(m_scene.empty());
+
+	// シーンを切り替え
+	m_scene.emplace(std::move(m_nextScene));
+
+	//ロード画面があったら終了処理
+	if (m_loadingScreen)
+	{
+		m_loadingScreen->Finalize();
+		m_loadingScreen.reset();
+		
+	}
+}
+
+template<typename T>
+inline void SceneManager<T>::StackScene() 
+{
+	// シーンをスタック
+	m_scene.emplace(std::move(m_nextScene));
+	//ロード画面があったら終了処理
+	if (m_loadingScreen)
+	{
+		m_loadingScreen->Finalize();
+		m_loadingScreen.reset();
+
+	}
+
+	m_isStackNextScene = false;
+}
+template<typename T>
+inline void SceneManager<T>::PopScene() 
+{
+	m_isScenePop = true;
 }

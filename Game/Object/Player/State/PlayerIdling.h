@@ -41,6 +41,8 @@ public:
 	PlayerIdling(Player* soldier);
 	// デストラクタ
 	~PlayerIdling();
+// 操作
+public:
 	// 初期化する
 	void Initialize();
 	// 事前更新する

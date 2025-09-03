@@ -3,9 +3,9 @@
  *
  * @brief  宝石の管理に関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/08/27
  */
 
  // 多重インクルードの防止 =====================================================
@@ -20,7 +20,7 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief GemManager
+  * @brief 宝石管理
   */
 class GemManager
 {
@@ -56,7 +56,11 @@ private:
 
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
-	std::vector<std::unique_ptr<Gem>> m_gemList;	// 宝石のリスト
+	// 宝石の配列
+	std::vector<std::unique_ptr<Gem>> m_gemList;	
+
+	//プレイヤーの持つジェム
+	Gem* m_playerKeepGem[3];
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -93,9 +97,17 @@ public:
 	Gem* RandomSelection();
 //　取得・設定
 public:
-	//宝石の種類を決定する
-	Gem::Type DecisinType(const std::string& type);
+	//空のスロットがあるか
+	bool IsBlankSlot();
+
+	//プレイヤーの持つ宝石を取得
+	const Gem* const* GetPlayerHoldGem() const ;
+
+	//プレイヤーの持つ宝石をセット
+	void SetHoldGem(Gem* pGem);
 //　内部操作
 private:
+	//宝石の種類を決定する
+	Gem::Type DecisinType(const std::string& type);
 };
 

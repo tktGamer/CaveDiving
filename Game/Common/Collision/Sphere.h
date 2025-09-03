@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/7/02
+ * @date   日付　2025/08/27
  */
 
  // 多重インクルードの防止 =====================================================
@@ -17,18 +17,19 @@
 class Box;
 // クラスの定義 ===============================================================
 /**
-  * @brief Sphere
+  * @brief 球状の当たり判定
   */
 class Sphere :public Shape
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-
 // データメンバの宣言 -----------------------------------------------
 private:
-	DirectX::SimpleMath::Vector3 m_center; ///< 中心座標
-	float m_radius; ///< 半径
+	// 中心座標
+	DirectX::SimpleMath::Vector3 m_center; 
+	// 半径
+	float m_radius; 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -41,7 +42,7 @@ public:
 
 // 操作
 public:
-
+	//衝突判定
 	bool Intersects(Shape* other) override;
 
 //　取得・設定
@@ -59,7 +60,9 @@ public:
 	float GetRadius() const;
 //　内部操作
 private:
+	//球との衝突判定
 	bool IntersectSphere(Sphere* other) const;
+	//AABBとの衝突判定
 	bool IntersectBox(Box* other) const;
 };
 

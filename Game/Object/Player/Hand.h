@@ -29,8 +29,6 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	// オブジェクト番号
-	int m_objectNumber;
 
 	DirectX::SimpleMath::Matrix m_world;
 
@@ -60,9 +58,12 @@ public:
 
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
+
+	//衝突応答分岐
+	void CollisionResponce(GameObject* other) override;
+
 	//　取得・設定
 public:
-	int GetObjectNumber() override;
 
 	DirectX::SimpleMath::Quaternion GetMotionAngle();
 	void SetMotionAngle(DirectX::SimpleMath::Quaternion angle);

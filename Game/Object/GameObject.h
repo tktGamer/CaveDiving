@@ -32,6 +32,9 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
+	// オブジェクト番号
+	int m_objectNumber;
+
 	// ステート
 	IState* m_pCurrentState; 
 	// オブジェクト番号
@@ -92,7 +95,11 @@ public:
 	void Finalize();
 
 	//衝突応答分岐
-	virtual void CollisionResponce(GameObject* other) {};
+	virtual void CollisionResponce(GameObject* other)=0;
+
+	template<typename T>
+	T* Cast();
+
 //　取得・設定
 public:
 	
@@ -103,7 +110,7 @@ public:
 	//モデルの設定
 	void SetModel(DirectX::Model* model) { m_model = model; };
 	//座標の設定
-	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_position = position; }
+	void SetPosition(const DirectX::SimpleMath::Vector3& position)  { m_position = position; }
 	//回転の設定
 	void SetQuaternion(const DirectX::SimpleMath::Quaternion& q) { m_quaternion = q; }
 	//拡大率の設定
@@ -117,14 +124,14 @@ public:
 	// モデルデータの取得
 	DirectX::Model* GetModel() { return m_model; }
 	// モデルの位置の取得
-	DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
+	const DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 	// モデルの回転の取得
-	DirectX::SimpleMath::Quaternion& GetQuaternion() { return m_quaternion; }
+	const DirectX::SimpleMath::Quaternion& GetQuaternion() { return m_quaternion; }
 	// モデルの拡大率の取得
-	DirectX::SimpleMath::Vector3& GetScale()  { return m_scale; }
+	const DirectX::SimpleMath::Vector3& GetScale()  { return m_scale; }
 	//
-	DirectX::SimpleMath::Vector3& GetCurrentPosition() { return m_currentPosition; }
-	DirectX::SimpleMath::Quaternion& GetCurrentQuaternion() { return m_currentAngle; }
+	const DirectX::SimpleMath::Vector3& GetCurrentPosition() { return m_currentPosition; }
+	const DirectX::SimpleMath::Quaternion& GetCurrentQuaternion() { return m_currentAngle; }
 	
 	// オブジェクトの種類を取得する
 	Tag::ObjectType GetObjectType() const; 
@@ -152,10 +159,20 @@ public:
 	// メッセージを設定する
 	void SetCurrentMessage(Message currentMessage) { m_currentMessage = currentMessage; }
 
-	virtual int GetObjectNumber()=0;
+	const int GetObjectNumber();
 
 //　内部操作
 private:
 
 };
 
+
+template<typename T>
+inline T* GameObject::Cast()
+{
+	if (dynamic_cast<T*>(this))
+	{
+		return dynamic_cast<T*>(this);
+	}
+	return nullptr;
+}

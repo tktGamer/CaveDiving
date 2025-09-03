@@ -42,8 +42,6 @@ public:
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
-	// オブジェクト番号
-	int m_objectNumber;
 	// メッセージID
 	Message::MessageID m_messageID;
 
@@ -51,9 +49,6 @@ private:
 	Sphere m_sphere;
 
 	DirectX::SimpleMath::Vector3 m_velocity; // 速度 
-
-	//生きているか
-	bool m_isAlive;
 
 	//状態
 	std::unique_ptr<IState> m_pCurrentState; // 現在の状態
@@ -91,11 +86,8 @@ public:
 	//　取得・設定
 public:
 
-	int GetObjectNumber() override;
 	DirectX::SimpleMath::Vector3 GetVelocity();
 	void SetVelocity(DirectX::SimpleMath::Vector3 v);
-	//生きているか
-	bool IsAlive() const;
 	//　内部操作
 private:
 

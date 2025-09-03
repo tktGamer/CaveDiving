@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/08/22
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -16,6 +16,23 @@
 std::unique_ptr<CollisionManager> CollisionManager::s_collisionManager = nullptr;
 
 // メンバ関数の定義 ===========================================================
+/**
+ * @brief インスタンスを取得する
+ *
+ * @param[in] なし
+ *
+ * @return 当たり判定管理クラスのポインタ
+ */
+CollisionManager* const CollisionManager::GetInstance()
+{
+	//一度も生成されていなかったら
+	if (s_collisionManager == nullptr)
+	{
+		//ResourceManagerオブジェクトを生成し、そのポインタをs_collisionManagerに格納する
+		s_collisionManager.reset(new CollisionManager());
+	}
+	return s_collisionManager.get();
+}
 /**
  * @brief コンストラクタ
  *
@@ -39,22 +56,13 @@ CollisionManager::~CollisionManager()
 
 
 
-CollisionManager* const CollisionManager::GetInstance()
-{
-	if (s_collisionManager == nullptr)
-	{
-		//ResourceManagerオブジェクトを生成し、そのポインタをs_collisionManagerに格納する
-		s_collisionManager.reset(new CollisionManager());
-	}
-	return s_collisionManager.get();
-}
 
 
 
 /**
  * @brief オブジェクトの登録
  *
- * @param[in] obj オブジェクト
+ * @param[in] obj 登録するオブジェクト
  *
  * @return なし
  */
@@ -63,12 +71,32 @@ void CollisionManager::Register(GameObject* obj)
 	m_objects.push_back(obj);
 }
 
+/**
+ * @brief オブジェクトの解除
+ *
+ * @param[in] obj 解除するオブジェクトのポインタ
+ *
+ * @return なし
+ */
+void CollisionManager::UnRegister(GameObject* obj)
+{
+	m_objects.remove(obj);
+}
 
 
+
+/**
+ * @brief 登録されているオブジェクトをすべて解除
+ *
+ * @param[in] center 中心座標
+ *
+ * @return なし
+ */
 void CollisionManager::AllRelease()
 {
 	m_objects.clear();
 }
+
 
 /**
  * @brief 更新処理
@@ -91,7 +119,15 @@ void CollisionManager::Update()
  */
 void CollisionManager::CollisionCheck()
 {
-	// ここで登録されたすべてのオブジェクトに対して当たり判定を行う
+	// nullptrを削除
+	//m_objects.erase(std::remove(m_objects.begin(), m_objects.end(),
+	//	nullptr),
+	//	m_objects.end());
+
+	//if(!m_objects.empty())
+	//m_objects.remove(nullptr);
+
+	// 登録されたすべてのオブジェクトに対して当たり判定を行う
 	for (std::list<GameObject*>::iterator it1 = m_objects.begin(); it1 != m_objects.end(); ++it1)
 	{
 		//当たり判定が有効ではなかったらスキップ
@@ -100,6 +136,7 @@ void CollisionManager::CollisionCheck()
 			continue;
 		}
 		
+		//it1より後ろのオブジェクトと当たり判定を行う
 		for (std::list<GameObject*>::iterator it2 = std::next(it1); it2 != m_objects.end(); ++it2)
 		{
 			//当たり判定が有効ではなかったらスキップ

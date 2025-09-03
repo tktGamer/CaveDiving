@@ -1,10 +1,56 @@
-﻿#include "pch.h"
+﻿/**
+ * @file   BinaryFile.cpp
+ *
+ * @brief  バイナリ形式ファイル読み込みに関するソースファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付 2025/08/27
+ */
+
+ // ヘッダファイルの読み込み ===================================================
+#include "pch.h"
 #include "BinaryFile.h"
 
 #include <fstream>
 #include <assert.h>
 
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] なし 
+ */
+BinaryFile::BinaryFile()
+{
+	m_size = 0;
+}
 
+/**
+ * @brief ムーブコンストラクタ
+ *
+ * @param[in] in  ムーブ元
+ */
+BinaryFile::BinaryFile(BinaryFile* in)
+{
+	m_data = (in->m_data);
+	m_size = in->m_size;
+}
+
+/**
+ * @brief デストラクタ
+ */
+BinaryFile::~BinaryFile()
+{
+}
+
+/**
+ * @brief ファイル読み込み
+ *
+ * @param[in] fileName ファイルのパス
+ *
+ * @return ファイルデータ
+ */
 std::unique_ptr<BinaryFile> BinaryFile::LoadFile(wchar_t const* fileName)
 {
 	std::ifstream ifs;
@@ -38,13 +84,3 @@ std::unique_ptr<BinaryFile> BinaryFile::LoadFile(wchar_t const* fileName)
 	return std::make_unique<BinaryFile>(bin);
 }
 
-BinaryFile::BinaryFile()
-{
-	m_size = 0;
-}
-
-BinaryFile::BinaryFile(BinaryFile* in)
-{
-	m_data = (in->m_data);
-	m_size = in->m_size;
-}

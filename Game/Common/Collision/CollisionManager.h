@@ -3,9 +3,9 @@
  *
  * @brief  CollisionManagerに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付 2025/08/22
  */
 
  // 多重インクルードの防止 =====================================================
@@ -13,9 +13,9 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/Graphics.h"
-#include "Game/Common/Collision/Box.h"
-#include "Game/Common/Collision/Sphere.h"
 #include "Game/Object/GameObject.h"
+#include "../Collision/Sphere.h"
+#include "../Collision/Box.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -30,10 +30,11 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	// ResourceManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
+	// CollisionManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<CollisionManager> s_collisionManager;
 
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
+	// グラフィックスクラスのポインタ
+	Graphics* m_graphics;	
 
 	//当たり判定するオブジェクトのリスト
 	std::list<GameObject*> m_objects;
@@ -62,10 +63,16 @@ public:
 
 	//オブジェクトの登録
 	void Register(GameObject* obj);
+	//オブジェクトの解除
+	void UnRegister(GameObject* obj);
+	
+
 	//オブジェクトの削除
 	void AllRelease();
+
 	void Update();
 
+	//衝突総判定
 	void CollisionCheck();
 
 	void Finalize();

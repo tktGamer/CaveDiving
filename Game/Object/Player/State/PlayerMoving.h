@@ -42,6 +42,10 @@ public:
 	PlayerMoving(Player* soldier);
 	// デストラクタ
 	~PlayerMoving();
+
+// 操作
+public:
+
 	// 初期化する
 	void Initialize();
 	// 事前更新する

@@ -65,17 +65,18 @@ void Gauge::Render()
     m_gauge->Draw();
 }
 
+/**
+ * @brief ÉQÅ[ÉWÇÃí«â¡
+ *
+ * @param[in] path
+ * @param[in] position
+ * @param[in] scale
+ * @param[in] anchor
+ *
+ * @return Ç»Çµ
+ */
 void Gauge::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale,UserInterface::ANCHOR anchor)
 {
-
-
-    m_gauge = std::make_unique<UserInterface>();
-    m_gauge->Create(
-          path
-        , position
-        , scale
-        , anchor);
-    m_gauge->SetWindowSize(m_windowWidth, m_windowHeight);
 
     m_frame = std::make_unique<UserInterface>();
     m_frame->Create(
@@ -84,6 +85,15 @@ void Gauge::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Dire
         , scale
         , anchor);
     m_frame->SetWindowSize(m_windowWidth, m_windowHeight);
+
+    m_gauge = std::make_unique<UserInterface>();
+    m_gauge->Create(
+          path
+        , position+DirectX::SimpleMath::Vector2{5,-1}
+        , scale
+        , anchor);
+    m_gauge->SetWindowSize(m_windowWidth, m_windowHeight);
+
    // m_frame->SetRenderRatioOffset(0.3f);
 
 

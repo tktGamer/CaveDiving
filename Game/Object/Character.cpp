@@ -16,7 +16,13 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] hp 体力
+ * @param[in] attack　攻撃力
+ * @param[in] deffence　防御力
+ * @param[in] type　オブジェクトの種類
+ * @param[in] parent　親クラスのポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　初期角度（ラジアン）
  */
 Character::Character(int hp, int attack, int diffence, Tag::ObjectType type, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:GameObject{type,parent,initialPosition,initialAngle}
@@ -37,13 +43,21 @@ Character::~Character()
 
 }
 
-void Character::Damage(int attack)
+/**
+ * @brief ダメージ処理
+ *
+ * @param[in] damage 受けるダメージの値
+ *
+ * @return なし
+ */
+void Character::Damage(const int damage)
 {
-	int damage = attack - m_diffence / 2;
+	//もしマイナスなら処理を飛ばす
 	if (damage < 0) 
 	{
-		damage = 0;
+		return;
 	}
+
 	m_currentHp -= damage;
 
 	if (m_currentHp < 0) 
@@ -52,41 +66,102 @@ void Character::Damage(int attack)
 	}
 }
 
-int& Character::GetCurrentHP()
+/**
+ * @brief 現在のHPを取得
+ *
+ * @param[in] なし
+ *
+ * @return 現在のHP
+ */
+const int& Character::GetCurrentHP()
 {
 	return m_currentHp;
 }
 
-void Character::SetMaxHP(int hp)
+/**
+ * @brief 最大HPを設定
+ *
+ * @param[in] hp 最大HP
+ *
+ * @return なし
+ */
+void Character::SetMaxHP(const int hp)
 {
 	m_hp = hp;
 }
 
 
-int& Character::GetMaxHP()
+/**
+ * @brief 最大HPの取得
+ *
+ * @param[in] なし
+ *
+ * @return 最大HP
+ */
+const int& Character::GetMaxHP()
 {
 	return m_hp;
 }
 
-void Character::SetAttackPower(int attack)
+/**
+ * @brief 攻撃力の設定
+ *
+ * @param[in] attack 攻撃力
+ *
+ * @return なし
+ */
+void Character::SetAttackPower(const int attack)
 {
 	m_attackPower = attack;
 }
 
-int Character::GetAttackPower()
+/**
+ * @brief 攻撃力の取得
+ *
+ * @param[in] なし
+ *
+ * @return 攻撃力
+ */
+const int Character::GetAttackPower()
 {
 	return m_attackPower;
 }
 
-void Character::SetDiffence(int diffence)
+/**
+ * @brief 防御力の設定
+ *
+ * @param[in] diffence 防御力
+ *
+ * @return なし
+ */
+void Character::SetDiffence(const int diffence)
 {
 	m_diffence = diffence;
 }
 
-int Character::GetDiffence()
+/**
+ * @brief 防御力の取得
+ *
+ * @param[in] なし
+ *
+ * @return 防御力
+ */
+const int Character::GetDiffence()
 {
 	return m_diffence;
 }
 
+/**
+ * @brief 死んでいるか
+ *
+ * @param[in] なし
+ *
+ * @return true　生きている
+ * @return false 死んでいる
+ */
+bool Character::IsAlive() const
+{
+	return (m_currentHp > 0);
+}
 
 

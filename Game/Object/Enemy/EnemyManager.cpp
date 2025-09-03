@@ -3,9 +3,9 @@
  *
  * @brief  敵管理に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/08/27
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -61,12 +61,13 @@ void EnemyManager::Update()
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 
+	//敵の消去
+	DeleteEnemy();
 
-	for (std::unique_ptr<GameObject>& enemy : m_enemies)
+	//敵の更新
+	for (std::unique_ptr<Character>& enemy : m_enemies)
 	{
-		enemy->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
-
-		
+		enemy->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);	
 	}
 }
 
@@ -81,12 +82,9 @@ void EnemyManager::Update()
  */
 void EnemyManager::Draw()
 {
-	ID3D11DeviceContext*		 context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = m_graphics->GetProjectionMatrix();
 
-	for (std::unique_ptr<GameObject>& enemy : m_enemies)
+	//敵の描画
+	for (std::unique_ptr<Character>& enemy : m_enemies)
 	{
 		enemy->Draw();
 	}
@@ -107,10 +105,42 @@ void EnemyManager::Finalize()
 
 }
 
+/**
+ * @brief 敵の生成
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void EnemyManager::Spawn()
 {
 	m_enemies.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
 	m_enemies.back()->Initialize();
 	CollisionManager::GetInstance()->Register(m_enemies.back().get());
 
+}
+
+/**
+ * @brief 敵の消去
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void EnemyManager::DeleteEnemy()
+{
+    for (std::list<std::unique_ptr<Character>>::iterator it = m_enemies.begin(); it != m_enemies.end(); )
+    {
+		//生きているか確認
+        if (!(*it)->IsAlive())
+        {
+            // 死亡している場合はリストから削除
+            CollisionManager::GetInstance()->UnRegister(it->get());
+            it = m_enemies.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }

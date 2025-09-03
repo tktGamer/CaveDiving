@@ -30,6 +30,7 @@ int GameObject::CountUpNumber() { return s_objectNumber++; }
 GameObject::GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	: m_objectType{ objectType }
 	, m_graphics{ Graphics::GetInstance() }
+	,m_objectNumber{CountUpNumber()}
 	, m_texture{}
 	, m_model{ nullptr }
 	, m_pCurrentState{ nullptr }
@@ -51,6 +52,7 @@ GameObject::GameObject(Tag::ObjectType objectType, GameObject* parent, const Dir
  */
 GameObject::~GameObject()
 {
+	Messenger::GetInstance()->UnRegister(m_objectNumber);
 }
 
 
@@ -130,4 +132,9 @@ Tag::ObjectType GameObject::GetObjectType() const
 Graphics* GameObject::GetGraphics() const
 {
 	return m_graphics;
+}
+
+const int GameObject::GetObjectNumber()
+{
+	return m_objectNumber;
 }

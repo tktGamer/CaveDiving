@@ -1,4 +1,13 @@
-// ヘッダファイルの読み込み ===================================================
+/**
+ * @file   ResourceManager.cpp
+ *
+ * @brief  リソースの管理に関するソースファイル
+ *
+ * @author 制作者名 福地貴翔
+ *
+ * @date   日付 2025/08/27
+ */
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ResourceManager.h"
 
@@ -54,16 +63,18 @@ ResourceManager* const ResourceManager::GetInstance()
 /**
  * @brief 画像データの要求
  *
- * @param[in] filename 画像ファイル名
+ * @param[in] filename wchar_t型の画像ファイル名
  *
  * @return 　画像データのハンドル
  */
 ID3D11ShaderResourceView** ResourceManager::RequestTexture(wchar_t const* filename)
 {
+	//wchar_t型からString型へ変換
 	std::string stringFilename = TKTLib::WcharToString(filename);
 	//未登録の場合
 	if (m_texture.count(stringFilename) == 0)
 	{
+		//画像読み込み
 		LoadTexture(stringFilename);
 
 	}
@@ -71,11 +82,20 @@ ID3D11ShaderResourceView** ResourceManager::RequestTexture(wchar_t const* filena
 	//登録してある画像データのハンドルを返却
 	return m_texture[stringFilename].GetAddressOf();
 }
+
+/**
+ * @brief 画像データの要求
+ *
+ * @param[in] filename string型の画像ファイル名
+ *
+ * @return 　画像データのハンドル
+ */
 ID3D11ShaderResourceView** ResourceManager::RequestTexture(const std::string& filename)
 {
 	//未登録の場合
 	if (m_texture.count(filename) == 0)
 	{
+		//画像読み込み
 		LoadTexture(filename);
 
 	}
@@ -85,8 +105,18 @@ ID3D11ShaderResourceView** ResourceManager::RequestTexture(const std::string& fi
 
 }
 
+/**
+ * @brief 画像データのサイズを取得
+ *
+ * @param[in] filename wchar_t型の画像ファイル名
+ * @param[in] width 幅
+ * @param[in] hight 高さ
+ *
+ * @return 　なし
+ */
 void ResourceManager::GetTextureSize(wchar_t const* filename, int& width, int& hight)
 {
+	//wchar_t型からString型へ変換
 	std::string stringFilename = TKTLib::WcharToString(filename);
 
 	//未登録の場合
@@ -115,12 +145,13 @@ void ResourceManager::GetTextureSize(wchar_t const* filename, int& width, int& h
 /**
  * @brief 音データの要求
  *
- * @param[in] filename 音ファイル名
+ * @param[in] filename wchar_t型の音ファイル名
  *
  * @return 音データのポインタ
  */
 DirectX::SoundEffect* ResourceManager::RequestSound(wchar_t const* filename)
 {
+	//wchar_t型からString型へ変換
 	std::string stringFilename = TKTLib::WcharToString(filename);
 	//未登録の場合
 	if (m_sounds.count(stringFilename) == 0)
@@ -132,6 +163,13 @@ DirectX::SoundEffect* ResourceManager::RequestSound(wchar_t const* filename)
 	//登録してある画像データのハンドルを返却
 	return m_sounds[stringFilename].get();
 }
+/**
+ * @brief 音データの要求
+ *
+ * @param[in] filename String型の音ファイル名
+ *
+ * @return 音データのポインタ
+ */
 DirectX::SoundEffect* ResourceManager::RequestSound(const std::string& filename)
 {
 	//未登録の場合
@@ -148,12 +186,13 @@ DirectX::SoundEffect* ResourceManager::RequestSound(const std::string& filename)
 /**
  * @brief モデルデータの要求
  *
- * @param[in] filename モデルデータファイル名
+ * @param[in] filename wchar_t型のモデルデータファイル名
  *
  * @return  モデルデータのポインタ
  */
 DirectX::Model* ResourceManager::RequestModel(wchar_t const* filename)
 {
+	//wchar_t型からString型へ変換
 	std::string stringFilename = TKTLib::WcharToString(filename);
 
 	//未登録の場合
@@ -163,9 +202,17 @@ DirectX::Model* ResourceManager::RequestModel(wchar_t const* filename)
 		LoadModel(stringFilename);
 	}
 
+	//モデルデータのポインタを返す
 	return m_models[stringFilename].get();
 }
 
+/**
+ * @brief モデルデータの要求
+ *
+ * @param[in] filename string型のモデルデータファイル名
+ *
+ * @return  モデルデータのポインタ
+ */
 DirectX::Model* ResourceManager::RequestModel(const std::string& filename)
 {
    // 未登録の場合
@@ -175,21 +222,32 @@ DirectX::Model* ResourceManager::RequestModel(const std::string& filename)
 	   LoadModel(filename);
    }
 
+   //モデルデータのポインタを返す
    return m_models[filename].get();
 }
 
 
+/**
+ * @brief バイナリファイルデータの要求
+ *
+ * @param[in] filename wchar_t型のバイナリファイルデータファイル名
+ *
+ * @return  バイナリファイルデータのポインタ
+ */
 BinaryFile* ResourceManager::RequestBinaryFile(wchar_t const* filename)
 {
+	//wchar_t型からString型へ変換
 	std::string stringFilename = TKTLib::WcharToString(filename);
 	//未登録の場合
 	if (m_binaryFile.count(stringFilename) == 0)
 	{
 		//バイナリファイルの読み込み
 		std::unique_ptr<BinaryFile> binaryFile = std::make_unique<BinaryFile>();
-		
+		//ファイル名とデータを結び付けて登録
 		m_binaryFile.insert(std::make_pair(stringFilename, binaryFile->LoadFile(filename)));
 	}
+
+	//バイナリファイルデータのポインタを返す
 	return m_binaryFile[stringFilename].get();
 }
 
@@ -223,7 +281,10 @@ void ResourceManager::LoadModel(const std::string& filename)
 		ID3D11Device* device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
 		DirectX::DX11::EffectFactory* fx = Graphics::GetInstance()->GetFX();
 		fx->SetDirectory(L"Resources/Models");
+		//モデルデータ読み込み
 		std::unique_ptr<Model> model = Model::CreateFromSDKMESH(device,TKTLib::StringToWchar(fullPath), *fx);
+
+		//ファイル名とデータを結び付けて登録
 		m_models.insert(std::make_pair(filename, std::move(model)));
 	}
 	catch (const std::exception& e)
@@ -254,10 +315,11 @@ void ResourceManager::LoadSound(const std::string& filename)
 	
 	// 例外処理対応
 	try
-	{		
+	{	
+		//音データ読み込み
 		std::unique_ptr<SoundEffect> soundEffect=std::make_unique<SoundEffect>(m_audioEngine,TKTLib::StringToWchar(fullPath));
 		
-		//画像データのハンドルを登録
+		//ファイル名とデータを結び付けて登録
 		m_sounds.insert(std::make_pair(filename, std::move(soundEffect)));
 	}
 	catch (const std::exception& )
@@ -302,7 +364,7 @@ void ResourceManager::LoadTexture(const std::string& filename)
 		{
 			throw std::runtime_error("ファイルが見つからなかった");
 		}
-		//画像データのハンドルを登録
+		//ファイル名とデータを結び付けて登録
 		m_texture.insert(std::make_pair(filename, std::move(textureHandle)));
 	}
 	catch (const std::exception& )

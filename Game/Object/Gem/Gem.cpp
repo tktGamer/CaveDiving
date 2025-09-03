@@ -3,9 +3,9 @@
  *
  * @brief  宝石に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付  2025/08/27
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -65,31 +65,6 @@ void Gem::Initialize()
 
 
 
-/**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Gem::Update()
-{
-
-}
-
-
-
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Gem::Draw()
-{
-
-}
 
 
 
@@ -118,6 +93,13 @@ Gem::GemAbility Gem::GetAbility() const
 	return m_ability;
 }
 
+/**
+ * @brief 宝石の画像パスの取得
+ *
+ * @param[in] なし
+ *
+ * @return 宝石の画像パス
+ */
 Gem::GemImagePath Gem::GetImagePath() const
 {
 	return m_gemImage;

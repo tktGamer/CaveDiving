@@ -37,6 +37,10 @@ private:
 	//防御力
 	int m_diffence;
 
+	//生きているか
+	bool m_isAlive;
+
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -51,23 +55,27 @@ public:
 // 操作
 public:
 	//ダメージ
-	void Damage(int damage);
+	void Damage(const int damage);
 //　取得・設定
 public:
 	//現在の体力の取得
-	int& GetCurrentHP();
+	const int& GetCurrentHP();
 	// 体力の設定
-	void SetMaxHP(int hp);
+	void SetMaxHP(const int hp);
 	// 体力の取得
-	int& GetMaxHP();
+	virtual const int& GetMaxHP();
 	// 攻撃力の設定
-	void SetAttackPower(int attack);
+	void SetAttackPower(const int attack);
 	// 攻撃力の取得
-	int GetAttackPower();
+	virtual const int GetAttackPower();
 	// 防御力の設定
-	void SetDiffence(int diffence);
+	void SetDiffence(const int diffence);
 	// 防御力の取得
-	int GetDiffence();
+	virtual const int GetDiffence();
+
+	//生きているか
+	bool IsAlive() const;
+
 //　内部操作
 private:
 

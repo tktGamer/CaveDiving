@@ -1,24 +1,17 @@
 /**
- * @file   Stage.cpp
+ * @file   Ground.cpp
  *
- * @brief  ステージに関するソースファイル
+ * @brief  地面に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/08/27
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "Stage.h"
+#include "Ground.h"
 
-//頂点情報
-const std::vector<D3D11_INPUT_ELEMENT_DESC> Stage::INPUT_LAYOUT =
-{
-	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "NORMAL",	    0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-};
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -28,13 +21,13 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Stage::INPUT_LAYOUT =
  * @param[in] initialPosition 初期位置
  * @param[in] initialAngle    初期角度
  */
-Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Ground::Ground(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	: GameObject(Tag::ObjectType::Stage,parent,initialPosition,initialAngle)
-	, m_objectNumber{ CountUpNumber() }
 	, m_messageID{  }
 	, m_graphics{ Graphics::GetInstance() }
-	, m_box{ GetPosition(),DirectX::SimpleMath::Vector3(50.01f,1.01f,50.01f)} // 初期位置とサイズを設定
+	, m_box{ GetPosition(),DirectX::SimpleMath::Vector3(70.01f,1.01f,70.01f)} // 初期位置とサイズを設定
 {
+	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
 }
 
@@ -43,7 +36,7 @@ Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosi
 /**
  * @brief デストラクタ
  */
-Stage::~Stage()
+Ground::~Ground()
 {
 
 }
@@ -57,12 +50,12 @@ Stage::~Stage()
  *
  * @return なし
  */
-void Stage::Initialize()
+void Ground::Initialize()
 {
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"block.sdkmesh"));
-	SetPosition(DirectX::SimpleMath::Vector3(0.0f, -2.0f, 0.0f));
+	SetPosition(DirectX::SimpleMath::Vector3(0.0f, -1.5f, 0.0f));
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	SetScale(DirectX::SimpleMath::Vector3(50.0f, 1.0f, 50.0f));
+	SetScale(DirectX::SimpleMath::Vector3(70.0f, 1.0f, 70.0f));
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("block.png"));
 	
 	SetShape(&m_box);
@@ -80,7 +73,7 @@ void Stage::Initialize()
  *
  * @return なし
  */
-void Stage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Ground::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_box.SetCenter(currentPosition + GetPosition());
 }
@@ -94,7 +87,7 @@ void Stage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
  *
  * @return なし
  */
-void Stage::Draw()
+void Ground::Draw()
 {
 	Shader* shader = Shader::GetInstance();	
 	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
@@ -104,7 +97,7 @@ void Stage::Draw()
 
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Stage::ConstBuffer cbuff;
+	Ground::ConstBuffer cbuff;
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale()).Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
@@ -162,18 +155,31 @@ void Stage::Draw()
  *
  * @return なし
  */
-void Stage::Finalize()
+void Ground::Finalize()
 {
 
 }
 
-void Stage::OnMessegeAccepted(Message::MessageID messageID)
+/**
+ * @brief メッセージ対応処理
+ *
+ * @param[in] messageID メッセージ
+ *
+ * @return なし
+ */
+void Ground::OnMessegeAccepted(Message::MessageID messageID)
 {
 
 }
 
-
-int Stage::GetObjectNumber()
+/**
+ * @brief 衝突応答
+ *
+ * @param[in] other 衝突したオブジェクト
+ *
+ * @return なし
+ */
+void Ground::CollisionResponce(GameObject* other)
 {
-	return m_objectNumber;
 }
+

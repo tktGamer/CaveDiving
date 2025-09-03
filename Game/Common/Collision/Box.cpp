@@ -75,6 +75,13 @@ bool Box::Intersects(Shape* other)
 
 
 
+/**
+ * @brief 矩形を描画クラスに登録する
+ *
+ * @param[in] 当たり判定描画クラスのポインタ
+ *
+ * @return なし
+ */
 void Box::AddDisplayCollision(Ito::DisplayCollision* dC)
 {
 	DirectX::BoundingBox bb{ m_center,m_halfSize };

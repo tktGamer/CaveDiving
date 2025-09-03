@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付 2025/7/02
+ * @date   日付 2025/08/27
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -46,7 +46,7 @@ Sphere::~Sphere()
  */
 bool Sphere::Intersects(Shape* other)
 {
-
+	//エラー対策
 	if (other == nullptr)
 	{
 		return false;

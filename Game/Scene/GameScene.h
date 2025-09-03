@@ -16,15 +16,15 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"../Common/SceneManager.h"
-#include"Game/UserResources.h"
-#include"Game/Common/Sound.h"
-#include"Game/Object/Camera.h"
-#include"Game/Common/Collision/DisplayCollision.h"
-#include"Game/Common/Collision/CollisionManager.h"
-#include"Game/UI/GemSelect/GemSelect.h"
-#include"Game/UI/Gauge/Gauge.h"
-#include"Game/Object/Player/Player.h"
-#include"Game/Object/Stage.h"
+#include"../UserResources.h"
+#include"../Common/Sound.h"
+#include"../Object/Camera.h"
+#include"../Common/Collision/DisplayCollision.h"
+#include"../Common/Collision/CollisionManager.h"
+#include"../UI/Gauge/Gauge.h"
+#include"../UI/HoldGem/HoldGem.h"
+#include"../Object/Player/Player.h"
+#include"../Object/Stage/Stage.h"
 #include"../Object/Enemy/EnemyManager.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
@@ -55,8 +55,8 @@ private:
 	std::unique_ptr<Player> m_player;    ///< プレイヤーオブジェクト
 	std::unique_ptr<Stage> m_stage;    ///< ステージオブジェクト
 
-	std::unique_ptr<GemSelect> m_gemSelectUI;
 	std::unique_ptr<Gauge> m_hpGauge;
+	std::unique_ptr<HoldGem> m_holdGem;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

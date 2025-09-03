@@ -51,6 +51,10 @@ public:
 	PlayerAttack(Player* player,Hand* hand);
 	// デストラクタ
 	~PlayerAttack();
+
+
+// 操作
+public:
 	// 初期化する
 	void Initialize();
 	// 事前更新する

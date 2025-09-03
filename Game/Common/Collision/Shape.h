@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/7/02
+ * @date   日付 2025/08/27
  */
 
  // 多重インクルードの防止 =====================================================
@@ -50,8 +50,10 @@ public:
 
 // 操作
 public:
+	//衝突しているか
 	virtual bool Intersects(Shape* other) = 0;
 
+	//当たり判定描画クラスに登録
 	virtual void AddDisplayCollision(Ito::DisplayCollision* dC)=0;
 //　取得・設定
 public:

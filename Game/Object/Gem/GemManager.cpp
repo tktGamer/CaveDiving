@@ -1,11 +1,11 @@
 /**
  * @file   GemManager.cpp
  *
- * @brief  ＸＸＸＸに関するソースファイル
+ * @brief  宝石管理に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付   2025/08/27
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -24,6 +24,7 @@ std::unique_ptr<GemManager> GemManager::s_gemManager = nullptr;
  */
 GemManager::GemManager()
 	:m_graphics{Graphics::GetInstance()}
+	,m_playerKeepGem{nullptr}
 {
 
 }
@@ -88,6 +89,13 @@ void GemManager::Finalize()
 
 }
 
+/**
+ * @brief 宝石のポインタをランダムに取得
+ *
+ * @param[in] なし
+ *
+ * @return 宝石のポインタ
+ */
 Gem* GemManager::RandomSelection()
 {
 	if (m_gemList.empty()) 
@@ -125,6 +133,63 @@ Gem::Type GemManager::DecisinType(const std::string& type)
 		return Gem::Type::DEF;
 	}
 	return  Gem::Type::UNIQUE;
+}
+
+
+/**
+ * @brief スロットが空いているか
+ *
+ * @param[in] なし
+ *
+ * @return true  空いている
+ * @return fakse 空いていない
+ */
+bool GemManager::IsBlankSlot()
+{
+	//スロットを確認
+	for (int i = 0; i < 3; i++)
+	{
+		//空だったら
+		if (m_playerKeepGem[i] == nullptr)
+		{
+			return true;
+		}
+
+	}
+
+	return false;
+}
+
+/**
+ * @brief プレイヤーに適用する宝石の取得
+ *
+ * @param[in] なし
+ *
+ * @return プレイヤーに適応する宝石
+ */
+const Gem* const* GemManager::GetPlayerHoldGem() const 
+{
+	return m_playerKeepGem;
+}
+
+/**
+ * @brief スロットに宝石を適用する
+ *
+ * @param[in] pGem
+ *
+ * @return プレイヤーに適応する宝石
+ */
+void GemManager::SetHoldGem(Gem* pGem)
+{
+	for(int i=0; i<3; i++) 
+	{
+		if (m_playerKeepGem[i] == nullptr) 
+		{
+			m_playerKeepGem[i] = pGem;
+			return;
+		}
+		
+	}
 }
 
 /**

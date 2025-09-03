@@ -42,6 +42,8 @@ void GemSelect::Update()
 {
     auto tracker = Graphics::GetInstance()->GetKeyboardTracker();
 
+    if (m_userInterface.empty()) return;
+
     if (tracker->pressed.Right)
     {
         //  →キーを押したら、選択先を1つ進める
@@ -67,7 +69,8 @@ void GemSelect::Update()
         auto p= Messenger::GetInstance()->GetObject(-1);
         
         m_pGems[m_menuIndex];
-        m_pGemManager->RandomSelection();
+        m_pGemManager->SetHoldGem(m_pGems[m_menuIndex]);
+        
     }
 
     //  各アイテムに表示する画像の初期サイズを設定する

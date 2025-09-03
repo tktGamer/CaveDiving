@@ -12,8 +12,8 @@
 #include "pch.h"
 #include "Hand.h"
 #include"../CaveDiving/Game/Object/Player/Player.h"
-
-// メンバ関数の定義 ===========================================================
+#include"../GameObjectCasting.h"
+ // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
@@ -22,12 +22,11 @@
 Hand::Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
 	, GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
-	,m_objectNumber{CountUpNumber()}
 	,m_motionAngle{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"hand.png"));
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"hand.sdkmesh"));
-	Messenger::GetInstance()->Register(m_objectNumber, this);
+	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
 }
 
@@ -52,7 +51,8 @@ Hand::~Hand()
  */
 void Hand::Initialize()
 {
-	m_pikel = std::make_unique<Pikel>(this, DirectX::SimpleMath::Vector3(0.0f,0.0f,0.0f), DirectX::XMConvertToRadians(0.0f));
+	
+	m_pikel = std::make_unique<Pikel>(m_parent->Cast<Character>(), this, DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f), DirectX::XMConvertToRadians(0.0f));
 
 	//DirectX::SimpleMath::Quaternion q = 
 	//	//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
@@ -176,10 +176,10 @@ void Hand::OnMessegeAccepted(Message::MessageID messageID)
 {
 }
 
-int Hand::GetObjectNumber()
+void Hand::CollisionResponce(GameObject* other)
 {
-	return 0;
 }
+
 
 DirectX::SimpleMath::Quaternion Hand::GetMotionAngle()
 {

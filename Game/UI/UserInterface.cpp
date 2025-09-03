@@ -188,7 +188,7 @@ void UserInterface::Create(const wchar_t* path, DirectX::SimpleMath::Vector2 pos
 
 	//	画像の読み込み
 	//LoadTexture(path);
-	m_texture = ResourceManager::GetInstance()->RequestTexture(path);
+	SetTexture(path);
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(m_graphics->GetDeviceResources()->GetD3DDeviceContext());
 
@@ -225,4 +225,14 @@ void UserInterface::SetRenderRatio(float ratio)
 void UserInterface::SetRenderRatioOffset(float offset)
 {
 	m_renderRatioOffset = offset;
+}
+
+void UserInterface::SetTexture(const wchar_t* path)
+{
+	m_texture = ResourceManager::GetInstance()->RequestTexture(path);
+}
+
+void UserInterface::SetTexture(ID3D11ShaderResourceView** texture)
+{
+	m_texture =texture;
 }

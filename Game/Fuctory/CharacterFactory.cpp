@@ -85,7 +85,7 @@ std::unique_ptr<GameObject> CharacterFactory::CreatePikle(Character* parent, con
 	//「ピッケル」を宣言する
 	std::unique_ptr<GameObject> pikel;
 	//Pikelクラスのインスタンスを生成する
-	pikel = std::make_unique<Pikel>(parent, initialPosition, initialAngle);
+	pikel = std::make_unique<Pikel>(nullptr,parent, initialPosition, initialAngle);
 	//初期化する
 	pikel->Initialize();
 

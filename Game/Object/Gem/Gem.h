@@ -3,9 +3,9 @@
  *
  * @brief  宝石に関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付  2025/08/27
  */
 
  // 多重インクルードの防止 =====================================================
@@ -33,9 +33,9 @@ public:
 
 	struct GemAbility
 	{
-		Type m_type; ///< 宝石の種類
-		int m_value; ///< 宝石の効果値
-		std::string m_discription; ///< 宝石の効果説明
+		Type m_type; // 宝石の種類
+		int m_value; // 宝石の効果値
+		std::string m_discription; // 宝石の効果説明
 
 	};
 
@@ -49,8 +49,10 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	GemImagePath m_gemImage; ///< 宝石の画像のパス
-	GemAbility m_ability; ///< 宝石の能力値
+	// 宝石の画像のパス
+	GemImagePath m_gemImage; 
+	// 宝石の能力値
+	GemAbility m_ability; 
 	// メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -68,9 +70,6 @@ public:
 public:
 	void Initialize();
 
-	void Update();
-
-	void Draw();
 
 	void Finalize();
 //取得・設定

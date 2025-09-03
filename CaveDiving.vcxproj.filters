@@ -77,6 +77,15 @@
     <Filter Include="Game\UI\Gauge">
       <UniqueIdentifier>{9d4a29f1-e527-43f3-aa7e-87a19e2a0c09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\UI\HoldGem">
+      <UniqueIdentifier>{567c6cde-f380-4853-a064-24b7e3fde799}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Stage">
+      <UniqueIdentifier>{945ad935-21ba-4e67-b663-1f7e95bd8ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Motion">
+      <UniqueIdentifier>{e36d664b-4ec1-4f02-9fe1-758598807c0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -150,9 +159,6 @@
       <Filter>Game\Object\Player\State</Filter>
     </ClInclude>
     <ClInclude Include="Game\Object\Light.h">
-      <Filter>Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Stage.h">
       <Filter>Game\Object</Filter>
     </ClInclude>
     <ClInclude Include="Game\Shader.h">
@@ -234,6 +240,36 @@
     <ClInclude Include="Game\UI\Gauge\Gauge.h">
       <Filter>Game\UI\Gauge</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Scene\GemSelectScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\HoldGem\HoldGem.h">
+      <Filter>Game\UI\HoldGem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\State\PlayerAvoidance.h">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Stage\Stage.h">
+      <Filter>Game\Object\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Stage\Ground.h">
+      <Filter>Game\Object\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Stage\Wall.h">
+      <Filter>Game\Object\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\DamageSystem.h">
+      <Filter>Game\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\Motion.h">
+      <Filter>Game\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Weapon.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\GameObjectCasting.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -290,9 +326,6 @@
       <Filter>Game\Object\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object\Light.cpp">
-      <Filter>Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object\Stage.cpp">
       <Filter>Game\Object</Filter>
     </ClCompile>
     <ClCompile Include="Game\Shader.cpp">
@@ -369,6 +402,33 @@
     </ClCompile>
     <ClCompile Include="Game\UI\Gauge\Gauge.cpp">
       <Filter>Game\UI\Gauge</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GemSelectScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\HoldGem\HoldGem.cpp">
+      <Filter>Game\UI\HoldGem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\State\PlayerAvoidance.cpp">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Stage\Stage.cpp">
+      <Filter>Game\Object\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Stage\Ground.cpp">
+      <Filter>Game\Object\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Stage\Wall.cpp">
+      <Filter>Game\Object\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\DamageSystem.cpp">
+      <Filter>Game\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\Motion.cpp">
+      <Filter>Game\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Weapon.cpp">
+      <Filter>Game\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

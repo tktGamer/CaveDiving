@@ -1,11 +1,11 @@
 /**
  * @file   Wing.cpp
  *
- * @brief  プレイヤーの手に関するソースファイル
+ * @brief  コウモリの羽に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付 2025/08/27
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -16,17 +16,18 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] parent　親クラスのポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　初期角度（ラジアン）
  */
 Wing::Wing(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
 	, GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
-	,m_objectNumber{CountUpNumber()}
 	,m_motionAngle{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"wing.png"));
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"wing.sdkmesh"));
-	Messenger::GetInstance()->Register(m_objectNumber, this);
+	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
 }
 
@@ -62,7 +63,8 @@ void Wing::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] currentPosition 親の座標
+ * @param[in] currentAngle　親の角度
  *
  * @return なし
  */
@@ -158,14 +160,28 @@ void Wing::Finalize()
 
 }
 
+/**
+ * @brief メッセージ対応処理
+ *
+ * @param[in] messageID メッセージ
+ *
+ * @return なし
+ */
 void Wing::OnMessegeAccepted(Message::MessageID messageID)
 {
 }
 
-int Wing::GetObjectNumber()
+/**
+ * @brief 衝突応答
+ *
+ * @param[in] other 衝突したオブジェクト
+ *
+ * @return なし
+ */
+void Wing::CollisionResponce(GameObject* other)
 {
-	return 0;
 }
+
 
 DirectX::SimpleMath::Quaternion Wing::GetMotionAngle()
 {

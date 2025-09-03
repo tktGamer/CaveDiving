@@ -16,7 +16,7 @@
 #include"Game/Shader.h"
 #include"Game/Common/Collision/Sphere.h"
 #include"Game/Common/Collision/CollisionManager.h"
-
+#include"../Gem/GemManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -25,14 +25,13 @@
  */
 Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	: Character(100,10,10,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
-	, m_objectNumber{ -1 }
 	, m_messageID{  }
 	, m_velocity{ 0.0f, 0.0f, 0.0f }
-	, m_pGem{}
 	, m_initialeDirection{ 0.0f, 0.0f, -1.0f }
 	, m_sphere{ GetPosition(), 2.0f }
+	,m_remainingJumpCount{1}
 {
-	Messenger::GetInstance()->Register(m_objectNumber, this);
+	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 }
 
 
@@ -63,6 +62,7 @@ void Player::Initialize()
 	m_movingState = std::make_unique<PlayerMoving>(this);
 	m_attackState = std::make_unique<PlayerAttack>(this,handR.get());
 	m_jumpingState = std::make_unique<PlayerJumping>(this);
+	m_avoidState = std::make_unique<PlayerAvoidance>(this);
 
 	m_bodyParts.emplace_back(std::move(handR));
 	m_bodyParts.back()->Initialize();
@@ -102,6 +102,9 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 {
 	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
 	
+	//向きを変える
+	ChangeDirection();
+
 	GetState()->Update(elapsedTime);
 	m_sphere.SetCenter(currentPosition + GetPosition());
 	m_light->Update(elapsedTime,currentPosition + GetPosition(), currentAngle * GetQuaternion());
@@ -130,6 +133,61 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 void Player::Draw()
 {
 	GetState()->Render();
+
+	Graphics* graphics = Graphics::GetInstance();
+	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
+	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
+	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
+
+	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
+	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	Player::ConstBuffer cbuff;
+	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
+	cbuff.matView = graphics->GetViewMatrix().Transpose();
+	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
+
+	Shader* shader = Shader::GetInstance();
+	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+
+
+
+	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
+		{
+			//	モデル表示をするための自作シェーダに関連する設定を行う
+
+
+			//	画像用サンプラーの登録
+			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
+			context->PSSetSamplers(0, 1, sampler);
+
+			if (GetTexture() != nullptr)
+			{
+				//	読み込んだ画像をピクセルシェーダに伝える
+				//	自作VSはt0を使っているため、
+				//	t0がメインで使われていると勝手に想定。
+				context->PSSetShaderResources(0, 1, GetTexture());
+			}
+
+			//	半透明描画指定
+			ID3D11BlendState* blendstate = states->NonPremultiplied();
+
+			//	透明判定処理
+			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+
+			//	深度バッファに書き込み参照する
+			context->OMSetDepthStencilState(states->DepthDefault(), 0);
+
+			//	カリングはなし
+			context->RSSetState(states->CullClockwise());
+
+			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+
+			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+
+		});
+	Shader::GetInstance()->EndShader();
 
 
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
@@ -179,11 +237,15 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 		GameObject::ChangeState(m_attackState.get());
 		break;
 	case Message::AVOIDANCE:
+		GameObject::ChangeState(m_avoidState.get());
 		break;
 	case Message::DAMAGED:
 		break;
 	case Message::JUMPING:
-		GameObject::ChangeState(m_jumpingState.get());
+		if (ReduceJumpCount()) 
+		{
+			GameObject::ChangeState(m_jumpingState.get());
+		}
 		break;
 	default:
 		break;
@@ -206,6 +268,7 @@ void Player::CollisionResponce(GameObject* other)
 			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere));
 			//速度をリセット
 			m_velocity.y = 0.0f;
+			ResetJumpCount();
 			//ジャンプ状態なら待機状態へ移行
 			if (GetState() == m_jumpingState.get()) 
 			{
@@ -220,15 +283,6 @@ void Player::CollisionResponce(GameObject* other)
 }
 
 
-void Player::SetGem(Gem* gem, int index)
-{
-	m_pGem[index] = gem;
-}
-
-int Player::GetObjectNumber()
-{
-	return m_objectNumber;
-}
 
 DirectX::SimpleMath::Vector3 Player::GetVelocity()
 {
@@ -238,4 +292,121 @@ DirectX::SimpleMath::Vector3 Player::GetVelocity()
 void Player::SetVelocity(DirectX::SimpleMath::Vector3 v)
 {
 	m_velocity = v;
+}
+
+const int& Player::GetMaxHP()
+{
+	return GetPlusStatus(Gem::Type::HP) + Character::GetMaxHP();
+}
+
+const int Player::GetAttackPower()
+{
+	return GetPlusStatus(Gem::Type::STR) + Character::GetAttackPower();
+}
+
+const int Player::GetDiffence()
+{
+	return GetPlusStatus(Gem::Type::DEF)+ Character::GetDiffence();
+}
+
+const int Player::GetRemainingJumpCount() const
+{
+	return m_remainingJumpCount;
+}
+
+/**
+ * @brief ジャンプできる残り回数を減らす
+ *
+ * @param[in] なし
+ *
+ * @return true  ジャンプ出来る
+ * @return false ジャンプ出来ない
+ */
+bool Player::ReduceJumpCount()
+{
+	//残り回数がないなら偽を返す
+	if (m_remainingJumpCount == 0) 
+	{
+		return false;
+	}
+
+	m_remainingJumpCount--;
+
+	return true;
+}
+
+
+/**
+ * @brief ジャンプ出来る残り回数をリセット
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void Player::ResetJumpCount()
+{
+	m_remainingJumpCount = 1;
+}
+
+/**
+ * @brief 方向を変える
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void Player::ChangeDirection()
+{
+	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
+	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
+
+	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::Identity;
+
+	if (key->GetLastState().A)
+	{
+		//左旋回
+		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(180.0f*elapsedTime));
+	}
+	if (key->GetLastState().D)
+	{
+		//右旋回
+		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-180.0f*elapsedTime));
+	}
+
+	// 姿勢に回転を加える
+	SetQuaternion(GetQuaternion() * rotate);
+
+}
+
+/**
+ * @brief 宝石による強化量を取得
+ *
+ * @param[in] type 取得するステータス
+ *
+ * @return 強化量
+ */
+int Player::GetPlusStatus(const Gem::Type type)
+{
+	//プレイヤーの持つ宝石を管理クラスから取得
+	const Gem*const* holdGems = GemManager::GetInstance()->GetPlayerHoldGem();
+	//強化値の合計
+	int total = 0;
+
+	//所持できる数だけ処理する（３回）
+	for (int i = 0; i < 3; i++) 
+	{
+		//空なら飛ばす
+		if (!holdGems[i])
+		{
+			continue;
+		}
+
+		//所持している宝石が指定されたステータスを強化するものか
+		if (holdGems[i]->GetAbility().m_type == type) 
+		{
+			total += holdGems[i]->GetAbility().m_value;
+		}
+	}
+
+	return total;
 }

@@ -16,10 +16,11 @@
 #include"Game/Object/Character.h"
 #include "Game/Object/Gem/Gem.h"
 #include "Game/Object/Light.h"
-#include"Game/Object/Player/State/PlayerIdling.h"
-#include"Game/Object/Player/State/PlayerMoving.h"
-#include"Game/Object/Player/State/PlayerAttack.h"
-#include"Game/Object/Player/State/PlayerJumping.h"
+#include"../Player/State/PlayerIdling.h"
+#include"../Player/State/PlayerMoving.h"
+#include"../Player/State/PlayerAttack.h"
+#include"../Player/State/PlayerJumping.h"
+#include"../Player/State/PlayerAvoidance.h"
 #include"Game/Common/Collision/Sphere.h"
 #include "Game/Object/Player/Hand.h"
 // クラスの宣言 ===============================================================
@@ -45,12 +46,10 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	// オブジェクト番号
-	int m_objectNumber;
 	// メッセージID
 	Message::MessageID m_messageID;
 
-	Gem* m_pGem[3]; // 所持している宝石
+
 	DirectX::SimpleMath::Vector3 m_velocity; // 速度 
 
 	std::unique_ptr<Light> m_light;
@@ -63,6 +62,7 @@ private:
 	std::unique_ptr<IState> m_movingState; // 移動状態
 	std::unique_ptr<IState> m_attackState; // 攻撃状態
 	std::unique_ptr<IState> m_jumpingState; // ジャンプ状態
+	std::unique_ptr<IState> m_avoidState; // 回避状態
 
 	// プレイヤーの体のパーツ
 	std::vector<std::unique_ptr<GameObject>> m_bodyParts; 
@@ -71,6 +71,9 @@ private:
 
 	//重力
 	float m_gravity = 9.8f; // 重力加速度
+
+	//ジャンプできる残り回数
+	int m_remainingJumpCount;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -95,18 +98,32 @@ public:
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 	//衝突応答分岐
-	void CollisionResponce(GameObject* other);
+	void CollisionResponce(GameObject* other) override;
 
 //　取得・設定
 public:
 	
-	//宝石をセット
-	void SetGem(Gem* gem,int index);
-	int GetObjectNumber() override;
 	DirectX::SimpleMath::Vector3 GetVelocity();
 	void SetVelocity(DirectX::SimpleMath::Vector3 v);
+
+	// 体力の取得
+	const int& GetMaxHP() override;
+	// 攻撃力の取得
+	const int GetAttackPower() override;
+	// 防御力の取得
+	const int GetDiffence() override;
+
+	//ジャンプ出来る残り回数取得
+	const int GetRemainingJumpCount() const;
+	//ジャンプ出来る残り回数減少
+	bool ReduceJumpCount();
+	//ジャンプ出来る残り回数をリセット
+	void ResetJumpCount();
 //　内部操作
 private:
-
+	//方向転換
+	void ChangeDirection();
+	//宝石で強化された分のステータスを取得
+	int GetPlusStatus(const Gem::Type type);
 };
 

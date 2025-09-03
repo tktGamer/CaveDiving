@@ -123,6 +123,9 @@ public:
 		);
 
 
+
+//　取得・設定
+public:
 	void SetWindowSize(const int& width, const int& height);
 
 	void SetScale(DirectX::SimpleMath::Vector2 scale);
@@ -139,9 +142,8 @@ public:
 	void SetRenderRatioOffset(float offset);
 	float GetRenderRatioOffset() { return m_renderRatioOffset; }
 
-//　取得・設定
-public:
-
+	void SetTexture(const wchar_t* path);
+	void SetTexture(ID3D11ShaderResourceView** texture);
 //　内部操作
 private:
 

@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "GameScene.h"
 #include"../Scene/TitleScene.h"
+#include"../Scene/GemSelectScene.h"
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
 
@@ -74,19 +75,20 @@ void GameScene::Initialize()
 
 	m_camera->SetTartet(m_player->GetPosition(), m_player->GetQuaternion());
 
-	m_cM->Register(m_stage.get());
+	//m_cM->Register(m_stage.get());
 	m_cM->Register(m_player.get());
 
 
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
-	m_gemSelectUI = std::make_unique<GemSelect>();
-	m_gemSelectUI->Initialize(w,h);
-	m_gemSelectUI->Randomize();
 
 	m_hpGauge = std::make_unique<Gauge>();
 	m_hpGauge->Initialize(w, h);
 	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
+
+	m_holdGem = std::make_unique<HoldGem>();
+	m_holdGem->Initialize(w, h);
+
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
@@ -103,23 +105,24 @@ void GameScene::Initialize()
  */
 void GameScene::Update(float elapsedTime)
 {
-	m_gemSelectUI->Update();
 	m_hpGauge->Update();
+	m_holdGem->Update();
 
 	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 
-	 std::list<std::unique_ptr<GameObject>>& enemies =  m_enemyManager->GetEnemies();
-	if (traker->pressed.Enter || enemies.size()==0)
+	 std::list<std::unique_ptr<Character>>& enemies =  m_enemyManager->GetEnemies();
+	if (traker->pressed.Q || enemies.size()==0)
 	{
-		ChangeScene<TitleScene>();
+		ChangeScene<GemSelectScene>();
 	}
 	m_player->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_stage->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+
 	//m_camera->SetEyePos(m_player->GetModelParams().GetPosition() + DirectX::SimpleMath::Vector3(0.0f, 1.0f, 5.0f));
 	m_enemyManager->Update();
 	m_camera->Update(elapsedTime);
 
-	m_player->Damage(6);
+	//m_player->Damage(2);
 
 	m_cM->CollisionCheck();
 }
@@ -149,15 +152,9 @@ void GameScene::Render()
 
 	m_displayCollision->DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates(), Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
-	m_gemSelectUI->Render();
 	m_hpGauge->Render();
+	m_holdGem->Render();
 
-	if (m_stage->GetShape()->Intersects(m_player->GetShape())) 
-	{
-		auto debugFont = Graphics::GetInstance()->GetDebugFont();
-
-		debugFont->AddString(L"Hit", DirectX::SimpleMath::Vector2(0.0f, 20.0f));
-	}
 
 }
 
