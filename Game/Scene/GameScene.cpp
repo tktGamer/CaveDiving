@@ -1,11 +1,11 @@
 /**
  * @file   GameScene.cpp
  *
- * @brief  Xシーンに関するソースファイル
+ * @brief  ゲームシーンに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/09/03
  */
 
 // ヘッダファイルの読み込み ===================================================
@@ -115,6 +115,11 @@ void GameScene::Update(float elapsedTime)
 	{
 		ChangeScene<GemSelectScene>();
 	}
+	else if (!m_player->IsAlive()) 
+	{
+		ChangeScene<TitleScene>();
+	}
+
 	m_player->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_stage->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 
@@ -123,6 +128,7 @@ void GameScene::Update(float elapsedTime)
 	m_camera->Update(elapsedTime);
 
 	//m_player->Damage(2);
+	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
 
 	m_cM->CollisionCheck();
 }
@@ -174,6 +180,8 @@ void GameScene::Finalize()
 	m_stage->Finalize();
 	m_camera->Finalize();
 	m_enemyManager->Finalize();
+
+	GameObject::ResetObjectNumber();
 
 	Shader::GetInstance()->UnRegisterLight();
 }

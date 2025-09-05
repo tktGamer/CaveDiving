@@ -166,6 +166,13 @@ void Pikel::Finalize()
 
 }
 
+/**
+ * @brief メッセージ対応処理
+ *
+ * @param[in] messageID メッセージ
+ *
+ * @return なし
+ */
 void Pikel::OnMessegeAccepted(Message::MessageID messageID)
 {
 	switch (messageID)
@@ -182,6 +189,13 @@ void Pikel::OnMessegeAccepted(Message::MessageID messageID)
 	}
 }
 
+/**
+ * @brief 衝突応答
+ *
+ * @param[in] other 衝突したオブジェクト
+ *
+ * @return なし
+ */
 void Pikel::CollisionResponce(GameObject* other)
 {
 	switch (other->GetObjectType()) 

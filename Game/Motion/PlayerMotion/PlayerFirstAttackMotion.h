@@ -1,18 +1,18 @@
 /**
- * @file   AttackMotion.h
+ * @file   PlayerFirstAttackMotion.h
  *
- * @brief  プレイヤーの攻撃のモーションに関するヘッダファイル
+ * @brief  プレイヤーの第一攻撃のモーションに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/09/05
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
+#include"../Motion.h"
 #include"Game/Object/Player/Hand.h"
 // クラスの宣言 ===============================================================
 
@@ -20,38 +20,30 @@
 /**
   * @brief プレイヤーの攻撃のモーション
   */
-class AttackMotion
+class PlayerFirstAttackMotion : public Motion
 {
-// クラス定数の宣言 -------------------------------------------------
+	// クラス定数の宣言 -------------------------------------------------
 public:
-	enum Attack
-	{
-		COMBO1,		// コンボ1
-		COMBO2,		// コンボ2
-		COMBO3,		// コンボ3
-		JUMP,		// ジャンプ攻撃
-	};
 
 
-// データメンバの宣言 -----------------------------------------------
+	// データメンバの宣言 -----------------------------------------------
 private:
 
 	Hand* m_pRightHand;  //右手のポインタ
-	Hand* m_pLeftHand;  //左手のポインタ
 
-	float m_motionLerp;//モーションの補間値
-
-	Attack m_attackType;
 	bool m_isNextAttack; //次の攻撃をするかどうか
-	std::function<bool()> m_attackFunc;
+
+	//次の攻撃への入力時間
+	float m_inputTime;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	AttackMotion(Hand* pRightHand, Hand* LeftHand);
+	PlayerFirstAttackMotion(Hand* pRightHand);
 
 	// デストラクタ
-	~AttackMotion();
+	~PlayerFirstAttackMotion();
 
 
 // 操作
@@ -63,12 +55,11 @@ public:
 
 	void Reset();
 
-	bool FirstAttack();
-	bool SecondAttack();
-	bool ThirdAttack();
 //　取得・設定
 public:
 	void SetIsNextAttack(bool isNext);
+
+	
 //　内部操作
 private:
 

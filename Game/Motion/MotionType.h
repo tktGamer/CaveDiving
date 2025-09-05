@@ -1,7 +1,7 @@
 /**
- * @file   IObserver.h
+ * @file   MotionType.h
  *
- * @brief  オブザーバーのインターフェイスに関するヘッダファイル
+ * @brief  モーション種類に関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -10,24 +10,30 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-#ifndef IOBSERVER_DEFINED
-#define IOBSERVER_DEFINED
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Message/Message.h"
 
 
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief IObserverインターフェースを定義する
+  * @brief モーションの種類
   */
-class IObserver
+class MotionType
 {
+
 public:
-	// メッセージを受け取る
-	virtual void OnMessegeAccepted(Message::MessageID messageID) = 0;
+	enum PlayerGroundAttack : int
+	{
+		COMBO1=0,	// コンボ1
+		COMBO2,		// コンボ2
+		COMBO3,		// コンボ3
+	};
+
+	enum PlayerAirAttack : int 
+	{
+		JUMP
+	};
 };
 
-#endif	// IOBSERVER_DEFINED

@@ -1,11 +1,11 @@
 /**
  * @file   BatAttack.cpp
  *
- * @brief  プレイヤーの攻撃状態に関するソースファイル
+ * @brief  コウモリの攻撃状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/09/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -25,6 +25,8 @@ BatAttack::BatAttack(Bat* bat)
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
+
+	//m_attackMotion = std::make_unique<BatAttackPreparingMotion>();
 }
 /**
  * @brief デストラクタ

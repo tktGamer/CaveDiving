@@ -50,7 +50,7 @@ void Gauge::Update()
 
     //float ratio = m_gauge->GetRenderRatio();
 
-    float ratio =(float)*m_currentValue / (float)*m_maxValue;
+    float ratio =(float)m_currentValue / (float)m_maxValue;
 
     ratio = TKTLib::Clamp(ratio, 0.0f, 1.0f);
    
@@ -107,10 +107,10 @@ void Gauge::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Dire
  *
  * @return ‚È‚µ
  */
-void Gauge::SetValue(const int& current, const int& max)
+void Gauge::SetValue(const int current, const int max)
 {
-    m_currentValue = &current;
-    m_maxValue = &max;
+    m_currentValue = current;
+    m_maxValue = max;
 }
 
 

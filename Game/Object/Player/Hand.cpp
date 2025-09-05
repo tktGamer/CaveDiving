@@ -3,16 +3,16 @@
  *
  * @brief  プレイヤーの手に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/09/03
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Hand.h"
 #include"../CaveDiving/Game/Object/Player/Player.h"
-#include"../GameObjectCasting.h"
+
  // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -80,8 +80,8 @@ void Hand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& current
 	//q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(1.0f));
 	q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(1.0f));
 	SetQuaternion(GetQuaternion());
-	m_currentAngle = GetQuaternion() * m_motionAngle * currentAngle;
-	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition, m_motionAngle* currentAngle)+ currentPosition + GetPosition();
+	m_currentAngle = GetQuaternion()   * m_motionAngle* currentAngle;
+	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition+ GetPosition(), m_motionAngle* currentAngle)+ currentPosition ;
 	
 	if(m_pikel)
 	m_pikel->Update(elapsedTime, m_currentPosition, m_currentAngle);
@@ -172,20 +172,48 @@ void Hand::Finalize()
 
 }
 
+/**
+ * @brief メッセージ対応処理
+ *
+ * @param[in] messageID メッセージ
+ *
+ * @return なし
+ */
 void Hand::OnMessegeAccepted(Message::MessageID messageID)
 {
 }
 
+/**
+ * @brief 衝突応答
+ *
+ * @param[in] other 衝突したオブジェクト
+ *
+ * @return なし
+ */
 void Hand::CollisionResponce(GameObject* other)
 {
 }
 
 
+/**
+ * @brief モーションの角度を取得
+ *
+ * @param[in] なし
+ *
+ * @return モーションの角度
+ */
 DirectX::SimpleMath::Quaternion Hand::GetMotionAngle()
 {
 	return m_motionAngle;
 }
 
+/**
+ * @brief モーションの角度の設定
+ *
+ * @param[in] なし
+ *
+ * @return モーションの角度
+ */
 void Hand::SetMotionAngle(DirectX::SimpleMath::Quaternion angle)
 {
 	m_motionAngle = angle;

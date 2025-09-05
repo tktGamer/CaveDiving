@@ -1,11 +1,27 @@
+/**
+ * @file   BatMoving.h
+ *
+ * @brief  コウモリの移動状態に関するヘッダファイル
+ *
+ * @author 制作者名 福地貴翔
+ *
+ * @date   日付　2025/09/03
+ */
+
+ // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef BAT_MOVING_DEFINED
 #define BAT_MOVING_DEFINED
+// ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
-
+// クラスの宣言 ===============================================================
 class Bat;
-// BatMovingクラスを定義する
+
+// クラスの定義 ===============================================================
+/**
+  * @brief コウモリの移動状態
+  */
 class BatMoving : public IState
 {
 public:

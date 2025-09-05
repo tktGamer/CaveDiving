@@ -1,7 +1,7 @@
 /**
- * @file   BatAttack.h
+ * @file   BatAttackPreparing.h
  *
- * @brief  コウモリの移動状態に関するヘッダファイル
+ * @brief  コウモリの攻撃準備状態に関するヘッダファイル
  *
  * @author 制作者名 福地貴翔
  *
@@ -10,13 +10,13 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-#ifndef BAT_ATTACK_DEFINED
-#define BAT_ATTACK_DEFINED
+#ifndef BAT_ATTACK_PREPARING_DEFINED
+#define BAT_ATTACK_PREPARING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
 
-#include"Game/Motion/BatMotion/BatAttackMotion.h"
+#include"Game/Motion/BatMotion/BatAttackPreparingMotion.h"
 // クラスの宣言 ===============================================================
 class Bat;
 
@@ -24,13 +24,13 @@ class Bat;
 /**
   * @brief コウモリの攻撃状態
   */
-class BatAttack : public IState
+class BatAttackPreparing : public IState
 {
 public:
 	// コンストラクタ
-	BatAttack(Bat* bat);
+	BatAttackPreparing(Bat* bat, Wing* pRightWing, Wing* pLeftWing);
 	// デストラクタ
-	~BatAttack();
+	~BatAttackPreparing();
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -51,8 +51,8 @@ private:
 	Bat* m_bat;
 	// グラフィックス
 	Graphics* m_graphics;
-	//攻撃モーション
-	std::unique_ptr<Motion> m_attackMotion;
+	//攻撃準備モーション
+	std::unique_ptr<Motion> m_attackPreparingMotion;
 
 };
 

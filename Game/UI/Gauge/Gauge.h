@@ -40,8 +40,8 @@ private:
 	int m_windowWidth, m_windowHeight;
 
 	//ゲージの参照する値
-	const int* m_currentValue;
-	const int* m_maxValue;
+	int m_currentValue;
+	int m_maxValue;
 public:
 	Gauge();
 	~Gauge();
@@ -55,6 +55,6 @@ public:
 		, DirectX::SimpleMath::Vector2 scale
 		, UserInterface::ANCHOR anchor);
 
-	void SetValue(const int& current, const int& max);
+	void SetValue(const int current, const int max);
 
 };

@@ -54,11 +54,48 @@ void PlayerAvoidance::Initialize()
  */
 void PlayerAvoidance::PreUpdate()
 {
+	// キーボードステートを取得する
+	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
+
 	m_dodgeTime = 0;
 	//回避方向を決定する
 	m_dodgeDirection = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f,0.0f,-5.0f),m_player->GetQuaternion());
 
-	
+	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Zero;
+
+	//回避方向を決定する
+	if (key->GetLastState().Up)
+	{
+		direction += DirectX::SimpleMath::Vector3(0.0f, 0.0f, -1.0f);
+	}
+	else if (key->GetLastState().Down)
+	{
+		direction += DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f);
+
+	}
+	if (key->GetLastState().Left)
+	{
+		direction += DirectX::SimpleMath::Vector3(-1.0f, 0.0f, 0.0f);
+
+	}
+	else if (key->GetLastState().Right)
+	{
+		direction += DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f);
+
+	}
+
+	//移動キーの入力がなかったら
+	if (direction == DirectX::SimpleMath::Vector3::Zero) 
+	{
+		direction += DirectX::SimpleMath::Vector3(0.0f, 0.0f, -1.0f);
+
+	}
+	//正規化
+	direction.Normalize();
+	direction *= DODGE_SPEED;
+
+	//回避方向を決定
+	m_dodgeDirection = DirectX::SimpleMath::Vector3::Transform(direction, m_player->GetQuaternion());
 }
 
 /**

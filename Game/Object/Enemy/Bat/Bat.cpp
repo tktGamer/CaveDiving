@@ -25,8 +25,9 @@
  */
 Bat::Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, Character(50,5,5,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
+	, Character(50,8,5,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
 	, m_sphere{ GetPosition(), 2.0f } // 初期位置とサイズを設定
+	,m_frameCount{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("bat.png"));
 
@@ -63,15 +64,21 @@ Bat::~Bat()
 void Bat::Initialize()
 {
 	// 状態の初期化
-	m_idlingState = std::make_unique<BatIdling>(this);
-	m_movingState = std::make_unique<BatMoving>(this);
-	m_attackState = std::make_unique<BatAttack>(this);
+	m_idlingState  = std::make_unique<BatIdling>(this);
+	m_movingState  = std::make_unique<BatMoving>(this);
+	m_attackState  = std::make_unique<BatAttack>(this);
+	m_chasingState = std::make_unique<BatChasing>(this);
+	m_attackPreaparing = std::make_unique<BatAttackPreparing>(this,m_rightWing.get(), m_leftWing.get());
+
 	SetState(m_idlingState.get());
 
 
 	SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -5.0f));
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	SetScale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
+
+	m_currentPosition = m_initialPosition  + GetPosition();
+	m_currentAngle = m_initialAngle * GetQuaternion() ;
 
 }
 
@@ -99,14 +106,17 @@ void Bat::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentP
 
 
 	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
-	m_currentAngle = GetQuaternion() * currentAngle;
-
+	m_currentAngle =m_initialAngle * GetQuaternion() * currentAngle;
+	
 	//当たり判定更新
 	m_sphere.SetCenter(m_currentPosition);
 
 	//子クラス更新
 	m_leftWing->Update(elapsedTime, GetCurrentPosition(), GetCurrentQuaternion());
 	m_rightWing->Update(elapsedTime, GetCurrentPosition(), GetCurrentQuaternion());
+
+	//時間経過
+	m_frameCount += elapsedTime;
 }
 
 
@@ -213,6 +223,30 @@ void Bat::Finalize()
  */
 void Bat::OnMessegeAccepted(Message::MessageID messageID)
 {
+	switch (messageID)
+	{
+	case Message::IDLING:
+		GameObject::ChangeState(m_idlingState.get());
+		break;
+	case Message::MOVING:
+		GameObject::ChangeState(m_movingState.get());
+		break;
+	case Message::GROUNDATTACK:
+		GameObject::ChangeState(m_attackState.get());
+		break;
+	case Message::DAMAGED:
+		break;
+	case Message::CHASING:
+		GameObject::ChangeState(m_chasingState.get());
+		break;
+	case Message::ATTACKPREPARING:
+		GameObject::ChangeState(m_attackPreaparing.get());
+		break;
+
+	default:
+		break;
+	}
+
 }
 
 /**
@@ -257,6 +291,16 @@ void Bat::CollisionResponce(GameObject* other)
 }
 
 
+
+const float Bat::GetFrameCount() const
+{
+	return m_frameCount;
+}
+
+void Bat::ResetFrameCount()
+{
+	m_frameCount = 0.0f;
+}
 
 DirectX::SimpleMath::Vector3 Bat::GetVelocity()
 {

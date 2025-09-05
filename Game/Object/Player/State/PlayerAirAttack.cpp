@@ -1,0 +1,157 @@
+/**
+ * @file   PlayerAirAttack.cpp
+ *
+ * @brief  プレイヤーの攻撃状態に関するソースファイル
+ *
+ * @author 制作者名 福地貴翔
+ *
+ * @date   日付  2025/09/05
+ */
+
+ // ヘッダファイルの読み込み ===================================================
+#include "pch.h"
+#include "Game/Object/Player/State/PlayerAirAttack.h"
+#include "Game/Object/Player/Player.h"
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] player プレイヤーのポインタ
+ */
+PlayerAirAttack::PlayerAirAttack(Player* player, Hand* pRightHand, Hand* pLeftHand)
+	:m_player(player)
+	,m_graphics{}
+	,m_isNextAttack{false}
+{
+	// グラフィックスを取得する
+	m_graphics = Graphics::GetInstance();
+
+	m_airAttack = std::make_unique<PlayerSlamAttackMotion>(player,pRightHand,pLeftHand);
+}
+/**
+ * @brief デストラクタ
+ */
+PlayerAirAttack::~PlayerAirAttack()
+{
+}
+
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerAirAttack::Initialize()
+{
+	PreUpdate();
+}
+
+/**
+ * @brief 事前処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerAirAttack::PreUpdate()
+{
+	
+	m_currentAttack = MotionType::PlayerAirAttack::JUMP;
+
+	m_airAttack->Initialize();
+
+	//ピッケルの当たり判定を有効にする
+	Messenger::GetInstance()->Notify(m_player->GetObjectNumber() + 3, Message::COLLISIONVALID);
+
+}
+
+/**
+ * @brief 更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerAirAttack::Update(const float& elapsedTime)
+{
+	UNREFERENCED_PARAMETER(elapsedTime);
+	// キーボードステートを取得する
+	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
+
+	//モーションの更新
+	if (m_airAttack->Update())
+	{
+
+	}
+
+
+	m_player->SetVelocity(m_player->GetVelocity()*0.8f);
+
+
+	//回避キーが押されたら
+	if (key->pressed.X)
+	{
+		//回避状態へ遷移
+		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
+	}
+
+	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+
+	v.y += -3.0f * elapsedTime;
+	m_player->SetVelocity(v);
+
+
+	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
+
+}
+
+/**
+ * @brief 事後更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerAirAttack::PostUpdate()
+{
+	//元の手の位置に戻す
+	//m_pHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-50.0f)));
+	//m_pHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
+	//m_pHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
+	//ピッケルの当たり判定を無効にする
+	Messenger::GetInstance()->Notify(m_player->GetObjectNumber() + 3, Message::COLLISIONINVALID);
+
+	m_airAttack->Reset();
+
+}
+
+/**
+ * @brief 描画処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerAirAttack::Render()
+{
+	auto debugFont = Graphics::GetInstance()->GetDebugFont();
+
+	debugFont->AddString(L"AirAttack", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
+
+#ifdef _DEBUG
+#endif // DEBUG
+
+}
+
+/**
+ * @brief 終了処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerAirAttack::Finalize()
+{
+}
+

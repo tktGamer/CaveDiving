@@ -69,60 +69,56 @@ void PlayerMoving::Update(const float& elapsedTime)
 	// キーボードステートを取得する
 	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
 
+	//攻撃キーを押されたら地上攻撃状態へ遷移
 	if (key->IsKeyPressed(DirectX::Keyboard::Z)) 
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::ATTACK);
+		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::GROUNDATTACK);
 	}
+	//ジャンプキーを押されたらジャンプ状態へ遷移
 	if (key->pressed.Space)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
 	}
+	//回避キーを押されたら回避状態へ遷移
 	if (key->pressed.X)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+	DirectX::SimpleMath::Vector3 velocity = m_player->GetVelocity();
 
-	DirectX::SimpleMath::Quaternion q = DirectX::SimpleMath::Quaternion::Identity;
 	//移動
 	if (key->GetLastState().Up) 
 	{
-		v -= DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f,0.0f,1.0f) * elapsedTime, m_player->GetQuaternion());
-		//rotateVelocity = DirectX::SimpleMath::Vector3::Transform(v, m_player->GetQuaternion());
+		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * elapsedTime, m_player->GetQuaternion());
 	}
 	if (key->GetLastState().Down)
 	{
-		//v.z += 1.0f*elapsedTime;
-		v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f) * elapsedTime, m_player->GetQuaternion());
-
+		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::BACK * elapsedTime, m_player->GetQuaternion());
 	}
 	if (key->GetLastState().Left)
 	{
-		//v.x -= 1.0f*elapsedTime;
-		v -= DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f) * elapsedTime, m_player->GetQuaternion());
-
-		//q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(2.0f));
+		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::LEFT * elapsedTime, m_player->GetQuaternion());
 	}
 	if (key->GetLastState().Right)
 	{
-		//v.x += 1.0f*elapsedTime;
-		v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f)*elapsedTime, m_player->GetQuaternion());
-
-		///q *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-2.0f));
+		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::RIGHT *elapsedTime, m_player->GetQuaternion());
 	}
 
-	// 姿勢に回転を加える
-	m_player->SetQuaternion(m_player->GetQuaternion() * q);
 
-	if(v.Length()<=0.001f)
+	if(velocity.Length()<=0.001f)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}
-	v *= 0.96f;
-	v.y += -0.8f * elapsedTime;
 
-	m_player->SetVelocity(v);
+	//摩擦
+	velocity *= 0.96f;
+
+	//重力
+	velocity.y += -0.8f * elapsedTime;
+
+	//速度を設定
+	m_player->SetVelocity(velocity);
 
 	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
 

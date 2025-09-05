@@ -3,7 +3,6 @@
 #define MESSAGE_DEFINED
 
 // Messageクラス
-// ・IDLINGをOFFENSIVE_IDLINGに変更する
 class Message
 {
 public:
@@ -12,14 +11,18 @@ public:
 	{ 
 		// 
 		COLLISIONVALID,					// 「衝突有効」状態
-		COLLISIONINVALID,					// 「衝突無効」状態
+		COLLISIONINVALID,				// 「衝突無効」状態
 		// 状態
 		IDLING,							// 「アイドリング」状態
 		MOVING,							// 「移動」状態
-		ATTACK,							// 「攻撃」状態
+		GROUNDATTACK,					// 「地上攻撃」状態
+		AIRATTACK,						// 「空中攻撃」状態
 		AVOIDANCE,						// 「回避」状態
 		DAMAGED,						// 「ダメージ」状態
-		JUMPING,
+		JUMPING,						// 「ジャンプ」状態
+
+		CHASING,						// 「追跡」状態
+		ATTACKPREPARING,			    // 「攻撃準備」状態
 	};
 };
 

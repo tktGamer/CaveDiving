@@ -78,6 +78,19 @@ const int& Character::GetCurrentHP()
 	return m_currentHp;
 }
 
+
+/**
+ * @brief Œ»İ‚ÌHP‚ğİ’è
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
+void Character::SetCurrentHP()
+{
+	m_currentHp = GetMaxHP();
+}
+
 /**
  * @brief Å‘åHP‚ğİ’è
  *
@@ -98,7 +111,7 @@ void Character::SetMaxHP(const int hp)
  *
  * @return Å‘åHP
  */
-const int& Character::GetMaxHP()
+const int Character::GetMaxHP()
 {
 	return m_hp;
 }

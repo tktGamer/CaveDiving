@@ -16,9 +16,7 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] hp 体力
- * @param[in] attack　攻撃力
- * @param[in] deffence　防御力
+ * @param[in] owner 所有者
  * @param[in] type　オブジェクトの種類
  * @param[in] parent　親クラスのポインタ
  * @param[in] initialPosition　初期位置
@@ -40,11 +38,25 @@ Weapon::~Weapon()
 
 }
 
+/**
+ * @brief 所有者の攻撃力を取得する
+ *
+ * @param[in] なし
+ *
+ * @return 所有者の攻撃力
+ */
 const int Weapon::GetOwnerAttackPower() const
 {
 	return m_owner->GetAttackPower();
 }
 
+/**
+ * @brief 所有者を取得する
+ *
+ * @param[in] なし
+ *
+ * @return 所有者
+ */
 Character* Weapon::GetOwner() const
 {
 	return m_owner;

@@ -117,7 +117,7 @@ void EnemyManager::Spawn()
 	m_enemies.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
 	m_enemies.back()->Initialize();
 	CollisionManager::GetInstance()->Register(m_enemies.back().get());
-
+	Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
 }
 
 /**

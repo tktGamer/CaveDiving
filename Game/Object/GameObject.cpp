@@ -19,6 +19,8 @@ int GameObject::s_objectNumber = 0;
 // オブジェクトをカウントアップする
 int GameObject::CountUpNumber() { return s_objectNumber++; }
 
+void GameObject::ResetObjectNumber() { s_objectNumber = 0; }
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -30,8 +32,8 @@ int GameObject::CountUpNumber() { return s_objectNumber++; }
 GameObject::GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
 	: m_objectType{ objectType }
 	, m_graphics{ Graphics::GetInstance() }
-	,m_objectNumber{CountUpNumber()}
-	, m_texture{}
+	, m_objectNumber{CountUpNumber()}
+	, m_texture{ResourceManager::GetInstance()->RequestTexture("white.png")}
 	, m_model{ nullptr }
 	, m_pCurrentState{ nullptr }
 	, m_currentMessage{}

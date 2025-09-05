@@ -1,7 +1,7 @@
 /**
- * @file   PlayerIdling.cpp
+ * @file   PlayerDamaged.cpp
  *
- * @brief  プレイヤーの待機状態に関するソースファイル
+ * @brief  プレイヤーのダメージをくらった状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
@@ -10,7 +10,7 @@
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "Game/Object/Player/State/PlayerIdling.h"
+#include "Game/Object/Player/State/PlayerDamaged.h"
 #include "Game/Object/Player/Player.h"
 
 // メンバ関数の定義 ===========================================================
@@ -19,7 +19,7 @@
  *
  * @param[in] player プレイヤーのポインタ
  */
-PlayerIdling::PlayerIdling(Player* player)
+PlayerDamaged::PlayerDamaged(Player* player)
 	:m_player(player)
 	,m_graphics{}
 {
@@ -29,7 +29,7 @@ PlayerIdling::PlayerIdling(Player* player)
 /**
  * @brief デストラクタ
  */
-PlayerIdling::~PlayerIdling()
+PlayerDamaged::~PlayerDamaged()
 {
 }
 
@@ -40,7 +40,7 @@ PlayerIdling::~PlayerIdling()
  *
  * @return なし
  */
-void PlayerIdling::Initialize()
+void PlayerDamaged::Initialize()
 {
 	PreUpdate();
 }
@@ -52,11 +52,14 @@ void PlayerIdling::Initialize()
  *
  * @return なし
  */
-void PlayerIdling::PreUpdate()
+void PlayerDamaged::PreUpdate()
 {
 	DirectX::SimpleMath::Vector3 velocity = m_player->GetVelocity();
 
 	m_player->SetVelocity(DirectX::SimpleMath::Vector3::Zero);
+
+	//当たった攻撃の方向を考慮してノックバック
+
 }
 
 /**
@@ -66,27 +69,30 @@ void PlayerIdling::PreUpdate()
  *
  * @return なし
  */
-void PlayerIdling::Update(const float& elapsedTime)
+void PlayerDamaged::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
 	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
 	
+
+
 	//移動キーが押されたら移動状態へ遷移
 	if (key->GetLastState().Left || key->GetLastState().Right || key->GetLastState().Up || key->GetLastState().Down)
 	{
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::MOVING);
 	}
-	//ジャンプキーが押されたらジャンプ状態へ遷移
-	if (key->pressed.Space) 
-	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
-	}
-	//攻撃キーが押されたら攻撃状態へ遷移
-	if (key->pressed.Z) 
-	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::GROUNDATTACK);
-	}
+	////ジャンプキーが押されたらジャンプ状態へ遷移
+	//if (key->pressed.Space) 
+	//{
+	//	Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
+	//}
+	////攻撃キーが押されたら攻撃状態へ遷移
+	//if (key->pressed.Z) 
+	//{
+	//	Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::GROUNDATTACK);
+	//}
+	
 	//回避キーが押されたら回避状態へ遷移
 	if (key->pressed.X) 
 	{
@@ -111,7 +117,7 @@ void PlayerIdling::Update(const float& elapsedTime)
  *
  * @return なし
  */
-void PlayerIdling::PostUpdate()
+void PlayerDamaged::PostUpdate()
 {
 }
 
@@ -122,12 +128,12 @@ void PlayerIdling::PostUpdate()
  *
  * @return なし
  */
-void PlayerIdling::Render()
+void PlayerDamaged::Render()
 {
 
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 	
-	debugFont->AddString(L"Idling", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
+	debugFont->AddString(L"Damaged", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 #ifdef _DEBUG
 #endif // DEBUG
 
@@ -140,6 +146,6 @@ void PlayerIdling::Render()
  *
  * @return なし
  */
-void PlayerIdling::Finalize()
+void PlayerDamaged::Finalize()
 {
 }

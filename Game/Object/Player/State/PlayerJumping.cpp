@@ -97,7 +97,7 @@ void PlayerJumping::Update(const float& elapsedTime)
 	}
 	if (key->IsKeyPressed(DirectX::Keyboard::Z))
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::ATTACK);
+		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AIRATTACK);
 	}
 
 
@@ -106,7 +106,7 @@ void PlayerJumping::Update(const float& elapsedTime)
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}
 	v *= 0.96f;
-	v.y += -0.8f * elapsedTime;
+	v.y += -0.89f * elapsedTime;
 
 	m_player->SetVelocity(v);
 

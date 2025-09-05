@@ -85,7 +85,7 @@ void DamageSystem::DamageToCharacter(Character* attacker, Character* defender)
 int DamageSystem::DamageCalculation(const int attackPower, const int diffence)
 {
 
-	int damage = attackPower / 2 - diffence/ 3;
+	int damage = attackPower / 2 - diffence/ 4 ;
 
 	//‚O‚æ‚è‘å‚«‚¢‚È‚çdamage‚ð•Ô‚·
 	return std::max(damage,0);

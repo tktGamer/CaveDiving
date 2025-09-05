@@ -1,7 +1,7 @@
 /**
  * @file   Player.cpp
  *
- * @brief  ＸＸＸＸに関するソースファイル
+ * @brief  プレイヤーに関するソースファイル
  *
  * @author 制作者名
  *
@@ -17,6 +17,7 @@
 #include"Game/Common/Collision/Sphere.h"
 #include"Game/Common/Collision/CollisionManager.h"
 #include"../Gem/GemManager.h"
+#include"Game/Common/DamageSystem.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,12 +25,13 @@
  * @param[in] modelParms モデルパラメータ
  */
 Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
-	: Character(100,10,10,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
+	: Character(100,5,7,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_velocity{ 0.0f, 0.0f, 0.0f }
 	, m_initialeDirection{ 0.0f, 0.0f, -1.0f }
 	, m_sphere{ GetPosition(), 2.0f }
 	,m_remainingJumpCount{1}
+	,m_motionAngle{}
 {
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 }
@@ -55,18 +57,25 @@ Player::~Player()
  */
 void Player::Initialize()
 {
+	//手の生成
 	std::unique_ptr<Hand> handR = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
 	std::unique_ptr<Hand> handL = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
 	// 状態の初期化
-	m_idlingState = std::make_unique<PlayerIdling>(this);
-	m_movingState = std::make_unique<PlayerMoving>(this);
-	m_attackState = std::make_unique<PlayerAttack>(this,handR.get());
-	m_jumpingState = std::make_unique<PlayerJumping>(this);
-	m_avoidState = std::make_unique<PlayerAvoidance>(this);
+	m_idlingState		= std::make_unique<PlayerIdling>(this);
+	m_movingState		= std::make_unique<PlayerMoving>(this);
+	m_groundAttackState = std::make_unique<PlayerGroundAttack>(this,handR.get());
+	m_airAttackState    = std::make_unique<PlayerAirAttack>(this,handR.get(),handL.get());
+	m_jumpingState		= std::make_unique<PlayerJumping>(this);
+	m_avoidState		= std::make_unique<PlayerAvoidance>(this);
+	m_damagedState		= std::make_unique<PlayerDamaged>(this);
 
+
+	//パーツ配列にムーブ
 	m_bodyParts.emplace_back(std::move(handR));
 	m_bodyParts.back()->Initialize();
 	m_bodyParts.emplace_back(std::move(handL));
+
+	//初期状態を設定
 	SetState(m_idlingState.get());
 
 	
@@ -83,8 +92,8 @@ void Player::Initialize()
 
 	Shader::GetInstance()->RegisterLight(m_light.get());
 
-
-
+	//SetMaxHP(100);
+	SetCurrentHP();
 }
 
 
@@ -100,19 +109,24 @@ void Player::Initialize()
  */
 void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
 	
 	//向きを変える
 	ChangeDirection();
 
+	//状態の更新
 	GetState()->Update(elapsedTime);
+	//当たり判定の更新
 	m_sphere.SetCenter(currentPosition + GetPosition());
+
+
 	m_light->Update(elapsedTime,currentPosition + GetPosition(), currentAngle * GetQuaternion());
 
+	//現在位置の更新
 	m_currentPosition = currentPosition + GetPosition();
-	m_currentAngle = currentAngle * GetQuaternion();
+	//現在角度の更新
+	m_currentAngle =  m_motionAngle * GetQuaternion() *  currentAngle ;
 	
-
+	//パーツの更新
 	for (std::unique_ptr<GameObject>& part : m_bodyParts)
 	{
 		part->Update(elapsedTime,m_currentPosition,m_currentAngle);
@@ -182,8 +196,10 @@ void Player::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
+			//シェーダーの設定
 			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
 
+			//頂点情報を設定
 			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
 
 		});
@@ -202,7 +218,11 @@ void Player::Draw()
 	//防御力
 	debugFont->AddString(L"Diffence::", DirectX::SimpleMath::Vector2(0.0f, 200.0f));
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetDiffence())), DirectX::SimpleMath::Vector2(100.0f, 200.0f));
+	//最大の体力
+	debugFont->AddString(L"MaxHP::", DirectX::SimpleMath::Vector2(0.0f, 250.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetMaxHP())), DirectX::SimpleMath::Vector2(100.0f, 250.0f));
 
+	//パーツの描画
 	for (std::unique_ptr<GameObject>& part : m_bodyParts) 
 	{
 		part->Draw();
@@ -223,43 +243,68 @@ void Player::Finalize()
 }
 
 
+/**
+ * @brief メッセージ対応処理
+ *
+ * @param[in] messageID メッセージ
+ *
+ * @return なし
+ */
 void Player::OnMessegeAccepted(Message::MessageID messageID)
 {
 	switch (messageID)
 	{
-	case Message::IDLING:
-		GameObject::ChangeState(m_idlingState.get());
-		break;
-	case Message::MOVING:
-		GameObject::ChangeState(m_movingState.get());
-		break;
-	case Message::ATTACK:
-		GameObject::ChangeState(m_attackState.get());
-		break;
-	case Message::AVOIDANCE:
-		GameObject::ChangeState(m_avoidState.get());
-		break;
-	case Message::DAMAGED:
-		break;
-	case Message::JUMPING:
-		if (ReduceJumpCount()) 
-		{
-			GameObject::ChangeState(m_jumpingState.get());
-		}
-		break;
-	default:
-		break;
+		case Message::IDLING:
+			GameObject::ChangeState(m_idlingState.get());
+			break;
+		case Message::MOVING:
+			GameObject::ChangeState(m_movingState.get());
+			break;
+		case Message::GROUNDATTACK:
+			GameObject::ChangeState(m_groundAttackState.get());
+			break;
+		case Message::AIRATTACK:
+			GameObject::ChangeState(m_airAttackState.get());
+			break;
+		case Message::AVOIDANCE:
+			GameObject::ChangeState(m_avoidState.get());
+			break;
+		case Message::DAMAGED:
+			break;
+		case Message::JUMPING:
+			if (ReduceJumpCount()) 
+			{
+				GameObject::ChangeState(m_jumpingState.get());
+			}
+			break;
+		default:
+			break;
 	}
 }
 
+/**
+ * @brief 衝突応答
+ *
+ * @param[in] other 衝突したオブジェクト
+ *
+ * @return なし
+ */
 void Player::CollisionResponce(GameObject* other)
 {
 	switch (other->GetObjectType())
 	{
 		case Tag::ObjectType::Enemy:
 		{
+			if (GetState() == m_damagedState.get())
+			{
+				break;
+			}
+
 			// ダメージを受ける
-			
+			//DamageSystem::GetInstance()->DamageToCharacter(other->Cast<Character>(), this);
+			//ダメージ状態へ遷移
+			OnMessegeAccepted(Message::DAMAGED);
+
 		}
 		break;
 		case Tag::ObjectType::Stage:
@@ -269,11 +314,12 @@ void Player::CollisionResponce(GameObject* other)
 			//速度をリセット
 			m_velocity.y = 0.0f;
 			ResetJumpCount();
-			//ジャンプ状態なら待機状態へ移行
-			if (GetState() == m_jumpingState.get()) 
+			//ジャンプ状態・空中攻撃状態なら待機状態へ移行
+			if (GetState() == m_jumpingState.get() || GetState() == m_airAttackState.get()) 
 			{
 				OnMessegeAccepted(Message::IDLING);
 			}
+			
 
 			break;
 		}
@@ -294,25 +340,81 @@ void Player::SetVelocity(DirectX::SimpleMath::Vector3 v)
 	m_velocity = v;
 }
 
-const int& Player::GetMaxHP()
+/**
+ * @brief 宝石による強化量を考慮した最大HPを取得
+ *
+ * @param[in] なし
+ *
+ * @return 最大HP
+ */
+const int Player::GetMaxHP()
 {
-	return GetPlusStatus(Gem::Type::HP) + Character::GetMaxHP();
+	return  Character::GetMaxHP()+ GetPlusStatus(Gem::Type::HP);
 }
 
+/**
+ * @brief 宝石による強化量を考慮した攻撃力を取得
+ *
+ * @param[in] なし
+ *
+ * @return 攻撃力
+ */
 const int Player::GetAttackPower()
 {
 	return GetPlusStatus(Gem::Type::STR) + Character::GetAttackPower();
 }
 
+/**
+ * @brief 宝石による強化量を考慮した防御力を取得
+ *
+ * @param[in] なし
+ *
+ * @return 防御力
+ */
 const int Player::GetDiffence()
 {
 	return GetPlusStatus(Gem::Type::DEF)+ Character::GetDiffence();
 }
 
+
+/**
+ * @brief ジャンプできる残り回数を取得
+ *
+ * @param[in] なし
+ *
+ * @return ジャンプできる残り回数
+ */
 const int Player::GetRemainingJumpCount() const
 {
 	return m_remainingJumpCount;
 }
+
+
+/**
+ * @brief モーションの角度を取得
+ *
+ * @param[in] なし
+ *
+ * @return モーションの角度
+ */
+DirectX::SimpleMath::Quaternion Player::GetMotionAngle() const
+{
+	return m_motionAngle;
+}
+
+
+/**
+ * @brief モーションの角度の設定
+ *
+ * @param[in] なし
+ *
+ * @return モーションの角度
+ */
+void Player::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
+{
+	m_motionAngle = angle;
+}
+
 
 /**
  * @brief ジャンプできる残り回数を減らす
@@ -347,6 +449,7 @@ void Player::ResetJumpCount()
 {
 	m_remainingJumpCount = 1;
 }
+
 
 /**
  * @brief 方向を変える

@@ -1,11 +1,30 @@
+/**
+ * @file   IState.h
+ *
+ * @brief  ステイトのインターフェイスの定義に関するヘッダファイル
+ *
+ * @author 制作者名  福地貴翔
+ *
+ * @date   日付  2025/09/03
+ */
+
+ // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef STATE_DEFINED
 #define STATE_DEFINED
+// ヘッダファイルの読み込み ===================================================
 #include "StepTimer.h"
 #include <Keyboard.h>
 #include"Game/Interface/IObserver.h"
 #include"Game/Common/Graphics.h"
-// IStateインターフェイスを定義する 
+
+
+// クラスの宣言 ===============================================================
+
+// クラスの定義 ===============================================================
+/**
+  * @brief IStateインターフェイスを定義する
+  */
 class IState
 {
 public:

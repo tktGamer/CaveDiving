@@ -1,7 +1,7 @@
 /**
- * @file   Motion.h
+ * @file   IMotion.h
  *
- * @brief  モーションの基底に関するヘッダファイル
+ * @brief  モーションのインターフェイス定義に関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -10,54 +10,49 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
+#ifndef IMOTION_DEFINED
+#define IMOTION_DEFINED
 
 // ヘッダファイルの読み込み ===================================================
-#include"../Motion/MotionType.h"
+
 
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief モーションの基底
+  * @brief モーションを定義
   */
-class Motion
+class IMotion
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	//モーションの補間値
-	float m_motionLerp = 0.0f;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	// コンストラクタ
-	Motion();
 
 	// デストラクタ
-	virtual ~Motion();
+	virtual ~IMotion() =default;
 
 
 // 操作
 public:
-	virtual void Initialize()=0;
+	virtual void Initialize() =0;
 
-	virtual bool Update() = 0;
+	virtual bool Update()=0;
 
 
-	virtual void Reset();
+	virtual void Reset()=0;
 
 //　取得・設定
 public:
 
-
-	//モーション補間値の取得
-	float GetMotionLerp() const;
-	//モーション補間値の設定
-	void SetMotionLerp(const float& motionLerp);
 //　内部操作
 private:
 
 };
 
+#endif	// IOBSERVER_DEFINED

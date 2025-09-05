@@ -1,11 +1,27 @@
+/**
+ * @file   BatIdling.h
+ *
+ * @brief  コウモリの移動状態に関するヘッダファイル
+ *
+ * @author 制作者名 福地貴翔
+ *
+ * @date   日付　2025/09/03
+ */
+
+ // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef BAT_IDLING_DEFINED
 #define BAT_IDLING_DEFINED
+// ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
+// クラスの宣言 ===============================================================
 class Bat;
 
-// BatIdlingクラスを定義する
+// クラスの定義 ===============================================================
+/**
+  * @brief コウモリの待機状態
+  */
 class BatIdling : public IState
 {
 public:

@@ -1,5 +1,5 @@
 /**
- * @file   BatAttack.h
+ * @file   BatChasing.h
  *
  * @brief  コウモリの移動状態に関するヘッダファイル
  *
@@ -10,27 +10,25 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-#ifndef BAT_ATTACK_DEFINED
-#define BAT_ATTACK_DEFINED
+#ifndef BAT_CHASING_DEFINED
+#define BAT_CHASING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
-
-#include"Game/Motion/BatMotion/BatAttackMotion.h"
 // クラスの宣言 ===============================================================
 class Bat;
-
+class GameObject;
 // クラスの定義 ===============================================================
 /**
-  * @brief コウモリの攻撃状態
+  * @brief コウモリの追跡状態
   */
-class BatAttack : public IState
+class BatChasing : public IState
 {
 public:
 	// コンストラクタ
-	BatAttack(Bat* bat);
+	BatChasing(Bat* bat);
 	// デストラクタ
-	~BatAttack();
+	~BatChasing();
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -43,17 +41,14 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-
-
-	
+//内部処理
 private:
-	// プレイヤー
+	//二点のラジアン角を求める
+	const float CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target);
+private:
+	// コウモリ
 	Bat* m_bat;
-	// グラフィックス
-	Graphics* m_graphics;
-	//攻撃モーション
-	std::unique_ptr<Motion> m_attackMotion;
 
+	const GameObject* m_pPlayer;
 };
-
-#endif		// SOLDIER_IDLING_DEFINED
+#endif		// BAT_IDLING_DEFINED

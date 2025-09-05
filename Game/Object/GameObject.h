@@ -81,7 +81,7 @@ public:
 	GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
-	~GameObject();
+	virtual ~GameObject();
 
 
 // 操作
@@ -130,16 +130,14 @@ public:
 	// モデルの拡大率の取得
 	const DirectX::SimpleMath::Vector3& GetScale()  { return m_scale; }
 	//
-	const DirectX::SimpleMath::Vector3& GetCurrentPosition() { return m_currentPosition; }
-	const DirectX::SimpleMath::Quaternion& GetCurrentQuaternion() { return m_currentAngle; }
+	const DirectX::SimpleMath::Vector3& GetCurrentPosition() const { return m_currentPosition; }
+	const DirectX::SimpleMath::Quaternion& GetCurrentQuaternion() const { return m_currentAngle; }
 	
 	// オブジェクトの種類を取得する
 	Tag::ObjectType GetObjectType() const; 
 	// グラフィックスクラスのポインタを取得する
 	Graphics* GetGraphics() const; 
 
-	// オブジェクトをカウントアップする
-	static int CountUpNumber();
 	// 状態を取得する
 	IState* GetState() { return m_pCurrentState; }
 	// 状態を設定する
@@ -159,8 +157,12 @@ public:
 	// メッセージを設定する
 	void SetCurrentMessage(Message currentMessage) { m_currentMessage = currentMessage; }
 
+	// オブジェクトをカウントアップする
+	static int CountUpNumber();
+	//オブジェクトの番号を取得
 	const int GetObjectNumber();
 
+	static void ResetObjectNumber();
 //　内部操作
 private:
 

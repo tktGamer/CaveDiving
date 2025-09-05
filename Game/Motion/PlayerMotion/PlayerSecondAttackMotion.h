@@ -1,7 +1,7 @@
 /**
- * @file   AttackMotion.h
+ * @file   PlayerSecondAttackMotion.h
  *
- * @brief  プレイヤーの攻撃のモーションに関するヘッダファイル
+ * @brief  プレイヤーの第二攻撃のモーションに関するヘッダファイル
  *
  * @author 制作者名
  *
@@ -12,7 +12,7 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
+#include"../Motion.h"
 #include"Game/Object/Player/Hand.h"
 // クラスの宣言 ===============================================================
 
@@ -20,9 +20,9 @@
 /**
   * @brief プレイヤーの攻撃のモーション
   */
-class AttackMotion
+class PlayerSecondAttackMotion : public Motion
 {
-// クラス定数の宣言 -------------------------------------------------
+	// クラス定数の宣言 -------------------------------------------------
 public:
 	enum Attack
 	{
@@ -33,25 +33,22 @@ public:
 	};
 
 
-// データメンバの宣言 -----------------------------------------------
+	// データメンバの宣言 -----------------------------------------------
 private:
 
 	Hand* m_pRightHand;  //右手のポインタ
 	Hand* m_pLeftHand;  //左手のポインタ
 
-	float m_motionLerp;//モーションの補間値
-
-	Attack m_attackType;
 	bool m_isNextAttack; //次の攻撃をするかどうか
-	std::function<bool()> m_attackFunc;
+	
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	AttackMotion(Hand* pRightHand, Hand* LeftHand);
+	PlayerSecondAttackMotion(Hand* pRightHand);
 
 	// デストラクタ
-	~AttackMotion();
+	~PlayerSecondAttackMotion();
 
 
 // 操作
@@ -63,9 +60,6 @@ public:
 
 	void Reset();
 
-	bool FirstAttack();
-	bool SecondAttack();
-	bool ThirdAttack();
 //　取得・設定
 public:
 	void SetIsNextAttack(bool isNext);

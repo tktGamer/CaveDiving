@@ -26,7 +26,8 @@ class PlayerAvoidance : public IState
 {
 	// クラス定数の宣言 -------------------------------------------------
 public:
-
+	//回避スピード
+	static constexpr float DODGE_SPEED = 4.0f;
 
 	// データメンバの宣言 -----------------------------------------------
 private:

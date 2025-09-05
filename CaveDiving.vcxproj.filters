@@ -62,9 +62,6 @@
     <Filter Include="Game\Factory">
       <UniqueIdentifier>{89398724-c6a8-4b16-9028-72b4f8fe279e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Object\Player\State\AttackMotion">
-      <UniqueIdentifier>{4e4fa2a4-2583-4616-9d84-da3577a3901b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\UI">
       <UniqueIdentifier>{423e0a96-e9c2-494d-8e6a-aa2419d4c39a}</UniqueIdentifier>
     </Filter>
@@ -85,6 +82,12 @@
     </Filter>
     <Filter Include="Game\Motion">
       <UniqueIdentifier>{e36d664b-4ec1-4f02-9fe1-758598807c0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Motion\PlayerMotion">
+      <UniqueIdentifier>{cb780c85-1034-4fa4-ac12-acc3ea7eeb18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Motion\BatMotion">
+      <UniqueIdentifier>{99cba174-5c64-4fad-a703-09df1e2b9960}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -191,7 +194,7 @@
     <ClInclude Include="Game\Object\Player\Pikel.h">
       <Filter>Game\Object\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Player\State\PlayerAttack.h">
+    <ClInclude Include="Game\Object\Player\State\PlayerGroundAttack.h">
       <Filter>Game\Object\Player\State</Filter>
     </ClInclude>
     <ClInclude Include="Game\Tag.h">
@@ -218,9 +221,6 @@
     </ClInclude>
     <ClInclude Include="Game\Scene\LoadScene.h">
       <Filter>Game\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Player\State\AttackMotion\AttackMotion.h">
-      <Filter>Game\Object\Player\State\AttackMotion</Filter>
     </ClInclude>
     <ClInclude Include="Game\UI\UserInterface.h">
       <Filter>Game\UI</Filter>
@@ -261,14 +261,47 @@
     <ClInclude Include="Game\Common\DamageSystem.h">
       <Filter>Game\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Motion\Motion.h">
-      <Filter>Game\Motion</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Object\Weapon.h">
       <Filter>Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\GameObjectCasting.h">
-      <Filter>Game\Object</Filter>
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatChasing.h">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatAttackPreparing.h">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Interface\IMotion.h">
+      <Filter>Game\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\PlayerMotion\PlayerFirstAttackMotion.h">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\PlayerMotion\PlayerSecondAttackMotion.h">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\Motion.h">
+      <Filter>Game\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\MotionType.h">
+      <Filter>Game\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\PlayerMotion\PlayerThirdAttackMotion.h">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\State\PlayerAirAttack.h">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\PlayerMotion\PlayerSlamAttackMotion.h">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\State\PlayerDamaged.h">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\BatMotion\BatAttackPreparingMotion.h">
+      <Filter>Game\Motion\BatMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\BatMotion\BatAttackMotion.h">
+      <Filter>Game\Motion\BatMotion</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -358,7 +391,7 @@
     <ClCompile Include="Game\Object\Player\Pikel.cpp">
       <Filter>Game\Object\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Player\State\PlayerAttack.cpp">
+    <ClCompile Include="Game\Object\Player\State\PlayerGroundAttack.cpp">
       <Filter>Game\Object\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object\Player\State\PlayerJumping.cpp">
@@ -381,9 +414,6 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\LoadScene.cpp">
       <Filter>Game\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object\Player\State\AttackMotion\AttackMotion.cpp">
-      <Filter>Game\Object\Player\State\AttackMotion</Filter>
     </ClCompile>
     <ClCompile Include="Game\UI\UserInterface.cpp">
       <Filter>Game\UI</Filter>
@@ -424,11 +454,41 @@
     <ClCompile Include="Game\Common\DamageSystem.cpp">
       <Filter>Game\Common</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Object\Weapon.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatChasing.cpp">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatAttackPreparing.cpp">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\PlayerMotion\PlayerFirstAttackMotion.cpp">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\PlayerMotion\PlayerSecondAttackMotion.cpp">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Motion\Motion.cpp">
       <Filter>Game\Motion</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Weapon.cpp">
-      <Filter>Game\Object</Filter>
+    <ClCompile Include="Game\Motion\PlayerMotion\PlayerThirdAttackMotion.cpp">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\State\PlayerAirAttack.cpp">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\PlayerMotion\PlayerSlamAttackMotion.cpp">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\State\PlayerDamaged.cpp">
+      <Filter>Game\Object\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\BatMotion\BatAttackPreparingMotion.cpp">
+      <Filter>Game\Motion\BatMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\BatMotion\BatAttackMotion.cpp">
+      <Filter>Game\Motion\BatMotion</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -452,6 +512,7 @@
     <None Include="Resources\Shaders\UIShader\UI.hlsli">
       <Filter>Resources\Shaders\UIShader</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\ModelShader\ModelVS.hlsl">

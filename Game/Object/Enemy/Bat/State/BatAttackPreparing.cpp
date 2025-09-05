@@ -1,35 +1,38 @@
 /**
- * @file   BatMoving.cpp
+ * @file   BatAttackPreparing.cpp
  *
- * @brief  コウモリの移動状態に関するソースファイル
+ * @brief  コウモリの攻撃準備状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/09/03
+ * @date   日付　2025/09/03
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "Game/Object/Enemy/Bat/State/BatMoving.h"
+#include "Game/Object/Enemy/Bat/State/BatAttackPreparing.h"
 #include "Game/Object/Enemy/Bat/Bat.h"
 
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] player プレイヤーのポインタ
+ * @param[in] bat コウモリのポインタ
  */
-BatMoving::BatMoving(Bat* bat)
-	: m_bat(bat)
+BatAttackPreparing::BatAttackPreparing(Bat* bat, Wing* pRightWing, Wing* pLeftWing)
+	:m_bat(bat)
 	, m_graphics{}
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
+
+	m_attackPreparingMotion = std::make_unique<BatAttackPreparingMotion>(pRightWing,pLeftWing);
+
 }
 /**
  * @brief デストラクタ
  */
-BatMoving::~BatMoving()
+BatAttackPreparing::~BatAttackPreparing()
 {
 }
 
@@ -40,7 +43,7 @@ BatMoving::~BatMoving()
  *
  * @return なし
  */
-void BatMoving::Initialize()
+void BatAttackPreparing::Initialize()
 {
 	PreUpdate();
 }
@@ -52,7 +55,7 @@ void BatMoving::Initialize()
  *
  * @return なし
  */
-void BatMoving::PreUpdate()
+void BatAttackPreparing::PreUpdate()
 {
 }
 
@@ -63,9 +66,14 @@ void BatMoving::PreUpdate()
  *
  * @return なし
  */
-void BatMoving::Update(const float& elapsedTime)
+void BatAttackPreparing::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
+
+	//m_bat->SetVelocity(m_bat->GetVelocity() * 0.8f);
+
+	//Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::IDLING);
+	//m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
 
 }
 
@@ -76,7 +84,7 @@ void BatMoving::Update(const float& elapsedTime)
  *
  * @return なし
  */
-void BatMoving::PostUpdate()
+void BatAttackPreparing::PostUpdate()
 {
 }
 
@@ -87,7 +95,7 @@ void BatMoving::PostUpdate()
  *
  * @return なし
  */
-void BatMoving::Render()
+void BatAttackPreparing::Render()
 {
 
 #ifdef _DEBUG
@@ -102,6 +110,7 @@ void BatMoving::Render()
  *
  * @return なし
  */
-void BatMoving::Finalize()
+void BatAttackPreparing::Finalize()
 {
 }
+

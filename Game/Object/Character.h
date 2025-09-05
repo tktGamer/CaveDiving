@@ -23,7 +23,14 @@ class Character : public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	struct  MOVE
+	{
+		static constexpr DirectX::SimpleMath::Vector3 FRONT = { 0.0f,0.0f,-1.0f };
+		static constexpr DirectX::SimpleMath::Vector3 BACK  = { 0.0f,0.0f, 1.0f };
+		static constexpr DirectX::SimpleMath::Vector3 LEFT  = {-1.0f,0.0f, 0.0f };
+		static constexpr DirectX::SimpleMath::Vector3 RIGHT = { 1.0f,0.0f, 0.0f };
 
+	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -37,8 +44,6 @@ private:
 	//防御力
 	int m_diffence;
 
-	//生きているか
-	bool m_isAlive;
 
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -49,7 +54,7 @@ public:
 		Tag::ObjectType type, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 
 	// デストラクタ
-	~Character();
+	virtual ~Character();
 
 
 // 操作
@@ -60,10 +65,12 @@ public:
 public:
 	//現在の体力の取得
 	const int& GetCurrentHP();
+	//現在の体力の設定
+	virtual void SetCurrentHP();
 	// 体力の設定
 	void SetMaxHP(const int hp);
 	// 体力の取得
-	virtual const int& GetMaxHP();
+	virtual const int GetMaxHP();
 	// 攻撃力の設定
 	void SetAttackPower(const int attack);
 	// 攻撃力の取得
