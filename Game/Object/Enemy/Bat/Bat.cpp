@@ -66,14 +66,15 @@ void Bat::Initialize()
 	// 状態の初期化
 	m_idlingState  = std::make_unique<BatIdling>(this);
 	m_movingState  = std::make_unique<BatMoving>(this);
-	m_attackState  = std::make_unique<BatAttack>(this);
 	m_chasingState = std::make_unique<BatChasing>(this);
+	m_attackState  = std::make_unique<BatAttack>(this, m_rightWing.get(), m_leftWing.get());
 	m_attackPreaparing = std::make_unique<BatAttackPreparing>(this,m_rightWing.get(), m_leftWing.get());
+	m_damagedState = std::make_unique<BatDamaged>(this);
 
 	SetState(m_idlingState.get());
 
 
-	SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -5.0f));
+	SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -8.0f));
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	SetScale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
 
@@ -106,7 +107,7 @@ void Bat::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentP
 
 
 	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
-	m_currentAngle =m_initialAngle * GetQuaternion() * currentAngle;
+	m_currentAngle =m_initialAngle * m_motionAngle* GetQuaternion() * currentAngle;
 	
 	//当たり判定更新
 	m_sphere.SetCenter(m_currentPosition);
@@ -235,6 +236,7 @@ void Bat::OnMessegeAccepted(Message::MessageID messageID)
 		GameObject::ChangeState(m_attackState.get());
 		break;
 	case Message::DAMAGED:
+		GameObject::ChangeState(m_damagedState.get());
 		break;
 	case Message::CHASING:
 		GameObject::ChangeState(m_chasingState.get());
@@ -273,15 +275,19 @@ void Bat::CollisionResponce(GameObject* other)
 			//速度をリセット
 			m_velocity.y = 0.0f;
 
+			//攻撃状態なら
+			if (GetState() == m_attackState.get()) 
+			{
+				OnMessegeAccepted(Message::MessageID::IDLING);
+			}
+
 			break;
 		}
 		case Tag::ObjectType::Weapon:
 		{
 			Weapon* weapon = other->Cast<Weapon>();
-			//ピッケルとの衝突応答
-			DamageSystem::GetInstance()->DamageToCharacter(weapon->GetOwner(),this);
-			//管理クラスに削除依頼を出す
-			//Damage(10);
+			//攻撃力をもっている所有者を渡す
+			OnDamage(weapon->GetOwner());
 
 			break;
 		}
@@ -312,3 +318,13 @@ void Bat::SetVelocity(DirectX::SimpleMath::Vector3 v)
 	m_velocity = v;
 }
 
+
+DirectX::SimpleMath::Quaternion Bat::GetMotionAngle()
+{
+	return m_motionAngle;
+}
+
+void Bat::SetMotionAngle(DirectX::SimpleMath::Quaternion angle)
+{
+	m_motionAngle = angle;
+}

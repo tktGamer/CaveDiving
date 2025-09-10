@@ -13,28 +13,31 @@
 #include"GemSelect.h"
 #include"../CaveDiving/Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
-GemSelect::GemSelect()
+#include"Game/UI/GemSelectUIManager.h"
+GemSelect::GemSelect(int width, int height, GemSelectUIManager* pUIManager)
     : m_menuIndex(0)
-    , m_windowHeight(0)
-    , m_windowWidth(0)
+    , m_windowHeight(height)
+    , m_windowWidth(width)
     , m_baseTexturePath(nullptr)
     ,m_pGemManager{GemManager::GetInstance()}
+    ,m_pUIManager{pUIManager}
 {
    
 }
 
 GemSelect::~GemSelect()
 {
+
 }
 
-void GemSelect::Initialize(int width,int height)
+void GemSelect::Initialize()
 {
-    m_windowWidth = width;
-    m_windowHeight = height;
 
     //  背景となるウィンドウ画像を読み込む
     m_baseTexturePath = L"Resources/Textures/window.png";
 
+
+    Randomize();
 
 }
 
@@ -66,10 +69,36 @@ void GemSelect::Update()
     //スペースキーを押したら
     if (tracker->pressed.Space) 
     {
-        auto p= Messenger::GetInstance()->GetObject(-1);
-        
-        m_pGems[m_menuIndex];
-        m_pGemManager->SetHoldGem(m_pGems[m_menuIndex]);
+        //「いいえ」ならUI削除
+        if (m_menuIndex >= 3) 
+        {
+            m_pUIManager->RequestClearUI();
+            return;
+        }
+
+
+        //宝石を選択していたらスロットに空きがあるか確認
+        if (m_pGemManager->IsBlankSlot()) 
+        {
+            //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
+            if (m_menuIndex < _countof(m_pGems)) 
+            {
+                //プレイヤーの所持する宝石に登録
+                m_pGemManager->SetHoldGem(m_pGems[m_menuIndex]);
+                m_pUIManager->SelectFinishNotice();
+            }
+        }
+        else
+        {
+            //空きがなかったら入れ替え確認UI生成
+            m_pUIManager->RequestPushUI(GemSelectUIManager::UI::CHANGECOFIRM);
+           
+            //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
+            if (m_menuIndex < _countof(m_pGems)) 
+            {
+                m_pGemManager->SetReplacementGem(m_pGems[m_menuIndex]);
+            }
+        }
         
     }
 
@@ -90,6 +119,8 @@ void GemSelect::Update()
     m_userInterface[m_menuIndex]->SetScale(select);
     //  背景用のウィンドウ画像にも同じ割合の値を設定する
    // m_base[m_menuIndex]->SetScale(select);
+
+    
 }
 
 void GemSelect::Render()
@@ -129,6 +160,8 @@ void GemSelect::Randomize()
 {
     m_userInterface.clear();
     m_base.clear();
+
+    //３つの宝石を選出する
     for (int i = 0; i < 3; i++)
     {
         m_pGems[i] = m_pGemManager->RandomSelection();
@@ -136,6 +169,20 @@ void GemSelect::Randomize()
         Gem::GemImagePath imagePath = m_pGems[i]->GetImagePath();
         Add(imagePath, { PANNEL_X+PANNEL_X*i,310.0f }, { 0.35f,0.35f }, UserInterface::ANCHOR::MIDDLE_CENTER);
     }
+
+
+    //  背景用のウィンドウ画像も追加する
+    std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
+    base->Create(
+        L"UI/cancelframe.png"
+        , { 650.0f,625.0f }
+        , { 1.0f, 1.0f }
+        , UserInterface::ANCHOR::MIDDLE_CENTER
+    );
+
+    base->SetWindowSize(m_windowWidth, m_windowHeight);
+    //  背景用のアイテムも新しく追加する
+    m_userInterface.push_back(std::move(base));
 }
 
 

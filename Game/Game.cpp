@@ -7,6 +7,8 @@
 
 #include"Game/Scene/TitleScene.h"
 #include"Game/Scene/GameScene.h"
+#include"Game/Scene/GemSelectScene.h"
+#include"Scene/ResultScene.h"
 extern void ExitGame() noexcept;
 
 using namespace DirectX;
@@ -62,7 +64,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_gemManager->LoadGemData();
 
     // ‹N“®ƒV[ƒ“Ý’è
-    m_sceneManager->SetScene<TitleScene>();
+    m_sceneManager->SetScene<GemSelectScene>();
 }
 
 #pragma region Frame Update
@@ -264,7 +266,7 @@ void Game::CreateWindowSizeDependentResources()
     auto proj = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
         XMConvertToRadians(45.0f)
         , static_cast<float>(rect.right) / static_cast<float>(rect.bottom)
-        , 0.1f, 100.0f);
+        , 0.1f, 500.0f);
     m_graphics->SetProjectionMatrix(proj);
     m_graphics->SetScreenSize(rect.right, rect.bottom);
 }

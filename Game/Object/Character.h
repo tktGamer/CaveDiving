@@ -25,10 +25,22 @@ class Character : public GameObject
 public:
 	struct  MOVE
 	{
+		//前
 		static constexpr DirectX::SimpleMath::Vector3 FRONT = { 0.0f,0.0f,-1.0f };
+		//後ろ
 		static constexpr DirectX::SimpleMath::Vector3 BACK  = { 0.0f,0.0f, 1.0f };
+		//左
 		static constexpr DirectX::SimpleMath::Vector3 LEFT  = {-1.0f,0.0f, 0.0f };
+		//右
 		static constexpr DirectX::SimpleMath::Vector3 RIGHT = { 1.0f,0.0f, 0.0f };
+		//左前
+		static constexpr DirectX::SimpleMath::Vector3 LEFT_FRONT  = { -1.0f,0.0f,-1.0f };
+		//右前
+		static constexpr DirectX::SimpleMath::Vector3 RIGHT_FRONT = { 1.0f,0.0f,-1.0f };
+		//左後ろ
+		static constexpr DirectX::SimpleMath::Vector3 LEFT_BACK   = { -1.0f,0.0f, 1.0f };
+		//右後ろ
+		static constexpr DirectX::SimpleMath::Vector3 RIGHT_BACK  = { 1.0f,0.0f, 1.0f };
 
 	};
 
@@ -44,7 +56,10 @@ private:
 	//防御力
 	int m_diffence;
 
-
+	//無敵状態か
+	bool m_isInvincible;
+	//攻撃をくらった方向
+	DirectX::SimpleMath::Vector3 m_damageDirection;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -59,8 +74,11 @@ public:
 
 // 操作
 public:
-	//ダメージ
-	void Damage(const int damage);
+	//ダメージを受けたときの処理
+	virtual void OnDamage(GameObject* other);
+
+	//ダメージを受ける
+	void TakeDamage(const int& damage);
 //　取得・設定
 public:
 	//現在の体力の取得
@@ -83,6 +101,14 @@ public:
 	//生きているか
 	bool IsAlive() const;
 
+	const DirectX::SimpleMath::Vector3& GetDamageDirection() const;
+
+	void SetDamageDirection(const DirectX::SimpleMath::Vector3& damageDirection);
+	//無敵か
+	const bool IsInvincible() const;
+
+	//無敵の設定
+	void SetInvincible(const bool& isInvinccible);
 //　内部操作
 private:
 

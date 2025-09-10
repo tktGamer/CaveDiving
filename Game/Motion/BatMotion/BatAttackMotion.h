@@ -30,13 +30,17 @@ public:
 private:
 	//コウモリのポインタ
 	Bat* m_pBat;
+	//右手のポインタ
+	Wing* m_pRightWing;
+	//左手のポインタ
+	Wing* m_pLeftWing;
 
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	BatAttackMotion(Bat* pBat);
+	BatAttackMotion(Bat* pBat, Wing* pRightWing, Wing* pLeftWing);
 
 	// デストラクタ
 	~BatAttackMotion();

@@ -18,9 +18,9 @@
  *
  * @param[in] ‚È‚µ
  */
-PlayerSecondAttackMotion::PlayerSecondAttackMotion(Hand* pRightHand)
+PlayerSecondAttackMotion::PlayerSecondAttackMotion(Hand* pRightHand, Hand* pLeftHand)
 	: m_pRightHand{ pRightHand }
-	,m_pLeftHand{}
+	,m_pLeftHand{pLeftHand}
 	, m_isNextAttack{ false }
 {
 
@@ -65,14 +65,21 @@ bool PlayerSecondAttackMotion::Update()
 	float motionLerp = GetMotionLerp();
 
 
-	DirectX::SimpleMath::Quaternion start = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(170.0f));
-	DirectX::SimpleMath::Quaternion end = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f));
-	DirectX::SimpleMath::Quaternion q = DirectX::SimpleMath::Quaternion::Identity;
+	float rightHandAngle = TKTLib::Lerp(170.0f, 0.0f, motionLerp);
+	float leftHandAngle = TKTLib::Lerp(30.0f, -30.0f, motionLerp);
 
-	DirectX::SimpleMath::Quaternion::Lerp(start, end, motionLerp, q);
+	DirectX::SimpleMath::Quaternion rightHandMotionAngle
+		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(rightHandAngle));
+
+	DirectX::SimpleMath::Quaternion leftHandMotionAngle
+		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(leftHandAngle));
+
+
 	motionLerp += 5.0f * Messenger::GetInstance()->GetElapsedTime();
 
-	m_pRightHand->SetMotionAngle(q);
+	m_pRightHand->SetMotionAngle(rightHandMotionAngle);
+	m_pLeftHand->SetMotionAngle(leftHandMotionAngle);
+
 	SetMotionLerp(std::min(motionLerp, 1.0f));
 
 	if (GetMotionLerp() >= 1.0f)

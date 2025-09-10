@@ -57,6 +57,8 @@ void BatAttackPreparing::Initialize()
  */
 void BatAttackPreparing::PreUpdate()
 {
+	m_attackPreparingMotion->Initialize();
+
 }
 
 /**
@@ -70,10 +72,18 @@ void BatAttackPreparing::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
-	//m_bat->SetVelocity(m_bat->GetVelocity() * 0.8f);
+	//UŒ‚—\”õƒ‚[ƒVƒ‡ƒ“‚ªI‚í‚Á‚½‚çUŒ‚ó‘Ô‚Ö‘JˆÚ
+	if (m_attackPreparingMotion->Update()) 
+	{
+		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::MessageID::GROUNDATTACK);
+	}
+	//Î‚ßãŒã•û
+	DirectX::SimpleMath::Vector3 flyVelocity = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{ 0.0f,1.0f,1.0f }*elapsedTime,m_bat->GetCurrentQuaternion());
+
+	
 
 	//Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::IDLING);
-	//m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
+	m_bat->SetPosition(m_bat->GetPosition() + flyVelocity);
 
 }
 
@@ -86,6 +96,7 @@ void BatAttackPreparing::Update(const float& elapsedTime)
  */
 void BatAttackPreparing::PostUpdate()
 {
+	m_attackPreparingMotion->Reset();
 }
 
 /**

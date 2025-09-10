@@ -1,7 +1,7 @@
 /**
- * @file   IMotion.h
+ * @file   IUI.h
  *
- * @brief  モーションのインターフェイス定義に関するヘッダファイル
+ * @brief  UIのインターフェイス定義に関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -10,8 +10,8 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-#ifndef IMOTION_DEFINED
-#define IMOTION_DEFINED
+#ifndef IUI_DEFINED
+#define IUI_DEFINED
 
 // ヘッダファイルの読み込み ===================================================
 
@@ -22,7 +22,7 @@
 /**
   * @brief モーションを定義
   */
-class IMotion
+class IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -35,17 +35,17 @@ private:
 public:
 
 	// デストラクタ
-	virtual ~IMotion() =default;
+	virtual ~IUI() =default;
 
 
 // 操作
 public:
 	virtual void Initialize() =0;
 
-	virtual bool Update()=0;
+	virtual void Update()=0;
 
 
-	virtual void Reset()=0;
+	virtual void Render()=0;
 
 //　取得・設定
 public:

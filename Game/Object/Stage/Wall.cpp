@@ -55,7 +55,7 @@ void Wall::Initialize()
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"cave_game.sdkmesh"));
 	SetPosition(DirectX::SimpleMath::Vector3::Zero);
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	SetScale(DirectX::SimpleMath::Vector3(65.0f, 35.0f, 65.0f));
+	SetScale(DirectX::SimpleMath::Vector3(60.0f, 40.0f, 60.0f));
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("cave.png"));
 	
 	SetShape(&m_sphere);

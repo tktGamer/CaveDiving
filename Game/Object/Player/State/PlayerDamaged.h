@@ -31,10 +31,9 @@ public:
 private:
 	// プレイヤー
 	Player* m_player;
-	// グラフィックス
-	Graphics* m_graphics;
-	// ワールドマトリックス
-	DirectX::SimpleMath::Matrix m_worldMatrix;
+	
+	//ノックバック時間
+	float m_knockbackTime;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

@@ -89,6 +89,9 @@
     <Filter Include="Game\Motion\BatMotion">
       <UniqueIdentifier>{99cba174-5c64-4fad-a703-09df1e2b9960}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\UI\Menu">
+      <UniqueIdentifier>{bbc20517-7e28-4caf-99d1-75011de4a01e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -270,7 +273,7 @@
     <ClInclude Include="Game\Object\Enemy\Bat\State\BatAttackPreparing.h">
       <Filter>Game\Object\Enemy\Bat\State</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Interface\IMotion.h">
+    <ClInclude Include="Game\Interface\IUI.h">
       <Filter>Game\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Game\Motion\PlayerMotion\PlayerFirstAttackMotion.h">
@@ -302,6 +305,27 @@
     </ClInclude>
     <ClInclude Include="Game\Motion\BatMotion\BatAttackMotion.h">
       <Filter>Game\Motion\BatMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Bat\State\BatDamaged.h">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\ResultScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Menu\Menu.h">
+      <Filter>Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\GemSelectUIManager.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\GemSelect\ChangeConfirm.h">
+      <Filter>Game\UI\GemSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\GemSelect\ChangeGem.h">
+      <Filter>Game\UI\GemSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\HoldGem\HoldGemInfoDraw.h">
+      <Filter>Game\UI\HoldGem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -489,6 +513,27 @@
     </ClCompile>
     <ClCompile Include="Game\Motion\BatMotion\BatAttackMotion.cpp">
       <Filter>Game\Motion\BatMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Bat\State\BatDamaged.cpp">
+      <Filter>Game\Object\Enemy\Bat\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\ResultScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Menu\Menu.cpp">
+      <Filter>Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\GemSelectUIManager.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\GemSelect\ChangeConfirm.cpp">
+      <Filter>Game\UI\GemSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\GemSelect\ChangeGem.cpp">
+      <Filter>Game\UI\GemSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\HoldGem\HoldGemInfoDraw.cpp">
+      <Filter>Game\UI\HoldGem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

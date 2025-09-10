@@ -18,8 +18,10 @@
  *
  * @param[in] pBat コウモリのポインタ
  */
-BatAttackMotion::BatAttackMotion(Bat* pBat)
+BatAttackMotion::BatAttackMotion(Bat* pBat, Wing* pRightWing, Wing* pLeftWing)
 	: m_pBat{pBat}
+	,m_pRightWing{pRightWing}
+	,m_pLeftWing{pLeftWing}
 {
 
 }
@@ -45,9 +47,10 @@ BatAttackMotion::~BatAttackMotion()
  */
 void BatAttackMotion::Initialize()
 {
-	//
-	//m_pRightWing->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(0.0f)));
-
+	//攻撃の姿勢にする
+	m_pBat->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(- 20.0f)));
+	m_pRightWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-15.0f)));
+	m_pLeftWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(15.0f)));
 }
 
 
@@ -62,28 +65,28 @@ void BatAttackMotion::Initialize()
  */
 bool BatAttackMotion::Update()
 {
-	float motionLerp = GetMotionLerp();
+	//float motionLerp = GetMotionLerp();
 
 
-	//羽のモーションの角度を求める
-	float angle = TKTLib::Lerp(0.0f, -110.0f, motionLerp);
-	DirectX::SimpleMath::Quaternion handMotionAngle 
-		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(angle));
+	////羽のモーションの角度を求める
+	//float angle = TKTLib::Lerp(0.0f, -110.0f, motionLerp);
+	//DirectX::SimpleMath::Quaternion handMotionAngle 
+	//	= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(angle));
 
-	 //m_pBat->SetMotionAngle(handMotionAngle);
+	// m_pBat->SetMotionAngle(handMotionAngle);
 
 
-	motionLerp += 3.0f * Messenger::GetInstance()->GetElapsedTime();
+	//motionLerp += 3.0f * Messenger::GetInstance()->GetElapsedTime();
 
-	SetMotionLerp(std::min(motionLerp, 1.0f));
+	//SetMotionLerp(std::min(motionLerp, 1.0f));
 
-	if (GetMotionLerp() >= 1.0f)
-	{
-		return true;
-	}
+	//if (GetMotionLerp() >= 1.0f)
+	//{
+	//	return true;
+	//}
 
 	return false;
-
+	
 }
 
 
@@ -100,7 +103,9 @@ bool BatAttackMotion::Update()
 void BatAttackMotion::Reset()
 {
 	//それぞれのオブジェクトを元の位置・角度に戻す
-	//m_pBat->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
+	m_pBat->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
+	m_pRightWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
+	m_pLeftWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 
 
 	SetMotionLerp(0.0f);

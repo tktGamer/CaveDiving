@@ -21,6 +21,8 @@
 
 
 #include"Game/UI/GemSelect/GemSelect.h"
+#include"../UI/HoldGem/HoldGem.h"
+#include"Game/UI/GemSelectUIManager.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 
@@ -44,9 +46,8 @@ private:
 	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
 
 	// オブジェクト関連
-	std::unique_ptr<GemSelect> m_gemSelectUI;
 
-
+	std::unique_ptr<GemSelectUIManager> m_gemSelectManager;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

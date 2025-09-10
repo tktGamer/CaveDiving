@@ -79,7 +79,6 @@ void TitleScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-
 }
 
 

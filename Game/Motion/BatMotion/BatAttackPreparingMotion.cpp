@@ -22,6 +22,7 @@
 BatAttackPreparingMotion::BatAttackPreparingMotion(Wing* pRightWing, Wing* pLeftWing)
 	: m_pRightWing{ pRightWing }
 	, m_pLeftWing{pLeftWing}
+	,m_numLoop{0}
 {
 
 }
@@ -64,16 +65,24 @@ void BatAttackPreparingMotion::Initialize()
  */
 bool BatAttackPreparingMotion::Update()
 {
+	if (m_numLoop >= 3)
+	{
+		return true;
+	}
+
+
 	float motionLerp = GetMotionLerp();
 
 
 	//羽のモーションの角度を求める
-	float angle = TKTLib::Lerp(0.0f, -110.0f, motionLerp);
-	DirectX::SimpleMath::Quaternion handMotionAngle 
+	float angle = TKTLib::Lerp(-20.0f, 20.0f, motionLerp);
+	DirectX::SimpleMath::Quaternion rightWingMotionAngle 
 		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(angle));
+	DirectX::SimpleMath::Quaternion leftWingMotionAngle 
+		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-angle));
 
-	 m_pRightWing->SetMotionAngle(handMotionAngle);
-	 m_pLeftWing->SetMotionAngle(handMotionAngle);
+	 m_pRightWing->SetMotionAngle(rightWingMotionAngle);
+	 m_pLeftWing->SetMotionAngle(leftWingMotionAngle);
 
 
 	motionLerp += 3.0f * Messenger::GetInstance()->GetElapsedTime();
@@ -82,8 +91,12 @@ bool BatAttackPreparingMotion::Update()
 
 	if (GetMotionLerp() >= 1.0f)
 	{
-		return true;
+		m_numLoop++;
+
+		SetMotionLerp(0.0f);
 	}
+
+
 
 	return false;
 
@@ -103,7 +116,7 @@ bool BatAttackPreparingMotion::Update()
 void BatAttackPreparingMotion::Reset()
 {
 	//それぞれのオブジェクトを元の位置・角度に戻す
-	m_pRightWing->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-50.0f)));
+	m_pRightWing->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(0.0f)));
 	m_pRightWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	m_pRightWing->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
 
@@ -111,6 +124,7 @@ void BatAttackPreparingMotion::Reset()
 	m_pLeftWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	m_pLeftWing->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
 
+	m_numLoop = 0;
 
 	SetMotionLerp(0.0f);
 }

@@ -26,6 +26,7 @@
  */
 GemSelectScene::GemSelectScene()
 	: m_pResourceManager{}
+	,m_gemSelectManager{}
 {
 	m_pResourceManager = ResourceManager::GetInstance();
 
@@ -56,10 +57,9 @@ void GemSelectScene::Initialize()
 
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
-	m_gemSelectUI = std::make_unique<GemSelect>();
-	m_gemSelectUI->Initialize(w, h);
-	m_gemSelectUI->Randomize();
 
+	m_gemSelectManager = std::make_unique<GemSelectUIManager>();
+	m_gemSelectManager->Initialize();
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
@@ -79,14 +79,13 @@ void GemSelectScene::Update(float elapsedTime)
 {
 	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 	
-	if (traker->pressed.Space)
+	if (m_gemSelectManager->IsFinishSelect())
 	{
-		//Œ»İ‚ÌƒV[ƒ“‚ğíœ
-		ChangeScene<GameScene>();
-		
+		ChangeScene<GameScene,LoadScene>();
 	}
 
-	m_gemSelectUI->Update();
+
+	m_gemSelectManager->Update();
 }
 
 
@@ -100,20 +99,8 @@ void GemSelectScene::Update(float elapsedTime)
  */
 void GemSelectScene::Render()
 {
-	Graphics* graphics = Graphics::GetInstance();
-	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix proj = graphics->GetProjectionMatrix();
 
-	DirectX::SimpleMath::Matrix world;
-
-	DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
-
-	spriteBatch->Begin();
-	
-	spriteBatch->End();
-
-	m_gemSelectUI->Render();
+	m_gemSelectManager->Render();
 }
 
 

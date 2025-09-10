@@ -18,17 +18,18 @@
  *
  * @param[in] player プレイヤーのポインタ
  */
-PlayerGroundAttack::PlayerGroundAttack(Player* player, Hand* hand)
+PlayerGroundAttack::PlayerGroundAttack(Player* player, Hand* pRightHand, Hand* pLeftHand)
 	:m_player(player)
-	,m_pHand{hand}
+	,m_pRightHand{pRightHand}
+	,m_pLeftHand{pLeftHand}
 	,m_inputTime{0.0f}
 	,m_isNextAttack{false}
 {
 
 	//m_groundCombo.emplace_back(std::make_unique<PlayerSlamAttack>(m_pHand));
-	m_groundCombo.emplace_back(std::make_unique<PlayerFirstAttackMotion>(m_pHand));
-	m_groundCombo.emplace_back(std::make_unique<PlayerSecondAttackMotion>(m_pHand));
-	m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(m_pHand));
+	m_groundCombo.emplace_back(std::make_unique<PlayerFirstAttackMotion>(pRightHand,pLeftHand));
+	m_groundCombo.emplace_back(std::make_unique<PlayerSecondAttackMotion>(pRightHand,pLeftHand));
+	m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand,pLeftHand));
 }
 /**
  * @brief デストラクタ
@@ -58,7 +59,7 @@ void PlayerGroundAttack::Initialize()
  */
 void PlayerGroundAttack::PreUpdate()
 {
-	m_pHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
+	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
 
 	m_inputTime = 0.0f;
 	
@@ -150,8 +151,12 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
 void PlayerGroundAttack::PostUpdate()
 {
 	//元の手の位置に戻す
-	m_pHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-50.0f)));
-	m_pHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
+	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-50.0f)));
+	m_pRightHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
+
+	m_pLeftHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
+	m_pLeftHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
+	
 
 	//ピッケルの当たり判定を無効にする
 	Messenger::GetInstance()->Notify(m_player->GetObjectNumber() + 3, Message::COLLISIONINVALID);

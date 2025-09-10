@@ -21,7 +21,6 @@
 
 #include"math.h"
 
-#include"Game/UI/GemSelect/GemSelect.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 

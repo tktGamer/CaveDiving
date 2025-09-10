@@ -34,9 +34,11 @@ public:
 private:
 	// プレイヤー
 	Player* m_player;
+	//右手のポインタ
+	Hand* m_pRightHand;  
+	//左手のポインタ
+	Hand* m_pLeftHand;  
 
-	//モーションさせる手
-	Hand* m_pHand;
 
 	//現在の攻撃
 	int m_currentAttack;
@@ -51,7 +53,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerGroundAttack(Player* player,Hand* hand);
+	PlayerGroundAttack(Player* player,Hand* pRightHand, Hand* pLeftHand);
 	// デストラクタ
 	~PlayerGroundAttack();
 

@@ -14,19 +14,23 @@
 // ヘッダファイルの読み込み ===================================================
 #include "../UserInterface.h"
 #include"Game/Object/Gem/GemManager.h"
+#include"Game/Interface/IUI.h"
 // クラスの宣言 ===============================================================
+class GemSelectUIManager;
 
 // クラスの定義 ===============================================================
 /**
   * @brief ユーザーインターフェイス
   */
-class GemSelect
+class GemSelect : public IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
 	static constexpr float PANNEL_X = 310.0f;
 // データメンバの宣言 -----------------------------------------------
 private:
+	GemSelectUIManager* m_pUIManager;
+
 	GemManager* m_pGemManager;
 
 	unsigned int m_menuIndex;
@@ -43,16 +47,18 @@ private:
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;
 
 	Gem* m_pGems[3];
+
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	GemSelect();
+	GemSelect(int width, int height, GemSelectUIManager* pUIManager);
 	~GemSelect();
 	// 操作
 public:
-	void Initialize(int width, int height);
-	void Update();
-	void Render();
+	void Initialize() ;
+	void Update() override;
+	void Render() override;
 
 	void Add(Gem::GemImagePath gemImagePath
 		, DirectX::SimpleMath::Vector2 position
@@ -61,6 +67,8 @@ public:
 
 	//宝石をランダムに選択
 	void Randomize();
+
+	
 //　取得・設定
 public:
 

@@ -1,0 +1,114 @@
+/**
+ * @file   ChangeGem.cpp
+ *
+ * @brief  宝石入れ替えUIに関するソースファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2025/09/09
+ */
+
+ // ヘッダファイルの読み込み ===================================================
+#include "pch.h"
+#include"ChangeGem.h"
+#include"../CaveDiving/Game/Common/ResourceManager.h"
+#include"Game/Message/Messenger.h"
+#include"Game/Object/Gem/Gem.h"
+#include"Game/UI/GemSelectUIManager.h"
+#include"../HoldGem/HoldGem.h"
+
+ChangeGem::ChangeGem(int width, int height, Gem* pReplacementGem, GemSelectUIManager* pUIManager)
+    :  m_windowHeight(height)
+    , m_windowWidth(width)
+    , m_arrow{}
+    ,m_menu{}
+    ,m_pReplacementGem{pReplacementGem}
+    ,m_pUIManager{pUIManager}
+{
+}
+
+ChangeGem::~ChangeGem()
+{
+}
+
+void ChangeGem::Initialize()
+{
+    m_arrow = std::make_unique<UserInterface>();
+    m_arrow->SetWindowSize(m_windowWidth, m_windowHeight);
+    m_arrow->Create(L"arrow.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+
+
+    m_menu = std::make_unique<Menu>(m_windowWidth, m_windowHeight);
+    m_menu->Initialize();
+    m_menu->Add(L"UI/changefont.png", { 500.0f,600.0f }, { 0.8f,0.8f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+    m_menu->Add(L"UI/returnfont.png", { 850.0f,600.0f }, { 0.8f,0.8f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+
+
+    m_replacementGemUI = std::make_unique<UserInterface>();
+    m_replacementGemUI->SetWindowSize(m_windowWidth, m_windowHeight);
+    m_replacementGemUI->Create(m_pReplacementGem->GetImagePath().panel, { 950.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+
+    m_holdGemInfo = std::make_unique<HoldGemInfoDraw>(m_windowWidth, m_windowHeight);
+    m_holdGemInfo->Initialize();
+
+    m_curremtUI = m_holdGemInfo.get();
+}
+
+void ChangeGem::Update()
+{
+    auto tracker = Graphics::GetInstance()->GetKeyboardTracker();
+
+    if (tracker->pressed.Up) 
+    {
+        m_curremtUI = m_holdGemInfo.get();
+    }
+    if (tracker->pressed.Down) 
+    {
+        m_curremtUI = m_menu.get();
+    }
+
+
+
+    if (m_curremtUI == m_menu.get())
+    {
+
+        if (tracker->pressed.Space)
+        {
+            int menuIndex = m_menu->GetMenuIndex();
+
+            switch (menuIndex)
+            {
+                //「入れ替える」の場合
+            case 0:
+                GemManager::GetInstance()->SetHoldGem(m_pReplacementGem, menuIndex);
+                m_pUIManager->SelectFinishNotice();
+                break;
+                //「入れ替えない」の場合
+            case 1:
+                m_pUIManager->RequestPopUI();
+                break;
+            }
+        }
+
+    }
+
+    
+   
+    m_curremtUI->Update();
+
+}
+
+void ChangeGem::Render()
+{
+
+    //入れ替える・入れ替えない選択肢
+    m_menu->Render();
+
+    //所持している宝石の中の入れ替え候補を表示
+    m_holdGemInfo->Render();
+    //矢印画像
+    m_arrow->Draw();
+    //入れ替え先の宝石を表示
+    m_replacementGemUI->Draw();
+}
+

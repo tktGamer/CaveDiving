@@ -86,8 +86,8 @@ void GameScene::Initialize()
 	m_hpGauge->Initialize(w, h);
 	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
 
-	m_holdGem = std::make_unique<HoldGem>();
-	m_holdGem->Initialize(w, h);
+	m_holdGem = std::make_unique<HoldGem>(w,h);
+	m_holdGem->Initialize();
 
 
 	CreateDeviceDependentResources();

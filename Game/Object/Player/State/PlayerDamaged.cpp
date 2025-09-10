@@ -20,11 +20,9 @@
  * @param[in] player プレイヤーのポインタ
  */
 PlayerDamaged::PlayerDamaged(Player* player)
-	:m_player(player)
-	,m_graphics{}
+	:m_player{player}
+	,m_knockbackTime{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 }
 /**
  * @brief デストラクタ
@@ -54,12 +52,9 @@ void PlayerDamaged::Initialize()
  */
 void PlayerDamaged::PreUpdate()
 {
-	DirectX::SimpleMath::Vector3 velocity = m_player->GetVelocity();
-
-	m_player->SetVelocity(DirectX::SimpleMath::Vector3::Zero);
 
 	//当たった攻撃の方向を考慮してノックバック
-
+	m_player->SetVelocity(m_player->GetDamageDirection());
 }
 
 /**
@@ -73,15 +68,33 @@ void PlayerDamaged::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
-	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
+	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
+	m_knockbackTime += elapsedTime;
 	
+	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+
+	//重力
+	v.y += -0.8f * elapsedTime;
+
+	m_player->SetVelocity(v);
+
+	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity()* 25.0f*elapsedTime);
 
 
-	//移動キーが押されたら移動状態へ遷移
-	if (key->GetLastState().Left || key->GetLastState().Right || key->GetLastState().Up || key->GetLastState().Down)
+	if (m_knockbackTime <= 0.5f) 
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::MOVING);
+		return;
 	}
+	else 
+	{
+		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
+	}
+
+	////移動キーが押されたら移動状態へ遷移
+	//if (key->GetLastState().Left || key->GetLastState().Right || key->GetLastState().Up || key->GetLastState().Down)
+	//{
+	//	Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::MOVING);
+	//}
 	////ジャンプキーが押されたらジャンプ状態へ遷移
 	//if (key->pressed.Space) 
 	//{
@@ -99,14 +112,6 @@ void PlayerDamaged::Update(const float& elapsedTime)
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
-	
-	//重力
-	v.y += -0.8f * elapsedTime;
-
-	m_player->SetVelocity(v);
-
-	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
 
 }
 
@@ -119,6 +124,8 @@ void PlayerDamaged::Update(const float& elapsedTime)
  */
 void PlayerDamaged::PostUpdate()
 {
+	m_knockbackTime = 0.0f;
+	m_player->SetInvincible(false);
 }
 
 /**

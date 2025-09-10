@@ -65,7 +65,7 @@ private:
 	std::unique_ptr<IState> m_groundAttackState; // 地上攻撃状態
 	std::unique_ptr<IState> m_airAttackState; // 空中攻撃状態
 	std::unique_ptr<IState> m_jumpingState; // ジャンプ状態
-	std::unique_ptr<IState> m_avoidState; // 回避状態
+	std::unique_ptr<IState> m_avoidState;   // 回避状態
 	std::unique_ptr<IState> m_damagedState; // 回避状態
 
 	// プレイヤーの体のパーツ
@@ -80,6 +80,7 @@ private:
 	int m_remainingJumpCount;
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -111,7 +112,7 @@ public:
 public:
 	
 	DirectX::SimpleMath::Vector3 GetVelocity();
-	void SetVelocity(DirectX::SimpleMath::Vector3 v);
+	void SetVelocity(const DirectX::SimpleMath::Vector3& v);
 
 	// 体力の取得
 	const int GetMaxHP() override;
@@ -133,11 +134,13 @@ public:
 	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
 	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
 
+
 //　内部操作
 private:
 	//方向転換
 	void ChangeDirection();
 	//宝石で強化された分のステータスを取得
 	int GetPlusStatus(const Gem::Type type);
+
 };
 

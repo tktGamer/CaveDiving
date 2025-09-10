@@ -11,7 +11,7 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Character.h"
-
+#include"../Common/DamageSystem.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -30,6 +30,7 @@ Character::Character(int hp, int attack, int diffence, Tag::ObjectType type, Gam
 	,m_currentHp{hp}
 	,m_attackPower{attack}
 	,m_diffence{diffence}
+	,m_isInvincible{false}
 {
 }
 
@@ -43,16 +44,39 @@ Character::~Character()
 
 }
 
+
 /**
- * @brief ダメージ処理
+ * @brief ダメージを受けたときの処理
  *
- * @param[in] damage 受けるダメージの値
+ * @param[in] other 攻撃してきたオブジェクト
  *
  * @return なし
  */
-void Character::Damage(const int damage)
+void Character::OnDamage(GameObject* other)
 {
-	//もしマイナスなら処理を飛ばす
+	//無敵なら処理を飛ばす
+	if (IsInvincible())
+	{
+		return;
+	}
+
+
+	//当たった攻撃の方向
+	m_damageDirection = GetCurrentPosition() - other->GetCurrentPosition();
+	m_damageDirection.Normalize();
+
+	// ダメージを受ける
+	DamageSystem::GetInstance()->DamageToCharacter(other->Cast<Character>(), this);
+	//ダメージ状態へ遷移
+	OnMessegeAccepted(Message::DAMAGED);
+
+	//無敵になる
+	SetInvincible(true);
+
+}
+
+void Character::TakeDamage(const int& damage)
+{
 	if (damage < 0) 
 	{
 		return;
@@ -177,4 +201,46 @@ bool Character::IsAlive() const
 	return (m_currentHp > 0);
 }
 
+/**
+ * @brief 無敵か
+ *
+ * @param[in] なし
+ *
+ * @return true　無敵
+ * @return false 無敵ではない
+ */
+const bool Character::IsInvincible() const
+{
+	return m_isInvincible;
+}
+
+/**
+ * @brief 無敵の設定
+ *
+ * @param[in] isInvinccible  無敵か
+ *
+ * @return なし
+ */
+void Character::SetInvincible(const bool& isInvinccible)
+{
+	m_isInvincible = isInvinccible;
+}
+
+
+/**
+ * @brief ダメージを受けた方向を取得
+ *
+ * @param[in] なし
+ *
+ * @return ダメージを受けた方向
+ */
+const DirectX::SimpleMath::Vector3& Character::GetDamageDirection() const
+{
+	return m_damageDirection;
+}
+
+void Character::SetDamageDirection(const DirectX::SimpleMath::Vector3& damageDirection)
+{
+	m_damageDirection = damageDirection;
+}
 

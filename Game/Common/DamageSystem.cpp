@@ -71,7 +71,7 @@ void DamageSystem::DamageToCharacter(Character* attacker, Character* defender)
 	
 	int damage = DamageCalculation(attackerPower, defenderDiffence);
 
-	defender->Damage(damage);
+	defender->TakeDamage(damage);
 }
 
 /**

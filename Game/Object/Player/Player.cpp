@@ -3,9 +3,9 @@
  *
  * @brief  プレイヤーに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付　　2025/09/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -25,7 +25,7 @@
  * @param[in] modelParms モデルパラメータ
  */
 Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
-	: Character(100,5,7,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
+	: Character(100,20,7,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_velocity{ 0.0f, 0.0f, 0.0f }
 	, m_initialeDirection{ 0.0f, 0.0f, -1.0f }
@@ -63,7 +63,7 @@ void Player::Initialize()
 	// 状態の初期化
 	m_idlingState		= std::make_unique<PlayerIdling>(this);
 	m_movingState		= std::make_unique<PlayerMoving>(this);
-	m_groundAttackState = std::make_unique<PlayerGroundAttack>(this,handR.get());
+	m_groundAttackState = std::make_unique<PlayerGroundAttack>(this,handR.get(),handL.get());
 	m_airAttackState    = std::make_unique<PlayerAirAttack>(this,handR.get(),handL.get());
 	m_jumpingState		= std::make_unique<PlayerJumping>(this);
 	m_avoidState		= std::make_unique<PlayerAvoidance>(this);
@@ -270,6 +270,7 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 			GameObject::ChangeState(m_avoidState.get());
 			break;
 		case Message::DAMAGED:
+			GameObject::ChangeState(m_damagedState.get());
 			break;
 		case Message::JUMPING:
 			if (ReduceJumpCount()) 
@@ -300,11 +301,7 @@ void Player::CollisionResponce(GameObject* other)
 				break;
 			}
 
-			// ダメージを受ける
-			//DamageSystem::GetInstance()->DamageToCharacter(other->Cast<Character>(), this);
-			//ダメージ状態へ遷移
-			OnMessegeAccepted(Message::DAMAGED);
-
+			OnDamage(other);
 		}
 		break;
 		case Tag::ObjectType::Stage:
@@ -335,7 +332,7 @@ DirectX::SimpleMath::Vector3 Player::GetVelocity()
 	return m_velocity;
 }
 
-void Player::SetVelocity(DirectX::SimpleMath::Vector3 v)
+void Player::SetVelocity(const DirectX::SimpleMath::Vector3& v)
 {
 	m_velocity = v;
 }
@@ -513,3 +510,4 @@ int Player::GetPlusStatus(const Gem::Type type)
 
 	return total;
 }
+

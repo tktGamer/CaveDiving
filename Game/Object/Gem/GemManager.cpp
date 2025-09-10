@@ -23,8 +23,8 @@ std::unique_ptr<GemManager> GemManager::s_gemManager = nullptr;
  * @param[in] なし
  */
 GemManager::GemManager()
-	:m_graphics{Graphics::GetInstance()}
-	,m_playerKeepGem{nullptr}
+	:m_playerKeepGem{nullptr}
+	,m_pReplacementGem{nullptr}
 {
 
 }
@@ -179,7 +179,7 @@ const Gem* const* GemManager::GetPlayerHoldGem() const
  *
  * @return プレイヤーに適応する宝石
  */
-void GemManager::SetHoldGem(Gem* pGem)
+void GemManager::SetHoldGem(Gem* pGem,int index)
 {
 	for(int i=0; i<3; i++) 
 	{
@@ -190,6 +190,21 @@ void GemManager::SetHoldGem(Gem* pGem)
 		}
 		
 	}
+
+	if (index != -1) 
+	{
+		m_playerKeepGem[index] = pGem;
+	}
+}
+
+void GemManager::SetReplacementGem(Gem* pGem)
+{
+	m_pReplacementGem = pGem;
+}
+
+Gem* GemManager::GetReplacementGem()
+{
+	return m_pReplacementGem;
 }
 
 /**
@@ -225,6 +240,10 @@ void GemManager::LoadGemData()
 		{
 			//IDが不正な場合は読み飛ばす
 			ifs.close();
+			m_playerKeepGem[0] = m_gemList[0].get();
+			m_playerKeepGem[1] = m_gemList[1].get();
+			m_playerKeepGem[2] = m_gemList[2].get();
+
 			return;
 		}
 		//宝石の種類を読み込む
@@ -249,7 +268,7 @@ void GemManager::LoadGemData()
 		m_gemList.emplace_back(std::make_unique<Gem>(ability,imagePath));
 	}
 	ifs.close();
-	return;
 
+	return;
 
 }

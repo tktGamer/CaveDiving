@@ -14,13 +14,15 @@
 // ヘッダファイルの読み込み ===================================================
 #include "../UserInterface.h"
 #include"Game/Object/Gem/GemManager.h"
+#include"Game/Interface/IUI.h"
+
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
   * @brief ユーザーインターフェイス
   */
-class HoldGem
+class HoldGem : public IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -46,14 +48,15 @@ private:
 	Gem* m_pGems[3];
 
 	DirectX::SimpleMath::Vector2 m_position;
+	DirectX::SimpleMath::Vector2 m_scale;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	HoldGem();
+	HoldGem(int width, int height);
 	~HoldGem();
 	// 操作
 public:
-	void Initialize(int width, int height);
+	void Initialize();
 	void Update();
 	void Render();
 
@@ -62,11 +65,13 @@ public:
 		, DirectX::SimpleMath::Vector2 scale
 		, UserInterface::ANCHOR anchor);
 
+	void ChangePositon(const DirectX::SimpleMath::Vector2& pos);
+	void ChangeScale(const DirectX::SimpleMath::Vector2& scale);
 //　取得・設定
 public:
 
 
 //　内部操作
 private:
-
+	void ChangeDrawGem();
 };

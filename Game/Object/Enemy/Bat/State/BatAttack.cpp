@@ -19,14 +19,14 @@
  *
  * @param[in] bat コウモリのポインタ
  */
-BatAttack::BatAttack(Bat* bat)
+BatAttack::BatAttack(Bat* bat, Wing* pRightWing, Wing* pLeftWing)
 	:m_bat(bat)
 	,m_graphics{}
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
 
-	//m_attackMotion = std::make_unique<BatAttackPreparingMotion>();
+	m_attackMotion = std::make_unique<BatAttackMotion>(bat,pRightWing,pLeftWing);
 }
 /**
  * @brief デストラクタ
@@ -56,6 +56,10 @@ void BatAttack::Initialize()
  */
 void BatAttack::PreUpdate()
 {
+	m_attackMotion->Initialize();
+
+	m_bat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT*15.0f * Messenger::GetInstance()->GetElapsedTime(), m_bat->GetCurrentQuaternion()));
+
 }
 
 /**
@@ -68,12 +72,14 @@ void BatAttack::PreUpdate()
 void BatAttack::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-	// キーボードステートを取得する
-	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
+	DirectX::SimpleMath::Vector3 v = m_bat->GetVelocity();
 
-	m_bat->SetVelocity(m_bat->GetVelocity()*0.8f);
 
-		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::IDLING);
+	v.y += -0.05f * elapsedTime;
+
+
+	m_bat->SetVelocity(v);
+
 	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
 
 }
@@ -87,6 +93,7 @@ void BatAttack::Update(const float& elapsedTime)
  */
 void BatAttack::PostUpdate()
 {
+	m_attackMotion->Reset();
 }
 
 /**

@@ -28,7 +28,7 @@ class BatAttack : public IState
 {
 public:
 	// コンストラクタ
-	BatAttack(Bat* bat);
+	BatAttack(Bat* bat, Wing* pRightWing, Wing* pLeftWing);
 	// デストラクタ
 	~BatAttack();
 	// 初期化する

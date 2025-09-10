@@ -38,7 +38,7 @@ private:
 	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerThirdAttackMotion(Hand* pRightHand);
+	PlayerThirdAttackMotion(Hand* pRightHand, Hand* pLeftHand);
 
 	// デストラクタ
 	~PlayerThirdAttackMotion();

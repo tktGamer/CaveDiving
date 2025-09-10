@@ -45,7 +45,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerSecondAttackMotion(Hand* pRightHand);
+	PlayerSecondAttackMotion(Hand* pRightHand, Hand* pLeftHand);
 
 	// デストラクタ
 	~PlayerSecondAttackMotion();

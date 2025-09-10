@@ -30,6 +30,7 @@ public:
 private:
 
 	Hand* m_pRightHand;  //右手のポインタ
+	Hand* m_pLeftHand;  //左手のポインタ
 
 	bool m_isNextAttack; //次の攻撃をするかどうか
 
@@ -40,7 +41,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerFirstAttackMotion(Hand* pRightHand);
+	PlayerFirstAttackMotion(Hand* pRightHand,Hand* pLeftHand);
 
 	// デストラクタ
 	~PlayerFirstAttackMotion();

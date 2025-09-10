@@ -49,18 +49,22 @@ public:
 
 	};
 
+	static constexpr int PLAYER_HOLD_GEM_NUM = 3;
 // データメンバの宣言 -----------------------------------------------
 private:
 	// GemManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<GemManager> s_gemManager;
 
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
 	// 宝石の配列
 	std::vector<std::unique_ptr<Gem>> m_gemList;	
 
 	//プレイヤーの持つジェム
-	Gem* m_playerKeepGem[3];
+	Gem* m_playerKeepGem[PLAYER_HOLD_GEM_NUM];
+
+	//入れ替え予定の宝石
+	Gem* m_pReplacementGem;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -104,7 +108,13 @@ public:
 	const Gem* const* GetPlayerHoldGem() const ;
 
 	//プレイヤーの持つ宝石をセット
-	void SetHoldGem(Gem* pGem);
+	void SetHoldGem(Gem* pGem, int index=-1);
+
+	//入れ替え先の宝石の設定
+	void SetReplacementGem(Gem* pGem);
+
+	//入れ替え先の宝石の取得
+	Gem* GetReplacementGem();
 //　内部操作
 private:
 	//宝石の種類を決定する
