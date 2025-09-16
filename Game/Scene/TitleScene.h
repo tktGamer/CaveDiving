@@ -20,7 +20,7 @@
 #include"Game/Object/Camera.h"
 
 #include"math.h"
-
+#include"Game/UI/UserInterface.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 
@@ -45,6 +45,8 @@ private:
 	float m_length;
 	float m_angle;
 
+	//保存したプレイヤー所持している宝石を読み込むか
+	bool m_isLoadPlayerHoldGem;
 	// オブジェクト関連
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
 	ID3D11ShaderResourceView* m_titleTexture;	///< タイトル画像
@@ -53,6 +55,12 @@ private:
 	TKTLib::ModelParams m_caveModelParams;    ///< 洞窟モデルパラメータ
 	TKTLib::ModelParams m_demoPlayerModelParams;    ///< プレイヤーモデルパラメータ
 
+	DirectX::Model* m_skyModel;
+	
+	std::unique_ptr<UserInterface> m_loadCheckUI;
+	std::unique_ptr<UserInterface> m_checkUI;
+
+	UserInterface m_light;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

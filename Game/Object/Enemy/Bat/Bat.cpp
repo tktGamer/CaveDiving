@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "Bat.h"
 #include "Game/Common/Collision/CollisionManager.h"
-#include"../CaveDiving/Game/Fuctory/CharacterFactory.h"
+#include"../CaveDiving/Game/Fuctory/GameObjectFactory.h"
 #include"Game/Common/DamageSystem.h"
 #include"Game/Object/Weapon.h"
 // メンバ関数の定義 ===========================================================
@@ -23,11 +23,12 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Bat::Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Bat::Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, Character(50,8,5,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
+	, Character(50,13,5,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
 	, m_sphere{ GetPosition(), 2.0f } // 初期位置とサイズを設定
 	,m_frameCount{}
+	,m_messageID{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("bat.png"));
 
@@ -35,8 +36,10 @@ Bat::Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition
 
 	SetShape(&m_sphere);
 
-	m_leftWing = std::make_unique<Wing>(this, DirectX::SimpleMath::Vector3{-0.5f,0.0f,0.0f}, DirectX::XMConvertToRadians(0.0f));
-	m_rightWing = std::make_unique<Wing>(this, DirectX::SimpleMath::Vector3{0.5f,0.0f,0.0f}, DirectX::XMConvertToRadians(180.0f));
+	m_leftWing = GameObjectFactory::CreateBatWing(this, DirectX::SimpleMath::Vector3{-0.5f,0.0f,0.0f});
+	
+	m_rightWing = GameObjectFactory::CreateBatWing(this, DirectX::SimpleMath::Vector3{0.5f,0.0f,0.0f}
+	,DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(180.0f)));
 
 
 
@@ -74,7 +77,7 @@ void Bat::Initialize()
 	SetState(m_idlingState.get());
 
 
-	SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -8.0f));
+	//SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -8.0f));
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	SetScale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
 

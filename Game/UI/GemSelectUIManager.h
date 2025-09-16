@@ -70,16 +70,6 @@ private:
 
 
 
-	// オブジェクト関連
-	std::unique_ptr<HoldGem> m_holdGem;
-
-	//所持宝石の中から入れ替える宝石を選ぶUI
-	std::unique_ptr<ChangeGem> m_changeGemUI;
-	//３つの中から宝石を選ぶUI
-	std::unique_ptr<GemSelect> m_gemSelectUI;
-	//所持宝石を入れ替えるかの確認UI
-	std::unique_ptr<ChangeConfirm> m_changeGemConfirmUI;
-
 	std::vector<std::unique_ptr<IUI>> m_uiStack;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

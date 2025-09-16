@@ -13,7 +13,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Object/GameObject.h"
-#include"Game/Object/Player/Pikel.h"
+#include"Game/Object/Weapon.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -32,14 +32,15 @@ private:
 
 	DirectX::SimpleMath::Matrix m_world;
 
-	std::unique_ptr<Pikel> m_pikel;
+	//持っている武器
+	std::unique_ptr<Weapon> m_weapon;
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Hand();
@@ -61,8 +62,10 @@ public:
 
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
-
-	//　取得・設定
+	
+	//武器を持たせる
+	bool HaveWeapon(std::unique_ptr<Weapon> weapon);
+//　取得・設定
 public:
 
 	DirectX::SimpleMath::Quaternion GetMotionAngle();

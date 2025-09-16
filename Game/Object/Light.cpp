@@ -18,9 +18,10 @@
  *
  * @param[in] なし
  */
-Light::Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Light::Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{Tag::ObjectType::Light,parent,initialPosition,initialAngle}
 	,m_graphics{Graphics::GetInstance()}
+	,m_isOn{}
 {
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
@@ -78,12 +79,22 @@ void Light::Initialize()
  */
 void Light::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	m_lBuff.LightPosition =currentPosition + GetPosition();
+	m_currentAngle = m_initialAngle * GetQuaternion() * currentAngle;
+	m_currentPosition = m_initialPosition + GetPosition() + currentPosition;
+
+
+	m_lBuff.LightPosition = GetCurrentPosition();
 	m_lBuff.LightInvSqrRadius = 1.0f / (5 * 5); //ライトが届く距離（２乗の逆数）
 	m_lBuff.LightColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 	m_lBuff.LightIntensity = 3.0f;
 	m_lBuff.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.1f, 0.006f, 0.0f); // デフォルトの減衰
 	m_graphics->GetDeviceResources()->GetD3DDeviceContext()->UpdateSubresource(m_lBuffer.Get(), 0, NULL, &m_lBuff, 0, 0);
+
+	m_pointLight.LightPosition = GetCurrentPosition();
+	m_pointLight.LightInvSqrRadius = 1.0f / (5 * 5); //ライトが届く距離（２乗の逆数）
+	m_pointLight.LightColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+	m_pointLight.LightIntensity = 3.0f;
+	m_pointLight.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.1f, 0.006f, 0.0f); // デフォルトの減衰
 }
 
 
@@ -104,10 +115,10 @@ void Light::Draw()
 
 	LightBuffer lbuff;
 	lbuff.LightPosition = GetPosition();
-	lbuff.LightInvSqrRadius = 1.0f / (500 * 500); //ライトが届く距離（２乗の逆数）
+	lbuff.LightInvSqrRadius = 1.0f / (1.0f * 1.0f); //ライトが届く距離（２乗の逆数）
 	lbuff.LightColor = DirectX::SimpleMath::Vector3(1.0f,1.0f,1.0f);
-	lbuff.LightIntensity = 2.0f; 
-	lbuff.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.01f, 0.025f, 0.0f); // デフォルトの減衰
+	lbuff.LightIntensity = 1.0f; 
+	lbuff.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.005f, 0.0f); // デフォルトの減衰
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_lBuffer.Get(), 0, NULL, &lbuff, 0, 0);
 
@@ -134,8 +145,23 @@ void Light::CollisionResponce(GameObject* other)
 {
 }
 
+void Light::LightOn()
+{
+	m_isOn = true;
+}
+
+
+bool Light::IsOn() const
+{
+	return m_isOn;
+}
 
 ID3D11Buffer* Light::GetLightBuffer() const
 {
 	return m_lBuffer.Get();
+}
+
+Shader::PointLight Light::GetLightData()
+{
+	return m_pointLight;
 }

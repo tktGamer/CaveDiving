@@ -48,7 +48,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Ground(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Ground(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Ground();

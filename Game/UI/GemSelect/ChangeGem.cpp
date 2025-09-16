@@ -16,7 +16,7 @@
 #include"Game/Object/Gem/Gem.h"
 #include"Game/UI/GemSelectUIManager.h"
 #include"../HoldGem/HoldGem.h"
-
+#include"Game/Fuctory/UIFactory.h"
 ChangeGem::ChangeGem(int width, int height, Gem* pReplacementGem, GemSelectUIManager* pUIManager)
     :  m_windowHeight(height)
     , m_windowWidth(width)
@@ -33,9 +33,9 @@ ChangeGem::~ChangeGem()
 
 void ChangeGem::Initialize()
 {
-    m_arrow = std::make_unique<UserInterface>();
-    m_arrow->SetWindowSize(m_windowWidth, m_windowHeight);
-    m_arrow->Create(L"arrow.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+    m_arrow = UIFactory::CreateUserInterface(L"arrow.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+    //m_arrow->SetWindowSize(m_windowWidth, m_windowHeight);
+    //m_arrow->Create(L"arrow.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 
     m_menu = std::make_unique<Menu>(m_windowWidth, m_windowHeight);

@@ -47,7 +47,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Pikel();

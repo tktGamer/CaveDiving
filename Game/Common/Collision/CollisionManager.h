@@ -33,8 +33,6 @@ private:
 	// CollisionManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<CollisionManager> s_collisionManager;
 
-	// グラフィックスクラスのポインタ
-	Graphics* m_graphics;	
 
 	//当たり判定するオブジェクトのリスト
 	std::list<GameObject*> m_objects;

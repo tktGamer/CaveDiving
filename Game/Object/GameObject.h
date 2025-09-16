@@ -78,7 +78,7 @@ protected:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	virtual ~GameObject();

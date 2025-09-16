@@ -15,10 +15,11 @@
 #include"../Scene/GemSelectScene.h"
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
-
+#include"Game/Scene/ResultScene.h"
 
 #include"Game/Common/Collision/Sphere.h"
-
+#include"../Fuctory/UIFactory.h"
+#include"../Fuctory/GameObjectFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -62,16 +63,28 @@ void GameScene::Initialize()
 {
 	Messenger::GetInstance()->DestroyInstance();
 
+	UserResources* gameData = GetGameData();
+
+	
 
 	m_camera = std::make_unique<Camera>();
-	m_player = std::make_unique<Player>(nullptr,DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f},DirectX::XMConvertToRadians(0.0f));
-	m_player->Initialize();
-	m_stage = std::make_unique<Stage>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
-	m_enemyManager = std::make_unique<EnemyManager>();
-	m_enemyManager->Spawn();
+	m_player = GameObjectFactory::CreatePlayer(nullptr,DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f});
+	//m_player->Initialize();
+	m_stage =GameObjectFactory::CreateStage(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f });
+
+	if (gameData->GetNextStage() == UserResources::Stage::FIRST) 
+	{
+		m_enemyManager = std::make_unique<EnemyManager>();
+		m_enemyManager->Spawn();
+	}
+	if (gameData->GetNextStage() == UserResources::Stage::BOSS) 
+	{
+		m_enemyManager = std::make_unique<EnemyManager>();
+		m_enemyManager->SpawnBoss();
+	}
 	m_camera->Initialize({ 0,1.0f,25.0f });
 	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
-	m_stage->Initialize();
+	//m_stage->Initialize();
 
 	m_camera->SetTartet(m_player->GetPosition(), m_player->GetQuaternion());
 
@@ -82,12 +95,10 @@ void GameScene::Initialize()
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
-	m_hpGauge = std::make_unique<Gauge>();
-	m_hpGauge->Initialize(w, h);
+	m_hpGauge = UIFactory::CreateGauge();
 	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
 
-	m_holdGem = std::make_unique<HoldGem>(w,h);
-	m_holdGem->Initialize();
+	m_holdGem = UIFactory::CreateHoldGem();
 
 
 	CreateDeviceDependentResources();
@@ -113,11 +124,19 @@ void GameScene::Update(float elapsedTime)
 	 std::list<std::unique_ptr<Character>>& enemies =  m_enemyManager->GetEnemies();
 	if (traker->pressed.Q || enemies.size()==0)
 	{
+		if (GetGameData()->GetNextStage()==UserResources::Stage::BOSS) 
+		{
+			GetGameData()->SetIsGameClear(true);
+			ChangeScene<ResultScene>();
+			return;
+		}
+		GetGameData()->SetNextStage(UserResources::Stage::BOSS);
 		ChangeScene<GemSelectScene>();
 	}
 	else if (!m_player->IsAlive()) 
 	{
-		ChangeScene<TitleScene>();
+		GetGameData()->SetIsGameClear(false);
+		ChangeScene<ResultScene>();
 	}
 
 	m_player->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);

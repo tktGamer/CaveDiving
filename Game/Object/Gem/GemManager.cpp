@@ -111,6 +111,95 @@ Gem* GemManager::RandomSelection()
 	return m_gemList[randomIndex].get();
 }
 
+
+/**
+ * @brief プレイヤーの所持している宝石を保存
+ *
+ * @param[in] なし
+ *
+ * @return true  成功
+ * @return false  失敗
+ */
+bool GemManager::SavePlayerHoldGem()
+{
+	//書き込み用ファイルストリーム作成
+	std::ofstream outFile("Resources/Data/SavePlayerHoldGems.txt");
+
+	for (int i = 0; i < 3; i++)
+	{
+		//空だったら
+		if (m_playerKeepGem[i] == nullptr)
+		{
+			outFile << -1 << std::endl; // 空データを書き込み
+			continue;
+		}
+
+		outFile << m_playerKeepGem[i]->GetAbility().ID << std::endl; // データを書き込み
+
+	}
+
+	outFile.close();
+	return true;
+}
+
+/**
+ * @brief プレイヤーの所持している宝石を読み込み
+ *
+ * @param[in] なし
+ *
+ * @return true  成功
+ * @return false  失敗
+ */
+bool GemManager::LoadPlayerHoldGem()
+{
+	//読み込み用ファイルストリーム作成
+	std::ifstream infile("Resources/Data/SavePlayerHoldGems.txt");
+	if (!infile) 
+	{
+		//ファイルが開けなかったため失敗
+		return false;
+	}
+
+	std::string line;
+	while (std::getline(infile, line)) 
+	{
+		//宝石のデータ登録番号
+		int id = -1;
+		try 
+		{
+			id = std::stoi(line);
+		}
+		catch (std::invalid_argument) 
+		{
+			//データをうまく読み込めなかったら次
+			continue;
+		}
+
+		//idと同じ番号の宝石を取得
+		Gem* gem = GetIDNumberedGem(id);
+		if (gem == nullptr) 
+		{
+			//id番の宝石がなかったら次
+			continue;
+		}
+
+		//空いているスロットにセット
+		SetHoldGem(gem);
+	}
+
+	infile.close();
+
+	return true;
+}
+
+void GemManager::EmptyPlayerHoldGem()
+{
+	for (int i = 0; i < 3; i++) 
+	{
+		m_playerKeepGem[i] = nullptr;
+	}
+}
+
 /**
  * @brief 宝石の種類を決定する
  *
@@ -135,6 +224,29 @@ Gem::Type GemManager::DecisinType(const std::string& type)
 	return  Gem::Type::UNIQUE;
 }
 
+
+/**
+ * @brief id番の宝石を取得
+ *
+ * @param[in] id 番号
+ *
+ * @return gem id番の宝石ポインタ
+ */
+Gem* GemManager::GetIDNumberedGem(const int& id)
+{
+	//リストを順番に調べる
+	for (std::unique_ptr<Gem>& gem : m_gemList) 
+	{
+		//引数と同じIDか
+		if (gem->GetAbility().ID == id) 
+		{
+			return gem.get();
+		}
+	}
+
+	//見つからなかったらnullptr
+	return nullptr;
+}
 
 /**
  * @brief スロットが空いているか
@@ -191,6 +303,7 @@ void GemManager::SetHoldGem(Gem* pGem,int index)
 		
 	}
 
+	//デフォルト引数でないなら指定要素に代入
 	if (index != -1) 
 	{
 		m_playerKeepGem[index] = pGem;
@@ -240,9 +353,9 @@ void GemManager::LoadGemData()
 		{
 			//IDが不正な場合は読み飛ばす
 			ifs.close();
-			m_playerKeepGem[0] = m_gemList[0].get();
-			m_playerKeepGem[1] = m_gemList[1].get();
-			m_playerKeepGem[2] = m_gemList[2].get();
+			//m_playerKeepGem[0] = m_gemList[0].get();
+			//m_playerKeepGem[1] = m_gemList[1].get();
+			//m_playerKeepGem[2] = m_gemList[2].get();
 
 			return;
 		}
@@ -261,7 +374,7 @@ void GemManager::LoadGemData()
 		//画像パスを読み込む
 		std::getline(ifs, gemData.gem, '\n'); 
 
-		Gem::GemAbility ability = { DecisinType(gemData.item), gemData.effect, gemData.description };
+		Gem::GemAbility ability = { gemData.id,DecisinType(gemData.item), gemData.effect, gemData.description };
 		const wchar_t* gemPath = TKTLib::StringToWchar(gemData.gem);
 		Gem::GemImagePath imagePath = { gemPath};
 		//宝石データを作成

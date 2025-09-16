@@ -16,8 +16,9 @@
 
 #include"../Scene/GameScene.h"
 #include "../Scene/LoadScene.h"
+#include"../Scene/TitleScene.h"
 
-
+#include"../Fuctory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -55,15 +56,30 @@ ResultScene::~ResultScene()
 void ResultScene::Initialize()
 {
 
-	m_titleTexture = *m_pResourceManager->RequestTexture("title.png");
-	m_pressSpaceTexture = *m_pResourceManager->RequestTexture("pressspace.png");
-
-	//m_camera->Initialize({ 0,11.0f,10.0f });
 
 
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
+	m_saveMessage =UIFactory::CreateUserInterface(L"UI/savemessage.png", { 650.0f,400.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
+
+	m_menu = UIFactory::CreateMenu();
+	m_menu->Add(L"UI/yesfont.png", { 350.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+	m_menu->Add(L"UI/nofont.png", { 950.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+
+
+	//ゲームクリア・ゲームオーバー文字
+	if (GetGameData()->IsGameClear()) 
+	{
+		m_gameover = UIFactory::CreateUserInterface(L"UI/gameclear.png", { 650.0f,150.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+	}
+	else
+	{
+		m_gameover = UIFactory::CreateUserInterface(L"UI/gameover.png", { 650.0f,150.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+
+	}
+
+	m_backTexture = UIFactory::CreateUserInterface(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
@@ -76,22 +92,37 @@ void ResultScene::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] inputDevice 入力デバイス
+ * @param[in] なし
  *
  * @return なし
  */
 void ResultScene::Update(float elapsedTime)
 {
-	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 	
-	if (traker->pressed.Space)
-	{
-		//ChangeScene<GameScene,LoadScene>();
-	}
-	/*m_camera->SetEyePosX(m_length * std::cos(r));
-	m_camera->SetEyePosZ(m_length * std::sin(r));*/
+	auto tracker = Graphics::GetInstance()->GetKeyboardTracker();
 
-	//m_camera->Update(elapsedTime);
+	m_menu->Update();
+
+	if (tracker->pressed.Space)
+	{
+		int menuIndex = m_menu->GetMenuIndex();
+
+		switch (menuIndex)
+		{
+			//「はい」の場合
+		case 0:
+			//所持している宝石を保存する
+			GemManager::GetInstance()->SavePlayerHoldGem();
+			ChangeScene<TitleScene>();
+			break;
+			//「いいえ」の場合
+		case 1:
+			//表示を消す
+			ChangeScene<TitleScene>();
+
+			break;
+		}
+	}
 }
 
 
@@ -115,6 +146,8 @@ void ResultScene::Render()
 	DirectX::SimpleMath::Matrix world;
 
 	DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
+	m_backTexture->Draw();
+
 
 	spriteBatch->Begin();
 	//spriteBatch->Draw(m_titleTexture, DirectX::SimpleMath::Vector2(400, 100));
@@ -122,6 +155,12 @@ void ResultScene::Render()
 
 	
 	spriteBatch->End();
+
+	m_gameover->Draw();
+
+	m_saveMessage->Draw();
+	m_menu->Render();
+
 }
 
 

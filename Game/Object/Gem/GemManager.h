@@ -97,10 +97,22 @@ public:
 
 	void Finalize();
 
-	//ランダムに宝石を選択する
+	//ランダムに宝石を取得する
 	Gem* RandomSelection();
+
+	//プレイヤーの所持している宝石を外部ファイルに保存
+	bool SavePlayerHoldGem();
+
+	//プレイヤーの所持している宝石を外部ファイルから読み込み
+	bool LoadPlayerHoldGem();
+
+	//プレイヤーの所持している宝石を空にする
+	void EmptyPlayerHoldGem();
 //　取得・設定
 public:
+	//id番の宝石を取得
+	Gem* GetIDNumberedGem(const int& id);
+
 	//空のスロットがあるか
 	bool IsBlankSlot();
 

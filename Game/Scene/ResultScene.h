@@ -48,15 +48,20 @@ private:
 
 	// オブジェクト関連
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
-	ID3D11ShaderResourceView* m_titleTexture;	///< タイトル画像
-	ID3D11ShaderResourceView* m_pressSpaceTexture;	///< PRESS SPACE画像
 
+	std::vector<std::unique_ptr<IUI>> m_uiStack;
 
-	std::unique_ptr<Menu> m_menu;
+	//背景
+	std::unique_ptr<UserInterface> m_backTexture;
+
 	std::unique_ptr<HoldGem> m_holdGem;
 
-	UserInterface m_message;
-// メンバ関数の宣言 -------------------------------------------------
+	//ゲームクリア　ゲームオーバーを表示するUI
+	std::unique_ptr<UserInterface> m_gameover;
+
+	std::unique_ptr<UserInterface> m_saveMessage;
+	std::unique_ptr<Menu> m_menu;
+	// メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ

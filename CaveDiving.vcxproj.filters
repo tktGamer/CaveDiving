@@ -92,6 +92,15 @@
     <Filter Include="Game\UI\Menu">
       <UniqueIdentifier>{bbc20517-7e28-4caf-99d1-75011de4a01e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Enemy\Golem">
+      <UniqueIdentifier>{ea55ce75-f054-4e1d-aaf8-2312976eba96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Enemy\Golem\State">
+      <UniqueIdentifier>{c1d925f1-ae52-4d61-a66a-dad642a1ef0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\Result">
+      <UniqueIdentifier>{edc07fd1-f1e0-4022-8e5f-57a6c08de263}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -228,7 +237,7 @@
     <ClInclude Include="Game\UI\UserInterface.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Fuctory\CharacterFactory.h">
+    <ClInclude Include="Game\Fuctory\GameObjectFactory.h">
       <Filter>Game\Factory</Filter>
     </ClInclude>
     <ClInclude Include="Game\Object\Character.h">
@@ -326,6 +335,42 @@
     </ClInclude>
     <ClInclude Include="Game\UI\HoldGem\HoldGemInfoDraw.h">
       <Filter>Game\UI\HoldGem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Fuctory\UIFactory.h">
+      <Filter>Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Golem\Golem.h">
+      <Filter>Game\Object\Enemy\Golem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemIdling.h">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemAttack.h">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemAttackPreparing.h">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemChasing.h">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemDamaged.h">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemMoving.h">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Result\SaveConfirm.h">
+      <Filter>Game\UI\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\PlayerMotion\PlayerIdlingMotion.h">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Golem\GolemHand.h">
+      <Filter>Game\Object\Enemy\Golem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Stage\Candlestick.h">
+      <Filter>Game\Object\Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -442,7 +487,7 @@
     <ClCompile Include="Game\UI\UserInterface.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Fuctory\CharacterFactory.cpp">
+    <ClCompile Include="Game\Fuctory\GameObjectFactory.cpp">
       <Filter>Game\Factory</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object\Character.cpp">
@@ -534,6 +579,42 @@
     </ClCompile>
     <ClCompile Include="Game\UI\HoldGem\HoldGemInfoDraw.cpp">
       <Filter>Game\UI\HoldGem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Fuctory\UIFactory.cpp">
+      <Filter>Game\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Golem\Golem.cpp">
+      <Filter>Game\Object\Enemy\Golem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemIdling.cpp">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemAttack.cpp">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemAttackPreparing.cpp">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemChasing.cpp">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemDamaged.cpp">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemMoving.cpp">
+      <Filter>Game\Object\Enemy\Golem\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Result\SaveConfirm.cpp">
+      <Filter>Game\UI\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\PlayerMotion\PlayerIdlingMotion.cpp">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Golem\GolemHand.cpp">
+      <Filter>Game\Object\Enemy\Golem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Stage\Candlestick.cpp">
+      <Filter>Game\Object\Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

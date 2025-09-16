@@ -1,7 +1,7 @@
 /**
  * @file   Character.h
  *
- * @brief  キャラのステータスに関するヘッダファイル
+ * @brief  キャラクターに関するヘッダファイル
  *
  * @author 制作者名
  *
@@ -17,7 +17,7 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief キャラのステータス
+  * @brief キャラクター
   */
 class Character : public GameObject
 {
@@ -66,7 +66,7 @@ private:
 public:
 	// コンストラクタ
 	Character(int hp,int attack, int diffence,
-		Tag::ObjectType type, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+		Tag::ObjectType type, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	virtual ~Character();
@@ -101,6 +101,7 @@ public:
 	//生きているか
 	bool IsAlive() const;
 
+	//ダメージを受けた方向の取得
 	const DirectX::SimpleMath::Vector3& GetDamageDirection() const;
 
 	void SetDamageDirection(const DirectX::SimpleMath::Vector3& damageDirection);

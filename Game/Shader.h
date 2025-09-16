@@ -36,7 +36,7 @@ public:
 	};
 
 	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct LightBuffer
+	struct PointLight
 	{
 		DirectX::SimpleMath::Vector3 LightPosition;      // ライト位置
 		float LightInvSqrRadius;  // ライトの届く距離
@@ -45,6 +45,15 @@ public:
 		DirectX::SimpleMath::Vector4	Attenuation;
 
 	};
+
+	struct LightBuffer 
+	{
+		PointLight pointLights[3];
+		int onLightCount;
+		DirectX::SimpleMath::Vector3 dammy;
+
+	};
+
 
 	//データ受け渡し用コンスタントバッファ(送信側)
 	struct UIConstBuffer

@@ -39,7 +39,6 @@ CollisionManager* const CollisionManager::GetInstance()
  * @param[in] ‚È‚µ
  */
 CollisionManager::CollisionManager()
-	:m_graphics{Graphics::GetInstance()}
 {
 
 }

@@ -15,6 +15,7 @@
 #include"Game/Common/Graphics.h"
 #include"../Stage/Ground.h"
 #include"../Stage/Wall.h"
+#include"../Stage/Candlestick.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -46,11 +47,14 @@ private:
 	std::unique_ptr<Wall> m_wall;
 	//地面
 	std::unique_ptr<Ground> m_ground;
+
+	//燭台
+	std::unique_ptr<CandleStick> m_candle;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Stage();

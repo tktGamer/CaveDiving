@@ -7,6 +7,7 @@
 #include<thread>
 #include<mutex>
 #include<future>
+#include<vector>
 // クラスの宣言 ===============================================================
 template <typename T>
 class SceneManager;
@@ -69,9 +70,10 @@ public:
 	void StackScene();
 
 	//現在のシーンを削除
-	template <typename U>
 	void PopScene();
 
+	// ユーザーが設定したリソース取得関数
+	T* GetGameData();
 };
 
 
@@ -80,13 +82,15 @@ template <typename T>
 class SceneManager
 {
 private:
+	// 共通でアクセスしたいオブジェクトへのポインタ
+	T* m_gameData;
 
 	//生成したシーンをスタックするか
 	bool m_isStackNextScene;
 	//現在のシーンを削除するか
 	bool m_isScenePop;
 	// 実行中のシーンへのポインタ
-	std::stack<std::unique_ptr<Scene<T>>> m_scene;
+	std::vector<std::unique_ptr<Scene<T>>> m_scene;
 	//std::stack<Scene<T>> m_pCurrentScene;//現在のシーン
 
 
@@ -117,12 +121,13 @@ private:
 public:
 
 	// コンストラクタ
-	SceneManager(T* graphics=nullptr)
+	SceneManager(T* gameData=nullptr)
 		: m_scene{}
 		, m_nextScene{}
 		, m_loadingScreen{}
 		,m_isStackNextScene{}
 		,m_isScenePop{}
+		,m_gameData{gameData}
 	{
 	};
 
@@ -174,6 +179,9 @@ public:
 	bool IsLoading();
 
 	void PopScene();
+
+	// ユーザーリソース取得関数
+	T* GetGameData() { return m_gameData; }
 //内部処理
 private:
 	// シーン削除関数
@@ -182,6 +190,9 @@ private:
 	void ChangeScene();
 	//シーンのスタック処理
 	void StackScene();
+
+
+
 
 };
 
@@ -209,11 +220,21 @@ inline void Scene<T>::StackScene()
 }
 
 template<typename T>
-template<typename U>
 inline void Scene<T>::PopScene()
 {
 	m_sceneManager->PopScene();
 }
+
+
+// ユーザーが設定したリソース取得関数
+template <class T>
+T* Scene<T>::GetGameData()
+{
+	assert(m_sceneManager);
+
+	return m_sceneManager->GetGameData();
+}
+
 
 
 // シーンの設定関数
@@ -311,7 +332,7 @@ void SceneManager<T>::Update(float elapsedTime)
 	}
 
 	// シーンの更新
- 	if (!m_scene.empty()) m_scene.top()->Update(elapsedTime);
+ 	if (!m_scene.empty()) m_scene.back()->Update(elapsedTime);
 
 }
 
@@ -328,10 +349,18 @@ void SceneManager<T>::Render()
 	// シーンの描画
 	if (!m_scene.empty()) 
 	{
-
-		m_scene.top()->Render();
+		for (auto& scene : m_scene) 
+		{
+			//if (scene == m_scene.back()) 
+			//{
+			//	if (m_loadingFuture.valid()) 
+			//	{
+			//		continue;
+			//	}
+			//}
+			scene->Render();
+		}
 	}
-	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 
 
 }
@@ -340,21 +369,39 @@ void SceneManager<T>::Render()
 template <typename T>
 void SceneManager<T>::CreateDeviceDependentResources()
 {
-	if (!m_scene.empty()) m_scene.top()->CreateDeviceDependentResources();
+	if (!m_scene.empty())
+	{
+		for (auto& scene : m_scene)
+		{
+			scene->CreateDeviceDependentResources();
+		}
+	}
 }
 
 // ウインドウサイズに依存するリソースを作成する関数
 template <typename T>
 void SceneManager<T>::CreateWindowSizeDependentResources()
 {
-	if (!m_scene.empty()) m_scene.top()->CreateWindowSizeDependentResources();
+	if (!m_scene.empty())
+	{
+		for (auto& scene : m_scene)
+		{
+			scene->CreateWindowSizeDependentResources();
+		}
+	}
 }
 
 // デバイスロストした時に呼び出される関数
 template <typename T>
 void SceneManager<T>::OnDeviceLost()
 {
-	if (!m_scene.empty()) m_scene.top()->OnDeviceLost();
+	if (!m_scene.empty())
+	{
+		for (auto& scene : m_scene)
+		{
+			scene->OnDeviceLost();
+		}
+	}
 }
 
 // シーンの削除関数
@@ -363,10 +410,16 @@ void SceneManager<T>::DeleteScene()
 {
 	if (!m_scene.empty())
 	{
-		m_scene.top()->Finalize();
+		for (auto& scene : m_scene) 
+		{
+			scene->Finalize();
+		}
 
-		m_scene.pop();
+		
 	}
+
+	m_scene.clear();
+
 }
 
 
@@ -377,7 +430,7 @@ inline void SceneManager<T>::PrepareNextScene(std::function<std::unique_ptr<Scen
 	//{
 	//	m_loadingThread.join();
 	//}
- //
+ 
 	//m_isLoading = true;
 	//m_loadingThread = std::thread
 	//{
@@ -430,13 +483,13 @@ inline bool SceneManager<T>::IsLoading()
 template<typename T>
 inline void SceneManager<T>::ChangeScene() 
 {
+
 	//シーンを消去
 	DeleteScene();
-
 	assert(m_scene.empty());
 
 	// シーンを切り替え
-	m_scene.emplace(std::move(m_nextScene));
+	m_scene.emplace_back(std::move(m_nextScene));
 
 	//ロード画面があったら終了処理
 	if (m_loadingScreen)
@@ -451,7 +504,7 @@ template<typename T>
 inline void SceneManager<T>::StackScene() 
 {
 	// シーンをスタック
-	m_scene.emplace(std::move(m_nextScene));
+	m_scene.emplace_back(std::move(m_nextScene));
 	//ロード画面があったら終了処理
 	if (m_loadingScreen)
 	{

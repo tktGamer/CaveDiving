@@ -21,7 +21,7 @@
  * @param[in] initialPosition ‰ŠúˆÊ’u
  * @param[in] initialAngle    ‰ŠúŠp“x
  */
-Wall::Wall(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Wall::Wall(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: GameObject(Tag::ObjectType::Stage,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_graphics{ Graphics::GetInstance() }
@@ -55,7 +55,7 @@ void Wall::Initialize()
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"cave_game.sdkmesh"));
 	SetPosition(DirectX::SimpleMath::Vector3::Zero);
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	SetScale(DirectX::SimpleMath::Vector3(60.0f, 40.0f, 60.0f));
+	SetScale(DirectX::SimpleMath::Vector3(60.0f, 50.0f, 60.0f));
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("cave.png"));
 	
 	SetShape(&m_sphere);

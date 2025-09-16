@@ -15,6 +15,7 @@
 #include"Game/Common/Graphics.h"
 #include"../Character.h"
 #include"../Enemy/Bat/Bat.h"
+#include"../Enemy/Golem/Golem.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -57,6 +58,8 @@ public:
 
 	//敵生成
 	void Spawn();
+
+	void SpawnBoss();
 //　取得・設定
 public:
 	//敵を取得

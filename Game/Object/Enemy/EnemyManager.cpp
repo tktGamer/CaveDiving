@@ -12,7 +12,8 @@
 #include "pch.h"
 #include "EnemyManager.h"
 #include"Game/Common/Collision/CollisionManager.h"
-// メンバ関数の定義 ===========================================================
+#include"Game/Fuctory/GameObjectFactory.h"
+ // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
@@ -114,10 +115,37 @@ void EnemyManager::Finalize()
  */
 void EnemyManager::Spawn()
 {
-	m_enemies.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
-	m_enemies.back()->Initialize();
+	m_enemies.emplace_back(GameObjectFactory::CreateBat());
+	m_enemies.back()->SetPosition({ 0.0f, 1.0f, -8.0f });
 	CollisionManager::GetInstance()->Register(m_enemies.back().get());
 	Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
+
+	//m_enemies.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
+	//m_enemies.back()->Initialize();
+	//m_enemies.back()->SetPosition({ 6.0f,1.0f,33.0f });
+	//CollisionManager::GetInstance()->Register(m_enemies.back().get());
+	//Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
+	//m_enemies.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
+	//m_enemies.back()->Initialize();
+	//m_enemies.back()->SetPosition({ 9.0f,1.0f,-33.0f });
+	//CollisionManager::GetInstance()->Register(m_enemies.back().get());
+	//Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
+	//m_enemies.emplace_back(std::make_unique<Bat>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
+	//m_enemies.back()->Initialize();
+	//m_enemies.back()->SetPosition({ -1.0f,1.0f,-36.0f });
+	//CollisionManager::GetInstance()->Register(m_enemies.back().get());
+	//Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
+}
+
+void EnemyManager::SpawnBoss()
+{
+	m_enemies.emplace_back(std::make_unique<Golem>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
+	m_enemies.back()->Initialize();
+	m_enemies.back()->SetPosition({ 0.0f, 1.0f, -8.0f });
+	CollisionManager::GetInstance()->Register(m_enemies.back().get());
+	Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
+
+
 }
 
 /**

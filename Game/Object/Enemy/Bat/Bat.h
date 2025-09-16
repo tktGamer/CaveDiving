@@ -74,7 +74,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Bat();

@@ -373,20 +373,39 @@ void Shader::SetModelShader(ID3D11Buffer* cBuffer)
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { cBuffer };
 
-	LightBuffer lbuff;
-	lbuff.LightPosition = DirectX::SimpleMath::Vector3(0.0f, 2.0f, 0.0f);
-	lbuff.LightInvSqrRadius = 1.0f / (10.0f * 10.0f); //ライトが届く距離（２乗の逆数）
-	lbuff.LightColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
-	lbuff.LightIntensity = 3.0f;
-	lbuff.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.005f, 0.0f); // デフォルトの減衰
+	//LightBuffer lbuff;
+	//lbuff.LightPosition = DirectX::SimpleMath::Vector3(0.0f, 2.0f, 0.0f);
+	//lbuff.LightInvSqrRadius = 1.0f / (10.0f * 10.0f); //ライトが届く距離（２乗の逆数）
+	//lbuff.LightColor = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+	//lbuff.LightIntensity = 3.0f;
+	//lbuff.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.0f, 0.005f, 0.0f); // デフォルトの減衰
 
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_lBuffer.Get(), 0, NULL, &lbuff, 0, 0);
+	////	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	//m_lights[0]->GetLightBuffer();
+	////context->UpdateSubresource(m_lBuffer.Get(), 0, NULL, m_lights[0]->GetLightBuffer(), 0, 0);
+	//context->UpdateSubresource(m_lBuffer.Get(), 0, NULL, &lbuff, 0, 0);
 
-	ID3D11Buffer* lb[1] = { m_lights[0]->GetLightBuffer()};
+	LightBuffer lB;
+	lB.onLightCount = 0;
+	for (auto& light : m_lights) 
+	{
+		if (light->IsOn())
+		{
+			lB.pointLights[lB.onLightCount] = light->GetLightData();
+			lB.onLightCount++;
+		}
+	}
+	context->UpdateSubresource(m_lBuffer.Get(), 0, NULL, &lB, 0, 0);
+
+
+	ID3D11Buffer* lb[1] = { m_lBuffer.Get()};
 
 	context->PSSetConstantBuffers(1, 1, lb);
 
+
+	//ID3D11Buffer* lb[1] = { light->GetLightBuffer()};
+
+	//context->PSSetConstantBuffers(1, 1, lb);
 
 	// コンスタントバッファを設定
 	context->VSSetConstantBuffers(0, 1, cb);

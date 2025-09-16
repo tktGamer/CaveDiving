@@ -64,7 +64,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_gemManager->LoadGemData();
 
     // 起動シーン設定
-    m_sceneManager->SetScene<GemSelectScene>();
+    m_sceneManager->SetScene<TitleScene>();
 }
 
 #pragma region Frame Update
@@ -136,7 +136,7 @@ void Game::Render()
     std::wostringstream str;
     str << L"fps: " << m_timer.GetFramesPerSecond();
     m_debugFont->AddString(str.str().c_str(), DirectX::SimpleMath::Vector2::Zero);
-    m_debugFont->Render(m_graphics->GetCommonStates());
+   // m_debugFont->Render(m_graphics->GetCommonStates());
 
     m_deviceResources->PIXEndEvent();
 
@@ -154,7 +154,7 @@ void Game::Clear()
     auto renderTarget = m_deviceResources->GetRenderTargetView();
     auto depthStencil = m_deviceResources->GetDepthStencilView();
 
-    context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
+    context->ClearRenderTargetView(renderTarget, Colors::Black);
     context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     context->OMSetRenderTargets(1, &renderTarget, depthStencil);
 
@@ -229,7 +229,6 @@ void Game::CreateDeviceDependentResources()
 {
     auto device = m_deviceResources->GetD3DDevice();
     auto context = m_deviceResources->GetD3DDeviceContext();
-
     // TODO: Initialize device dependent objects here (independent of window size).
     device;
     m_debugFont = std::make_unique<Ito::DebugFont>(device, context, L"Resources\\Font\\SegoeUI_18.spritefont");
@@ -240,13 +239,8 @@ void Game::CreateDeviceDependentResources()
     if (!m_userResources) m_userResources = std::make_unique<UserResources>();
 
     // シーンマネージャーの作成
-    if (!m_sceneManager) m_sceneManager = std::make_unique<SceneManager<UserResources>>();
+    if (!m_sceneManager) m_sceneManager = std::make_unique<SceneManager<UserResources>>(m_userResources.get());
 
-    // シーンへ渡すユーザーリソースの設定
-    m_userResources->SetDebugFont(m_debugFont.get());
-    m_userResources->SetKeyboardStateTracker(&m_keyboardTracker);
-    m_userResources->SetMouseStateTracker(&m_mouseTracker);
-    m_userResources->SetStepTimerStates(&m_timer);
 
 	m_resourceManager->SetAudioEngine(m_audioEngine.get());
 

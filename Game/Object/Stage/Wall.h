@@ -49,7 +49,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Wall(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Wall(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Wall();

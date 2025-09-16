@@ -19,7 +19,7 @@
  *
  * @param[in] ‚È‚µ
  */
-Pikel::Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Pikel::Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
 	, Weapon(owner,Tag::ObjectType::Weapon,parent,initialPosition,initialAngle)
 	, m_messageID{}
@@ -31,9 +31,11 @@ Pikel::Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Ve
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"pikel.sdkmesh"));
 
 	m_sphere.SetEnabled(false);
+
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
 	CollisionManager::GetInstance()->Register(this);
+
 }
 
 
@@ -58,6 +60,7 @@ Pikel::~Pikel()
  */
 void Pikel::Initialize()
 {
+
 }
 
 

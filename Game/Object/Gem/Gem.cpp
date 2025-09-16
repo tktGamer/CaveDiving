@@ -27,8 +27,8 @@ Gem::Gem()
  * @param[in] value •óÎ‚ÌŒø‰Ê’l
  * @param[in] discription •óÎ‚ÌŒø‰Êà–¾
  */
-Gem::Gem(Type type, int value, std::string discription)
-	:m_ability{ type, value, discription }
+Gem::Gem(int id ,Type type, int value, std::string discription)
+	:m_ability{id, type, value, discription }
 {
 }
 

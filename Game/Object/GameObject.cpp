@@ -1,7 +1,7 @@
 /**
  * @file   GameObject.cpp
  *
- * @brief  ＸＸＸＸに関するソースファイル
+ * @brief  ゲーム内のオブジェクトの基底クラスに関するソースファイル
  *
  * @author 制作者名
  *
@@ -29,7 +29,7 @@ void GameObject::ResetObjectNumber() { s_objectNumber = 0; }
  * @param[in]  modelParams モデルパラメータ
  * 
  */
-GameObject::GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+GameObject::GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: m_objectType{ objectType }
 	, m_graphics{ Graphics::GetInstance() }
 	, m_objectNumber{CountUpNumber()}
@@ -42,7 +42,7 @@ GameObject::GameObject(Tag::ObjectType objectType, GameObject* parent, const Dir
 	, m_scale{ 1.0f, 1.0f, 1.0f } // 初期拡大率を設定
 	, m_parent{ parent }
 	, m_initialPosition{ initialPosition }
-	, m_initialAngle{ DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, initialAngle) }
+	, m_initialAngle{ initialAngle }
 	, m_currentPosition{}
 	, m_currentAngle{}
 {

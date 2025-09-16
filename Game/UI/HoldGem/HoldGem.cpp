@@ -76,49 +76,24 @@ void HoldGem::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Di
     //  背景用のアイテムも新しく追加する
     m_base = std::move(base);
 
-
-    //  
-    std::unique_ptr<UserInterface> gem = std::make_unique<UserInterface>();
-    gem->Create(
-        L"Gem/blankgem.png"
-        , {position.x + GEM_POS_X[0]*scale.x,m_position.y}
-		, GEM_SCALE * scale
-        , anchor
+    for (int i = 0; i < 3; i++)
+    {
+        //  
+        std::unique_ptr<UserInterface> gem = std::make_unique<UserInterface>();
+        gem->Create(
+            L"Gem/blankgem.png"
+            , { position.x + GEM_POS_X[i] * scale.x,m_position.y }
+            , GEM_SCALE * scale
+            , anchor
         );
 
-    gem->SetWindowSize(m_windowWidth, m_windowHeight);
+        gem->SetWindowSize(m_windowWidth, m_windowHeight);
 
-    //  
-    m_gemUI[0] = std::move(gem);
+        //  
+        m_gemUI[i] = std::move(gem);
 
-    //  背景用のウィンドウ画像も追加する
-     gem = std::make_unique<UserInterface>();
-    gem->Create(
-         L"Gem/blankgem.png"
-        , { position.x + GEM_POS_X[1] * scale.x,m_position.y }
-        , GEM_SCALE* scale
-        , anchor
-        );
 
-    gem->SetWindowSize(m_windowWidth, m_windowHeight);
-
-    //  
-    m_gemUI[1] = std::move(gem);
-
-    //  
-     gem = std::make_unique<UserInterface>();
-    gem->Create(
-         L"Gem/blankgem.png"
-        , { position.x + GEM_POS_X[2] * scale.x,m_position.y }
-        , GEM_SCALE* scale
-        , anchor
-        );
-
-    gem->SetWindowSize(m_windowWidth, m_windowHeight);
-
-    //  
-    m_gemUI[2] = std::move(gem);
-
+    }
     
 }
 

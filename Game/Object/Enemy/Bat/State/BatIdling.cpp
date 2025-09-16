@@ -73,7 +73,7 @@ void BatIdling::Update(const float& elapsedTime)
 	//一定時間経過したら移動状態へ遷移
 	if (m_bat->GetFrameCount() > 5.0f) 
 	{
-		//Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::MOVING);
+		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::MOVING);
 	}
 
 	//プレイヤーを取得
@@ -87,7 +87,7 @@ void BatIdling::Update(const float& elapsedTime)
 		//範囲内なら遷移
 		if (distance < 15.0f)
 		{
-			//Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::CHASING);
+			Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::CHASING);
 		}
 	}
 

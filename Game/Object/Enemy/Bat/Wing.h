@@ -38,7 +38,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Wing(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Wing(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Wing();

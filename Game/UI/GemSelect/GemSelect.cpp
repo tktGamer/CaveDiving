@@ -73,6 +73,8 @@ void GemSelect::Update()
         if (m_menuIndex >= 3) 
         {
             m_pUIManager->RequestClearUI();
+            m_pUIManager->SelectFinishNotice();
+
             return;
         }
 

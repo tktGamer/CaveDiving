@@ -13,7 +13,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Object/GameObject.h"
-
+#include"Game/Shader.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -35,6 +35,7 @@ public:
 
 	};
 
+	
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -42,7 +43,7 @@ private:
 	Message::MessageID m_messageID;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_lBuffer;
 	LightBuffer m_lBuff;
-
+	Shader::PointLight m_pointLight;
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 	bool m_isOn; //ライトのオンオフ状態
 	
@@ -50,7 +51,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Light();
@@ -73,11 +74,13 @@ public:
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
 
+	void LightOn();
 //　取得・設定
 public:
-
+	bool IsOn()const ;
 	ID3D11Buffer* GetLightBuffer() const;
 
+	Shader::PointLight GetLightData();
 //　内部操作
 private:
 

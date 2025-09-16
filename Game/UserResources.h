@@ -1,99 +1,68 @@
-//--------------------------------------------------------------------------------------
-// File: UserResources.h
-//
-// シーンへ渡すユーザーリソースクラス（サンプル）
-//
-// Date: 2025.2.28
-//--------------------------------------------------------------------------------------
+/**
+ * @file   GameData.h
+ *
+ * @brief  シーンをまたいでも保持したいデータの管理に関するヘッダファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2025/09/12
+ */
+
+ // 多重インクルードの防止 =====================================================
 #pragma once
 
-#include "StepTimer.h"
-#include "DeviceResources.h"
-#include "../Game/Common/DebugFont.h"
+
 
 // 各シーンに渡す共通リソースを記述してください
 class UserResources
 {
+public:
+	enum Stage
+	{
+		FIRST,
+		BOSS
+	};
 private:
-
-	// ステップタイマー
-	DX::StepTimer* m_timer;
-
-
-	// キーボードステートトラッカー
-	DirectX::Keyboard::KeyboardStateTracker* m_keyboardTracker;
-
-	// マウスステートトラッカー
-	DirectX::Mouse::ButtonStateTracker* m_mouseTracker;
-
-	// デバッグ用文字列表示へのポインタ
-	Ito::DebugFont* m_debugFont;
-
-	// 共通ステート
-	DirectX::CommonStates* m_states;
+	//ゲームをクリアしたか
+	bool m_isGameClear;
+	//プレイヤーのステージクリア時HP
+	int m_playerHP;
+	//次のステージ
+	Stage m_nextStage;
+	//ステージで灯した明かり
 
 public:
 
 	// コンストラクタ
 	UserResources()
-		: m_timer(nullptr)
-		, m_keyboardTracker(nullptr)
-		, m_mouseTracker(nullptr)
-		, m_debugFont(nullptr)
-		, m_states(nullptr)
+		:m_isGameClear{false}
+		,m_nextStage{Stage::FIRST}
+		,m_playerHP{}
 	{
 	}
 
-	// ------------------------------------------ //
-	// ステップタイマー	
-	// ------------------------------------------ //
 
-	// ステップタイマーを設定する関数
-	void SetStepTimerStates(DX::StepTimer* timer) { m_timer = timer; }
+	const bool IsGameClear() const  
+	{
+		return m_isGameClear;
+	}
 
-	// ステップタイマーを取得する関数
-	DX::StepTimer* GetStepTimer() { return m_timer; }
+	void SetIsGameClear(const bool& isGameClear) 
+	{
+		m_isGameClear = isGameClear;
+	}
+
+	void SetNextStage(const Stage& nextStage) 
+	{
+		m_nextStage = nextStage;
+	}
 
 
-	// ------------------------------------------ //
-	// キーボードステートトラッカー	
-	// ------------------------------------------ //
+	const Stage GetNextStage() const
+	{
+		return m_nextStage;
+	}
 
-	// キーボードステートトラッカーを設定する関数
-	void SetKeyboardStateTracker(DirectX::Keyboard::KeyboardStateTracker* tracker) { m_keyboardTracker = tracker; }
-
-	// キーボードステートトラッカーを取得する関数
-	DirectX::Keyboard::KeyboardStateTracker* GetKeyboardStateTracker() { return m_keyboardTracker; }
-
-	// ------------------------------------------ //
-	// マウスステートトラッカー	
-	// ------------------------------------------ //
-
-	// マウスステートトラッカーを設定する関数
-	void SetMouseStateTracker(DirectX::Mouse::ButtonStateTracker* tracker) { m_mouseTracker = tracker; }
-
-	// マウスステートトラッカーを取得する関数
-	DirectX::Mouse::ButtonStateTracker* GetMouseStateTracker() { return m_mouseTracker; }
-
-	// ------------------------------------------ //
-	// 共通ステート	
-	// ------------------------------------------ //
-
-	// 共通ステートを設定する関数
-	void SetCommonStates(DirectX::CommonStates* states) { m_states = states; }
-
-	// 共通ステートを取得する関数
-	DirectX::CommonStates* GetCommonStates() { return m_states; }
-
-	// ------------------------------------------ //
-	// デバッグフォント	
-	// ------------------------------------------ //
-
-	// デバッグフォントを設定する関数
-	void SetDebugFont(Ito::DebugFont* debugFont) { m_debugFont = debugFont; }
-
-	// デバッグフォントを取得する関数
-	Ito::DebugFont* GetDebugFont() { return m_debugFont; }
 
 };
 

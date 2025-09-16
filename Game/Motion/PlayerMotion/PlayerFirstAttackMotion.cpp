@@ -20,9 +20,9 @@
  */
 PlayerFirstAttackMotion::PlayerFirstAttackMotion( Hand* pRightHand, Hand* pLeftHand)
 	: m_pRightHand{ pRightHand }
-	,m_pLeftHand{pLeftHand}
+	, m_pLeftHand{pLeftHand}
 	, m_isNextAttack{ false }
-	,m_inputTime{1.0f}
+	, m_inputTime{1.0f}
 {
 
 }
@@ -48,6 +48,7 @@ PlayerFirstAttackMotion::~PlayerFirstAttackMotion()
  */
 void PlayerFirstAttackMotion::Initialize()
 {
+	//ê^â°Ç…å¸ÇØÇÈ
 	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
 
 }
@@ -66,6 +67,7 @@ bool PlayerFirstAttackMotion::Update()
 {
 	float motionLerp = GetMotionLerp();
 
+	//ç°âÒÇÃäpìxÇåvéZ
 	float rightHandAngle = TKTLib::Lerp(0.0f,170.0f,motionLerp);
 	float leftHandAngle  = TKTLib::Lerp(0.0f, 30.0f, motionLerp);
 

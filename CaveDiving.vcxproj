@@ -193,7 +193,8 @@
     <ClInclude Include="Game\Common\ResourceManager.h" />
     <ClInclude Include="Game\Common\SceneManager.h" />
     <ClInclude Include="Game\Common\Sound.h" />
-    <ClInclude Include="Game\Fuctory\CharacterFactory.h" />
+    <ClInclude Include="Game\Fuctory\GameObjectFactory.h" />
+    <ClInclude Include="Game\Fuctory\UIFactory.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\Interface\IObserver.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="Game\Motion\Motion.h" />
     <ClInclude Include="Game\Motion\MotionType.h" />
     <ClInclude Include="Game\Motion\PlayerMotion\PlayerFirstAttackMotion.h" />
+    <ClInclude Include="Game\Motion\PlayerMotion\PlayerIdlingMotion.h" />
     <ClInclude Include="Game\Motion\PlayerMotion\PlayerSecondAttackMotion.h" />
     <ClInclude Include="Game\Motion\PlayerMotion\PlayerSlamAttackMotion.h" />
     <ClInclude Include="Game\Motion\PlayerMotion\PlayerThirdAttackMotion.h" />
@@ -219,6 +221,14 @@
     <ClInclude Include="Game\Object\Enemy\Bat\State\BatMoving.h" />
     <ClInclude Include="Game\Object\Enemy\Bat\Wing.h" />
     <ClInclude Include="Game\Object\Enemy\EnemyManager.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\Golem.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\GolemHand.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemAttack.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemAttackPreparing.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemChasing.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemDamaged.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemIdling.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\State\GolemMoving.h" />
     <ClInclude Include="Game\Object\GameObject.h" />
     <ClInclude Include="Game\Object\Gem\Gem.h" />
     <ClInclude Include="Game\Object\Gem\GemManager.h" />
@@ -233,6 +243,7 @@
     <ClInclude Include="Game\Object\Player\State\PlayerIdling.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerJumping.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerMoving.h" />
+    <ClInclude Include="Game\Object\Stage\Candlestick.h" />
     <ClInclude Include="Game\Object\Stage\Ground.h" />
     <ClInclude Include="Game\Object\Stage\Stage.h" />
     <ClInclude Include="Game\Object\Stage\Wall.h" />
@@ -252,6 +263,7 @@
     <ClInclude Include="Game\UI\HoldGem\HoldGem.h" />
     <ClInclude Include="Game\UI\HoldGem\HoldGemInfoDraw.h" />
     <ClInclude Include="Game\UI\Menu\Menu.h" />
+    <ClInclude Include="Game\UI\Result\SaveConfirm.h" />
     <ClInclude Include="Game\UI\UserInterface.h" />
     <ClInclude Include="Game\UserResources.h" />
     <ClInclude Include="pch.h" />
@@ -273,13 +285,15 @@
     <ClCompile Include="Game\Common\Graphics.cpp" />
     <ClCompile Include="Game\Common\ResourceManager.cpp" />
     <ClCompile Include="Game\Common\Sound.cpp" />
-    <ClCompile Include="Game\Fuctory\CharacterFactory.cpp" />
+    <ClCompile Include="Game\Fuctory\GameObjectFactory.cpp" />
+    <ClCompile Include="Game\Fuctory\UIFactory.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\Message\Messenger.cpp" />
     <ClCompile Include="Game\Motion\BatMotion\BatAttackMotion.cpp" />
     <ClCompile Include="Game\Motion\BatMotion\BatAttackPreparingMotion.cpp" />
     <ClCompile Include="Game\Motion\Motion.cpp" />
     <ClCompile Include="Game\Motion\PlayerMotion\PlayerFirstAttackMotion.cpp" />
+    <ClCompile Include="Game\Motion\PlayerMotion\PlayerIdlingMotion.cpp" />
     <ClCompile Include="Game\Motion\PlayerMotion\PlayerSecondAttackMotion.cpp" />
     <ClCompile Include="Game\Motion\PlayerMotion\PlayerSlamAttackMotion.cpp" />
     <ClCompile Include="Game\Motion\PlayerMotion\PlayerThirdAttackMotion.cpp" />
@@ -294,6 +308,14 @@
     <ClCompile Include="Game\Object\Enemy\Bat\State\BatMoving.cpp" />
     <ClCompile Include="Game\Object\Enemy\Bat\Wing.cpp" />
     <ClCompile Include="Game\Object\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\Golem.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\GolemHand.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemAttack.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemAttackPreparing.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemChasing.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemDamaged.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemIdling.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\State\GolemMoving.cpp" />
     <ClCompile Include="Game\Object\GameObject.cpp" />
     <ClCompile Include="Game\Object\Gem\Gem.cpp" />
     <ClCompile Include="Game\Object\Gem\GemManager.cpp" />
@@ -308,6 +330,7 @@
     <ClCompile Include="Game\Object\Player\State\PlayerIdling.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerJumping.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerMoving.cpp" />
+    <ClCompile Include="Game\Object\Stage\Candlestick.cpp" />
     <ClCompile Include="Game\Object\Stage\Ground.cpp" />
     <ClCompile Include="Game\Object\Stage\Stage.cpp" />
     <ClCompile Include="Game\Object\Stage\Wall.cpp" />
@@ -326,6 +349,7 @@
     <ClCompile Include="Game\UI\HoldGem\HoldGem.cpp" />
     <ClCompile Include="Game\UI\HoldGem\HoldGemInfoDraw.cpp" />
     <ClCompile Include="Game\UI\Menu\Menu.cpp" />
+    <ClCompile Include="Game\UI\Result\SaveConfirm.cpp" />
     <ClCompile Include="Game\UI\UserInterface.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">

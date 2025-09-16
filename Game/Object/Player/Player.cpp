@@ -18,13 +18,14 @@
 #include"Game/Common/Collision/CollisionManager.h"
 #include"../Gem/GemManager.h"
 #include"Game/Common/DamageSystem.h"
+#include"Game/Fuctory/GameObjectFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
  * @param[in] modelParms モデルパラメータ
  */
-Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: Character(100,20,7,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_velocity{ 0.0f, 0.0f, 0.0f }
@@ -58,8 +59,12 @@ Player::~Player()
 void Player::Initialize()
 {
 	//手の生成
-	std::unique_ptr<Hand> handR = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
-	std::unique_ptr<Hand> handL = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::XMConvertToRadians(0.0f));
+	//std::unique_ptr<Hand> handR = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
+	std::unique_ptr<Hand> handR =GameObjectFactory::CreateHand(this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
+	std::unique_ptr<Hand> handL = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
+
+	handR->HaveWeapon(GameObjectFactory::CreatePikle(this, handR.get()));
+
 	// 状態の初期化
 	m_idlingState		= std::make_unique<PlayerIdling>(this);
 	m_movingState		= std::make_unique<PlayerMoving>(this);
@@ -72,7 +77,7 @@ void Player::Initialize()
 
 	//パーツ配列にムーブ
 	m_bodyParts.emplace_back(std::move(handR));
-	m_bodyParts.back()->Initialize();
+	//m_bodyParts.back()->Initialize();
 	m_bodyParts.emplace_back(std::move(handL));
 
 	//初期状態を設定
@@ -88,8 +93,8 @@ void Player::Initialize()
 
 	SetShape(&m_sphere);
 
-	m_light = std::make_unique<Light>(this,GetPosition(),DirectX::XMConvertToRadians(0.0f));
-
+	m_light = std::make_unique<Light>(this,GetPosition(),DirectX::SimpleMath::Quaternion::Identity);
+	m_light->LightOn();
 	Shader::GetInstance()->RegisterLight(m_light.get());
 
 	//SetMaxHP(100);
@@ -120,6 +125,8 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 
 
 	m_light->Update(elapsedTime,currentPosition + GetPosition(), currentAngle * GetQuaternion());
+
+
 
 	//現在位置の更新
 	m_currentPosition = currentPosition + GetPosition();

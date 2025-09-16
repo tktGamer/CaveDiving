@@ -1,7 +1,7 @@
 /**
- * @file   Light.h
+ * @file   GolemHand.h
  *
- * @brief  Lightに関するヘッダファイル
+ * @brief  ゴーレムの手に関するヘッダファイル
  *
  * @author 制作者名
  *
@@ -13,52 +13,42 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Object/GameObject.h"
-
+#include"Game/Object/Weapon.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Light
+  * @brief GolemHand
   */
-class Light : public GameObject
+class GolemHand : public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct LightBuffer
-	{
-		DirectX::SimpleMath::Vector3 LightPosition;      // ライト位置
-		float LightInvSqrRadius; // ライトが届く距離（2乗の逆数）
-		DirectX::SimpleMath::Vector3 LightColor;         // ライトカラー
-		float LightIntensity;    // ライト強度
-		DirectX::SimpleMath::Vector4	Attenuation;
-
-	};
 
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	// メッセージID
-	Message::MessageID m_messageID;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_lBuffer;
-	LightBuffer m_lBuff;
-
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	bool m_isOn; //ライトのオンオフ状態
-	
+
+	DirectX::SimpleMath::Matrix m_world;
+
+	//持っている武器
+	std::unique_ptr<Weapon> m_weapon;
+
+	DirectX::SimpleMath::Quaternion m_motionAngle;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	GolemHand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
-	~Light();
+	~GolemHand();
 
 
 // 操作
 public:
-	void Initialize();
+	void Initialize() override;
 
 	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
@@ -72,12 +62,14 @@ public:
 
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
-
+	
+	//武器を持たせる
+	bool HaveWeapon(std::unique_ptr<Weapon> weapon);
 //　取得・設定
 public:
 
-	ID3D11Buffer* GetLightBuffer() const;
-
+	DirectX::SimpleMath::Quaternion GetMotionAngle();
+	void SetMotionAngle(DirectX::SimpleMath::Quaternion angle);
 //　内部操作
 private:
 

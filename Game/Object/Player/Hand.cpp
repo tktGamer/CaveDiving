@@ -5,21 +5,22 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/09/13
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Hand.h"
 #include"../CaveDiving/Game/Object/Player/Player.h"
-
+#include"Game/Object/Player/Pikel.h"
+#include"Game/Fuctory/GameObjectFactory.h"
  // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
  * @param[in] なし
  */
-Hand::Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Hand::Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
 	, GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
@@ -52,7 +53,7 @@ Hand::~Hand()
 void Hand::Initialize()
 {
 	
-	m_pikel = std::make_unique<Pikel>(m_parent->Cast<Character>(), this, DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f), DirectX::XMConvertToRadians(0.0f));
+	//m_weapon = GameObjectFactory::CreatePikle(m_parent->Cast<Character>(), this, DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f), DirectX::SimpleMath::Quaternion::Identity);
 
 	//DirectX::SimpleMath::Quaternion q = 
 	//	//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
@@ -79,8 +80,8 @@ void Hand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& current
 	m_currentAngle = GetQuaternion()   * m_motionAngle* currentAngle;
 	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition+ GetPosition(), m_motionAngle* currentAngle)+ currentPosition ;
 	
-	if(m_pikel)
-	m_pikel->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	if(m_weapon)
+	m_weapon->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }
 
 
@@ -150,8 +151,8 @@ void Hand::Draw()
 
 		});
 	Shader::GetInstance()->EndShader();
-	if (m_pikel)
-	m_pikel->Draw();
+	if (m_weapon)
+	m_weapon->Draw();
 }
 
 
@@ -188,6 +189,31 @@ void Hand::OnMessegeAccepted(Message::MessageID messageID)
  */
 void Hand::CollisionResponce(GameObject* other)
 {
+}
+
+
+/**
+ * @brief 武器を持たせる
+ *
+ * @param[in] weapon 武器クラス
+ *
+ * @return true   成功
+ * @return false　失敗
+ */
+bool Hand::HaveWeapon(std::unique_ptr<Weapon> weapon)
+{
+	//実体があるか確認
+	if (weapon) 
+	{
+		//所有権を移動
+		m_weapon = std::move(weapon);
+
+		//成功
+		return true;
+	}
+
+	//失敗
+	return false;
 }
 
 

@@ -4,7 +4,7 @@ cbuffer ConstBuffer : register(b0)
     matrix matWorld;
     matrix matView;
     matrix matProj;
-    float4 light;
+    float4 d;
 };
 
 struct VS_IN

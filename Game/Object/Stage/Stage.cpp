@@ -21,7 +21,7 @@
  * @param[in] initialPosition èâä˙à íu
  * @param[in] initialAngle    èâä˙äpìx
  */
-Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: m_messageID{  }
 	,m_cave{}
 	,m_ground{}
@@ -60,7 +60,7 @@ void Stage::Initialize()
 	//
 	//SetShape(&m_box);
 
-	m_ground = std::make_unique<Ground>(nullptr,DirectX::SimpleMath::Vector3::Zero,0.0f);
+	m_ground = std::make_unique<Ground>(nullptr,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_ground->Initialize();
 
 	m_cave.SetModelParams(ResourceManager::GetInstance()->RequestModel(L"cave_game.sdkmesh"));
@@ -68,11 +68,15 @@ void Stage::Initialize()
 	m_cave.SetModelParamsR(DirectX::SimpleMath::Vector3::Zero);
 	m_cave.SetModelParamsS(DirectX::SimpleMath::Vector3(65.0f, 35.0f, 65.0f));
 
-	m_wall = std::make_unique<Wall>(nullptr, DirectX::SimpleMath::Vector3::Zero, 0.0f);
+	m_wall = std::make_unique<Wall>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_wall->Initialize();
 
 	CollisionManager* pCM = CollisionManager::GetInstance();
 	pCM->Register(m_ground.get());
+
+	m_candle = std::make_unique<CandleStick>(nullptr, DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f}, DirectX::SimpleMath::Quaternion::Identity);
+	m_candle->Initialize();
+	m_candle->SetPosition({ 5.0f, 0.0f, -25.0f });
 }
 
 
@@ -90,6 +94,8 @@ void Stage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
 	
 	m_ground->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
 	m_wall->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
+
+	m_candle->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 }
 
 
@@ -161,6 +167,7 @@ void Stage::Draw()
 	m_ground->Draw();
 	m_wall->Draw();
 
+	m_candle->Draw();
 	//m_cave.GetModel()->Draw(context, *states, m_cave.GetWorldMatrix(), view, proj);
 }
 

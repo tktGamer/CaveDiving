@@ -60,6 +60,12 @@ void GemSelectScene::Initialize()
 
 	m_gemSelectManager = std::make_unique<GemSelectUIManager>();
 	m_gemSelectManager->Initialize();
+
+	m_backTexture = std::make_unique<UserInterface>();
+	m_backTexture->SetWindowSize(w, h);
+	m_backTexture->Create(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+
+
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
@@ -77,7 +83,7 @@ void GemSelectScene::Initialize()
  */
 void GemSelectScene::Update(float elapsedTime)
 {
-	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
+	//auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 	
 	if (m_gemSelectManager->IsFinishSelect())
 	{
@@ -99,7 +105,7 @@ void GemSelectScene::Update(float elapsedTime)
  */
 void GemSelectScene::Render()
 {
-
+	m_backTexture->Draw();
 	m_gemSelectManager->Render();
 }
 

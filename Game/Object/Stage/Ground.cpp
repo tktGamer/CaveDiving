@@ -21,7 +21,7 @@
  * @param[in] initialPosition ‰ŠúˆÊ’u
  * @param[in] initialAngle    ‰ŠúŠp“x
  */
-Ground::Ground(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+Ground::Ground(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: GameObject(Tag::ObjectType::Stage,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_graphics{ Graphics::GetInstance() }

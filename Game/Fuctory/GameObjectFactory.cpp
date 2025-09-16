@@ -1,30 +1,5 @@
 #include "pch.h"
-#include "CharacterFactory.h"
-#include"../Object/Player/Player.h"
-#include"../Object/Player/Hand.h"
-#include"../Object/Player/Pikel.h"
-#include"../Object/Enemy/Bat/Bat.h"
-#include"../Object/Enemy/Bat/Wing.h"
-// 「砲塔」を生成する
-//std::unique_ptr<IComponent> Component::CreateTurret(
-//	IComponent* parent,
-//	const DirectX::SimpleMath::Vector3& initialPosition,
-//	const float& initialAngle,
-//	const float& mass
-//)
-//{
-//	// 「砲塔」を宣言する
-//	std::unique_ptr<IComponent> turret;
-//	// 部品番号をリセットする
-//	NodeBase::ResetComponentNumber();
-//	// Turret クラスのインスタンスを生成する
-//	turret.reset(new Turret(parent, initialPosition, initialAngle, mass));
-//	// 初期化する
-//	turret->Initialize();
-//
-//	// Turretクラスのインスタンスを返す
-//	return std::move(turret);
-//}
+#include "GameObjectFactory.h"
 
 /**
  * @brief 「プレイヤー」の生成
@@ -35,10 +10,10 @@
  *
  * @return プレイヤークラス
  */
-std::unique_ptr<Character> CharacterFactory::CreatePlayer(Character* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+std::unique_ptr<Player> GameObjectFactory::CreatePlayer(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「プレイヤー」を宣言する
-	std::unique_ptr<Character> player;
+	std::unique_ptr<Player> player;
 	//Playerクラスのインスタンスを生成する
 	player = std::make_unique<Player>(parent, initialPosition, initialAngle);
 	//初期化する
@@ -57,12 +32,11 @@ std::unique_ptr<Character> CharacterFactory::CreatePlayer(Character* parent, con
  *
  * @return プレイヤーの手クラス
  */
-
-std::unique_ptr<GameObject> CharacterFactory::CreateHand(Character* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+std::unique_ptr<Hand> GameObjectFactory::CreateHand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「プレイヤーの手」を宣言する
-	std::unique_ptr<GameObject> hand;
-	//Playerクラスのインスタンスを生成する
+	std::unique_ptr<Hand> hand;
+	//Handクラスのインスタンスを生成する
 	hand = std::make_unique<Hand>(parent, initialPosition, initialAngle);
 	//初期化する
 	hand->Initialize();
@@ -71,21 +45,25 @@ std::unique_ptr<GameObject> CharacterFactory::CreateHand(Character* parent, cons
 	return std::move(hand);
 }
 
+
+
 /**
  * @brief 「ピッケル」の生成
  *
+ * @param[in] owner   ピッケルの所有者（攻撃力をもつオブジェクト）のポインタ
  * @param[in] parent   親のポインタ
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　　初期角度
  *
  * @return ピッケルクラス
  */
-std::unique_ptr<GameObject> CharacterFactory::CreatePikle(Character* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+std::unique_ptr<Pikel> GameObjectFactory::CreatePikle(Character* owner, GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「ピッケル」を宣言する
-	std::unique_ptr<GameObject> pikel;
+	std::unique_ptr<Pikel> pikel;
 	//Pikelクラスのインスタンスを生成する
-	pikel = std::make_unique<Pikel>(nullptr,parent, initialPosition, initialAngle);
+	pikel = std::make_unique<Pikel>(owner, parent, initialPosition, initialAngle);
 	//初期化する
 	pikel->Initialize();
 
@@ -102,10 +80,10 @@ std::unique_ptr<GameObject> CharacterFactory::CreatePikle(Character* parent, con
  *
  * @return コウモリの敵クラス
  */
-std::unique_ptr<Character> CharacterFactory::CreateBat(Character* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+std::unique_ptr<Bat> GameObjectFactory::CreateBat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「コウモリ」を宣言する
-	std::unique_ptr<Character> bat;
+	std::unique_ptr<Bat> bat;
 	//Pikelクラスのインスタンスを生成する
 	bat = std::make_unique<Bat>(parent, initialPosition, initialAngle);
 	//初期化する
@@ -114,6 +92,8 @@ std::unique_ptr<Character> CharacterFactory::CreateBat(Character* parent, const 
 	// Batクラスのインスタンスを返す
 	return std::move(bat);
 }
+
+
 
 /**
  * @brief 「コウモリの羽」の生成
@@ -124,10 +104,10 @@ std::unique_ptr<Character> CharacterFactory::CreateBat(Character* parent, const 
  *
  * @return コウモリの羽クラス
  */
-std::unique_ptr<GameObject> CharacterFactory::CreateBatWing(Character* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
+std::unique_ptr<Wing> GameObjectFactory::CreateBatWing(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「コウモリの羽」を宣言する
-	std::unique_ptr<GameObject> wing;
+	std::unique_ptr<Wing> wing;
 	//Wingクラスのインスタンスを生成する
 	wing = std::make_unique<Wing>(parent, initialPosition, initialAngle);
 	//初期化する
@@ -136,3 +116,17 @@ std::unique_ptr<GameObject> CharacterFactory::CreateBatWing(Character* parent, c
 	// Wingクラスのインスタンスを返す
 	return std::move(wing);
 }
+
+std::unique_ptr<Stage> GameObjectFactory::CreateStage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+{
+	//「ステージ」を宣言する
+	std::unique_ptr<Stage> stage;
+	//Wingクラスのインスタンスを生成する
+	stage = std::make_unique<Stage>(parent, initialPosition, initialAngle);
+	//初期化する
+	stage->Initialize();
+
+	// Stageクラスのインスタンスを返す
+	return std::move(stage);
+}
+

@@ -33,6 +33,7 @@ public:
 
 	struct GemAbility
 	{
+		int ID; //データ番号
 		Type m_type; // 宝石の種類
 		int m_value; // 宝石の効果値
 		std::string m_discription; // 宝石の効果説明
@@ -59,7 +60,7 @@ public:
 	// コンストラクタ
 	Gem();
 	// 宝石の種類と効果値を指定して初期化
-	Gem(Type type,int value,std::string discription);
+	Gem(int id, Type type,int value,std::string discription);
 	Gem(GemAbility ability,GemImagePath image);
 
 	// デストラクタ
