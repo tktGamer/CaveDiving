@@ -34,8 +34,11 @@ private:
 
 	bool m_isNextAttack; //次の攻撃をするかどうか
 
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
+	//効果音
+	std::unique_ptr<Sound> m_sound;
+
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	PlayerThirdAttackMotion(Hand* pRightHand, Hand* pLeftHand);

@@ -19,7 +19,7 @@
 #include"Game/Motion/BatMotion/BatAttackMotion.h"
 // クラスの宣言 ===============================================================
 class Bat;
-
+class Sound;
 // クラスの定義 ===============================================================
 /**
   * @brief コウモリの攻撃状態
@@ -54,6 +54,7 @@ private:
 	//攻撃モーション
 	std::unique_ptr<Motion> m_attackMotion;
 
+	std::unique_ptr<Sound> m_attackSound;
 };
 
 #endif		// SOLDIER_IDLING_DEFINED

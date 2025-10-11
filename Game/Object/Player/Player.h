@@ -25,8 +25,11 @@
 #include"../Player/State/PlayerDamaged.h"
 #include"Game/Common/Collision/Sphere.h"
 #include "Game/Object/Player/Hand.h"
+#include"../Item/Item.h"
 // クラスの宣言 ===============================================================
 class IState;
+class Sound;
+class BuffUIControl;
 // クラスの定義 ===============================================================
 /**
   * @brief プレイヤー
@@ -44,6 +47,12 @@ public:
 	};
 
 
+	struct  ItemInfo
+	{
+		Item::UpStatus upStatus;
+		int increase;
+		float time;
+	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -81,12 +90,18 @@ private:
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
 
+	//手に入れたアイテム
+	std::list<ItemInfo> m_gotItems;
 
+	std::unique_ptr<Sound> m_getItemSound;
+
+	//バフを表示するクラスのポインタ
+	BuffUIControl* m_pBuffUIControl;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Player(BuffUIControl* pBuffUIControl, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Player();
@@ -137,10 +152,14 @@ public:
 
 //　内部操作
 private:
+	//アイテムの強化制限時間経過
+	void UpdateGotItems();
+
 	//方向転換
 	void ChangeDirection();
 	//宝石で強化された分のステータスを取得
-	int GetPlusStatus(const Gem::Type type);
-
+	int GemPlusStatus(const Gem::Type type);
+	//アイテムで強化された分のステータスを取得
+	int ItemBuff(const Item::UpStatus& upStatus);
 };
 

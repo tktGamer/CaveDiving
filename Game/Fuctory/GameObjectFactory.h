@@ -19,13 +19,21 @@
 #include"../Object/Player/Pikel.h"
 #include"../Object/Enemy/Bat/Bat.h"
 #include"../Object/Enemy/Bat/Wing.h"
+#include"../Object/Enemy/Golem/Golem.h"
+#include"../Object/Enemy/Golem/GolemHand.h"
 #include"../Object/Stage/Stage.h"
-// ゲームオブジェクトファクトリクラスを定義する
+// クラスの宣言 ===============================================================
+class BuffUIControl;
+// クラスの定義 ===============================================================
+/**
+  * @brief ゲームオブジェクトの生成
+  */
 class GameObjectFactory 
 {
 public:
 	// 「プレイヤー」を生成する
 	static std::unique_ptr<Player> CreatePlayer(
+		BuffUIControl* pBuffUIControl,
 		GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
@@ -55,6 +63,22 @@ public:
 
 	// 「コウモリの羽」を生成する
 	static std::unique_ptr<Wing> CreateBatWing(
+		Character* root = nullptr,
+		GameObject* parent = nullptr,
+		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
+		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
+	);
+
+	// 「ゴーレム」を生成する
+	static std::unique_ptr<Golem> CreateGolem(
+		GameObject* parent = nullptr,
+		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
+		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
+	);
+
+	// 「ゴーレムの手」を生成する
+	static std::unique_ptr<GolemHand> CreateGolemHand(
+		Character* root,
 		GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
@@ -62,9 +86,11 @@ public:
 
 	// 「ステージ」を生成する
 	static std::unique_ptr<Stage> CreateStage(
-		GameObject* parent = nullptr,
-		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
-		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
+		GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition ,
+		const DirectX::SimpleMath::Quaternion& initialAngle ,
+		bool* isOnLight,
+		int size
 	);
 
 

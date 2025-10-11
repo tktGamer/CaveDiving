@@ -71,7 +71,7 @@ public:
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
 
-	//　取得・設定
+//　取得・設定
 public:
 
 

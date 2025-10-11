@@ -14,8 +14,6 @@
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
 #include"Game/Object/Gem/Gem.h"
-#include<fstream>
-#include<sstream>
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -114,7 +112,7 @@ public:
 	Gem* GetIDNumberedGem(const int& id);
 
 	//空のスロットがあるか
-	bool IsBlankSlot();
+	bool IsBlankSlot() const;
 
 	//プレイヤーの持つ宝石を取得
 	const Gem* const* GetPlayerHoldGem() const ;

@@ -44,7 +44,7 @@ void SaveConfirm::Initialize()
     m_saveMessage = UIFactory::CreateUserInterface(L"UI/savemessage.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 
-    m_menu = UIFactory::CreateMenu();
+    m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
     m_menu->Add(L"UI/yesfont.png", { 350.0f,500.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
     m_menu->Add(L"UI/nofont.png", { 950.0f,500.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 

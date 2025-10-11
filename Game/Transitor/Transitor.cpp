@@ -1,0 +1,108 @@
+//--------------------------------------------------------------------------------------
+// File: Transitor.cpp
+//
+// パーティクルクラス
+//
+//-------------------------------------------------------------------------------------
+
+#include "pch.h"
+#include "Transitor.h"
+
+#include"Game/Common/ResourceManager.h"
+#include"Game/Shader.h"
+#include"Game/Message/Messenger.h"
+/// <summary>
+/// コンストラクタ
+/// </summary>
+Transitor::Transitor()
+	:m_time{0.0f}
+	,m_isIn{false}
+{
+	//	プリミティブバッチの作成
+	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
+
+}
+
+/// <summary>
+/// デストラクタ
+/// </summary>
+Transitor::~Transitor()
+{
+}
+
+void Transitor::Update()
+{
+
+	if (m_time > 1.5f) 
+	{
+		m_isIn = !m_isIn;
+		m_time = 0.0f;
+	}
+
+	m_time+= Messenger::GetInstance()->GetElapsedTime();
+
+}
+
+void Transitor::Render() 
+{
+
+	ID3D11DeviceContext1* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
+	DirectX::DX11::CommonStates* states = Graphics::GetInstance()->GetCommonStates();
+
+	Shader* shader = Shader::GetInstance();
+
+	//	頂点情報(板ポリゴンの４頂点の座標情報）
+	DirectX::VertexPositionColorTexture vertex[4] =
+	{
+		DirectX::VertexPositionColorTexture::VertexPositionColorTexture(
+			DirectX::SimpleMath::Vector3(0.0f,  0.0f, 0.0f)
+		,DirectX::SimpleMath::Vector4::One,DirectX::SimpleMath::Vector2(0.0f, 0.0f)),
+	};
+
+	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	ConstBuffer cbuff;
+	cbuff.matView = DirectX::SimpleMath::Matrix::Identity;
+	cbuff.matProj = DirectX::SimpleMath::Matrix::Identity;
+
+
+	cbuff.matWorld = DirectX::SimpleMath::Matrix::Identity;
+	cbuff.mode = float(m_isIn);
+	cbuff.time = m_time;
+
+	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	context->UpdateSubresource(shader->GetCBuffer(Shader::ShaderType::Fade), 0, NULL, &cbuff, 0, 0);
+
+	
+
+	//	画像用サンプラーの登録
+	ID3D11SamplerState* sampler[1] = { states->LinearWrap() };
+	context->PSSetSamplers(0, 1, sampler);
+
+	//	半透明描画指定
+	ID3D11BlendState* blendstate = states->NonPremultiplied();
+
+	//	透明判定処理
+	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+
+	//	深度バッファに書き込み参照する
+	context->OMSetDepthStencilState(states->DepthDefault(), 0);
+
+	//	カリングは左周り
+	context->RSSetState(states->CullNone());
+
+	
+
+	shader->StartShader(Shader::ShaderType::Fade, shader->GetCBuffer(Shader::ShaderType::Fade));
+
+
+	//	インプットレイアウトの登録
+	context->IASetInputLayout(shader->GetInputLayout(Shader::ShaderType::Fade));
+
+	//	板ポリゴンを描画
+	m_batch->Begin();
+	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
+	m_batch->End();
+
+	//	シェーダの登録を解除しておく
+	shader->EndShader();
+}

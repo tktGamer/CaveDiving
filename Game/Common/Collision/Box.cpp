@@ -72,6 +72,11 @@ bool Box::Intersects(Shape* other)
 	return false;
 }
 
+bool Box::Contains(Shape* other)
+{
+	return false;
+}
+
 
 
 

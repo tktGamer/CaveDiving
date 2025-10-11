@@ -19,13 +19,15 @@
 #include"../Gem/GemManager.h"
 #include"Game/Common/DamageSystem.h"
 #include"Game/Fuctory/GameObjectFactory.h"
+#include"Game/Particle/ParticleManager.h"
+#include"Game/UI/Buff/BuffUIControl.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
  * @param[in] modelParms モデルパラメータ
  */
-Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Player::Player(BuffUIControl* pBuffUIControl, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: Character(100,20,7,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_velocity{ 0.0f, 0.0f, 0.0f }
@@ -33,6 +35,7 @@ Player::Player(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPo
 	, m_sphere{ GetPosition(), 2.0f }
 	,m_remainingJumpCount{1}
 	,m_motionAngle{}
+	,m_pBuffUIControl{pBuffUIControl}
 {
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 }
@@ -97,8 +100,7 @@ void Player::Initialize()
 	m_light->LightOn();
 	Shader::GetInstance()->RegisterLight(m_light.get());
 
-	//SetMaxHP(100);
-	SetCurrentHP();
+	m_getItemSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(L"getitem.wav"));
 }
 
 
@@ -126,7 +128,8 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 
 	m_light->Update(elapsedTime,currentPosition + GetPosition(), currentAngle * GetQuaternion());
 
-
+	//取得アイテムの更新
+	UpdateGotItems();
 
 	//現在位置の更新
 	m_currentPosition = currentPosition + GetPosition();
@@ -311,10 +314,25 @@ void Player::CollisionResponce(GameObject* other)
 			OnDamage(other);
 		}
 		break;
-		case Tag::ObjectType::Stage:
+
+		case Tag::ObjectType::EnemyPart:
+		{
+			if (GetState() == m_damagedState.get())
+			{
+				break;
+			}
+
+			GameObject* root = dynamic_cast<EnemyPart*>(other)->GetRootCharacter();
+			OnDamage(root);
+		}
+		break;
+
+		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere));
+			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere,GetVelocity()));
+
+			
 			//速度をリセット
 			m_velocity.y = 0.0f;
 			ResetJumpCount();
@@ -325,7 +343,49 @@ void Player::CollisionResponce(GameObject* other)
 			}
 			
 
-			break;
+		}
+		break;
+
+		case Tag::ObjectType::Wall:
+		{
+			
+
+			//ステージとの衝突応答　押し出し
+			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere,GetVelocity()));
+
+			
+			//速度をリセット
+			m_velocity.y = 0.0f;
+			ResetJumpCount();
+			//ジャンプ状態・空中攻撃状態なら待機状態へ移行
+			if (GetState() == m_jumpingState.get() || GetState() == m_airAttackState.get()) 
+			{
+				OnMessegeAccepted(Message::IDLING);
+			}
+			
+
+		}
+		break;
+
+
+		case::Tag::ObjectType::Item: 
+		{
+			m_getItemSound->Play(false);
+			Item* item = other->Cast<Item>();
+
+			m_gotItems.emplace_back(ItemInfo{ item->GetUpStatus(),item->GetIncrease(),item->GetTime() });
+			m_pBuffUIControl->AddUI(m_gotItems.back().upStatus,m_gotItems.back().time);
+			ParticleManager::GetInstance()->RequestParticle(ParticleManager::ParticleType::PowerUp, GetCurrentPosition(),item->GetColor());
+		}
+		break;
+
+		case Tag::ObjectType::Light: 
+		{
+			//ライトオブジェクトとの衝突応答　押し出し
+			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
+			
+			ResetJumpCount();
+
 		}
 	default:
 		break;
@@ -353,7 +413,7 @@ void Player::SetVelocity(const DirectX::SimpleMath::Vector3& v)
  */
 const int Player::GetMaxHP()
 {
-	return  Character::GetMaxHP()+ GetPlusStatus(Gem::Type::HP);
+	return  GemPlusStatus(Gem::Type::HP)+/*ItemBuff(Item::UpStatus::HP) +*/ Character::GetMaxHP();
 }
 
 /**
@@ -365,7 +425,7 @@ const int Player::GetMaxHP()
  */
 const int Player::GetAttackPower()
 {
-	return GetPlusStatus(Gem::Type::STR) + Character::GetAttackPower();
+	return GemPlusStatus(Gem::Type::STR) + ItemBuff(Item::UpStatus::Attack) + Character::GetAttackPower();
 }
 
 /**
@@ -377,7 +437,7 @@ const int Player::GetAttackPower()
  */
 const int Player::GetDiffence()
 {
-	return GetPlusStatus(Gem::Type::DEF)+ Character::GetDiffence();
+	return GemPlusStatus(Gem::Type::DEF)+ ItemBuff(Item::UpStatus::Diffece) + Character::GetDiffence();
 }
 
 
@@ -455,6 +515,20 @@ void Player::ResetJumpCount()
 }
 
 
+void Player::UpdateGotItems()
+{
+	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
+	for (ItemInfo& iteminfo : m_gotItems) 
+	{
+		//制限時間を減らす
+		iteminfo.time -= elapsedTime;
+
+	}
+
+	//効果時間が0になったものを消す
+	m_gotItems.remove_if([](ItemInfo iteminfo) {return iteminfo.time < 0.0f; });
+}
+
 /**
  * @brief 方向を変える
  *
@@ -492,7 +566,7 @@ void Player::ChangeDirection()
  *
  * @return 強化量
  */
-int Player::GetPlusStatus(const Gem::Type type)
+int Player::GemPlusStatus(const Gem::Type type)
 {
 	//プレイヤーの持つ宝石を管理クラスから取得
 	const Gem*const* holdGems = GemManager::GetInstance()->GetPlayerHoldGem();
@@ -515,6 +589,23 @@ int Player::GetPlusStatus(const Gem::Type type)
 		}
 	}
 
+	return total;
+}
+
+int Player::ItemBuff(const Item::UpStatus& upStatus)
+{
+	int total = 0;
+
+	for (ItemInfo itemInfo : m_gotItems) 
+	{
+		//指定されたステータスを強化するものか
+		if (itemInfo.upStatus != upStatus)
+		{
+			continue;
+		}
+
+		total += itemInfo.increase;
+	}
 	return total;
 }
 

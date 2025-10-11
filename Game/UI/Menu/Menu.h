@@ -16,7 +16,7 @@
 #include"Game/Interface/IUI.h"
 
 // クラスの宣言 ===============================================================
-
+class Sound;
 // クラスの定義 ===============================================================
 /**
   * @brief メニューUI
@@ -41,11 +41,13 @@ private:
 
 	int m_windowWidth, m_windowHeight;
 
-	
+	//効果音
+	std::unique_ptr<Sound> m_cursorSound;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	Menu(int width, int height);
+	Menu(int width, int height,DirectX::SoundEffect* cursolSound);
 	~Menu();
 
 	void Initialize();

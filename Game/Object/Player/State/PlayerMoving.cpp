@@ -21,10 +21,7 @@
  */
 PlayerMoving::PlayerMoving(Player* player)
 	: m_player(player)
-	, m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 }
 /**
  * @brief デストラクタ
@@ -67,7 +64,7 @@ void PlayerMoving::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
-	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
+	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
 
 	//攻撃キーを押されたら地上攻撃状態へ遷移
 	if (key->IsKeyPressed(DirectX::Keyboard::Z)) 

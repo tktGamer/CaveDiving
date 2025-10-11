@@ -1,11 +1,11 @@
 /**
  * @file   Shader.h
  *
- * @brief  Shaderに関するヘッダファイル
+ * @brief  シェーダーに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　22025/09/17
  */
 
  // 多重インクルードの防止 =====================================================
@@ -19,7 +19,7 @@ class Light;
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Shader
+  * @brief シェーダー
   */
 class Shader
 {
@@ -48,7 +48,7 @@ public:
 
 	struct LightBuffer 
 	{
-		PointLight pointLights[3];
+		PointLight pointLights[8];
 		int onLightCount;
 		DirectX::SimpleMath::Vector3 dammy;
 
@@ -63,11 +63,34 @@ public:
 		float dammy;
 	};
 
+	//データ受け渡し用コンスタントバッファ(送信側)
+	struct ParticleConstBuffer
+	{
+		DirectX::SimpleMath::Matrix		matWorld;
+		DirectX::SimpleMath::Matrix		matView;
+		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Vector4	Light;
+
+	};
+	//データ受け渡し用コンスタントバッファ(送信側)
+	struct FadeConstBuffer
+	{
+		DirectX::SimpleMath::Matrix		matWorld;
+		DirectX::SimpleMath::Matrix		matView;
+		DirectX::SimpleMath::Matrix		matProj;
+		float mode;
+		float time;
+		DirectX::SimpleMath::Vector2 dummy;
+
+	};
+
 
 	enum ShaderType 
 	{
 		Model, //モデルシェーダー
 		UI,   //UIシェーダー
+		Particle,//パーティクルシェーダー
+		Fade,
 	};
 
 // データメンバの宣言 -----------------------------------------------
@@ -76,7 +99,7 @@ private:
 	static std::unique_ptr<Shader> s_shader;
 
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	//モデルシェーダーに関する変数
+	//モデルシェーダーに関する変数-----------------------------------
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_modelCBuffer;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_modelInputLayout;
@@ -87,7 +110,20 @@ private:
 	//ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_modelGS;
 
-	//UIシェーダーに関する変数
+	//アイテム用ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_itemPS;
+	//モデルシェーダーに関する変数-----------------------------------
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_rockCBuffer;
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_rockInputLayout;
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_rockVS;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_rockPS;
+	//ジオメトリシェーダ
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_rockGS;
+
+	//UIシェーダーに関する変数---------------------------------------
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_UICBuffer;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_UIInputLayout;
@@ -97,6 +133,28 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_UIPS;
 	//ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_UIGS;
+
+	//Particleシェーダーに関する変数---------------------------------------
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_ParticleCBuffer;
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_ParticleInputLayout;
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_ParticleVS;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ParticlePS;
+	//ジオメトリシェーダ
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_ParticleGS;
+
+	//Fadeシェーダーに関する変数---------------------------------------
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_fadeCBuffer;
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_fadeInputLayout;
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_fadeVS;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_fadePS;
+	//ジオメトリシェーダ
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_fadeGS;
 
 	//ライト配列
 	std::vector<Light*> m_lights;
@@ -109,6 +167,8 @@ public:
 	//	頂点情報関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> MODEL_INPUT_LAYOUT;
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> UI_INPUT_LAYOUT;
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> PARTICLE_INPUT_LAYOUT;
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> FADE_INPUT_LAYOUT;
 	// コンストラクタ
 	Shader();
 	// インスタンスをコピーすることを禁止する
@@ -155,6 +215,8 @@ public:
 	ID3D11PixelShader*    GetModelPS();
 	ID3D11GeometryShader* GetModelGS();
 
+	ID3D11PixelShader*    GetItemPS();
+	ID3D11PixelShader*    GetRockPS();
 	//ライト登録
 	void RegisterLight(Light* light);
 	//ライト解除
@@ -168,10 +230,18 @@ private:
 	void LoadModelShader();
 	//UIシェーダー読み込み
 	void LoadUIShader();
+	//Particleシェーダー読み込み
+	void LoadParticleShader();
+	//Fadeシェーダー読み込み
+	void LoadFadeShader();
 	
 	//モデルシェーダー設定
 	void SetModelShader(ID3D11Buffer* cBuffer);
 	//UIシェーダー設定
 	void SetUIShader(ID3D11Buffer* cBuffer);
+	//Particleシェーダー設定
+	void SetParticleShader(ID3D11Buffer* cBuffer);
+	//Fadeシェーダー設定
+	void SetFadeShader(ID3D11Buffer* cBuffer);
 };
 

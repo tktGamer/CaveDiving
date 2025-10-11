@@ -21,9 +21,10 @@
 
 #include"math.h"
 #include"Game/UI/UserInterface.h"
+#include"Game/Transitor/Transitor.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
-
+class Sound;
 
 
 
@@ -61,6 +62,11 @@ private:
 	std::unique_ptr<UserInterface> m_checkUI;
 
 	UserInterface m_light;
+
+	std::unique_ptr<Sound> m_titleBGM;
+	std::unique_ptr<Sound> m_gemLoadSound;
+	std::unique_ptr<Sound> m_gameStartSound;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

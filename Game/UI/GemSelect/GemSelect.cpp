@@ -14,6 +14,7 @@
 #include"../CaveDiving/Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
 #include"Game/UI/GemSelectUIManager.h"
+#include"Game/Common/Sound.h"
 GemSelect::GemSelect(int width, int height, GemSelectUIManager* pUIManager)
     : m_menuIndex(0)
     , m_windowHeight(height)
@@ -21,8 +22,11 @@ GemSelect::GemSelect(int width, int height, GemSelectUIManager* pUIManager)
     , m_baseTexturePath(nullptr)
     ,m_pGemManager{GemManager::GetInstance()}
     ,m_pUIManager{pUIManager}
+    ,m_pGems{}
 {
-   
+    m_cursorSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
+    m_decideSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("decidegem.wav"));
+
 }
 
 GemSelect::~GemSelect()
@@ -53,17 +57,16 @@ void GemSelect::Update()
         m_menuIndex += 1;
         //  メニューアイテム数の最大値を超えないように制御
         m_menuIndex %= m_userInterface.size();
+
+        m_cursorSound->Play(false);
     }
     if (tracker->pressed.Left)
     {
         //  ←キーを押したら、選択先を1つ戻す。
         //  ただし、選択先のオーバーを割り算の余りで補正するため、（アイテムの最大個数 - 1）を足して必ず余りで計算する形にしておく。
-        //  以下の式は、例えばメニューが4つあったら、現在値に3を足すという事。
-        //  例）選択中のメニューが0～3まである内の2番目だった場合、
-        //  (2 + (4 - 1)) % 4 = 1 ← 選択中の番号が1つ減った
-        //  ということ
         m_menuIndex += static_cast<unsigned int>(m_userInterface.size()) - 1;
         m_menuIndex %= m_userInterface.size();
+        m_cursorSound->Play(false);
     }
 
     //スペースキーを押したら
@@ -85,6 +88,7 @@ void GemSelect::Update()
             //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
             if (m_menuIndex < _countof(m_pGems)) 
             {
+                m_decideSound->Play(false);
                 //プレイヤーの所持する宝石に登録
                 m_pGemManager->SetHoldGem(m_pGems[m_menuIndex]);
                 m_pUIManager->SelectFinishNotice();

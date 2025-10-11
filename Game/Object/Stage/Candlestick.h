@@ -31,6 +31,7 @@ public:
 		DirectX::SimpleMath::Matrix		matWorld;
 		DirectX::SimpleMath::Matrix		matView;
 		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Vector4	color;
 	};
 
 
@@ -46,13 +47,14 @@ private:
 	Box m_box;
 
 	std::unique_ptr<Light> m_light;
+	DirectX::SimpleMath::Vector4 m_color;
 
 	Ito::DisplayCollision m_display;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	CandleStick(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	CandleStick(Shader::PointLight lightData,GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~CandleStick();
@@ -60,7 +62,7 @@ public:
 
 // 操作
 public:
-	void Initialize();
+	void Initialize(bool isOnlight);
 
 	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
@@ -75,9 +77,11 @@ public:
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
 
+	//
+	void OnLight();
 //　取得・設定
 public:
-
+	bool IsOnLight();
 
 //　内部操作
 private:

@@ -51,6 +51,8 @@ private:
 
 	//背景
 	std::unique_ptr<UserInterface> m_backTexture;
+
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

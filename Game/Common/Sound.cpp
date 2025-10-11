@@ -7,7 +7,7 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] pSoundEffect
+ * @param[in] pSoundEffect　音データ
  */
 Sound::Sound(DirectX::SoundEffect* pSoundEffect)
 	: m_soundSource{}
@@ -37,6 +37,37 @@ void Sound::Play(bool isLoop)
 	}
 	ChangeVolume();
 	m_soundSource->Play(isLoop);
+	
+	
+}
+
+
+/**
+ * @brief 再生していない場合再生する
+ *
+ * @param[in] isLoop ループ再生するかどうか
+ *
+ * @return なし
+ */
+void Sound::OncePlay(bool isLoop)
+{
+	//未再生の場合
+	if (m_soundSource == nullptr)
+	{
+		m_soundSource->
+
+		//普通に再生
+		Play(isLoop);
+		return;
+	}
+
+	//再生中なら再生しない
+	if (m_soundSource->GetState() == DirectX::SoundState::PLAYING) 
+	{
+		return;
+	}
+
+	Play(isLoop);
 }
 
 /**
@@ -72,6 +103,11 @@ void Sound::SetVolume(float volume)
 	m_volume = volume;
 }
 
+const DirectX::SoundState& Sound::GetSoundState()
+{
+	return m_soundSource->GetState();
+}
+
 /**
  * @brief インスタンスの作成
  *
@@ -86,6 +122,7 @@ bool Sound::CreateInstance()
 		return false;
 	}
 	m_soundSource = m_pSoundEffect->CreateInstance();
+	
 	return true;
 }
 

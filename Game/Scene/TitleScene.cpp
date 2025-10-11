@@ -13,7 +13,7 @@
 #include "TitleScene.h"
 
 #include "Game/Common/ResourceManager.h"
-
+#include"Game/Common/Sound.h"
 #include"../Scene/GameScene.h"
 #include "../Scene/LoadScene.h"
 
@@ -59,6 +59,10 @@ TitleScene::~TitleScene()
  */
 void TitleScene::Initialize()
 {
+	m_titleBGM = std::make_unique<Sound>(m_pResourceManager->RequestSound("titlebgm.wav"));
+	m_titleBGM->Play(true);
+	m_gemLoadSound = std::make_unique<Sound>(m_pResourceManager->RequestSound("titlegemload.wav"));
+	m_gameStartSound = std::make_unique<Sound>(m_pResourceManager->RequestSound("gamestart.wav"));
 
 	m_titleTexture = *m_pResourceManager->RequestTexture("title.png");
 	m_pressSpaceTexture = *m_pResourceManager->RequestTexture("pressspace.png");
@@ -94,6 +98,8 @@ void TitleScene::Initialize()
 
 	//プレイヤーの所持している宝石を空にする
 	GemManager::GetInstance()->EmptyPlayerHoldGem();
+
+	
 }
 
 
@@ -116,8 +122,8 @@ void TitleScene::Update(float elapsedTime)
 		{
 			GemManager::GetInstance()->LoadPlayerHoldGem();
 		}
-
-		GetGameData()->SetNextStage(UserResources::Stage::BOSS);
+		m_gameStartSound->Play(false);
+		GetGameData()->SetNextStage(UserResources::Stage::FIRST);
 		ChangeScene<GameScene,LoadScene>();
 	}
 
@@ -125,7 +131,7 @@ void TitleScene::Update(float elapsedTime)
 	{
 		//保存されている宝石の読み込みON・OFF
 		m_isLoadPlayerHoldGem = !m_isLoadPlayerHoldGem;
-
+		m_gemLoadSound->Play(false);
 	}
 
 	/*m_camera->SetEyePosX(m_length * std::cos(r));
@@ -139,6 +145,7 @@ void TitleScene::Update(float elapsedTime)
 
 	//m_gem->Update();
 	m_camera->Update(elapsedTime);
+
 }
 
 
@@ -230,7 +237,7 @@ void TitleScene::Render()
  */
 void TitleScene::Finalize()
 {
-	
+	m_titleBGM->Stop();
 }
 
 void TitleScene::CreateDeviceDependentResources()

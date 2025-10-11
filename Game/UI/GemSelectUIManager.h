@@ -3,9 +3,9 @@
  *
  * @brief  宝石選択のUI群の管理に関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/09/17
  */
 
 // 多重インクルードの防止 =====================================================
@@ -44,9 +44,9 @@ public:
 	enum UI 
 	{
 		NONE,
-		GEMSELECT,
-		CHANGECOFIRM,
-		CHANGEGEM
+		GEMSELECT, //宝石選択
+		CHANGECOFIRM, //入れ替え確認
+		CHANGEGEM     //宝石入れ替え
 	};
 	
 
@@ -69,7 +69,7 @@ private:
 	std::vector<UI> m_pushUI;
 
 
-
+	//UIのスタック
 	std::vector<std::unique_ptr<IUI>> m_uiStack;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -101,8 +101,11 @@ public:
 
 	void PushUI();
 
+	//UIの追加リクエスト
 	void RequestPushUI(UI pushUI,bool onlyDraw=false);
+	//UIの消去リクエスト
 	void RequestPopUI();
+	//UIの全消去リクエスト
 	void RequestClearUI();
 
 	//宝石の選択が終了したか

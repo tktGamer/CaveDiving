@@ -54,11 +54,8 @@ GemSelectUIManager::~GemSelectUIManager()
  */
 void GemSelectUIManager::Initialize()
 {
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
-
-	
+	//初期状態のUI追加
 	m_uiStack.emplace_back(std::move(UIFactory::CreateHoldGem()));
 	m_uiStack.emplace_back(std::move(UIFactory::CreateGemSelect(this)));
 
@@ -78,40 +75,29 @@ void GemSelectUIManager::Update()
 	//UIの追加・破棄　＊追加を最後にすること
 	if (m_isClearUI) 
 	{
+		//全UI消去
 		ClearUI();
 	}
 	if (m_isPopUI) 
 	{
+		//UI消去
 		PopUI();
 	}
 	if (!m_pushUI.empty())
 	{
-
+		//UI追加
 		if (m_pushUI[0] != UI::NONE)
 		{
 			PushUI();
 		}
 	}
 
-
-	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
-	
-	if (traker->pressed.Space)
-	{
-		//ChangeScene<GameScene,LoadScene>();
-	}
-
-	//m_holdGem->Update();
 	
 	if (!m_uiStack.empty()) 
 	{
 		m_uiStack.back()->Update();
 	}
 
-	//m_gemSelectUI->Update();
-	//m_changeGemConfirmUI->Update();
-
-	//m_menu->Update();
 }
 
 
@@ -126,10 +112,6 @@ void GemSelectUIManager::Update()
 void GemSelectUIManager::Render()
 {
 
-	//m_holdGem->Render();
-
-	//m_gemSelectUI->Render();
-	//m_changeGemConfirmUI->Render();
 
 	//1つのUIだけ描画するか
 	if (m_isDrawOnlyCurrentUI) 
@@ -160,6 +142,14 @@ void GemSelectUIManager::Finalize()
 	m_uiStack.clear();
 }
 
+/**
+ * @brief UI追加リクエスト
+ *
+ * @param[in] pushUI    追加するUIの種類
+ * @param[in] onlyDraw  そのUIのみ表示するか
+ *
+ * @return なし
+ */
 void GemSelectUIManager::RequestPushUI(UI pushUI, bool onlyDraw)
 {
 	m_pushUI[0] = pushUI;
@@ -167,6 +157,13 @@ void GemSelectUIManager::RequestPushUI(UI pushUI, bool onlyDraw)
 	m_isDrawOnlyCurrentUI = onlyDraw;
 }
 
+/**
+ * @brief UI消去リクエスト
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelectUIManager::RequestPopUI()
 {
 	m_isPopUI = true;
@@ -174,6 +171,14 @@ void GemSelectUIManager::RequestPopUI()
 
 }
 
+
+/**
+ * @brief 全UI消去リクエスト
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelectUIManager::RequestClearUI()
 {
 	m_isClearUI = true;
@@ -181,16 +186,41 @@ void GemSelectUIManager::RequestClearUI()
 
 }
 
+
+/**
+ * @brief 宝石選択が終了したか
+ *
+ * @param[in] なし
+ *
+ * @return true　終了
+ * @return false 未了
+ */
 bool GemSelectUIManager::IsFinishSelect() const
 {
 	return m_isFinishSelect;
 }
 
+
+/**
+ * @brief 宝石選択終了知らせ
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelectUIManager::SelectFinishNotice()
 {
 	m_isFinishSelect = true;
 }
 
+
+/**
+ * @brief UI追加処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelectUIManager::PushUI()
 {
 	int w, h;
@@ -214,6 +244,14 @@ void GemSelectUIManager::PushUI()
 	m_uiStack.emplace_back(std::move(ui));
 	m_pushUI[0] = UI::NONE;
 }
+
+/**
+ * @brief UI消去処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelectUIManager::PopUI()
 {
 	if (!m_uiStack.empty())
@@ -225,6 +263,14 @@ void GemSelectUIManager::PopUI()
 
 }
 
+
+/**
+ * @brief 全UI消去処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelectUIManager::ClearUI()
 {
 	m_uiStack.clear();

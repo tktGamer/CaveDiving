@@ -3,9 +3,9 @@
  *
  * @brief  ユーザーインターフェイスに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/09/17
  */
 
  // 多重インクルードの防止 =====================================================
@@ -61,7 +61,6 @@ public:
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
-	DX::DeviceResources* m_pDR;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 

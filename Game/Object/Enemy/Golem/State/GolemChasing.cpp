@@ -1,7 +1,7 @@
 /**
  * @file   GolemChasing.cpp
  *
- * @brief  コウモリの追跡状態に関するソースファイル
+ * @brief  ゴーレムの追跡状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
@@ -17,7 +17,7 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] golem コウモリのポインタ
+ * @param[in] golem ゴーレムのポインタ
  */
 GolemChasing::GolemChasing(Golem* golem)
 	: m_golem(golem)
@@ -83,13 +83,23 @@ void GolemChasing::Update(const float& elapsedTime)
 	//プレイヤーが範囲外にでて一定時間経ったら待機状態へ遷移
 	float distance = DirectX::SimpleMath::Vector3::Distance(m_pPlayer->GetCurrentPosition(), m_golem->GetCurrentPosition());
 	//範囲外なら遷移
-	if (distance > 15.0f)
+	if (distance > 20.0f)
 	{
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::IDLING);
 	}
 	//攻撃範囲に入っていたら攻撃準備状態へ遷移
-	if (distance < 4.5f)
+	if (distance < 7.0)
 	{
+		if (TKTLib::GetRand(0, 1) == 0) 
+		{
+			m_golem->SetAttackMessage(Message::AttackMesssage::ATTACKTYPE_ONE);
+		}
+		else
+		{
+			m_golem->SetAttackMessage(Message::AttackMesssage::ATTACKTYPE_TWO);
+
+		}
+
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::ATTACKPREPARING);
 
 	}
@@ -115,6 +125,8 @@ void GolemChasing::Update(const float& elapsedTime)
  */
 void GolemChasing::PostUpdate()
 {
+	m_golem->ResetFrameCount();
+
 }
 
 /**

@@ -45,6 +45,7 @@ public:
 	//衝突判定
 	bool Intersects(Shape* other) override;
 
+	bool Contains(Shape* other) override;
 //　取得・設定
 public:
 	//当たり判定描画クラスに追加
@@ -64,5 +65,10 @@ private:
 	bool IntersectSphere(Sphere* other) const;
 	//AABBとの衝突判定
 	bool IntersectBox(Box* other) const;
+
+	//球との内包判定
+	bool ContainsSphere(Sphere* other) const;
+	//AABBとの内包判定
+	bool ContainsBox(Box* other) const;
 };
 

@@ -12,15 +12,16 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Object/GameObject.h"
+#include"../EnemyPart.h"
 #include"Game/Object/Weapon.h"
+#include"Game/Common/Collision/Sphere.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
   * @brief GolemHand
   */
-class GolemHand : public GameObject
+class GolemHand : public EnemyPart
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -30,7 +31,10 @@ public:
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
-	DirectX::SimpleMath::Matrix m_world;
+	//球状当たり判定
+	Sphere m_sphere;
+
+	Ito::DisplayCollision m_display;
 
 	//持っている武器
 	std::unique_ptr<Weapon> m_weapon;
@@ -40,7 +44,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	GolemHand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	GolemHand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~GolemHand();

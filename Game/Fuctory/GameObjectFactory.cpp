@@ -10,12 +10,12 @@
  *
  * @return プレイヤークラス
  */
-std::unique_ptr<Player> GameObjectFactory::CreatePlayer(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+std::unique_ptr<Player> GameObjectFactory::CreatePlayer(BuffUIControl* pBuffUIControl, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「プレイヤー」を宣言する
 	std::unique_ptr<Player> player;
 	//Playerクラスのインスタンスを生成する
-	player = std::make_unique<Player>(parent, initialPosition, initialAngle);
+	player = std::make_unique<Player>(pBuffUIControl,parent, initialPosition, initialAngle);
 	//初期化する
 	player->Initialize();
 
@@ -104,12 +104,12 @@ std::unique_ptr<Bat> GameObjectFactory::CreateBat(GameObject* parent, const Dire
  *
  * @return コウモリの羽クラス
  */
-std::unique_ptr<Wing> GameObjectFactory::CreateBatWing(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+std::unique_ptr<Wing> GameObjectFactory::CreateBatWing(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「コウモリの羽」を宣言する
 	std::unique_ptr<Wing> wing;
 	//Wingクラスのインスタンスを生成する
-	wing = std::make_unique<Wing>(parent, initialPosition, initialAngle);
+	wing = std::make_unique<Wing>(root,parent, initialPosition, initialAngle);
 	//初期化する
 	wing->Initialize();
 
@@ -117,14 +117,45 @@ std::unique_ptr<Wing> GameObjectFactory::CreateBatWing(GameObject* parent, const
 	return std::move(wing);
 }
 
-std::unique_ptr<Stage> GameObjectFactory::CreateStage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+std::unique_ptr<Golem> GameObjectFactory::CreateGolem(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+{
+	//「ゴーレム」を宣言する
+	std::unique_ptr<Golem> golem;
+	//Golemクラスのインスタンスを生成する
+	golem = std::make_unique<Golem>(parent, initialPosition, initialAngle);
+	//初期化する
+	golem->Initialize();
+
+	// Golemクラスのインスタンスを返す
+	return std::move(golem);
+}
+
+std::unique_ptr<GolemHand> GameObjectFactory::CreateGolemHand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+{
+	//「ゴーレムの手」を宣言する
+	std::unique_ptr<GolemHand> golem;
+	//GolemHandクラスのインスタンスを生成する
+	golem = std::make_unique<GolemHand>(root, parent, initialPosition, initialAngle);
+	//初期化する
+	golem->Initialize();
+
+	// GolemHandクラスのインスタンスを返す
+	return std::move(golem);
+}
+
+std::unique_ptr<Stage> GameObjectFactory::CreateStage(GameObject* parent, 
+	const DirectX::SimpleMath::Vector3& initialPosition,
+	const DirectX::SimpleMath::Quaternion& initialAngle,
+	bool* isOnLight,
+	int size
+)
 {
 	//「ステージ」を宣言する
 	std::unique_ptr<Stage> stage;
-	//Wingクラスのインスタンスを生成する
+	//Stageクラスのインスタンスを生成する
 	stage = std::make_unique<Stage>(parent, initialPosition, initialAngle);
 	//初期化する
-	stage->Initialize();
+	stage->Initialize(isOnLight,size);
 
 	// Stageクラスのインスタンスを返す
 	return std::move(stage);

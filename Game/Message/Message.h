@@ -24,6 +24,14 @@ public:
 		CHASING,						// 「追跡」状態
 		ATTACKPREPARING,			    // 「攻撃準備」状態
 	};
+
+	enum AttackMesssage : int 
+	{
+		NONE =0,
+		ATTACKTYPE_ONE,//「攻撃タイプ１」状態
+		ATTACKTYPE_TWO
+
+	};
 };
 
 #endif		// MESSAGE_DEFINED

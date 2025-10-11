@@ -16,7 +16,8 @@
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
 
-//#include"Game/Motion/GolemMotion/GolemAttackPreparingMotion.h"
+#include"Game/Motion/GolemMotion/GolemPunchPreparingMotion.h"
+#include"Game/Motion/GolemMotion/GolemSlammedDownPreparingMotion.h"
 // クラスの宣言 ===============================================================
 class Golem;
 
@@ -28,7 +29,7 @@ class GolemAttackPreparing : public IState
 {
 public:
 	// コンストラクタ
-	GolemAttackPreparing(Golem* golem);
+	GolemAttackPreparing(Golem* golem,GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
 	// デストラクタ
 	~GolemAttackPreparing();
 	// 初期化する
@@ -44,15 +45,20 @@ public:
 	// 後処理を行う
 	void Finalize();
 
+	//二点のラジアン角を求める
+	const float CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target);
 
-
+	//攻撃方法を決める
+	void DecideMotion();
 private:
-	// プレイヤー
+	// ゴーレム
 	Golem* m_golem;
+	GolemHand* m_pRightHand;
+	GolemHand* m_pLeftHand;
 	// グラフィックス
 	Graphics* m_graphics;
 	//攻撃準備モーション
-	//std::unique_ptr<Motion> m_attackPreparingMotion;
+	std::unique_ptr<Motion> m_attackPreparingMotion;
 
 };
 

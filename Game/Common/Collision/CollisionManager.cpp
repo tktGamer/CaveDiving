@@ -152,8 +152,7 @@ void CollisionManager::CollisionCheck()
 			{
 				// 当たり判定が発生した場合の処理
 				obj1->CollisionResponce(obj2);
-				obj2->CollisionResponce(obj1);	
-				
+				obj2->CollisionResponce(obj1);
 			}
 		}
 	}
@@ -184,7 +183,7 @@ void CollisionManager::Finalize()
  *
  * @return 押し出された球の中心位置
  */
-DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Box* box, Sphere* sphere)
+DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Box* box, Sphere* sphere,DirectX::SimpleMath::Vector3 moveDir)
 {
     DirectX::SimpleMath::Vector3 boxMin = box->GetCenter() - box->GetHalfSize();
     DirectX::SimpleMath::Vector3 boxMax = box->GetCenter() + box->GetHalfSize();
@@ -207,17 +206,33 @@ DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Box* box, Sphere* sphere)
         collisionVector.y * collisionVector.y +
         collisionVector.z * collisionVector.z);
 
-    // 押し出し処理
-    if (distance > 0.0f) {
-        float overlap = sphere->GetRadius() - distance;
-        collisionVector.x /= distance;
-        collisionVector.y /= distance;
-        collisionVector.z /= distance;
+  //  // 押し出し処理
+  //  if (distance > 0.0f) {
+  //      float overlap = sphere->GetRadius() - distance;
+		//collisionVector.Normalize();
 
-        sphereCenter.x += collisionVector.x * overlap;
-        sphereCenter.y += collisionVector.y * overlap;
-        sphereCenter.z += collisionVector.z * overlap;
-    }
+  //      sphereCenter.x += collisionVector.x * overlap;
+  //      sphereCenter.y += collisionVector.y * overlap;
+  //      sphereCenter.z += collisionVector.z * overlap;
+  //  }
+
+	// 押し出し方向が移動ベクトルに対して逆向きであるか？
+	collisionVector.Normalize();
+	moveDir.Normalize();
+
+	float dot = collisionVector.Dot( moveDir);
+    float overlap = sphere->GetRadius() - distance;
+
+	if (dot < 0.0f) {
+		// 押し出し方向が移動方向と逆 → 有効な押し出し
+		sphereCenter += collisionVector * overlap;
+	}
+	else {
+		// 押し出し方向が移動方向と同じか近い → 無視
+		// すり抜け防止のため微修正するならここで対応
+	}
+
+	sphere->SetCenter(sphereCenter);
 	return sphereCenter;
 }
 

@@ -86,15 +86,15 @@ public:
 	//Œ»İ‚Ì‘Ì—Í‚Ìİ’è
 	virtual void SetCurrentHP();
 	// ‘Ì—Í‚Ìİ’è
-	void SetMaxHP(const int hp);
+	void SetMaxHP(const int& hp);
 	// ‘Ì—Í‚Ìæ“¾
 	virtual const int GetMaxHP();
 	// UŒ‚—Í‚Ìİ’è
-	void SetAttackPower(const int attack);
+	void SetAttackPower(const int& attack);
 	// UŒ‚—Í‚Ìæ“¾
 	virtual const int GetAttackPower();
 	// –hŒä—Í‚Ìİ’è
-	void SetDiffence(const int diffence);
+	void SetDiffence(const int& diffence);
 	// –hŒä—Í‚Ìæ“¾
 	virtual const int GetDiffence();
 

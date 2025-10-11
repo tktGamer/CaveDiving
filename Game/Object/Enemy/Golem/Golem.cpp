@@ -29,6 +29,9 @@ Golem::Golem(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosi
 	, m_sphere{ GetPosition(), 2.0f } // 初期位置とサイズを設定
 	,m_frameCount{}
 	,m_messageID{}
+	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
+	,m_attackMessage{Message::AttackMesssage::NONE}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("golem.png"));
 
@@ -47,7 +50,8 @@ Golem::Golem(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosi
  */
 Golem::~Golem()
 {
-
+	CollisionManager::GetInstance()->UnRegister(m_rightHand.get());
+	CollisionManager::GetInstance()->UnRegister(m_leftHand.get());
 }
 
 
@@ -61,15 +65,6 @@ Golem::~Golem()
  */
 void Golem::Initialize()
 {
-	// 状態の初期化
-	m_idlingState  = std::make_unique<GolemIdling>(this);
-	m_movingState  = std::make_unique<GolemMoving>(this);
-	//m_chasingState = std::make_unique<GolemChasing>(this);
-	//m_attackState  = std::make_unique<GolemAttack>(this, m_rightWing.get(), m_leftWing.get());
-	//m_attackPreaparing = std::make_unique<GolemAttackPreparing>(this,m_rightWing.get(), m_leftWing.get());
-	//m_damagedState = std::make_unique<GolemDamaged>(this);
-
-	SetState(m_idlingState.get());
 
 
 	SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -8.0f));
@@ -79,9 +74,22 @@ void Golem::Initialize()
 	m_currentPosition = m_initialPosition  + GetPosition();
 	m_currentAngle = m_initialAngle * GetQuaternion() ;
 
-	m_rightHand = std::make_unique<GolemHand>(this, DirectX::SimpleMath::Vector3{ 4.5f ,2.0f,0.0f}, DirectX::SimpleMath::Quaternion::Identity);
-	m_leftHand = std::make_unique<GolemHand>(this, DirectX::SimpleMath::Vector3{ -4.5f ,2.0f,0.0f},
+	m_rightHand = std::make_unique<GolemHand>(this,this, DirectX::SimpleMath::Vector3{ 4.5f ,2.0f,0.0f}, DirectX::SimpleMath::Quaternion::Identity);
+	m_leftHand = std::make_unique<GolemHand>(this,this, DirectX::SimpleMath::Vector3{ -4.5f ,2.0f,0.0f},
 		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,DirectX::XMConvertToRadians(180.0f)));
+
+	CollisionManager::GetInstance()->Register(m_rightHand.get());
+	CollisionManager::GetInstance()->Register(m_leftHand.get());
+
+	// 状態の初期化
+	m_idlingState  = std::make_unique<GolemIdling>(this);
+	m_movingState  = std::make_unique<GolemMoving>(this);
+	m_chasingState = std::make_unique<GolemChasing>(this);
+	m_attackState  = std::make_unique<GolemAttack>(this, m_rightHand.get(), m_leftHand.get());
+	m_attackPreaparing = std::make_unique<GolemAttackPreparing>(this,m_rightHand.get(), m_leftHand.get());
+	//m_damagedState = std::make_unique<GolemDamaged>(this);
+
+	SetState(m_idlingState.get());
 }
 
 
@@ -199,6 +207,11 @@ void Golem::Draw()
 
 	m_rightHand->Draw();
 	m_leftHand->Draw();
+
+	m_sphere.AddDisplayCollision(&m_display);
+	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
+		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
+
 }
 
 
@@ -268,18 +281,13 @@ void Golem::CollisionResponce(GameObject* other)
 			// ここでは何もしないが、必要に応じて実装
 			break;
 		}
-		case Tag::ObjectType::Stage:
+		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere));
+			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
 			//速度をリセット
 			m_velocity.y = 0.0f;
 
-			//攻撃状態なら
-			if (GetState() == m_attackState.get()) 
-			{
-				OnMessegeAccepted(Message::MessageID::IDLING);
-			}
 
 			break;
 		}
@@ -298,11 +306,25 @@ void Golem::CollisionResponce(GameObject* other)
 
 
 
+/**
+ * @brief オブジェクトの経過時間（状態遷移用）
+ *
+ * @param[in] なし
+ *
+ * @return 経過時間
+ */
 const float Golem::GetFrameCount() const
 {
 	return m_frameCount;
 }
 
+/**
+ * @brief 経過時間のリセット
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Golem::ResetFrameCount()
 {
 	m_frameCount = 0.0f;
@@ -316,6 +338,16 @@ DirectX::SimpleMath::Vector3 Golem::GetVelocity()
 void Golem::SetVelocity(DirectX::SimpleMath::Vector3 v)
 {
 	m_velocity = v;
+}
+
+const Message::AttackMesssage Golem::GetAttackMessage()
+{
+	return m_attackMessage;
+}
+
+void Golem::SetAttackMessage(const Message::AttackMesssage& message)
+{
+	m_attackMessage = message;
 }
 
 

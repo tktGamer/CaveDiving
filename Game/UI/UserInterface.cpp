@@ -3,9 +3,9 @@
  *
  * @brief  ユーザーインターフェイスに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/09/17
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -20,18 +20,17 @@
  */
 UserInterface::UserInterface()
 	:m_graphics{Graphics::GetInstance()}
-	, m_pDR(nullptr)
-	, m_windowHeight(0)
-	, m_windowWidth(0)
-	, m_textureHeight(0)
-	, m_textureWidth(0)
-	, m_texture(nullptr)
-	, m_res(nullptr)
-	, m_scale(DirectX::SimpleMath::Vector2::One)
-	, m_position(DirectX::SimpleMath::Vector2::Zero)
-	, m_anchor(ANCHOR::TOP_LEFT)
-	, m_renderRatio(1.0f)
-	, m_renderRatioOffset(0.0f)
+	, m_windowHeight{ 0 }
+	, m_windowWidth{0}
+	, m_textureHeight{ 0 }
+	, m_textureWidth{0}
+	, m_texture{nullptr}
+	, m_res{ nullptr }
+	, m_scale{ DirectX::SimpleMath::Vector2::One }
+	, m_position{DirectX::SimpleMath::Vector2::Zero}
+	, m_anchor{ ANCHOR::TOP_LEFT }
+	, m_renderRatio{1.0f}
+	, m_renderRatioOffset{ 0.0f }
 
 {
 
@@ -146,7 +145,6 @@ void UserInterface::Draw()
 	context->PSSetShaderResources(0, 1, m_texture);
 
 	//	インプットレイアウトの登録
-	//context->IASetInputLayout(m_inputLayout.Get());
 	context->IASetInputLayout(shader->GetInputLayout(Shader::UI));
 
 	//	板ポリゴンを描画
@@ -155,9 +153,6 @@ void UserInterface::Draw()
 	m_batch->End();
 
 	//	シェーダの登録を解除しておく
-	//context->VSSetShader(nullptr, nullptr, 0);
-	//context->GSSetShader(nullptr, nullptr, 0);
-	//context->PSSetShader(nullptr, nullptr, 0);
 	shader->EndShader();
 }
 
@@ -175,19 +170,24 @@ void UserInterface::Finalize()
 
 }
 
+/**
+ * @brief 生成処理
+ *
+ * @param[in] path　　  ファイルパス
+ * @param[in] position　座標
+ * @param[in] scale　　 拡大率
+ * @param[in] anchor    アンカー位置
+ *
+ * @return なし
+ */
 void UserInterface::Create(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, ANCHOR anchor)
 {
-	m_pDR = m_graphics->GetDeviceResources();
 	ID3D11Device1* device = m_graphics->GetDeviceResources()->GetD3DDevice();
 	m_position = position;
 	m_baseScale = m_scale = scale;
 	m_anchor = anchor;
 
-	//	シェーダーの作成
-	//CreateShader(shader);
-
-	//	画像の読み込み
-	//LoadTexture(path);
+	//画像の設定
 	SetTexture(path);
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(m_graphics->GetDeviceResources()->GetD3DDeviceContext());
@@ -199,6 +199,14 @@ void UserInterface::Create(const wchar_t* path, DirectX::SimpleMath::Vector2 pos
 	
 }
 
+/**
+ * @brief ウィンドウサイズの設定
+ *
+ * @param[in] width   幅
+ * @param[in] height　高さ
+ *
+ * @return なし
+ */
 void UserInterface::SetWindowSize(const int& width, const int& height)
 {
 	m_windowWidth = width;

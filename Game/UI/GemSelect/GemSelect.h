@@ -17,7 +17,7 @@
 #include"Game/Interface/IUI.h"
 // クラスの宣言 ===============================================================
 class GemSelectUIManager;
-
+class Sound;
 // クラスの定義 ===============================================================
 /**
   * @brief ユーザーインターフェイス
@@ -48,6 +48,9 @@ private:
 
 	Gem* m_pGems[3];
 
+	//効果音
+	std::unique_ptr<Sound> m_cursorSound;
+	std::unique_ptr<Sound> m_decideSound;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

@@ -30,7 +30,7 @@ private:
 	//次のステージ
 	Stage m_nextStage;
 	//ステージで灯した明かり
-
+	bool m_isOnLights[10];
 public:
 
 	// コンストラクタ
@@ -38,6 +38,7 @@ public:
 		:m_isGameClear{false}
 		,m_nextStage{Stage::FIRST}
 		,m_playerHP{}
+		,m_isOnLights{false}
 	{
 	}
 
@@ -63,6 +64,17 @@ public:
 		return m_nextStage;
 	}
 
+	void SetIsOnLightNumber(bool isOn, int number)
+	{
 
+		m_isOnLights[number] = isOn;
+	}
+
+
+
+	bool* GetIsOnLights()
+	{
+		return m_isOnLights;
+	}
 };
 

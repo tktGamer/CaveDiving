@@ -1,7 +1,7 @@
 /**
  * @file   GolemAttack.h
  *
- * @brief  コウモリの移動状態に関するヘッダファイル
+ * @brief  ゴーレムの攻撃状態に関するヘッダファイル
  *
  * @author 制作者名 福地貴翔
  *
@@ -16,19 +16,22 @@
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
 
-//#include"Game/Motion/GolemMotion/GolemAttackMotion.h"
+#include"Game/Motion/GolemMotion/GolemPunchMotion.h"
+#include"Game/Motion/GolemMotion/GolemSlammedDownMotion.h"
+#include"Game/Object/Enemy/Golem/GolemHand.h"
+
 // クラスの宣言 ===============================================================
 class Golem;
 
 // クラスの定義 ===============================================================
 /**
-  * @brief コウモリの攻撃状態
+  * @brief ゴーレムの攻撃状態
   */
 class GolemAttack : public IState
 {
 public:
 	// コンストラクタ
-	GolemAttack(Golem* golem);
+	GolemAttack(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
 	// デストラクタ
 	~GolemAttack();
 	// 初期化する
@@ -45,14 +48,19 @@ public:
 	void Finalize();
 
 
+	//攻撃方法を決める
+	void DecideMotion();
 
 private:
-	// プレイヤー
+	// ゴーレム
 	Golem* m_golem;
+	GolemHand* m_pRightHand;
+	GolemHand* m_pLeftHand;
+
 	// グラフィックス
 	Graphics* m_graphics;
 	//攻撃モーション
-	//std::unique_ptr<Motion> m_attackMotion;
+	std::unique_ptr<Motion> m_attackMotion;
 
 };
 

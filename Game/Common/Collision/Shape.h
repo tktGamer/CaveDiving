@@ -52,6 +52,7 @@ public:
 public:
 	//Õ“Ë‚µ‚Ä‚¢‚é‚©
 	virtual bool Intersects(Shape* other) = 0;
+	virtual bool Contains(Shape* other)=0;
 
 	//“–‚½‚è”»’è•`‰æƒNƒ‰ƒX‚É“o˜^
 	virtual void AddDisplayCollision(Ito::DisplayCollision* dC)=0;

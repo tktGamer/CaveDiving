@@ -101,6 +101,36 @@
     <Filter Include="Game\UI\Result">
       <UniqueIdentifier>{edc07fd1-f1e0-4022-8e5f-57a6c08de263}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Motion\GolemMotion">
+      <UniqueIdentifier>{19866ef4-c7ef-400b-bf71-c1f496e1d62f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\ParticleShader">
+      <UniqueIdentifier>{5538c668-adc0-454e-8512-583b5bc9d090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Particle">
+      <UniqueIdentifier>{537ddf7a-34dd-41af-888e-2c6a1528d4f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Particle\Vanish">
+      <UniqueIdentifier>{97e9e750-46f7-4497-a921-12c28dbe9183}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Item">
+      <UniqueIdentifier>{8f711284-0545-4d92-a8ac-42129c258a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\FadeShader">
+      <UniqueIdentifier>{99439f13-a68e-4c26-85c5-3312e0880da0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Transitor">
+      <UniqueIdentifier>{621be62f-e395-4b79-9dc3-aff726721570}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\lumiRockShader">
+      <UniqueIdentifier>{3ba9fa53-241a-408b-98fa-7f2c3d85180f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Particle\PowerUp">
+      <UniqueIdentifier>{506a7f63-9bba-45ec-a1c3-a2730b92581d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\Buff">
+      <UniqueIdentifier>{9fc0829b-ec33-498a-a99f-6ccabe491f03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -372,6 +402,57 @@
     <ClInclude Include="Game\Object\Stage\Candlestick.h">
       <Filter>Game\Object\Stage</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Motion\GolemMotion\GolemPunchMotion.h">
+      <Filter>Game\Motion\GolemMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\GolemMotion\GolemPunchPreparingMotion.h">
+      <Filter>Game\Motion\GolemMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\Particle.h">
+      <Filter>Game\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\EnemyPart.h">
+      <Filter>Game\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\ParticleManager.h">
+      <Filter>Game\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\Vanish\ParticleVanish.h">
+      <Filter>Game\Particle\Vanish</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\Vanish\ParticleVanishControl.h">
+      <Filter>Game\Particle\Vanish</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\ParticleControl.h">
+      <Filter>Game\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\GolemMotion\GolemSlammedDownMotion.h">
+      <Filter>Game\Motion\GolemMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\GolemMotion\GolemSlammedDownPreparingMotion.h">
+      <Filter>Game\Motion\GolemMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Item\Item.h">
+      <Filter>Game\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Item\ItemManager.h">
+      <Filter>Game\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Transitor\Transitor.h">
+      <Filter>Game\Transitor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\PowerUp\ParticlePowerUp.h">
+      <Filter>Game\Particle\PowerUp</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\PowerUp\ParticlePowerUpControl.h">
+      <Filter>Game\Particle\PowerUp</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Buff\Buff.h">
+      <Filter>Game\UI\Buff</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Buff\BuffUIControl.h">
+      <Filter>Game\UI\Buff</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -616,6 +697,57 @@
     <ClCompile Include="Game\Object\Stage\Candlestick.cpp">
       <Filter>Game\Object\Stage</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Motion\GolemMotion\GolemPunchMotion.cpp">
+      <Filter>Game\Motion\GolemMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\GolemMotion\GolemPunchPreparingMotion.cpp">
+      <Filter>Game\Motion\GolemMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\Particle.cpp">
+      <Filter>Game\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\EnemyPart.cpp">
+      <Filter>Game\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\ParticleManager.cpp">
+      <Filter>Game\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\Vanish\ParticleVanish.cpp">
+      <Filter>Game\Particle\Vanish</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\Vanish\ParticleVanishControl.cpp">
+      <Filter>Game\Particle\Vanish</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\ParticleControl.cpp">
+      <Filter>Game\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\GolemMotion\GolemSlammedDownMotion.cpp">
+      <Filter>Game\Motion\GolemMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\GolemMotion\GolemSlammedDownPreparingMotion.cpp">
+      <Filter>Game\Motion\GolemMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Item\Item.cpp">
+      <Filter>Game\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Item\ItemManager.cpp">
+      <Filter>Game\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Transitor\Transitor.cpp">
+      <Filter>Game\Transitor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\PowerUp\ParticlePowerUp.cpp">
+      <Filter>Game\Particle\PowerUp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\PowerUp\ParticlePowerUpControl.cpp">
+      <Filter>Game\Particle\PowerUp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Buff\Buff.cpp">
+      <Filter>Game\UI\Buff</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Buff\BuffUIControl.cpp">
+      <Filter>Game\UI\Buff</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -639,6 +771,15 @@
       <Filter>Resources\Shaders\UIShader</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include="Resources\Shaders\ParticleShader\Particle.hlsli">
+      <Filter>Resources\Shaders\ParticleShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\FadeShader\Fade.hlsli">
+      <Filter>Resources\Shaders\FadeShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\LumiRockShader\LumiRockShader.hlsli">
+      <Filter>Resources\Shaders\lumiRockShader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\ModelShader\ModelVS.hlsl">
@@ -658,6 +799,36 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\UIShader\UIVS.hlsl">
       <Filter>Resources\Shaders\UIShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleShader\ParticleGS.hlsl">
+      <Filter>Resources\Shaders\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleShader\ParticlePS.hlsl">
+      <Filter>Resources\Shaders\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleShader\ParticleVS.hlsl">
+      <Filter>Resources\Shaders\ParticleShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ModelShader\ItemModelPS.hlsl">
+      <Filter>Resources\Shaders\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\FadeShader\FadeGS.hlsl">
+      <Filter>Resources\Shaders\FadeShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\FadeShader\FadePS.hlsl">
+      <Filter>Resources\Shaders\FadeShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\FadeShader\FadeVS.hlsl">
+      <Filter>Resources\Shaders\FadeShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LumiRockShader\LumiRockGS.hlsl">
+      <Filter>Resources\Shaders\lumiRockShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LumiRockShader\LumiRockPS.hlsl">
+      <Filter>Resources\Shaders\lumiRockShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LumiRockShader\LumiRockVS.hlsl">
+      <Filter>Resources\Shaders\lumiRockShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

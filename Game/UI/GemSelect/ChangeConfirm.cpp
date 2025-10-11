@@ -14,15 +14,18 @@
 #include"../CaveDiving/Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
 #include"Game/UI/GemSelectUIManager.h"
-
+#include"Game/Common/Sound.h"
+#include"Game/Fuctory/UIFactory.h"
 ChangeConfirm::ChangeConfirm(int width, int height, GemSelectUIManager* pUIManager)
     :  m_windowHeight(height)
     , m_windowWidth(width)
     , m_changeMessage{}
     ,m_menu{}
     , m_pUIManager{ pUIManager }
-
 {
+    m_showUISound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("showconfirmui.wav"));
+    m_cursorSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
+
 }
 
 ChangeConfirm::~ChangeConfirm()
@@ -31,13 +34,14 @@ ChangeConfirm::~ChangeConfirm()
 
 void ChangeConfirm::Initialize()
 {
+    m_showUISound->Play(false);
+
     m_changeMessage = std::make_unique<UserInterface>();
     m_changeMessage->SetWindowSize(m_windowWidth, m_windowHeight);
     m_changeMessage->Create(L"UI/changemessage.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 
-    m_menu = std::make_unique<Menu>(m_windowWidth, m_windowHeight);
-    m_menu->Initialize();
+    m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
     m_menu->Add(L"UI/yesfont.png", { 350.0f,500.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
     m_menu->Add(L"UI/nofont.png", { 950.0f,500.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 

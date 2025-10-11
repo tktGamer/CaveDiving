@@ -36,9 +36,9 @@ Bat::Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition
 
 	SetShape(&m_sphere);
 
-	m_leftWing = GameObjectFactory::CreateBatWing(this, DirectX::SimpleMath::Vector3{-0.5f,0.0f,0.0f});
+	m_leftWing = GameObjectFactory::CreateBatWing(this, this,DirectX::SimpleMath::Vector3{-0.5f,0.0f,0.0f});
 	
-	m_rightWing = GameObjectFactory::CreateBatWing(this, DirectX::SimpleMath::Vector3{0.5f,0.0f,0.0f}
+	m_rightWing = GameObjectFactory::CreateBatWing(this, this,DirectX::SimpleMath::Vector3{0.5f,0.0f,0.0f}
 	,DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(180.0f)));
 
 
@@ -271,10 +271,10 @@ void Bat::CollisionResponce(GameObject* other)
 			// ここでは何もしないが、必要に応じて実装
 			break;
 		}
-		case Tag::ObjectType::Stage:
+		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere));
+			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
 			//速度をリセット
 			m_velocity.y = 0.0f;
 

@@ -4,6 +4,8 @@
 
 #include "pch.h"
 #include "Game.h"
+#include<fstream>
+#include<sstream>
 
 #include"Game/Scene/TitleScene.h"
 #include"Game/Scene/GameScene.h"
@@ -136,7 +138,7 @@ void Game::Render()
     std::wostringstream str;
     str << L"fps: " << m_timer.GetFramesPerSecond();
     m_debugFont->AddString(str.str().c_str(), DirectX::SimpleMath::Vector2::Zero);
-   // m_debugFont->Render(m_graphics->GetCommonStates());
+    //m_debugFont->Render(m_graphics->GetCommonStates());
 
     m_deviceResources->PIXEndEvent();
 

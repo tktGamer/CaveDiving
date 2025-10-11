@@ -75,6 +75,13 @@ void Character::OnDamage(GameObject* other)
 
 }
 
+/**
+ * @brief ダメージをうける
+ *
+ * @param[in] うけるダメージ
+ *
+ * @return なし
+ */
 void Character::TakeDamage(const int& damage)
 {
 	if (damage < 0) 
@@ -122,7 +129,7 @@ void Character::SetCurrentHP()
  *
  * @return なし
  */
-void Character::SetMaxHP(const int hp)
+void Character::SetMaxHP(const int& hp)
 {
 	m_hp = hp;
 }
@@ -147,7 +154,7 @@ const int Character::GetMaxHP()
  *
  * @return なし
  */
-void Character::SetAttackPower(const int attack)
+void Character::SetAttackPower(const int& attack)
 {
 	m_attackPower = attack;
 }
@@ -171,7 +178,7 @@ const int Character::GetAttackPower()
  *
  * @return なし
  */
-void Character::SetDiffence(const int diffence)
+void Character::SetDiffence(const int& diffence)
 {
 	m_diffence = diffence;
 }

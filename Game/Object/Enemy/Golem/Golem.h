@@ -20,9 +20,10 @@
 #include"../Golem/State/GolemAttack.h"
 #include"../Golem/State/GolemMoving.h"
 #include"../Golem/State/GolemChasing.h"
-//#include"../Golem/State/GolemAttackPreparing.h"
+#include"../Golem/State/GolemAttackPreparing.h"
 //#include"../Golem/State/GolemDamaged.h"
  
+#include"../EnemyPart.h"
 #include"../Golem/GolemHand.h"
 // クラスの宣言 ===============================================================
 
@@ -76,6 +77,10 @@ private:
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
 
+
+	Ito::DisplayCollision m_display;
+
+	Message::AttackMesssage m_attackMessage;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -113,6 +118,10 @@ public:
 
 	DirectX::SimpleMath::Vector3 GetVelocity();
 	void SetVelocity(DirectX::SimpleMath::Vector3 v);
+
+	//攻撃メッセージ
+	const Message::AttackMesssage GetAttackMessage();
+	void SetAttackMessage(const Message::AttackMesssage& message);
 	//　内部操作
 private:
 

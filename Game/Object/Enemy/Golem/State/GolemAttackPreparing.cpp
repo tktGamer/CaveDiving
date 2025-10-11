@@ -1,7 +1,7 @@
 /**
  * @file   GolemAttackPreparing.cpp
  *
- * @brief  コウモリの攻撃準備状態に関するソースファイル
+ * @brief  ゴーレムの攻撃準備状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
@@ -12,21 +12,21 @@
 #include "pch.h"
 #include "Game/Object/Enemy/Golem/State/GolemAttackPreparing.h"
 #include "Game/Object/Enemy/Golem/Golem.h"
-
+#include"Game//Object/Player/Player.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] golem コウモリのポインタ
+ * @param[in] golem ゴーレムのポインタ
  */
-GolemAttackPreparing::GolemAttackPreparing(Golem* golem)
+GolemAttackPreparing::GolemAttackPreparing(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
 	:m_golem(golem)
-	, m_graphics{}
+	, m_pRightHand{pRightGolemHand}
+	,m_pLeftHand{pLeftGolemHand}
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
 
-	//m_attackPreparingMotion = std::make_unique<GolemAttackPreparingMotion>(pRightWing, pLeftWing);
 
 }
 /**
@@ -57,7 +57,8 @@ void GolemAttackPreparing::Initialize()
  */
 void GolemAttackPreparing::PreUpdate()
 {
-	//m_attackPreparingMotion->Initialize();
+	DecideMotion();
+	m_attackPreparingMotion->Initialize();
 
 }
 
@@ -72,18 +73,24 @@ void GolemAttackPreparing::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
+	GameObject* pPlayer = Messenger::GetInstance()->GetObject(0);
+
+	//自分からプレイヤーの角度を求める
+	float radian = CaluculateRadian(m_golem->GetCurrentPosition(), pPlayer->GetCurrentPosition());
+	//目標の角度
+	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, radian);
+
+	//現在の角度と目標の角度の差分
+	//DirectX::SimpleMath::Quaternion diff = rotate - m_golem->GetQuaternion();
+
+	m_golem->SetQuaternion(rotate);
+
+
 	//攻撃予備モーションが終わったら攻撃状態へ遷移
-	//if (m_attackPreparingMotion->Update())
-	//{
-	//	Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MessageID::GROUNDATTACK);
-	//}
-	////斜め上後方
-	//DirectX::SimpleMath::Vector3 flyVelocity = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{ 0.0f,1.0f,1.0f }*elapsedTime, m_golem->GetCurrentQuaternion());
-
-
-
-	//Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::IDLING);
-	//m_golem->SetPosition(m_golem->GetPosition() + flyVelocity);
+	if (m_attackPreparingMotion->Update())
+	{
+		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MessageID::GROUNDATTACK);
+	}
 
 }
 
@@ -96,7 +103,9 @@ void GolemAttackPreparing::Update(const float& elapsedTime)
  */
 void GolemAttackPreparing::PostUpdate()
 {
-	//m_attackPreparingMotion->Reset();
+	m_attackPreparingMotion->Reset();
+	m_golem->ResetFrameCount();
+
 }
 
 /**
@@ -125,3 +134,37 @@ void GolemAttackPreparing::Finalize()
 {
 }
 
+/**
+ * @brief 二点のラジアン角を求める
+ *
+ * @param[in] eye    自分
+ * @param[in] target 相手
+ *
+ * @return ラジアン角
+ */
+const float GolemAttackPreparing::CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target)
+{
+
+	//自分から相手の方向
+	DirectX::SimpleMath::Vector3 direction = eye - target;
+	direction.Normalize();
+
+	// X-Z 平面上での角度を計算
+	float angle = std::atan2(direction.x, direction.z);
+
+	return angle;
+}
+
+void GolemAttackPreparing::DecideMotion()
+{
+	switch (m_golem->GetAttackMessage()) 
+	{
+	case Message::AttackMesssage::ATTACKTYPE_ONE:
+		m_attackPreparingMotion = std::make_unique<GolemPunchPreparingMotion>(m_golem, m_pRightHand, m_pLeftHand);
+		break;
+	case Message::AttackMesssage::ATTACKTYPE_TWO:
+		m_attackPreparingMotion = std::make_unique<GolemSlammedDownPreparingMotion>(m_golem, m_pRightHand, m_pLeftHand);
+
+		break;
+	}
+}

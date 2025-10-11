@@ -19,15 +19,20 @@
  *
  * @param[in] ‚È‚µ
  */
-GolemHand::GolemHand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+GolemHand::GolemHand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, GameObject(Tag::ObjectType::Enemy,parent,initialPosition,initialAngle)
+	, EnemyPart(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
+	,m_sphere{initialPosition,2.5f}
+	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
+
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"golemhand.png"));
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"golemhand.sdkmesh"));
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
+	SetShape(&m_sphere);
 }
 
 
@@ -76,9 +81,13 @@ void GolemHand::Initialize()
  */
 void GolemHand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	m_currentAngle =m_initialAngle* GetQuaternion()   * m_motionAngle* currentAngle;
-	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition+ GetPosition(), m_motionAngle* currentAngle)+ currentPosition ;
+
+	m_currentAngle =m_initialAngle * GetQuaternion()   * m_motionAngle * currentAngle;
+	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition+ GetPosition(), m_motionAngle * currentAngle)+ currentPosition ;
 	
+
+	m_sphere.SetCenter(GetCurrentPosition());
+
 	if(m_weapon)
 	m_weapon->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }
@@ -152,6 +161,11 @@ void GolemHand::Draw()
 	Shader::GetInstance()->EndShader();
 	if (m_weapon)
 	m_weapon->Draw();
+
+	m_sphere.AddDisplayCollision(&m_display);
+	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
+		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
+
 }
 
 

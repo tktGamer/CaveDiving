@@ -56,14 +56,15 @@ ResultScene::~ResultScene()
 void ResultScene::Initialize()
 {
 
-
-
+	m_decideMenuSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("decidemenu.wav"));
+	m_clearSound	  = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("gameclear.wav"));
+	m_clearSound->Play(false);
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 	m_saveMessage =UIFactory::CreateUserInterface(L"UI/savemessage.png", { 650.0f,400.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 
-	m_menu = UIFactory::CreateMenu();
+	m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
 	m_menu->Add(L"UI/yesfont.png", { 350.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 	m_menu->Add(L"UI/nofont.png", { 950.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 
@@ -106,7 +107,7 @@ void ResultScene::Update(float elapsedTime)
 	if (tracker->pressed.Space)
 	{
 		int menuIndex = m_menu->GetMenuIndex();
-
+		m_decideMenuSound->Play(false);
 		switch (menuIndex)
 		{
 			//u‚Í‚¢v‚Ìê‡

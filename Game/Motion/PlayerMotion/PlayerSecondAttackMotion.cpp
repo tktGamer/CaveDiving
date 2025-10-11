@@ -24,6 +24,7 @@ PlayerSecondAttackMotion::PlayerSecondAttackMotion(Hand* pRightHand, Hand* pLeft
 	, m_pLeftHand{pLeftHand}
 	, m_isNextAttack{ false }
 {
+	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("pikelswing.wav"));
 
 }
 
@@ -48,6 +49,7 @@ PlayerSecondAttackMotion::~PlayerSecondAttackMotion()
  */
 void PlayerSecondAttackMotion::Initialize()
 {
+	m_sound->Play(false);
 
 }
 

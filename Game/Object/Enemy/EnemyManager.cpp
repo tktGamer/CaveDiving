@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2025/10/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -13,6 +13,10 @@
 #include "EnemyManager.h"
 #include"Game/Common/Collision/CollisionManager.h"
 #include"Game/Fuctory/GameObjectFactory.h"
+#include"Game/Particle/ParticleManager.h"
+#include<fstream>
+#include<sstream>
+
  // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -115,27 +119,57 @@ void EnemyManager::Finalize()
  */
 void EnemyManager::Spawn()
 {
-	m_enemies.emplace_back(GameObjectFactory::CreateBat());
-	m_enemies.back()->SetPosition({ 0.0f, 1.0f, -8.0f });
-	CollisionManager::GetInstance()->Register(m_enemies.back().get());
-	Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
 
-	//m_enemies.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
-	//m_enemies.back()->Initialize();
-	//m_enemies.back()->SetPosition({ 6.0f,1.0f,33.0f });
-	//CollisionManager::GetInstance()->Register(m_enemies.back().get());
-	//Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
-	//m_enemies.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
-	//m_enemies.back()->Initialize();
-	//m_enemies.back()->SetPosition({ 9.0f,1.0f,-33.0f });
-	//CollisionManager::GetInstance()->Register(m_enemies.back().get());
-	//Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
-	//m_enemies.emplace_back(std::make_unique<Bat>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
-	//m_enemies.back()->Initialize();
-	//m_enemies.back()->SetPosition({ -1.0f,1.0f,-36.0f });
-	//CollisionManager::GetInstance()->Register(m_enemies.back().get());
-	//Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
+
+	//スポーン位置
+	DirectX::SimpleMath::Vector3 spawnPos = DirectX::SimpleMath::Vector3::Zero;
+
+	//パスの生成
+	std::string path = "Resources/Data/EnemySpawnData.csv";
+	//ファイルのオープン
+	std::ifstream ifs{ path };
+	if (!ifs.is_open())
+	{
+		//読み込み失敗
+		return;
+	}
+
+	ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+
+	while (ifs)
+	{
+		//敵の種類を読み込む
+		std::string line;
+		std::getline(ifs, line, ',');
+		
+		//座標を読み込む
+		ifs >> spawnPos.x;
+		ifs.ignore(); //カンマを読み飛ばす
+		ifs >> spawnPos.y;
+		ifs.ignore(); //カンマを読み飛ばす
+		ifs >> spawnPos.z;
+		ifs.ignore(); //カンマを読み飛ばす
+
+
+
+		//読み込んだ種類を生成
+		if (line == "コウモリ") 
+		{
+			m_enemies.emplace_back(GameObjectFactory::CreateBat());
+			m_enemies.back()->SetPosition(spawnPos);
+			CollisionManager::GetInstance()->Register(m_enemies.back().get());
+			Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
+		}
+		
+		ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	}
+	ifs.close();
+
+	return;
 }
+
 
 void EnemyManager::SpawnBoss()
 {
@@ -164,6 +198,9 @@ void EnemyManager::DeleteEnemy()
         {
             // 死亡している場合はリストから削除
             CollisionManager::GetInstance()->UnRegister(it->get());
+
+
+			ParticleManager::GetInstance()->RequestParticle(ParticleManager::ParticleType::Vanish, (*it)->GetCurrentPosition(),{1.0f,1.0f,1.0f,1.0f});
             it = m_enemies.erase(it);
         }
         else

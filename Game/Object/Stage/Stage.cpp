@@ -12,6 +12,8 @@
 #include "pch.h"
 #include "Stage.h"
 #include"Game/Common/Collision/CollisionManager.h"
+#include<fstream>
+#include<sstream>
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -50,7 +52,7 @@ Stage::~Stage()
  *
  * @return なし
  */
-void Stage::Initialize()
+void Stage::Initialize(bool* isOnLight, int size)
 {
 	//SetModel(ResourceManager::GetInstance()->RequestModel(L"block.sdkmesh"));
 	//SetPosition(DirectX::SimpleMath::Vector3(0.0f, -1.5f, 0.0f));
@@ -71,12 +73,25 @@ void Stage::Initialize()
 	m_wall = std::make_unique<Wall>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_wall->Initialize();
 
+
+	GenerateIlumiRock(isOnLight, size);
+
 	CollisionManager* pCM = CollisionManager::GetInstance();
 	pCM->Register(m_ground.get());
 
-	m_candle = std::make_unique<CandleStick>(nullptr, DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f}, DirectX::SimpleMath::Quaternion::Identity);
-	m_candle->Initialize();
-	m_candle->SetPosition({ 5.0f, 0.0f, -25.0f });
+
+	//m_rocks.emplace_back(std::make_unique<CandleStick>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
+	//m_rocks.back()->Initialize(isOnLight[0]);
+	//m_rocks.back()->SetPosition({ 5.0f, 0.0f, -25.0f });
+
+	//pCM->Register(m_rocks.back().get());
+
+	//m_rocks.emplace_back(std::make_unique<CandleStick>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
+	//m_rocks.back()->Initialize(isOnLight[1]);
+	//m_rocks.back()->SetPosition({ -5.0f, 0.0f, 35.0f });
+
+	//pCM->Register(m_rocks.back().get());
+
 }
 
 
@@ -95,7 +110,10 @@ void Stage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
 	m_ground->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
 	m_wall->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
 
-	m_candle->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+	for (std::unique_ptr<CandleStick>& rock : m_rocks) 
+	{
+		rock->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+	}
 }
 
 
@@ -115,60 +133,14 @@ void Stage::Draw()
 	DirectX::SimpleMath::Matrix  view    = Graphics::GetInstance()->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj    = Graphics::GetInstance()->GetProjectionMatrix();
 
-	//DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
-	////	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	//Stage::ConstBuffer cbuff;
-	//cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale()).Transpose();
-	//cbuff.matView = m_graphics->GetViewMatrix().Transpose();
-	//cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-
-
-	////world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
-	////GetModel()->Draw(context, *states, world, view, proj);
-	//
-	////	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	//context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
-
-	//GetModel()->Draw(context, *states, world, view, proj, false, [&]()
-	//	{
-	//		//	モデル表示をするための自作シェーダに関連する設定を行う
-
-
-	//		//	画像用サンプラーの登録
-	//		ID3D11SamplerState* sampler[1] = { states->PointWrap() };
-	//		context->PSSetSamplers(0, 1, sampler);
-
-	//		if (GetTexture() != nullptr)
-	//		{
-	//			//	読み込んだ画像をピクセルシェーダに伝える
-	//			//	自作VSはt0を使っているため、
-	//			//	t0がメインで使われていると勝手に想定。
-	//			context->PSSetShaderResources(0, 1, GetTexture());
-	//		}
-
-	//		//	半透明描画指定
-	//		ID3D11BlendState* blendstate = states->NonPremultiplied();
-
-	//		//	透明判定処理
-	//		context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//		//	深度バッファに書き込み参照する
-	//		context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
-	//		//	カリングはなし
-	//		context->RSSetState(states->CullClockwise());
-
-	//		Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
-
-	//		context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
-	//	});
-	//Shader::GetInstance()->EndShader();
 
 	m_ground->Draw();
 	m_wall->Draw();
 
-	m_candle->Draw();
-	//m_cave.GetModel()->Draw(context, *states, m_cave.GetWorldMatrix(), view, proj);
+	for (std::unique_ptr<CandleStick>& rock : m_rocks)
+	{
+		rock->Draw();
+	}
 }
 
 
@@ -190,4 +162,79 @@ void Stage::OnMessegeAccepted(Message::MessageID messageID)
 
 }
 
+std::list<std::unique_ptr<CandleStick>>& Stage::GetRocks()
+{
+	return m_rocks;
+}
+
+void Stage::GenerateIlumiRock(bool* isOnLight, int size)
+{
+
+	//パスの生成
+	std::string path = "Resources/Data/LightPositionData.csv";
+	//ファイルのオープン
+	std::ifstream ifs{ path };
+	if (!ifs.is_open())
+	{
+		//読み込み失敗
+		return;
+	}
+
+	ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+
+	while (ifs)
+	{
+		int id = 0;
+		//敵の種類を読み込む
+		ifs >> id;
+		ifs.ignore(); //カンマを読み飛ばす
+
+		if (id <= 0) 
+		{
+			break;
+		}
+
+		//スポーン位置
+		DirectX::SimpleMath::Vector3 spawnPos = DirectX::SimpleMath::Vector3::Zero;
+		DirectX::SimpleMath::Vector3 color    = DirectX::SimpleMath::Vector3::One;
+		float intensity = 1.0f;
+
+		//座標を読み込む
+		ifs >> spawnPos.x;
+		ifs.ignore(); //カンマを読み飛ばす
+		ifs >> spawnPos.y;
+		ifs.ignore(); //カンマを読み飛ばす
+		ifs >> spawnPos.z;
+		ifs.ignore(); //カンマを読み飛ばす
+
+		//ライトの色を読み込む
+		ifs >> color.x;
+		ifs.ignore(); //カンマを読み飛ばす
+		ifs >> color.y;
+		ifs.ignore(); //カンマを読み飛ばす
+		ifs >> color.z;
+		ifs.ignore(); //カンマを読み飛ばす
+		//ライト強度を読み込む
+		ifs >> intensity;
+		ifs.ignore(); //カンマを読み飛ばす
+		
+
+		Shader::PointLight lightdata;
+		lightdata.LightColor = color;
+		lightdata.LightIntensity = intensity;
+
+		m_rocks.emplace_back(std::make_unique<CandleStick>(lightdata,nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
+		m_rocks.back()->Initialize(isOnLight[id-1]);
+		m_rocks.back()->SetPosition(spawnPos);
+
+		CollisionManager::GetInstance()->Register(m_rocks.back().get());
+
+
+		ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	}
+	ifs.close();
+
+}
 

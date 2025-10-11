@@ -69,6 +69,31 @@ bool Sphere::Intersects(Shape* other)
 	return false;
 }
 
+bool Sphere::Contains(Shape* other)
+{
+	//エラー対策
+	if (other == nullptr)
+	{
+		return false;
+	}
+
+	//形状の種類を確認
+	switch (other->GetShapeType())
+	{
+	case ShapeType::Box:
+		return IntersectBox(static_cast<Box*>(other));
+		break;
+	case ShapeType::Sphere:
+		return IntersectSphere(static_cast<Sphere*>(other));
+		break;
+	default:
+		break;
+	}
+
+
+	return false;
+}
+
 
 /**
  * @brief 当たり判定描画クラスに追加
@@ -157,6 +182,33 @@ bool Sphere::IntersectBox(Box* other) const
 	// 距離の二乗が球の半径の二乗以下であれば当たり
 	return distanceSquared <= (m_radius * m_radius);
 
+}
+
+/**
+ * @brief 球状と内包判定を行う
+ *
+ * @param[in] other 内包判定を行う球状（大きい方）
+ *
+ * @return true  内包している
+ * @return false 内包していない
+ */
+bool Sphere::ContainsSphere(Sphere* other) const
+{
+	//距離を求める
+	DirectX::SimpleMath::Vector3 distance = m_center - other->GetCenter();
+	
+	//距離と半径を足した分から大きい球をはみ出しているか
+	if (distance.Length() + m_radius < other->GetRadius()) 
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Sphere::ContainsBox(Box* other) const
+{
+	return false;
 }
 
 

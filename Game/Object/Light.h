@@ -3,9 +3,9 @@
  *
  * @brief  Lightに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付  2025/09/17
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,16 +24,6 @@ class Light : public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct LightBuffer
-	{
-		DirectX::SimpleMath::Vector3 LightPosition;      // ライト位置
-		float LightInvSqrRadius; // ライトが届く距離（2乗の逆数）
-		DirectX::SimpleMath::Vector3 LightColor;         // ライトカラー
-		float LightIntensity;    // ライト強度
-		DirectX::SimpleMath::Vector4	Attenuation;
-
-	};
 
 	
 
@@ -42,11 +32,12 @@ private:
 	// メッセージID
 	Message::MessageID m_messageID;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_lBuffer;
-	LightBuffer m_lBuff;
 	Shader::PointLight m_pointLight;
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 	bool m_isOn; //ライトのオンオフ状態
 	
+
+	DirectX::SimpleMath::Vector3 m_color;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -74,13 +65,19 @@ public:
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
 
+	//ライトを点ける
 	void LightOn();
 //　取得・設定
 public:
-	bool IsOn()const ;
+	//ライトが点いているか
+	bool IsOn()const;
 	ID3D11Buffer* GetLightBuffer() const;
 
 	Shader::PointLight GetLightData();
+
+	void SetLightData(const Shader::PointLight& lightData);
+
+	void SetLightColor(const DirectX::SimpleMath::Vector3& color);
 //　内部操作
 private:
 

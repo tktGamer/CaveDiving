@@ -48,8 +48,9 @@ private:
 	//地面
 	std::unique_ptr<Ground> m_ground;
 
-	//燭台
-	std::unique_ptr<CandleStick> m_candle;
+	//発光する岩
+	std::list<std::unique_ptr<CandleStick>> m_rocks;
+	
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -62,7 +63,7 @@ public:
 
 // 操作
 public:
-	void Initialize();
+	void Initialize(bool* isOnLight, int size);
 
 	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle);
 
@@ -77,10 +78,12 @@ public:
 
 	//　取得・設定
 public:
+	//敵を取得
+	std::list<std::unique_ptr<CandleStick>>& GetRocks();
 
 
 //　内部操作
 private:
-
+	void GenerateIlumiRock(bool* isOnLight, int size);
 };
 

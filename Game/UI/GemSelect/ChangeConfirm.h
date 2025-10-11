@@ -18,7 +18,7 @@
 #include"../Menu/Menu.h"
 // クラスの宣言 ===============================================================
 class GemSelectUIManager;
-
+class Sound;
 // クラスの定義 ===============================================================
 /**
   * @brief 入れ替え確認UI
@@ -38,6 +38,10 @@ private:
 
 	int m_windowWidth, m_windowHeight;
 
+	//効果音
+	std::unique_ptr<Sound> m_cursorSound;
+
+	std::unique_ptr<Sound> m_showUISound;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

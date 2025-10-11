@@ -20,9 +20,9 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Wing::Wing(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Wing::Wing(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
+	, EnemyPart(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"wing.png"));

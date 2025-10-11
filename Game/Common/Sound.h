@@ -1,11 +1,21 @@
+/**
+ * @file   Sound.h
+ *
+ * @brief  音に関するヘッダファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2025/09/17
+ */
+ // 多重インクルードの防止 =====================================================
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
 #include"pch.h"
-
+#include"x3daudio.h"
 // クラスの定義 ===============================================================
 /**
-  * @brief リソースの管理
+  * @brief 音
   */
 class Sound
 {
@@ -33,12 +43,18 @@ public:
 public:
 	// 再生
 	void Play(bool isLoop);
+	//重ねて再生しない
+	void OncePlay(bool isLoop);
+
 	//停止
 	void Stop();
 // 取得/設定
 public:
 	// 音量設定
 	void SetVolume(float volume=1.0f);
+
+	//再生状態の取得
+	const DirectX::SoundState& GetSoundState();
 // 内部実装
 private:
 	// インスタンスの作成

@@ -11,13 +11,14 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Menu.h"
-
-Menu::Menu(int width, int height)
+#include"Game/Common/Sound.h"
+Menu::Menu(int width, int height, DirectX::SoundEffect* cursolSound)
     : m_menuIndex(0)
     , m_windowHeight(height)
     , m_windowWidth(width)
     , m_baseTexturePath(nullptr)
 {
+    m_cursorSound = std::make_unique<Sound>(cursolSound);
     m_userInterface.clear();
 }
 
@@ -46,6 +47,8 @@ void Menu::Update()
         m_menuIndex += 1;
         //  メニューアイテム数の最大値を超えないように制御
         m_menuIndex %= m_userInterface.size();
+
+        m_cursorSound->Play(false);
     }
     if (tracker->pressed.Left)
     {
@@ -57,6 +60,9 @@ void Menu::Update()
         //  ということ
         m_menuIndex += static_cast<unsigned int>(m_userInterface.size()) - 1;
         m_menuIndex %= m_userInterface.size();
+
+        m_cursorSound->Play(false);
+
     }
 
 

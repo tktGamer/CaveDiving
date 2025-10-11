@@ -30,18 +30,18 @@ std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(const wchar_t* pat
 /**
  * @brief 「メニューUI」の生成
  *
- * @param[in] なし
+ * @param[in] cursolSound カーソル移動時の効果音
  *
  * @return メニューUIクラス
  */
-std::unique_ptr<Menu> UIFactory::CreateMenu()
+std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound)
 {
 	//スクリーンサイズ取得
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//「メニューUI」の生成
-	std::unique_ptr<Menu> menu = std::make_unique<Menu>(w, h);
+	std::unique_ptr<Menu> menu = std::make_unique<Menu>(w, h,cursolSound);
 	menu->Initialize();
 
 	return std::move(menu);

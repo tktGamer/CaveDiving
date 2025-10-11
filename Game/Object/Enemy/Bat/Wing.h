@@ -12,7 +12,7 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Object/GameObject.h"
+#include"Game/Object/Enemy/EnemyPart.h"
 
 // クラスの宣言 ===============================================================
 
@@ -20,7 +20,7 @@
 /**
   * @brief Wing
   */
-class Wing : public GameObject
+class Wing : public EnemyPart
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -38,7 +38,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Wing(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Wing(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Wing();

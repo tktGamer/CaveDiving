@@ -41,6 +41,9 @@ private:
 
 	bool m_isNextAttack; //次の攻撃をするかどうか
 	
+	//効果音
+	std::unique_ptr<Sound> m_sound;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

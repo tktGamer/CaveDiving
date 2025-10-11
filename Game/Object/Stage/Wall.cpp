@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2025/10/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -22,10 +22,13 @@
  * @param[in] initialAngle    初期角度
  */
 Wall::Wall(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: GameObject(Tag::ObjectType::Stage,parent,initialPosition,initialAngle)
+	: GameObject(Tag::ObjectType::Wall,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_graphics{ Graphics::GetInstance() }
-	, m_sphere{ GetPosition(),32.5f} // 初期位置とサイズを設定
+	, m_sphere{ GetPosition(),60.0f} // 初期位置とサイズを設定
+	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
+
 {
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
@@ -143,6 +146,10 @@ void Wall::Draw()
 			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
 		});
 	Shader::GetInstance()->EndShader();
+
+	m_sphere.AddDisplayCollision(&m_display);
+	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
+		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
 }
 

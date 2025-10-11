@@ -23,6 +23,7 @@ PlayerThirdAttackMotion::PlayerThirdAttackMotion(Hand* pRightHand, Hand* pLeftHa
 	,m_pLeftHand{pLeftHand}
 	, m_isNextAttack{ false }
 {
+	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("turnattack.wav"));
 
 }
 
@@ -47,7 +48,7 @@ PlayerThirdAttackMotion::~PlayerThirdAttackMotion()
  */
 void PlayerThirdAttackMotion::Initialize()
 {
-
+	m_sound->Play(false);
 }
 
 

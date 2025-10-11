@@ -30,7 +30,6 @@ GemSelectScene::GemSelectScene()
 {
 	m_pResourceManager = ResourceManager::GetInstance();
 
-
 }
 
 
@@ -77,7 +76,7 @@ void GemSelectScene::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] inputDevice 入力デバイス
+ * @param[in] なし
  *
  * @return なし
  */
@@ -85,6 +84,7 @@ void GemSelectScene::Update(float elapsedTime)
 {
 	//auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 	
+	//宝石の選択が終わったらゲームシーンへ
 	if (m_gemSelectManager->IsFinishSelect())
 	{
 		ChangeScene<GameScene,LoadScene>();

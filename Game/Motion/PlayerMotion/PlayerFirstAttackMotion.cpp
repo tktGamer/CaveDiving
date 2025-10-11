@@ -24,7 +24,7 @@ PlayerFirstAttackMotion::PlayerFirstAttackMotion( Hand* pRightHand, Hand* pLeftH
 	, m_isNextAttack{ false }
 	, m_inputTime{1.0f}
 {
-
+	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("pikelswing.wav"));
 }
 
 
@@ -51,6 +51,7 @@ void PlayerFirstAttackMotion::Initialize()
 	//^‰¡‚ÉŒü‚¯‚é
 	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
 
+	m_sound->Play(false);
 }
 
 

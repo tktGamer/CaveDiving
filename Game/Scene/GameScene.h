@@ -23,9 +23,12 @@
 #include"../Common/Collision/CollisionManager.h"
 #include"../UI/Gauge/Gauge.h"
 #include"../UI/HoldGem/HoldGem.h"
+#include"../UI/Buff/BuffUIControl.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 #include"../Object/Enemy/EnemyManager.h"
+
+#include"../Object/Item/ItemManager.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 
@@ -49,6 +52,9 @@ private:
 	//衝突表示オブジェクト
 	std::unique_ptr<Ito::DisplayCollision> m_displayCollision;
 	CollisionManager* m_cM;
+
+	std::unique_ptr<Sound> m_gameBGM;
+
 	// オブジェクト関連
 	std::unique_ptr<EnemyManager> m_enemyManager; //<敵管理オブジェクト
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
@@ -57,6 +63,11 @@ private:
 
 	std::unique_ptr<Gauge> m_hpGauge;
 	std::unique_ptr<HoldGem> m_holdGem;
+	std::unique_ptr<BuffUIControl> m_buffUI;
+
+	std::unique_ptr< ItemManager> m_itemManager;
+
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -96,6 +107,6 @@ public:
 
 // 内部実装
 private:
-	//ステージ１の終了条件
-	bool IsClear();
+	//ステージのライト状況を保存
+	void SaveLight();
 };

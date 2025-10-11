@@ -26,7 +26,7 @@
 #include"../UI/HoldGem/HoldGem.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
-
+class Sound;
 
 
 
@@ -61,6 +61,9 @@ private:
 
 	std::unique_ptr<UserInterface> m_saveMessage;
 	std::unique_ptr<Menu> m_menu;
+
+	std::unique_ptr<Sound> m_decideMenuSound;
+	std::unique_ptr<Sound> m_clearSound;
 	// メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

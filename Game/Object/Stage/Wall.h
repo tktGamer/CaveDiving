@@ -44,6 +44,7 @@ private:
 
 	// 当たり判定用の形状
 	Sphere m_sphere;
+	Ito::DisplayCollision m_display;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

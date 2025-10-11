@@ -17,13 +17,15 @@ public:
 	// オブジェクトの種類
 	enum  ObjectType : int
 	{
-		None,	// なし
-		Player,	// プレイヤー
-		Weapon,  // 武器
-		Enemy,	// 敵
-		Item,	// アイテム
-		Light,
-		Stage,
+		None,		// なし
+		Player,		// プレイヤー
+		Weapon,		// 武器
+		Enemy,		// 敵
+		EnemyPart,	// 敵の部品
+		Item,		// アイテム
+		Light,      // ライト
+		Wall,	    // 壁
+		Ground,		// 床
 	};
 };
 

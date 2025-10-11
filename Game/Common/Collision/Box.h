@@ -47,6 +47,8 @@ public:
 	//当たり判定
 	bool Intersects(Shape* other) override;
 
+	bool Contains(Shape* other) override;
+
 //　取得・設定
 public:
 	//当たり判定描画クラスに追加

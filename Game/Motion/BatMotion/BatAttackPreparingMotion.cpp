@@ -11,7 +11,7 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "BatAttackPreparingMotion.h"
-
+#include"Game/Common/Sound.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,7 +24,7 @@ BatAttackPreparingMotion::BatAttackPreparingMotion(Wing* pRightWing, Wing* pLeft
 	, m_pLeftWing{pLeftWing}
 	,m_numLoop{0}
 {
-
+	m_wingSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("wing.wav"));
 }
 
 
@@ -91,6 +91,7 @@ bool BatAttackPreparingMotion::Update()
 
 	if (GetMotionLerp() >= 1.0f)
 	{
+		m_wingSound->Play(false);
 		m_numLoop++;
 
 		SetMotionLerp(0.0f);

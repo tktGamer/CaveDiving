@@ -19,14 +19,16 @@
  *
  * @param[in] golem コウモリのポインタ
  */
-GolemAttack::GolemAttack(Golem* golem)
+GolemAttack::GolemAttack(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
 	:m_golem(golem)
+	, m_pRightHand{ pRightGolemHand }
+	, m_pLeftHand{ pLeftGolemHand }
 	, m_graphics{}
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
 
-	//m_attackMotion = std::make_unique<GolemAttackMotion>(golem, pRightWing, pLeftWing);
+	m_attackMotion = std::make_unique<GolemPunchMotion>(golem, pRightGolemHand, pLeftGolemHand);
 }
 /**
  * @brief デストラクタ
@@ -56,9 +58,10 @@ void GolemAttack::Initialize()
  */
 void GolemAttack::PreUpdate()
 {
-	//m_attackMotion->Initialize();
+	DecideMotion();
+	m_attackMotion->Initialize();
 
-	m_golem->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 15.0f * Messenger::GetInstance()->GetElapsedTime(), m_golem->GetCurrentQuaternion()));
+	//m_golem->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 15.0f * Messenger::GetInstance()->GetElapsedTime(), m_golem->GetCurrentQuaternion()));
 
 }
 
@@ -74,13 +77,18 @@ void GolemAttack::Update(const float& elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 	DirectX::SimpleMath::Vector3 v = m_golem->GetVelocity();
 
+	if(m_attackMotion->Update()) 
+	{
+		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MessageID::IDLING);
+
+	}
 
 	v.y += -0.05f * elapsedTime;
 
 
 	m_golem->SetVelocity(v);
 
-	m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
+	//m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
 }
 
@@ -93,7 +101,9 @@ void GolemAttack::Update(const float& elapsedTime)
  */
 void GolemAttack::PostUpdate()
 {
-	//m_attackMotion->Reset();
+	m_attackMotion->Reset();
+	m_golem->ResetFrameCount();
+
 }
 
 /**
@@ -122,3 +132,16 @@ void GolemAttack::Finalize()
 {
 }
 
+void  GolemAttack::DecideMotion()
+{
+	switch (m_golem->GetAttackMessage())
+	{
+	case Message::AttackMesssage::ATTACKTYPE_ONE:
+		m_attackMotion = std::make_unique<GolemPunchMotion>(m_golem, m_pRightHand, m_pLeftHand);
+		break;
+	case Message::AttackMesssage::ATTACKTYPE_TWO:
+		m_attackMotion = std::make_unique<GolemSlammedDownMotion>(m_golem, m_pRightHand, m_pLeftHand);
+
+		break;
+	}
+}

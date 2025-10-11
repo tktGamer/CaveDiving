@@ -22,7 +22,7 @@
  * @param[in] initialAngle    初期角度
  */
 Ground::Ground(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: GameObject(Tag::ObjectType::Stage,parent,initialPosition,initialAngle)
+	: GameObject(Tag::ObjectType::Ground,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_graphics{ Graphics::GetInstance() }
 	, m_box{ GetPosition(),DirectX::SimpleMath::Vector3(70.01f,1.01f,70.01f)} // 初期位置とサイズを設定

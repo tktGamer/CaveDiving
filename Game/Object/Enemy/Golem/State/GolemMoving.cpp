@@ -17,7 +17,7 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] player プレイヤーのポインタ
+ * @param[in] golem ゴーレムのポインタ
  */
 GolemMoving::GolemMoving(Golem* golem)
 	: m_golem(golem)
@@ -92,27 +92,27 @@ void GolemMoving::Update(const float& elapsedTime)
 	m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
 	//一定時間経ったら待機状態へ遷移
-	if (m_golem->GetFrameCount() >= 2.0f)
+	if (m_golem->GetFrameCount() >= 1.5f)
 	{
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::IDLING);
 
 	}
 
 
-	//プレイヤーを取得
-	GameObject* pPlayer = Messenger::GetInstance()->GetObject(0);
-	//プレイヤーか確認
-	if (pPlayer && pPlayer->GetObjectType() == Tag::Player)
-	{
-		//現在位置とプレイヤーの位置の距離
-		DirectX::SimpleMath::Vector3 playerPos = pPlayer->GetCurrentPosition();
-		float distance = DirectX::SimpleMath::Vector3::Distance(playerPos, m_golem->GetCurrentPosition());
-		//範囲内なら遷移
-		if (distance < 15.0f)
-		{
-			Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::CHASING);
-		}
-	}
+	////プレイヤーを取得
+	//GameObject* pPlayer = Messenger::GetInstance()->GetObject(0);
+	////プレイヤーか確認
+	//if (pPlayer && pPlayer->GetObjectType() == Tag::Player)
+	//{
+	//	//現在位置とプレイヤーの位置の距離
+	//	DirectX::SimpleMath::Vector3 playerPos = pPlayer->GetCurrentPosition();
+	//	float distance = DirectX::SimpleMath::Vector3::Distance(playerPos, m_golem->GetCurrentPosition());
+	//	//範囲内なら遷移
+	//	if (distance < 15.0f)
+	//	{
+	//		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::CHASING);
+	//	}
+	//}
 
 
 

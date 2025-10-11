@@ -37,6 +37,7 @@ public:
 
 	// 「メニュー」を生成する
 	static std::unique_ptr<Menu> CreateMenu(
+		 DirectX::SoundEffect* cursolSound
 	);
 
 	// 「ゲージ」を生成する

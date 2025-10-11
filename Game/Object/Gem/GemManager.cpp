@@ -11,6 +11,8 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GemManager.h"
+#include<fstream>
+#include<sstream>
 
 
 // クラスの静的メンバ変数の初期化
@@ -256,7 +258,7 @@ Gem* GemManager::GetIDNumberedGem(const int& id)
  * @return true  空いている
  * @return fakse 空いていない
  */
-bool GemManager::IsBlankSlot()
+bool GemManager::IsBlankSlot() const
 {
 	//スロットを確認
 	for (int i = 0; i < 3; i++)

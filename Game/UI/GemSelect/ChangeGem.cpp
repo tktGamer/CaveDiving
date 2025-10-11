@@ -38,8 +38,7 @@ void ChangeGem::Initialize()
     //m_arrow->Create(L"arrow.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 
-    m_menu = std::make_unique<Menu>(m_windowWidth, m_windowHeight);
-    m_menu->Initialize();
+    m_menu =UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
     m_menu->Add(L"UI/changefont.png", { 500.0f,600.0f }, { 0.8f,0.8f }, UserInterface::ANCHOR::MIDDLE_CENTER);
     m_menu->Add(L"UI/returnfont.png", { 850.0f,600.0f }, { 0.8f,0.8f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 

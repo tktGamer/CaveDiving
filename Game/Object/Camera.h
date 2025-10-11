@@ -53,5 +53,6 @@ public:
 	DirectX::SimpleMath::Matrix GetView();
 
 	DirectX::SimpleMath::Vector3 GetTargetPos() const { return *m_targetPos; }
+	const DirectX::SimpleMath::Vector3& GetUP() const { return m_up; }
 };
 
