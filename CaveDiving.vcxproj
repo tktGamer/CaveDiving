@@ -194,6 +194,7 @@
     <ClInclude Include="Game\Common\SceneManager.h" />
     <ClInclude Include="Game\Common\Sound.h" />
     <ClInclude Include="Game\Fuctory\GameObjectFactory.h" />
+    <ClInclude Include="Game\Fuctory\GemFactory.h" />
     <ClInclude Include="Game\Fuctory\UIFactory.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Game\Message\Messenger.h" />
     <ClInclude Include="Game\Motion\BatMotion\BatAttackMotion.h" />
     <ClInclude Include="Game\Motion\BatMotion\BatAttackPreparingMotion.h" />
+    <ClInclude Include="Game\Motion\BatMotion\BatDamageMotion.h" />
     <ClInclude Include="Game\Motion\GolemMotion\GolemPunchMotion.h" />
     <ClInclude Include="Game\Motion\GolemMotion\GolemPunchPreparingMotion.h" />
     <ClInclude Include="Game\Motion\GolemMotion\GolemSlammedDownMotion.h" />
@@ -237,9 +239,14 @@
     <ClInclude Include="Game\Object\GameObject.h" />
     <ClInclude Include="Game\Object\Gem\Gem.h" />
     <ClInclude Include="Game\Object\Gem\GemManager.h" />
+    <ClInclude Include="Game\Object\Gem\StatusUpGem.h" />
+    <ClInclude Include="Game\Object\Gem\Unique\AllSpenningAttackGem.h" />
+    <ClInclude Include="Game\Object\Gem\Unique\HPAutoRecoveryGem.h" />
+    <ClInclude Include="Game\Object\Gem\Unique\UniquGem.h" />
     <ClInclude Include="Game\Object\Item\Item.h" />
     <ClInclude Include="Game\Object\Item\ItemManager.h" />
     <ClInclude Include="Game\Object\Light.h" />
+    <ClInclude Include="Game\Object\PartObject.h" />
     <ClInclude Include="Game\Object\Player\Hand.h" />
     <ClInclude Include="Game\Object\Player\Pikel.h" />
     <ClInclude Include="Game\Object\Player\Player.h" />
@@ -255,6 +262,10 @@
     <ClInclude Include="Game\Object\Stage\Stage.h" />
     <ClInclude Include="Game\Object\Stage\Wall.h" />
     <ClInclude Include="Game\Object\Weapon.h" />
+    <ClInclude Include="Game\Particle\ItemGet\ParticleItemGet.h" />
+    <ClInclude Include="Game\Particle\ItemGet\ParticleItemGetControl.h" />
+    <ClInclude Include="Game\Particle\MoveDust\ParticleMoveDust.h" />
+    <ClInclude Include="Game\Particle\MoveDust\ParticleMoveDustControl.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\Particle\ParticleControl.h" />
     <ClInclude Include="Game\Particle\ParticleManager.h" />
@@ -272,6 +283,7 @@
     <ClInclude Include="Game\Transitor\Transitor.h" />
     <ClInclude Include="Game\UI\Buff\Buff.h" />
     <ClInclude Include="Game\UI\Buff\BuffUIControl.h" />
+    <ClInclude Include="Game\UI\ClearConditions\ClearConditions.h" />
     <ClInclude Include="Game\UI\Gauge\Gauge.h" />
     <ClInclude Include="Game\UI\GemSelectUIManager.h" />
     <ClInclude Include="Game\UI\GemSelect\ChangeConfirm.h" />
@@ -280,10 +292,13 @@
     <ClInclude Include="Game\UI\HoldGem\HoldGem.h" />
     <ClInclude Include="Game\UI\HoldGem\HoldGemInfoDraw.h" />
     <ClInclude Include="Game\UI\Menu\Menu.h" />
+    <ClInclude Include="Game\UI\Number.h" />
+    <ClInclude Include="Game\UI\NumberControl.h" />
     <ClInclude Include="Game\UI\Result\SaveConfirm.h" />
     <ClInclude Include="Game\UI\UserInterface.h" />
     <ClInclude Include="Game\UserResources.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="TKTLib\ModelParams.h" />
     <ClInclude Include="TKTLib\TKTLib.h" />
@@ -303,11 +318,13 @@
     <ClCompile Include="Game\Common\ResourceManager.cpp" />
     <ClCompile Include="Game\Common\Sound.cpp" />
     <ClCompile Include="Game\Fuctory\GameObjectFactory.cpp" />
+    <ClCompile Include="Game\Fuctory\GemFactory.cpp" />
     <ClCompile Include="Game\Fuctory\UIFactory.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\Message\Messenger.cpp" />
     <ClCompile Include="Game\Motion\BatMotion\BatAttackMotion.cpp" />
     <ClCompile Include="Game\Motion\BatMotion\BatAttackPreparingMotion.cpp" />
+    <ClCompile Include="Game\Motion\BatMotion\BatDamageMotion.cpp" />
     <ClCompile Include="Game\Motion\GolemMotion\GolemPunchMotion.cpp" />
     <ClCompile Include="Game\Motion\GolemMotion\GolemPunchPreparingMotion.cpp" />
     <ClCompile Include="Game\Motion\GolemMotion\GolemSlammedDownMotion.cpp" />
@@ -341,9 +358,14 @@
     <ClCompile Include="Game\Object\GameObject.cpp" />
     <ClCompile Include="Game\Object\Gem\Gem.cpp" />
     <ClCompile Include="Game\Object\Gem\GemManager.cpp" />
+    <ClCompile Include="Game\Object\Gem\StatusUpGem.cpp" />
+    <ClCompile Include="Game\Object\Gem\Unique\AllSpenningAttackGem.cpp" />
+    <ClCompile Include="Game\Object\Gem\Unique\HPAutoRecoveryGem.cpp" />
+    <ClCompile Include="Game\Object\Gem\Unique\UniquGem.cpp" />
     <ClCompile Include="Game\Object\Item\Item.cpp" />
     <ClCompile Include="Game\Object\Item\ItemManager.cpp" />
     <ClCompile Include="Game\Object\Light.cpp" />
+    <ClCompile Include="Game\Object\PartObject.cpp" />
     <ClCompile Include="Game\Object\Player\Hand.cpp" />
     <ClCompile Include="Game\Object\Player\Pikel.cpp" />
     <ClCompile Include="Game\Object\Player\Player.cpp" />
@@ -359,6 +381,10 @@
     <ClCompile Include="Game\Object\Stage\Stage.cpp" />
     <ClCompile Include="Game\Object\Stage\Wall.cpp" />
     <ClCompile Include="Game\Object\Weapon.cpp" />
+    <ClCompile Include="Game\Particle\ItemGet\ParticleItemGet.cpp" />
+    <ClCompile Include="Game\Particle\ItemGet\ParticleItemGetControl.cpp" />
+    <ClCompile Include="Game\Particle\MoveDust\ParticleMoveDust.cpp" />
+    <ClCompile Include="Game\Particle\MoveDust\ParticleMoveDustControl.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\Particle\ParticleControl.cpp" />
     <ClCompile Include="Game\Particle\ParticleManager.cpp" />
@@ -375,6 +401,7 @@
     <ClCompile Include="Game\Transitor\Transitor.cpp" />
     <ClCompile Include="Game\UI\Buff\Buff.cpp" />
     <ClCompile Include="Game\UI\Buff\BuffUIControl.cpp" />
+    <ClCompile Include="Game\UI\ClearConditions\ClearConditions.cpp" />
     <ClCompile Include="Game\UI\Gauge\Gauge.cpp" />
     <ClCompile Include="Game\UI\GemSelectUIManager.cpp" />
     <ClCompile Include="Game\UI\GemSelect\ChangeConfirm.cpp" />
@@ -383,6 +410,8 @@
     <ClCompile Include="Game\UI\HoldGem\HoldGem.cpp" />
     <ClCompile Include="Game\UI\HoldGem\HoldGemInfoDraw.cpp" />
     <ClCompile Include="Game\UI\Menu\Menu.cpp" />
+    <ClCompile Include="Game\UI\Number.cpp" />
+    <ClCompile Include="Game\UI\NumberControl.cpp" />
     <ClCompile Include="Game\UI\Result\SaveConfirm.cpp" />
     <ClCompile Include="Game\UI\UserInterface.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -392,6 +421,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RenderTexture.cpp" />
     <ClCompile Include="TKTLib\ModelParams.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -409,6 +439,8 @@
     <None Include="Resources\Shaders\FadeShader\Fade.hlsli" />
     <None Include="Resources\Shaders\LumiRockShader\LumiRockShader.hlsli" />
     <None Include="Resources\Shaders\ModelShader\ModelShader.hlsli" />
+    <None Include="Resources\Shaders\NumberShader\Number.hlsli" />
+    <None Include="Resources\Shaders\OutLineShader\OutLineShader.hlsli" />
     <None Include="Resources\Shaders\ParticleShader\Particle.hlsli" />
     <None Include="Resources\Shaders\UIShader\UI.hlsli" />
   </ItemGroup>
@@ -467,6 +499,16 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\ModelShader\ModelHS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Hull</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\ModelShader\ModelPS.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ModelShader\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ModelShader\%(Filename).cso</ObjectFileOutput>
@@ -478,6 +520,46 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ModelShader\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ModelShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\NumberGS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\NumberShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\NumberShader\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\NumberPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\NumberShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\NumberShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\NumberVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\NumberShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\NumberShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\OutLineShader\OutlineGS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\OutLineShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\OutLineShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\OutLineShader\OutlinePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\OutLineShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\OutLineShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\OutLineShader\OutlineVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\OutLineShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\OutLineShader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\ParticleShader\ParticleGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>

@@ -32,12 +32,18 @@ class Bat :public Character
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	static constexpr DirectX::SimpleMath::Vector3 LEFTWING_INIT_POS  = { -0.5f,0.0f,0.0f };
+	static constexpr DirectX::SimpleMath::Vector3 RIGHTWING_INIT_POS = {  0.5f,0.0f,0.0f };
+	static constexpr float RIGHT_WING_INIT_DEGREE = 180.0f;
+
 	//	データ受け渡し用コンスタントバッファ(送信側)
 	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Matrix		matWorld;
 		DirectX::SimpleMath::Matrix		matView;
 		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Vector4 color;
+
 	};
 
 
@@ -60,7 +66,7 @@ private:
 	std::unique_ptr<IState> m_attackState; // 攻撃状態
 	std::unique_ptr<IState> m_chasingState; //追跡状態
 	std::unique_ptr<IState> m_attackPreaparing; //攻撃準備状態
-	std::unique_ptr<IState> m_damagedState;
+	std::unique_ptr<IState> m_damagedState;//ダメージ状態
 	//羽
 	std::unique_ptr<Wing> m_rightWing; //右翼
 	std::unique_ptr<Wing> m_leftWing;//左翼
@@ -79,14 +85,15 @@ public:
 	// デストラクタ
 	~Bat();
 
-
+	//初期化
 	void Initialize();
-
+	//更新
 	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-
+	//描画
 	void Draw() override;
 
+	//終了
 	void Finalize();
 
 	// メッセージを取得する
@@ -107,7 +114,7 @@ public:
 
 	DirectX::SimpleMath::Vector3 GetVelocity();
 	void SetVelocity(DirectX::SimpleMath::Vector3 v);
-	//　内部操作
+//　内部操作
 private:
 
 };

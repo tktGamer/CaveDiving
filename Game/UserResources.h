@@ -51,6 +51,13 @@ public:
 	void SetIsGameClear(const bool& isGameClear) 
 	{
 		m_isGameClear = isGameClear;
+
+		//ƒ‰ƒCƒg‚ğ‚·‚×‚ÄÁ‚·
+		
+		for (int i = 0; i < 10; i++)
+		{
+			m_isOnLights[i] = false;
+		}
 	}
 
 	void SetNextStage(const Stage& nextStage) 

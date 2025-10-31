@@ -17,6 +17,15 @@
 #include"Game/UI/GemSelectUIManager.h"
 #include"../HoldGem/HoldGem.h"
 #include"Game/Fuctory/UIFactory.h"
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] width
+ * @param[in] height
+ * @param[in] pReplacementGem
+ * @param[in] pUIManager
+ */
 ChangeGem::ChangeGem(int width, int height, Gem* pReplacementGem, GemSelectUIManager* pUIManager)
     :  m_windowHeight(height)
     , m_windowWidth(width)

@@ -13,6 +13,12 @@
 #include "Buff.h"
 #include"Game/Message/Messenger.h"
 
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] time
+ */
 Buff::Buff(const float& time)
     :m_windowHeight{0}
     ,m_windowWidth{0}
@@ -49,7 +55,7 @@ void Buff::Update()
 
 void Buff::Render()
 {
-    m_frame->Draw();
+    //m_frame->Draw();
     m_upType->Draw();
 }
 

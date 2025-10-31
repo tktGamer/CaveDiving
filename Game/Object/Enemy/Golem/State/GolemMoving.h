@@ -45,9 +45,5 @@ public:
 private:
 	// プレイヤー
 	Golem* m_golem;
-	// グラフィックス
-	Graphics* m_graphics;
-	// ワールドマトリックス
-	DirectX::SimpleMath::Matrix m_worldMatrix;
 };
 #endif		// BAT_IDLING_DEFINED

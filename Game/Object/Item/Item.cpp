@@ -175,6 +175,7 @@ void Item::CollisionResponce(GameObject* other)
 	case Tag::ObjectType::Player: 
 	{
 		m_isGet = true;
+		SetItemGetObjectPos(other->GetCurrentPosition());
 	}
 	default:
 		break;
@@ -214,6 +215,16 @@ float Item::GetTime() const
 bool Item::IsGet() const
 {
 	return m_isGet;
+}
+
+void Item::SetItemGetObjectPos(const DirectX::SimpleMath::Vector3& pos)
+{
+	m_gotObjectPos = &pos;
+}
+
+const DirectX::SimpleMath::Vector3& Item::GetItemGetObjectPos()
+{
+	return *m_gotObjectPos;
 }
 
 const DirectX::SimpleMath::Vector4& Item::GetColor()

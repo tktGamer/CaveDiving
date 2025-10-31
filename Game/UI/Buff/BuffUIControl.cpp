@@ -16,6 +16,13 @@
 #include"Game/UI/GemSelectUIManager.h"
 #include"Game/Common/Sound.h"
 #include"Game/Fuctory/UIFactory.h"
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] width
+ * @param[in] height
+ */
 BuffUIControl::BuffUIControl(int width, int height)
     : m_windowHeight{height}
     , m_windowWidth{ width }
@@ -61,7 +68,7 @@ void BuffUIControl::Update()
             (*it)->SetPosition(buffPos);
         }
 
-        m_nowBuff = m_buffUIs.size();
+        m_nowBuff =static_cast<int>( m_buffUIs.size());
     }
 }
 
@@ -77,7 +84,21 @@ void BuffUIControl::Render()
 void BuffUIControl::AddUI(const Item::UpStatus& upStatus, const float& buffTime)
 {
     m_buffUIs.emplace_back(std::make_unique<Buff>(buffTime));
-    m_buffUIs.back()->Initialize(L"UI/attackup001A-01.png", m_windowWidth, m_windowHeight);
+
+    const wchar_t* texturePath{};
+
+    switch (upStatus)
+    {
+    case Item::UpStatus::Attack:
+        texturePath = L"UI/attackup001A-01.png";
+        break;
+    case Item::UpStatus::Diffece:
+        texturePath = L"UI/defense-up01-1-64x64.png";
+        break;
+    default:
+        break;
+    }
+    m_buffUIs.back()->Initialize(texturePath, m_windowWidth, m_windowHeight);
 
     DirectX::SimpleMath::Vector2 buffPos = FIRST_BUFF_UI_POS;
     int row = m_nowBuff % ROW_NUM;

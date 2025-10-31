@@ -16,12 +16,14 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] pBat コウモリのポインタ
+ * @param[in] pBat		 コウモリのポインタ
+ * @param[in] pRightWing コウモリの右羽ポインタ
+ * @param[in] pLeftWing コウモリの左羽ポインタ
  */
 BatAttackMotion::BatAttackMotion(Bat* pBat, Wing* pRightWing, Wing* pLeftWing)
 	: m_pBat{pBat}
-	,m_pRightWing{pRightWing}
-	,m_pLeftWing{pLeftWing}
+	, m_pRightWing{pRightWing}
+	, m_pLeftWing{pLeftWing}
 {
 
 }
@@ -51,6 +53,9 @@ void BatAttackMotion::Initialize()
 	m_pBat->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(-20.0f)));
 	m_pRightWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-15.0f)));
 	m_pLeftWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(15.0f)));
+
+	m_pBat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 15.0f * Messenger::GetInstance()->GetElapsedTime(), m_pBat->GetCurrentQuaternion()));
+
 }
 
 

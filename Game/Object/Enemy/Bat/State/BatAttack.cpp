@@ -28,7 +28,7 @@ BatAttack::BatAttack(Bat* bat, Wing* pRightWing, Wing* pLeftWing)
 
 	m_attackMotion = std::make_unique<BatAttackMotion>(bat,pRightWing,pLeftWing);
 
-	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("batattack.wav"));
+	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("batattack.wav"),true);
 }
 /**
  * @brief デストラクタ
@@ -58,10 +58,10 @@ void BatAttack::Initialize()
  */
 void BatAttack::PreUpdate()
 {
+	m_attackSound->SetVolume(1.0f);
 	m_attackSound->Play(false);
 	m_attackMotion->Initialize();
 
-	m_bat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT*15.0f * Messenger::GetInstance()->GetElapsedTime(), m_bat->GetCurrentQuaternion()));
 
 }
 
@@ -84,6 +84,12 @@ void BatAttack::Update(const float& elapsedTime)
 	m_bat->SetVelocity(v);
 
 	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
+
+
+	DirectX::AudioEmitter emitter{};
+	emitter.SetPosition(m_bat->GetCurrentPosition());
+	emitter.SetOrientationFromQuaternion(m_bat->GetCurrentQuaternion());
+	m_attackSound->Update(emitter);
 
 }
 

@@ -24,11 +24,21 @@
  * @param[in] texturePath テクスチャハンドル
  */
 ParticlePowerUpControl::ParticlePowerUpControl(const std::string& texturePath)
-	: m_timerAndPos{}
+	:ParticleControl{texturePath}
+	,m_timerAndPos{}
 {
 	m_texture = ResourceManager::GetInstance()->RequestTexture(texturePath);
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
+
+	//	シェーダーにデータを渡すためのコンスタントバッファ生成
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(CameraBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.CPUAccessFlags = 0;
+	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_CBuffer);
 
 }
 
@@ -122,7 +132,7 @@ void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target, 
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 
 	//	ビルボード設定時にもらったカメラ情報から、視線ベクトルを計算する
-	DirectX::SimpleMath::Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
+	DirectX::SimpleMath::Vector3 cameraDir = target - cameraPos;
 	//	視線ベクトルは正規化しておく
 	cameraDir.Normalize();
 
@@ -132,7 +142,7 @@ void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target, 
 		[&](ParticlePowerUp lhs, ParticlePowerUp  rhs)
 		{
 			//	カメラ正面の距離でソート
-			return cameraDir.Dot(lhs.GetPosition() - m_cameraPosition) > cameraDir.Dot(rhs.GetPosition() - m_cameraPosition);
+			return cameraDir.Dot(lhs.GetPosition() - cameraPos) > cameraDir.Dot(rhs.GetPosition() - cameraPos);
 		});
 
 	//	表示に使う頂点リストに登録されているデータを全削除
@@ -140,7 +150,7 @@ void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target, 
 	//	パーティクル情報から、表示に使う頂点リストを生成する
 	for (ParticlePowerUp& li : m_particlePowerUp)
 	{
-		if (cameraDir.Dot(li.GetPosition() - m_cameraPosition) < 0.0f) {
+		if (cameraDir.Dot(li.GetPosition() - cameraPos) < 0.0f) {
 			//	内積の結果がマイナスの場合はカメラの後ろなので表示する必要なし
 			continue;
 		}
@@ -171,13 +181,19 @@ void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target, 
 	//	プロジェクション設定
 	cbuff.matProj = proj.Transpose();
 	//	ワールド設定
-	m_world = m_world.Identity * m_billboard;
-	cbuff.matWorld = m_world.Transpose();
+	cbuff.matWorld = DirectX::SimpleMath::Matrix::Identity.Transpose();
 	cbuff.Diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::ShaderType::Particle), 0, NULL, &cbuff, 0, 0);
 
+	CameraBuffer cameraBuff;
+	cameraBuff.cameraPos = cameraPos;
+	cameraBuff.cameraUp = cameraUp;
+
+	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cameraBuff, 0, 0); // b1 に渡す
+	ID3D11Buffer* lb[1] = { m_CBuffer.Get() };
+	context->GSSetConstantBuffers(1, 1, lb);
 
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { states->LinearWrap() };

@@ -131,6 +131,24 @@
     <Filter Include="Game\UI\Buff">
       <UniqueIdentifier>{9fc0829b-ec33-498a-a99f-6ccabe491f03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\OutLineShader">
+      <UniqueIdentifier>{ddcbcd56-b783-4563-ad94-a4ab10f99a42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Gem\Unique">
+      <UniqueIdentifier>{79d6c1ad-1505-4d50-a4ca-f6f879229834}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Particle\MoveDust">
+      <UniqueIdentifier>{c38ca989-98dd-4f5b-b972-069828149141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Particle\ItemGet">
+      <UniqueIdentifier>{ad52a4d4-425b-49c7-bdea-edbf0a49822e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\ClearConditions">
+      <UniqueIdentifier>{cad9674d-c5ab-4121-a30f-a45c09dd42b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\NumberShader">
+      <UniqueIdentifier>{9b3c4de2-0e99-4e36-9f98-afb171a9f238}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -444,14 +462,59 @@
     <ClInclude Include="Game\Particle\PowerUp\ParticlePowerUp.h">
       <Filter>Game\Particle\PowerUp</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Particle\PowerUp\ParticlePowerUpControl.h">
-      <Filter>Game\Particle\PowerUp</Filter>
-    </ClInclude>
     <ClInclude Include="Game\UI\Buff\Buff.h">
       <Filter>Game\UI\Buff</Filter>
     </ClInclude>
     <ClInclude Include="Game\UI\Buff\BuffUIControl.h">
       <Filter>Game\UI\Buff</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\Unique\HPAutoRecoveryGem.h">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTexture.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\PowerUp\ParticlePowerUpControl.h">
+      <Filter>Game\Particle\PowerUp</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\PartObject.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\MoveDust\ParticleMoveDust.h">
+      <Filter>Game\Particle\MoveDust</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\MoveDust\ParticleMoveDustControl.h">
+      <Filter>Game\Particle\MoveDust</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\ItemGet\ParticleItemGet.h">
+      <Filter>Game\Particle\ItemGet</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\ItemGet\ParticleItemGetControl.h">
+      <Filter>Game\Particle\ItemGet</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\Unique\UniquGem.h">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Fuctory\GemFactory.h">
+      <Filter>Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\StatusUpGem.h">
+      <Filter>Game\Object\Gem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\Unique\AllSpenningAttackGem.h">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\BatMotion\BatDamageMotion.h">
+      <Filter>Game\Motion\BatMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\ClearConditions\ClearConditions.h">
+      <Filter>Game\UI\ClearConditions</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Number.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\NumberControl.h">
+      <Filter>Game\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -739,14 +802,59 @@
     <ClCompile Include="Game\Particle\PowerUp\ParticlePowerUp.cpp">
       <Filter>Game\Particle\PowerUp</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Particle\PowerUp\ParticlePowerUpControl.cpp">
-      <Filter>Game\Particle\PowerUp</Filter>
-    </ClCompile>
     <ClCompile Include="Game\UI\Buff\Buff.cpp">
       <Filter>Game\UI\Buff</Filter>
     </ClCompile>
     <ClCompile Include="Game\UI\Buff\BuffUIControl.cpp">
       <Filter>Game\UI\Buff</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\Unique\HPAutoRecoveryGem.cpp">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTexture.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\PowerUp\ParticlePowerUpControl.cpp">
+      <Filter>Game\Particle\PowerUp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\PartObject.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\MoveDust\ParticleMoveDust.cpp">
+      <Filter>Game\Particle\MoveDust</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\MoveDust\ParticleMoveDustControl.cpp">
+      <Filter>Game\Particle\MoveDust</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\ItemGet\ParticleItemGet.cpp">
+      <Filter>Game\Particle\ItemGet</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\ItemGet\ParticleItemGetControl.cpp">
+      <Filter>Game\Particle\ItemGet</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\Unique\UniquGem.cpp">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Fuctory\GemFactory.cpp">
+      <Filter>Game\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\StatusUpGem.cpp">
+      <Filter>Game\Object\Gem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\Unique\AllSpenningAttackGem.cpp">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\BatMotion\BatDamageMotion.cpp">
+      <Filter>Game\Motion\BatMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\ClearConditions\ClearConditions.cpp">
+      <Filter>Game\UI\ClearConditions</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Number.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\NumberControl.cpp">
+      <Filter>Game\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -779,6 +887,12 @@
     </None>
     <None Include="Resources\Shaders\LumiRockShader\LumiRockShader.hlsli">
       <Filter>Resources\Shaders\lumiRockShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\OutLineShader\OutLineShader.hlsli">
+      <Filter>Resources\Shaders\OutLineShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\NumberShader\Number.hlsli">
+      <Filter>Resources\Shaders\NumberShader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -829,6 +943,27 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\LumiRockShader\LumiRockVS.hlsl">
       <Filter>Resources\Shaders\lumiRockShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\OutLineShader\OutlineGS.hlsl">
+      <Filter>Resources\Shaders\OutLineShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\OutLineShader\OutlinePS.hlsl">
+      <Filter>Resources\Shaders\OutLineShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\OutLineShader\OutlineVS.hlsl">
+      <Filter>Resources\Shaders\OutLineShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ModelShader\ModelHS.hlsl">
+      <Filter>Resources\Shaders\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\NumberGS.hlsl">
+      <Filter>Resources\Shaders\NumberShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\NumberPS.hlsl">
+      <Filter>Resources\Shaders\NumberShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\NumberVS.hlsl">
+      <Filter>Resources\Shaders\NumberShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

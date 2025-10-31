@@ -1,8 +1,8 @@
-ID,宝石の種類,強化項目,効果,効果説明,パネル画像ファイルパス
-1,エメラルド,体力,10,体力を10増加する,emeraldpanel.png
-2,ルビー,攻撃力,10,攻撃力を10増加する,rubypanel.png
-3,サファイア,防御力,10,防御力を10増加する,sapphirepanel.png
-4,エメラルド,体力,10,体力を10増加する,emeraldpanel.png
-5,ルビー,攻撃力,10,攻撃力を10増加する,rubypanel.png
-6,サファイア,防御力,10,防御力を10増加する,sapphirepanel.png
-,,,,,
+ID,宝石の種類,強化項目,効果量,効果間隔,効果説明,クラス名（拡張子なし）,パネル画像ファイルパス
+1,エメラルド,体力,10,,体力を10増加する,StatusUpGem,Gem/emeraldpanel.png
+2,ルビー,攻撃力,10,,攻撃力を10増加する,StatusUpGem,Gem/rubypanel.png
+3,サファイア,防御力,10,,防御力を10増加する,StatusUpGem,Gem/sapphirepanel.png
+4,エメラルド,体力,10,,体力を10増加する,StatusUpGem,Gem/emeraldpanel.png
+5,トパーズ,特殊,,,攻撃をすべて回転攻撃にする,AllSpenningAttackGem,Gem/topazpanel.png
+6,アメジスト,特殊,10,5,HPを5秒ごとに10回復する,HPAutoRecoveryGem,Gem/sapphirepanel.png
+7,ダイヤ,特殊,10,,特殊を10増加する,StatusUpGem,Gem/frame.png

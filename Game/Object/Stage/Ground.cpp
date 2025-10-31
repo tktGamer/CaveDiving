@@ -101,7 +101,7 @@ void Ground::Draw()
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale()).Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-
+	cbuff.color.x = 0.0f;
 
 	//world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
 	//GetModel()->Draw(context, *states, world, view, proj);

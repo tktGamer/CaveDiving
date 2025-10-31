@@ -24,7 +24,7 @@ GolemSlammedDownMotion::GolemSlammedDownMotion(Golem* pGolem, GolemHand* pRightG
 	, m_pLeftGolemHand{ pLeftGolemHand }
 	,m_coolTime{0.0f}
 {
-	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("golemslam.wav"));
+	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("golemslamM.wav"),true);
 
 }
 
@@ -99,7 +99,11 @@ bool GolemSlammedDownMotion::Update()
 		}
 	}
 
+	DirectX::AudioEmitter emitter{};
+	emitter.SetPosition(m_pGolem->GetCurrentPosition());
 
+
+	m_attackSound->Update(emitter);
 
 	return false;
 

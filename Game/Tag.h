@@ -18,6 +18,7 @@ public:
 	enum  ObjectType : int
 	{
 		None,		// なし
+		ObjectPart, //オブジェクトを構成する部品
 		Player,		// プレイヤー
 		Weapon,		// 武器
 		Enemy,		// 敵

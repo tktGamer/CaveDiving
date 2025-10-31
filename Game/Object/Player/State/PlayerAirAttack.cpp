@@ -20,12 +20,8 @@
  */
 PlayerAirAttack::PlayerAirAttack(Player* player, Hand* pRightHand, Hand* pLeftHand)
 	:m_player(player)
-	,m_graphics{}
 	,m_isNextAttack{false}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
-
 	m_airAttack = std::make_unique<PlayerSlamAttackMotion>(player,pRightHand,pLeftHand);
 }
 /**
@@ -77,7 +73,7 @@ void PlayerAirAttack::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
-	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
+	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
 
 	//モーションの更新
 	if (m_airAttack->Update())

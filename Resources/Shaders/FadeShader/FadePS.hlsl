@@ -23,8 +23,8 @@ float4 main(PS_INPUT input) : SV_TARGET
     float alphaA = step(getDistance, circleLength); // モード0
     float alphaB = step(circleLength, getDistance); // モード1
 
-    // modeが0.0ならalphaA、1.0ならalphaBになる
-    float alpha = lerp(alphaA, alphaB, mode);
+    // modeが0.0ならalphaB、1.0ならalphaAになる
+    float alpha = lerp(alphaB, alphaA, mode);
 
     outputb = lerp(outputb, float4(outputb.rgb, 0), alpha);
 

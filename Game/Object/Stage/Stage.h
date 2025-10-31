@@ -43,7 +43,6 @@ private:
 
 
 	//ŠO•Ç
-	TKTLib::ModelParams m_cave;
 	std::unique_ptr<Wall> m_wall;
 	//’n–Ê
 	std::unique_ptr<Ground> m_ground;

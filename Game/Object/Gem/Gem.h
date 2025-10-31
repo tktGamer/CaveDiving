@@ -10,6 +10,7 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
+#include <string>
 
 // ヘッダファイルの読み込み ===================================================
 
@@ -33,11 +34,11 @@ public:
 
 	struct GemAbility
 	{
-		int ID; //データ番号
-		Type m_type; // 宝石の種類
-		int m_value; // 宝石の効果値
-		std::string m_discription; // 宝石の効果説明
-
+		int id; //データ番号
+		std::string type; // 宝石の種類
+		Type powerUp; // 宝石の強化項目
+		int value; // 宝石の効果値
+		int interval; //効果適用間隔
 	};
 
 	//文字画像
@@ -58,19 +59,19 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Gem();
 	// 宝石の種類と効果値を指定して初期化
-	Gem(int id, Type type,int value,std::string discription);
+	Gem(int id,std::string type, Type powerUp,int value);
 	Gem(GemAbility ability,GemImagePath image);
 
 	// デストラクタ
-	~Gem();
+	virtual ~Gem();
 
 
 //操作
 public:
 	void Initialize();
 
+	virtual void ApplyEffect();
 
 	void Finalize();
 //取得・設定

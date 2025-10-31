@@ -51,9 +51,9 @@ ParticlePowerUp::ParticlePowerUp(
 	m_afterColor = endColor;
 	m_afterColor.w = 0.0f;
 }
-/// <summary>
-/// デストラクタ
-/// </summary>
+/**
+ * @brief デストラクタ
+ */
 ParticlePowerUp::~ParticlePowerUp()
 {
 }
@@ -113,5 +113,4 @@ bool ParticlePowerUp::Update()
 
 	return true;
 }
-
 

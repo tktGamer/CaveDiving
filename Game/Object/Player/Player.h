@@ -44,8 +44,18 @@ public:
 		DirectX::SimpleMath::Matrix		matWorld;
 		DirectX::SimpleMath::Matrix		matView;
 		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Vector4 color;
 	};
 
+	//データ受け渡し用コンスタントバッファ(送信側)
+	struct OutlineConstBuffer
+	{
+		DirectX::SimpleMath::Matrix		matWorld;
+		DirectX::SimpleMath::Matrix		matView;
+		DirectX::SimpleMath::Matrix		matProj;
+		float outlineThickness;
+		DirectX::SimpleMath::Vector3 dummy;
+	};
 
 	struct  ItemInfo
 	{
@@ -87,6 +97,7 @@ private:
 
 	//ジャンプできる残り回数
 	int m_remainingJumpCount;
+
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
 

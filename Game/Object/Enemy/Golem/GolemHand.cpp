@@ -24,7 +24,7 @@ GolemHand::GolemHand(Character* root, GameObject* parent, const DirectX::SimpleM
 	, EnemyPart(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
 	,m_sphere{initialPosition,2.5f}
-	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+	,m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 
 {
@@ -117,7 +117,7 @@ void GolemHand::Draw()
 	cbuff.matWorld = world.Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-
+	cbuff.color.x = GetRootCharacter()->GetDamageFlash();
 
 	//GetModel()->Draw(context, *states, world, view, proj);
 

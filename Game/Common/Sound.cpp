@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "Sound.h"
 
+GameObject* Sound::m_pListenerObject = nullptr;
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -9,10 +10,11 @@
  *
  * @param[in] pSoundEffect　音データ
  */
-Sound::Sound(DirectX::SoundEffect* pSoundEffect)
+Sound::Sound(DirectX::SoundEffect* pSoundEffect, bool is3DAudio)
 	: m_soundSource{}
 	, m_pSoundEffect{ pSoundEffect }
 	, m_volume{ 1.0f }
+	,m_is3DAudio{is3DAudio}
 {
 }
 /**
@@ -36,9 +38,18 @@ void Sound::Play(bool isLoop)
 		return;
 	}
 	ChangeVolume();
+
+	if(m_is3DAudio)
+	{
+		DirectX::AudioListener listener;
+		listener.SetPosition(m_pListenerObject->GetCurrentPosition());
+		//listener.SetOrientationFromQuaternion(m_pListenerObject->GetCurrentQuaternion());
+		DirectX::AudioEmitter emitter{};
+		emitter.SetPosition(m_pListenerObject->GetCurrentPosition());
+		
+		m_soundSource->Apply3D(listener, emitter);
+	}
 	m_soundSource->Play(isLoop);
-	
-	
 }
 
 
@@ -54,7 +65,7 @@ void Sound::OncePlay(bool isLoop)
 	//未再生の場合
 	if (m_soundSource == nullptr)
 	{
-		m_soundSource->
+		
 
 		//普通に再生
 		Play(isLoop);
@@ -70,6 +81,37 @@ void Sound::OncePlay(bool isLoop)
 	Play(isLoop);
 }
 
+
+/**
+ * @brief リスナー・エミッターの更新
+ *
+ * @param[in] listener
+ * @param[in] emitter
+ *
+ * @return なし
+ */
+void Sound::Update(const DirectX::AudioListener& listener,const DirectX::AudioEmitter& emitter)
+{
+	m_listener = listener;
+	m_emitter = emitter;
+	
+	m_soundSource->Apply3D(listener, emitter);
+}
+
+void Sound::Update(const DirectX::AudioEmitter& emitter)
+{
+	if(m_soundSource == nullptr)
+	{
+		return;
+	}
+
+	DirectX::AudioListener listener;
+	listener.SetPosition(m_pListenerObject->GetCurrentPosition());
+	listener.SetOrientationFromQuaternion(m_pListenerObject->GetCurrentQuaternion());
+
+	m_soundSource->Apply3D(listener, emitter);
+}
+
 /**
  * @brief 停止
  * 
@@ -81,6 +123,17 @@ void Sound::Stop()
 {
 	CreateInstance();
 	m_soundSource->Stop();
+}
+
+void Sound::SetListenerObject(GameObject* pListenerObject)
+{
+	Sound::m_pListenerObject = pListenerObject;
+}
+
+
+GameObject* Sound::GetListenerObject() const
+{
+	return m_pListenerObject;
 }
 
 /**
@@ -103,8 +156,16 @@ void Sound::SetVolume(float volume)
 	m_volume = volume;
 }
 
-const DirectX::SoundState& Sound::GetSoundState()
+
+/**
+ * @brief 再生状態の取得
+ *
+ * @param[in] なし
+ *
+ * @return 再生状態
+ */const DirectX::SoundState& Sound::GetSoundState()
 {
+
 	return m_soundSource->GetState();
 }
 
@@ -121,7 +182,14 @@ bool Sound::CreateInstance()
 	{
 		return false;
 	}
-	m_soundSource = m_pSoundEffect->CreateInstance();
+	if (m_is3DAudio) 
+	{
+		m_soundSource = m_pSoundEffect->CreateInstance(DirectX::SoundEffectInstance_Use3D);
+	}
+	else
+	{
+		m_soundSource = m_pSoundEffect->CreateInstance();
+	}
 	
 	return true;
 }

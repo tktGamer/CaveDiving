@@ -81,10 +81,10 @@ bool Sphere::Contains(Shape* other)
 	switch (other->GetShapeType())
 	{
 	case ShapeType::Box:
-		return IntersectBox(static_cast<Box*>(other));
+		return ContainsBox(static_cast<Box*>(other));
 		break;
 	case ShapeType::Sphere:
-		return IntersectSphere(static_cast<Sphere*>(other));
+		return ContainsSphere(static_cast<Sphere*>(other));
 		break;
 	default:
 		break;

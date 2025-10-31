@@ -16,7 +16,7 @@ void main(
 		
 		//	頂点シェーダが出力した座標に、増殖させるポリゴンのi番目の座標を計算する
         element.Posw = mul(input[i].Pos, matWorld);
-
+		
 		//	上記の結果に、ビュー行列を掛け算する
         element.Pos = mul(element.Posw, matView);
 		//	上記の結果に、プロジェクション行列を掛け算する

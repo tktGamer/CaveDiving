@@ -21,10 +21,10 @@
  */
 BatDamaged::BatDamaged(Bat* bat)
 	:m_bat(bat)
-	,m_graphics{}
+	,m_damageMotion{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
+	m_damageMotion = std::make_unique<BatDamageMotion>(m_bat);
+
 }
 /**
  * @brief デストラクタ
@@ -43,6 +43,7 @@ BatDamaged::~BatDamaged()
 void BatDamaged::Initialize()
 {
 	PreUpdate();
+
 }
 
 /**
@@ -54,7 +55,10 @@ void BatDamaged::Initialize()
  */
 void BatDamaged::PreUpdate()
 {
+	m_damageMotion->Initialize();
+
 	m_bat->SetVelocity(m_bat->GetDamageDirection());
+	m_bat->SetDamageFlash();
 }
 
 /**
@@ -67,6 +71,8 @@ void BatDamaged::PreUpdate()
 void BatDamaged::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
+
+	m_damageMotion->Update();
 
 	DirectX::SimpleMath::Vector3 velocity= m_bat->GetVelocity();
 	//重力
@@ -108,6 +114,8 @@ void BatDamaged::PostUpdate()
 	m_bat->ResetFrameCount();
 
 	m_bat->SetInvincible(false);
+
+	m_damageMotion->Reset();
 }
 
 /**

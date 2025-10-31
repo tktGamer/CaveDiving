@@ -84,7 +84,7 @@ void DamageSystem::DamageToCharacter(Character* attacker, Character* defender)
  */
 int DamageSystem::DamageCalculation(const int attackPower, const int diffence)
 {
-
+	///—v‰ü—Ç///
 	int damage = attackPower / 2 - diffence/ 4 ;
 
 	//‚O‚æ‚è‘å‚«‚¢‚È‚çdamage‚ð•Ô‚·

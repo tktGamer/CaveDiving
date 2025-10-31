@@ -41,6 +41,7 @@ public:
 
 	// 「プレイヤーの手」を生成する
 	static std::unique_ptr<Hand> CreateHand(
+		Character* root = nullptr,
 		GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity

@@ -122,9 +122,7 @@ void ResourceManager::GetTextureSize(wchar_t const* filename, int& width, int& h
 	//ñ¢ìoò^ÇÃèÍçá
 	if (m_texture.count(stringFilename) == 0)
 	{
-		width = 0;
-		hight = 0;
-		return;
+		LoadTexture(stringFilename);
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource;

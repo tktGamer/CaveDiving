@@ -20,9 +20,9 @@
  *
  * @param[in] ‚È‚µ
  */
-Hand::Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Hand::Hand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, GameObject(Tag::ObjectType::Player,parent,initialPosition,initialAngle)
+	, PartObject(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"hand.png"));
@@ -109,7 +109,7 @@ void Hand::Draw()
 	cbuff.matWorld = world.Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-
+	cbuff.color.x = GetRootCharacter()->GetDamageFlash();
 
 	//GetModel()->Draw(context, *states, world, view, proj);
 

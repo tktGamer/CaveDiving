@@ -55,7 +55,9 @@ private:
 
 	//ゲットされたか
 	bool m_isGet;
-
+	//アイテムをゲットしたオブジェクトの位置
+	const DirectX::SimpleMath::Vector3* m_gotObjectPos;
+	//アイテムの色
 	DirectX::SimpleMath::Vector4 m_color;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -92,6 +94,10 @@ public:
 	float GetTime() const;
 
 	bool IsGet() const;
+
+	void SetItemGetObjectPos(const DirectX::SimpleMath::Vector3& pos);
+
+	const DirectX::SimpleMath::Vector3& GetItemGetObjectPos();
 
 	const DirectX::SimpleMath::Vector4& GetColor();
 //　内部操作

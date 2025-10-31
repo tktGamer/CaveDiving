@@ -90,12 +90,6 @@ void Light::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
  */
 void Light::Draw()
 {
-	ID3D11DeviceContext*		 context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = m_graphics->GetProjectionMatrix();
-
-
 }
 
 

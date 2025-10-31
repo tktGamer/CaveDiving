@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2025/10/17
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -36,10 +36,10 @@ Bat::Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition
 
 	SetShape(&m_sphere);
 
-	m_leftWing = GameObjectFactory::CreateBatWing(this, this,DirectX::SimpleMath::Vector3{-0.5f,0.0f,0.0f});
-	
-	m_rightWing = GameObjectFactory::CreateBatWing(this, this,DirectX::SimpleMath::Vector3{0.5f,0.0f,0.0f}
-	,DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(180.0f)));
+	//羽オブジェクトの生成
+	m_leftWing = GameObjectFactory::CreateBatWing(this, this,LEFTWING_INIT_POS);
+	m_rightWing = GameObjectFactory::CreateBatWing(this, this,RIGHTWING_INIT_POS
+	,DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(RIGHT_WING_INIT_DEGREE)));
 
 
 
@@ -74,6 +74,7 @@ void Bat::Initialize()
 	m_attackPreaparing = std::make_unique<BatAttackPreparing>(this,m_rightWing.get(), m_leftWing.get());
 	m_damagedState = std::make_unique<BatDamaged>(this);
 
+	//初期状態設定
 	SetState(m_idlingState.get());
 
 
@@ -108,6 +109,7 @@ void Bat::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentP
 	//現在の状態を更新
 	GetState()->Update(elapsedTime);
 
+	DamageFlashUpdate();
 
 	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
 	m_currentAngle =m_initialAngle * m_motionAngle* GetQuaternion() * currentAngle;
@@ -157,7 +159,7 @@ void Bat::Draw()
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
-
+	cbuff.color.x = GetDamageFlash();
 	Shader* shader = Shader::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
@@ -176,8 +178,6 @@ void Bat::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
 				context->PSSetShaderResources(0, 1, GetTexture());
 			}
 
@@ -200,6 +200,7 @@ void Bat::Draw()
 		});
 	Shader::GetInstance()->EndShader();
 
+	//羽の描画
 	m_leftWing->Draw();
 	m_rightWing->Draw();
 }
@@ -269,8 +270,8 @@ void Bat::CollisionResponce(GameObject* other)
 		{
 			// プレイヤーとの衝突処理
 			// ここでは何もしないが、必要に応じて実装
-			break;
 		}
+		break;
 		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
@@ -284,15 +285,40 @@ void Bat::CollisionResponce(GameObject* other)
 				OnMessegeAccepted(Message::MessageID::IDLING);
 			}
 
-			break;
+		}	
+		break;
+		case Tag::ObjectType::Wall: 
+		{
+			if (m_sphere.Contains(other->GetShape()))
+			{
+				break;
+			}
+
+
+			//ステージ壁との衝突応答　押し出し
+			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere, dynamic_cast<Sphere*>(other->GetShape())));
+
+			m_sphere.SetCenter(GetPosition());
+
+			//速度をリセット
+			//m_velocity.y = 0.0f;
+			//ResetJumpCount();
+
 		}
+		break;
 		case Tag::ObjectType::Weapon:
 		{
 			Weapon* weapon = other->Cast<Weapon>();
 			//攻撃力をもっている所有者を渡す
 			OnDamage(weapon->GetOwner());
 
-			break;
+		}
+		break;
+		case Tag::ObjectType::Light:
+		{
+			//ライトオブジェクトとの衝突応答　押し出し
+			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
+
 		}
 	default:
 		break;
@@ -301,11 +327,26 @@ void Bat::CollisionResponce(GameObject* other)
 
 
 
-const float Bat::GetFrameCount() const
+
+/**
+ * @brief 経過時間の取得
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */const float Bat::GetFrameCount() const
 {
 	return m_frameCount;
 }
 
+
+/**
+ * @brief 経過時間のリセット
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Bat::ResetFrameCount()
 {
 	m_frameCount = 0.0f;

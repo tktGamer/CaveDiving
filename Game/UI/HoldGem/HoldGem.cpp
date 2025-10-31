@@ -13,6 +13,13 @@
 #include"HoldGem.h"
 #include"../CaveDiving/Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] width
+ * @param[in] height
+ */
 HoldGem::HoldGem(int width, int height)
     : m_menuIndex(0)
     , m_windowHeight(height)
@@ -21,6 +28,7 @@ HoldGem::HoldGem(int width, int height)
     ,m_position{80,680}
     ,m_scale{1.0f,1.0f}
     ,m_gemTexturePath{}
+    ,m_pGems{}
 {
    
 }
@@ -117,21 +125,45 @@ void HoldGem::ChangeDrawGem()
     {
         if (pGems[i])
         {
-            switch (pGems[i]->GetAbility().m_type)
+            if (pGems[i]->GetAbility().type == "エメラルド") 
             {
-            case Gem::Type::HP:
                 m_gemUI[i]->SetTexture(L"Gem/emerald.png");
-                break;
-            case Gem::Type::STR:
-                m_gemUI[i]->SetTexture(L"Gem/ruby.png");
-                break;
-            case Gem::Type::DEF:
-                m_gemUI[i]->SetTexture(L"Gem/sapphire.png");
-                break;
-            case Gem::Type::UNIQUE:
-                break;
 
             }
+            else if (pGems[i]->GetAbility().type == "ルビー") 
+            {
+                m_gemUI[i]->SetTexture(L"Gem/ruby.png");
+
+            }
+            else if (pGems[i]->GetAbility().type == "サファイア") 
+            {
+                m_gemUI[i]->SetTexture(L"Gem/sapphire.png");
+
+            }
+            else if (pGems[i]->GetAbility().type == "トパーズ") 
+            {
+                m_gemUI[i]->SetTexture(L"Gem/topaz.png");
+
+            }
+            else if (pGems[i]->GetAbility().type == "アメジスト") 
+            {
+                m_gemUI[i]->SetTexture(L"Gem/amethyst.png");
+
+            }
+            //switch (pGems[i]->GetAbility().type)
+            //{
+            //case "エメラルド":
+            //    break;
+            //case Gem::Type::STR:
+            //    m_gemUI[i]->SetTexture(L"Gem/ruby.png");
+            //    break;
+            //case Gem::Type::DEF:
+            //    m_gemUI[i]->SetTexture(L"Gem/sapphire.png");
+            //    break;
+            //case Gem::Type::UNIQUE:
+            //    break;
+
+            //}
         }
     }
 

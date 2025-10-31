@@ -14,7 +14,8 @@
 #define BAT_DAMAGED_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
+
+#include"Game/Motion/BatMotion/BatDamageMotion.h"
 // クラスの宣言 ===============================================================
 class Bat;
 
@@ -24,6 +25,11 @@ class Bat;
   */
 class BatDamaged : public IState
 {
+private:
+	// コウモリ
+	Bat* m_bat;
+	//ダメージリアクションモーション
+	std::unique_ptr<Motion> m_damageMotion;
 public:
 	// コンストラクタ
 	BatDamaged(Bat* bat);
@@ -42,13 +48,6 @@ public:
 	// 後処理を行う
 	void Finalize();
 
-private:
-	// プレイヤー
-	Bat* m_bat;
-	// グラフィックス
-	Graphics* m_graphics;
-	// ワールドマトリックス
-	DirectX::SimpleMath::Matrix m_worldMatrix;
 };
 
 #endif		// SOLDIER_IDLING_DEFINED

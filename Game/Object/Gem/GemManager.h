@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2025/10/22
  */
 
  // 多重インクルードの防止 =====================================================
@@ -35,6 +35,9 @@ public:
 		std::string item;   
 		// 効果
 		int			effect=0;		
+		//効果適用間隔
+		int interval;
+
 		// 説明
 		std::string description;	
 
@@ -117,6 +120,10 @@ public:
 	//プレイヤーの持つ宝石を取得
 	const Gem* const* GetPlayerHoldGem() const ;
 
+	//指定の宝石をもっているか
+	template<typename T>
+	T*  IsHasGem();
+
 	//プレイヤーの持つ宝石をセット
 	void SetHoldGem(Gem* pGem, int index=-1);
 
@@ -131,3 +138,18 @@ private:
 	Gem::Type DecisinType(const std::string& type);
 };
 
+template<typename T>
+inline T* GemManager::IsHasGem()
+{
+	for (int i = 0; i < PLAYER_HOLD_GEM_NUM; ++i)
+	{
+		if (auto gem = m_playerKeepGem[i])
+		{
+			if (dynamic_cast<T*>(gem))
+			{
+				return dynamic_cast<T*>(gem); // T 型の Gem を発見
+			}
+		}
+	}
+	return nullptr;
+}

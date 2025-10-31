@@ -55,6 +55,7 @@ void PlayerDamaged::PreUpdate()
 
 	//当たった攻撃の方向を考慮してノックバック
 	m_player->SetVelocity(m_player->GetDamageDirection());
+	m_player->SetDamageFlash();
 }
 
 /**

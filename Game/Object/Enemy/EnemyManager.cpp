@@ -200,7 +200,7 @@ void EnemyManager::DeleteEnemy()
             CollisionManager::GetInstance()->UnRegister(it->get());
 
 
-			ParticleManager::GetInstance()->RequestParticle(ParticleManager::ParticleType::Vanish, (*it)->GetCurrentPosition(),{1.0f,1.0f,1.0f,1.0f});
+			ParticleManager::GetInstance()->RequestVanishParticle((*it)->GetCurrentPosition());
             it = m_enemies.erase(it);
         }
         else

@@ -13,6 +13,13 @@
 #include"HoldGemInfoDraw.h"
 #include"../CaveDiving/Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] width
+ * @param[in] height
+ */
 HoldGemInfoDraw::HoldGemInfoDraw(int width, int height)
     : m_menuIndex(0)
     , m_windowHeight(height)
@@ -21,6 +28,7 @@ HoldGemInfoDraw::HoldGemInfoDraw(int width, int height)
     , m_position{ 80,680 }
     , m_scale{ 1.0f,1.0f }
     , m_gemTexturePath{}
+    ,m_pGems{}
 {
 
 }

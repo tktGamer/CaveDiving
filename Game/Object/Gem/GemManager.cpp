@@ -13,7 +13,7 @@
 #include "GemManager.h"
 #include<fstream>
 #include<sstream>
-
+#include"Game/Fuctory/GemFactory.h"
 
 // クラスの静的メンバ変数の初期化
 std::unique_ptr<GemManager> GemManager::s_gemManager = nullptr;
@@ -136,7 +136,7 @@ bool GemManager::SavePlayerHoldGem()
 			continue;
 		}
 
-		outFile << m_playerKeepGem[i]->GetAbility().ID << std::endl; // データを書き込み
+		outFile << m_playerKeepGem[i]->GetAbility().id << std::endl; // データを書き込み
 
 	}
 
@@ -240,7 +240,7 @@ Gem* GemManager::GetIDNumberedGem(const int& id)
 	for (std::unique_ptr<Gem>& gem : m_gemList) 
 	{
 		//引数と同じIDか
-		if (gem->GetAbility().ID == id) 
+		if (gem->GetAbility().id == id) 
 		{
 			return gem.get();
 		}
@@ -331,59 +331,147 @@ Gem* GemManager::GetReplacementGem()
  */
 void GemManager::LoadGemData()
 {
-	//パスの生成
+	////パスの生成
+	//std::string path = "Resources/Data/GemData.csv";
+	////ファイルのオープン
+	//std::ifstream ifs{ path };
+	//if (!ifs.is_open())
+	//{
+	//	//読み込み失敗
+	//	return;
+	//}
+
+	//ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+
+	//while (true)
+	//{
+	//	GemData gemData;
+	//	std::string line;
+
+	//	ifs >> gemData.id; //ID
+	//	ifs.ignore(); //カンマを読み飛ばす
+	//	if (gemData.id <= 0)
+	//	{
+	//		//IDが不正な場合は読み飛ばす
+	//		ifs.close();
+	//		//m_playerKeepGem[0] = m_gemList[0].get();
+	//		//m_playerKeepGem[1] = m_gemList[1].get();
+	//		//m_playerKeepGem[2] = m_gemList[2].get();
+
+	//		return;
+	//	}
+	//	//宝石の種類を読み込む
+	//	std::getline(ifs, line, ',');
+	//	gemData.type = line;
+	//	//強化項目を読み込む
+	//	std::getline(ifs, line, ',');
+	//	gemData.item = line;
+	//	//効果を読み込む
+	//	ifs >> gemData.effect;
+	//	ifs.ignore();
+
+	//	//説明文を読み込む
+	//	std::getline(ifs, gemData.description, ','); 
+	//	//画像パスを読み込む
+	//	std::getline(ifs, gemData.gem, '\n'); 
+
+	//	Gem::GemAbility ability = { gemData.id,gemData.type,DecisinType(gemData.item),gemData.effect};
+	//	const wchar_t* gemPath = TKTLib::StringToWchar(gemData.gem);
+	//	Gem::GemImagePath imagePath = { gemPath};
+	//	//宝石データを作成
+	//	m_gemList.emplace_back(std::make_unique<Gem>(ability,imagePath));
+	//}
+	//ifs.close();
+
+	//return;
+
+
+
+	// パスの生成
 	std::string path = "Resources/Data/GemData.csv";
-	//ファイルのオープン
+
+	// ファイルのオープン
 	std::ifstream ifs{ path };
-	if (!ifs.is_open())
-	{
-		//読み込み失敗
+	if (!ifs.is_open()) {
+		// 読み込み失敗
 		return;
 	}
 
+	// 1行目（ヘッダー）をスキップ
 	ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-
+	// CSV読み込みループ
 	while (true)
 	{
 		GemData gemData;
 		std::string line;
 
-		ifs >> gemData.id; //ID
-		ifs.ignore(); //カンマを読み飛ばす
+		// 1行まるごと取得
+		if (!std::getline(ifs, line))
+			break; // ファイルの終わり
+
+		if (line.empty())
+			continue;
+
+		std::stringstream ss(line);
+		std::string token;
+
+		// ID
+		std::getline(ss, token, ',');
+		gemData.id = std::stoi(token);
 		if (gemData.id <= 0)
-		{
-			//IDが不正な場合は読み飛ばす
-			ifs.close();
-			//m_playerKeepGem[0] = m_gemList[0].get();
-			//m_playerKeepGem[1] = m_gemList[1].get();
-			//m_playerKeepGem[2] = m_gemList[2].get();
+			continue;
 
-			return;
-		}
-		//宝石の種類を読み込む
-		std::getline(ifs, line, ',');
-		gemData.type = line;
-		//強化項目を読み込む
-		std::getline(ifs, line, ',');
-		gemData.item = line;
-		//効果を読み込む
-		ifs >> gemData.effect;
-		ifs.ignore();
+		// 宝石の種類
+		std::getline(ss, gemData.type, ',');
 
-		//説明文を読み込む
-		std::getline(ifs, gemData.description, ','); 
-		//画像パスを読み込む
-		std::getline(ifs, gemData.gem, '\n'); 
+		// 強化項目
+		std::getline(ss, gemData.item, ',');
 
-		Gem::GemAbility ability = { gemData.id,DecisinType(gemData.item), gemData.effect, gemData.description };
+		// 効果値
+		std::getline(ss, token, ',');
+		if (token != "")
+		gemData.effect = std::stoi(token);
+
+		//// 効果タイプ（空欄OK）
+		//std::getline(ss, gemData.effectType, ',');
+
+		//// 条件（空欄OK）
+		//std::getline(ss, gemData.condition, ',');
+
+		// 間隔（空欄OK）
+		std::getline(ss, token, ',');
+		if(token !="")
+		gemData.interval = std::stoi(token);
+
+		//// 持続時間（空欄OK）
+		//std::getline(ss, gemData.duration, ',');
+
+		// 効果説明
+		std::getline(ss, gemData.description, ',');
+
+		//生成するクラス
+		std::getline(ss, token, ',');
+
+
+		// 画像パス（最後の列）
+		std::getline(ss, gemData.gem, '\n');
+
+		// ====== Gem生成 ======
+		Gem::GemAbility ability = {
+			gemData.id,
+			gemData.type,
+			DecisinType(gemData.item),
+			gemData.effect,
+			gemData.interval,
+		};
+
 		const wchar_t* gemPath = TKTLib::StringToWchar(gemData.gem);
-		Gem::GemImagePath imagePath = { gemPath};
-		//宝石データを作成
-		m_gemList.emplace_back(std::make_unique<Gem>(ability,imagePath));
+		Gem::GemImagePath imagePath = { gemPath };
+
+		m_gemList.emplace_back(GemFactory::Instance().CreateGem(token,ability,imagePath));
 	}
+
 	ifs.close();
-
-	return;
-
 }

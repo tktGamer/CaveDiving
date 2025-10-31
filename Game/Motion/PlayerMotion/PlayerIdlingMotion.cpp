@@ -21,8 +21,7 @@
 PlayerIdlingMotion::PlayerIdlingMotion( Hand* pRightHand, Hand* pLeftHand)
 	: m_pRightHand{ pRightHand }
 	, m_pLeftHand{pLeftHand}
-	, m_isNextAttack{ false }
-	, m_inputTime{1.0f}
+	, m_operate{1}
 {
 
 }
@@ -49,8 +48,9 @@ PlayerIdlingMotion::~PlayerIdlingMotion()
 void PlayerIdlingMotion::Initialize()
 {
 	//^‰¡‚ÉŒü‚¯‚é
-	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
+	//m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
 
+	SetMotionLerp(0.5f);
 }
 
 
@@ -70,8 +70,8 @@ bool PlayerIdlingMotion::Update()
 	//¡‰ñ‚ÌŠp“x‚ðŒvŽZ
 
 	//Žè‚ðã‰º‚É“®‚©‚· YŽ²•Ï‰»
-	float rightHandAngle = TKTLib::Lerp(0.0f,170.0f,motionLerp);
-	float leftHandAngle  = TKTLib::Lerp(0.0f, 30.0f, motionLerp);
+	float rightHandY = TKTLib::Lerp(-0.06f, 0.1f, motionLerp);
+	float leftHandY  = TKTLib::Lerp(-0.06f, 0.1f, motionLerp);
 
 	//DirectX::SimpleMath::Quaternion rightHandMotionAngle
 	//	= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(rightHandAngle));
@@ -80,16 +80,21 @@ bool PlayerIdlingMotion::Update()
 	//	= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(leftHandAngle));
 
 
-	motionLerp += 5.0f * Messenger::GetInstance()->GetElapsedTime();
+	motionLerp += m_operate * Messenger::GetInstance()->GetElapsedTime();
 
-	//m_pRightHand->SetMotionAngle(rightHandMotionAngle);
-	//m_pLeftHand->SetMotionAngle(leftHandMotionAngle);
+	DirectX::SimpleMath::Vector3 pos = m_pRightHand->GetPosition();
+	pos.y = rightHandY;
+	m_pRightHand->SetPosition(pos);
+	pos = m_pLeftHand->GetPosition();
+	pos.y = leftHandY;
+	m_pLeftHand->SetPosition(pos);
 
 
 	SetMotionLerp(std::min(motionLerp,1.0f));
 
-	if (GetMotionLerp() >= 1.0f)
+	if (std::abs(GetMotionLerp()) >= 1.0f)
 	{
+		m_operate *= -1;
 		return true;
 	}
 	return false;
@@ -109,7 +114,13 @@ bool PlayerIdlingMotion::Update()
  */
 void PlayerIdlingMotion::Reset()
 {
-	m_isNextAttack = false;
+	DirectX::SimpleMath::Vector3 pos = m_pRightHand->GetPosition();
+	pos.y = 0.0f;
+	m_pRightHand->SetPosition(pos);
+	pos = m_pLeftHand->GetPosition();
+	pos.y = 0.0f;
+	m_pLeftHand->SetPosition(pos);
+
 	SetMotionLerp(0.0f);
 }
 

@@ -25,7 +25,6 @@
  */
 Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: m_messageID{  }
-	,m_cave{}
 	,m_ground{}
 	,m_wall{}
 {
@@ -65,10 +64,6 @@ void Stage::Initialize(bool* isOnLight, int size)
 	m_ground = std::make_unique<Ground>(nullptr,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_ground->Initialize();
 
-	m_cave.SetModelParams(ResourceManager::GetInstance()->RequestModel(L"cave_game.sdkmesh"));
-	m_cave.SetModelParamsP(DirectX::SimpleMath::Vector3::Zero);
-	m_cave.SetModelParamsR(DirectX::SimpleMath::Vector3::Zero);
-	m_cave.SetModelParamsS(DirectX::SimpleMath::Vector3(65.0f, 35.0f, 65.0f));
 
 	m_wall = std::make_unique<Wall>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_wall->Initialize();
@@ -127,11 +122,11 @@ void Stage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
  */
 void Stage::Draw()
 {
-	Shader* shader = Shader::GetInstance();	
-	ID3D11DeviceContext* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = Graphics::GetInstance()->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = Graphics::GetInstance()->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = Graphics::GetInstance()->GetProjectionMatrix();
+	//Shader* shader = Shader::GetInstance();	
+	//ID3D11DeviceContext* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
+	//DirectX::DX11::CommonStates* states  = Graphics::GetInstance()->GetCommonStates();
+	//DirectX::SimpleMath::Matrix  view    = Graphics::GetInstance()->GetViewMatrix();
+	//DirectX::SimpleMath::Matrix  proj    = Graphics::GetInstance()->GetProjectionMatrix();
 
 
 	m_ground->Draw();
@@ -231,7 +226,7 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 		CollisionManager::GetInstance()->Register(m_rocks.back().get());
 
 
-		ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		//ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	}
 	ifs.close();

@@ -16,6 +16,14 @@
 #include"Game/UI/GemSelectUIManager.h"
 #include"Game/Common/Sound.h"
 #include"Game/Fuctory/UIFactory.h"
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] width
+ * @param[in] height
+ * @param[in] pUIManager
+ */
 ChangeConfirm::ChangeConfirm(int width, int height, GemSelectUIManager* pUIManager)
     :  m_windowHeight(height)
     , m_windowWidth(width)

@@ -163,7 +163,7 @@ void ItemManager::DeleteItem()
             CollisionManager::GetInstance()->UnRegister(it->get());
 
 
-			ParticleManager::GetInstance()->RequestParticle(ParticleManager::ParticleType::Vanish, (*it)->GetCurrentPosition(),DirectX::SimpleMath::Color{1.0f,1.0f,1.0f,1.0f});
+			ParticleManager::GetInstance()->RequestItemGetParticle((*it)->GetCurrentPosition(),(*it)->GetItemGetObjectPos(),(*it)->GetColor());
             it = m_items.erase(it);
         }
         else

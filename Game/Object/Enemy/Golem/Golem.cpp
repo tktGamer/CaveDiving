@@ -114,6 +114,7 @@ void Golem::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
 	//現在の状態を更新
 	GetState()->Update(elapsedTime);
 
+	DamageFlashUpdate();
 
 	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
 	m_currentAngle =m_initialAngle * m_motionAngle* GetQuaternion() * currentAngle;
@@ -162,6 +163,7 @@ void Golem::Draw()
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
+	cbuff.color.x = GetDamageFlash();
 
 	Shader* shader = Shader::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）

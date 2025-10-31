@@ -56,13 +56,13 @@ private:
 // コンストラクタ/デストラクタ
 public:
 
-	Transitor();
+	Transitor(bool isIn);
 	~Transitor();
 	// 操作
 public:
+	void ReStart(bool isIn);
 
-
-	void Update();
+	bool Update();
 
 	void Render();
 

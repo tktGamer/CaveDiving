@@ -21,8 +21,7 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 Wing::Wing(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:m_graphics{Graphics::GetInstance()}
-	, EnemyPart(root,parent,initialPosition,initialAngle)
+	:EnemyPart(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"wing.png"));
@@ -99,9 +98,9 @@ void Wing::Draw()
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	Bat::ConstBuffer cbuff;
 	cbuff.matWorld = world.Transpose();
-	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-
+	cbuff.matView = Graphics::GetInstance()->GetViewMatrix().Transpose();
+	cbuff.matProj = Graphics::GetInstance()->GetProjectionMatrix().Transpose();
+	cbuff.color.x = GetRootCharacter()->GetDamageFlash();
 
 	//GetModel()->Draw(context, *states, world, view, proj);
 
@@ -120,8 +119,6 @@ void Wing::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
 				context->PSSetShaderResources(0, 1, GetTexture());
 			}
 

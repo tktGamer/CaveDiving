@@ -11,7 +11,7 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Wall.h"
-
+#include"Game/Common/Collision/CollisionManager.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -63,7 +63,7 @@ void Wall::Initialize()
 	
 	SetShape(&m_sphere);
 
-
+	CollisionManager::GetInstance()->Register(this);
 }
 
 
@@ -104,7 +104,7 @@ void Wall::Draw()
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale()).Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-
+	cbuff.color.x = 0.0f;
 
 	//world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
 	//GetModel()->Draw(context, *states, world, view, proj);
@@ -147,7 +147,7 @@ void Wall::Draw()
 		});
 	Shader::GetInstance()->EndShader();
 
-	m_sphere.AddDisplayCollision(&m_display);
+	//m_sphere.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
 		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 

@@ -63,8 +63,8 @@ void Player::Initialize()
 {
 	//手の生成
 	//std::unique_ptr<Hand> handR = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
-	std::unique_ptr<Hand> handR =GameObjectFactory::CreateHand(this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
-	std::unique_ptr<Hand> handL = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
+	std::unique_ptr<Hand> handR =GameObjectFactory::CreateHand(this,this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
+	std::unique_ptr<Hand> handL = std::make_unique<Hand>(this,this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
 
 	handR->HaveWeapon(GameObjectFactory::CreatePikle(this, handR.get()));
 
@@ -126,6 +126,8 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 	m_sphere.SetCenter(currentPosition + GetPosition());
 
 
+	DamageFlashUpdate();
+
 	m_light->Update(elapsedTime,currentPosition + GetPosition(), currentAngle * GetQuaternion());
 
 	//取得アイテムの更新
@@ -142,6 +144,9 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 		part->Update(elapsedTime,m_currentPosition,m_currentAngle);
 	}
 
+
+
+	//HP自動回復の宝石をもっているか
 }
 
 
@@ -170,13 +175,77 @@ void Player::Draw()
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
+	cbuff.color.x = GetDamageFlash();
 
 	Shader* shader = Shader::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
 
 
+	Player::OutlineConstBuffer outline;
+	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
+	outline.matView = graphics->GetViewMatrix().Transpose();
+	outline.matProj = graphics->GetProjectionMatrix().Transpose();
+	outline.outlineThickness = 0.04f;
+	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
 
+
+
+	// モデル描画（アウトライン専用）
+	GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
+	// カリングを FrontFace にして裏面を描画（アウトライン用）
+	context->RSSetState(states->CullCounterClockwise());
+
+	// ブレンド・デプスステート（深度は通常通り or 調整）
+	context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+	context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	
+	// アウトラインシェーダを設定
+	Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
+	context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+
+		});
+
+	Shader::GetInstance()->EndShader();
+	//GetModel()->Draw(context, *states, world, view, proj, false, [&]()
+	//	{
+	//		//	モデル表示をするための自作シェーダに関連する設定を行う
+
+
+	//		//	画像用サンプラーの登録
+	//		ID3D11SamplerState* sampler[1] = { states->PointWrap() };
+	//		context->PSSetSamplers(0, 1, sampler);
+
+	//		if (GetTexture() != nullptr)
+	//		{
+	//			//	読み込んだ画像をピクセルシェーダに伝える
+	//			//	自作VSはt0を使っているため、
+	//			//	t0がメインで使われていると勝手に想定。
+	//			context->PSSetShaderResources(0, 1, GetTexture());
+	//		}
+
+	//		//	半透明描画指定
+	//		ID3D11BlendState* blendstate = states->NonPremultiplied();
+
+	//		//	透明判定処理
+	//		context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+
+	//		//	深度バッファに書き込み参照する
+	//		context->OMSetDepthStencilState(states->DepthDefault(), 0);
+
+	//		//	カリングはなし
+	//		context->RSSetState(states->CullCounterClockwise());
+
+	//		//シェーダーの設定
+	//		Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
+
+	//		//頂点情報を設定
+	//		context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+
+	//	});
+	//Shader::GetInstance()->EndShader();
+	
+	
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
@@ -311,17 +380,19 @@ void Player::CollisionResponce(GameObject* other)
 				break;
 			}
 
+			//ダメージ
 			OnDamage(other);
 		}
 		break;
 
-		case Tag::ObjectType::EnemyPart:
+		case Tag::ObjectType::ObjectPart:
 		{
 			if (GetState() == m_damagedState.get())
 			{
 				break;
 			}
 
+			//HPをもつオブジェクトを取得
 			GameObject* root = dynamic_cast<EnemyPart*>(other)->GetRootCharacter();
 			OnDamage(root);
 		}
@@ -332,7 +403,6 @@ void Player::CollisionResponce(GameObject* other)
 			//ステージとの衝突応答　押し出し
 			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere,GetVelocity()));
 
-			
 			//速度をリセット
 			m_velocity.y = 0.0f;
 			ResetJumpCount();
@@ -342,6 +412,12 @@ void Player::CollisionResponce(GameObject* other)
 				OnMessegeAccepted(Message::IDLING);
 			}
 			
+			DirectX::SimpleMath::Vector3 playerPos = GetCurrentPosition();
+			//足元に調整
+			playerPos.y = 0.0f;
+
+
+			ParticleManager::GetInstance()->RequestMoveDustParticle(playerPos);
 
 		}
 		break;
@@ -349,14 +425,20 @@ void Player::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Wall:
 		{
 			
+			if (m_sphere.Contains(other->GetShape())) 
+			{
+				break;
+			}
+
 
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere,GetVelocity()));
+			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere,dynamic_cast<Sphere*>( other->GetShape())));
 
-			
+			m_sphere.SetCenter(GetPosition());
+
 			//速度をリセット
-			m_velocity.y = 0.0f;
-			ResetJumpCount();
+			//m_velocity.y = 0.0f;
+			//ResetJumpCount();
 			//ジャンプ状態・空中攻撃状態なら待機状態へ移行
 			if (GetState() == m_jumpingState.get() || GetState() == m_airAttackState.get()) 
 			{
@@ -371,11 +453,13 @@ void Player::CollisionResponce(GameObject* other)
 		case::Tag::ObjectType::Item: 
 		{
 			m_getItemSound->Play(false);
+			//Item型へキャスト
 			Item* item = other->Cast<Item>();
 
 			m_gotItems.emplace_back(ItemInfo{ item->GetUpStatus(),item->GetIncrease(),item->GetTime() });
 			m_pBuffUIControl->AddUI(m_gotItems.back().upStatus,m_gotItems.back().time);
-			ParticleManager::GetInstance()->RequestParticle(ParticleManager::ParticleType::PowerUp, GetCurrentPosition(),item->GetColor());
+			//得たバフのアイコンを表示する
+			ParticleManager::GetInstance()->RequestPowerUpParticle( GetCurrentPosition(),item->GetColor());
 		}
 		break;
 
@@ -478,6 +562,7 @@ void Player::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 {
 	m_motionAngle = angle;
 }
+
 
 
 /**
@@ -583,9 +668,9 @@ int Player::GemPlusStatus(const Gem::Type type)
 		}
 
 		//所持している宝石が指定されたステータスを強化するものか
-		if (holdGems[i]->GetAbility().m_type == type) 
+		if (holdGems[i]->GetAbility().powerUp == type) 
 		{
-			total += holdGems[i]->GetAbility().m_value;
+			total += holdGems[i]->GetAbility().value;
 		}
 	}
 

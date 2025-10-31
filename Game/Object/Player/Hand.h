@@ -12,7 +12,7 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Object/GameObject.h"
+#include"Game/Object/PartObject.h"
 #include"Game/Object/Weapon.h"
 // クラスの宣言 ===============================================================
 
@@ -20,7 +20,7 @@
 /**
   * @brief Hand
   */
-class Hand : public GameObject
+class Hand : public PartObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -40,7 +40,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Hand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Hand(Character* root,GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Hand();

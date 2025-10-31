@@ -25,6 +25,10 @@ PlayerIdling::PlayerIdling(Player* player)
 {
 	// グラフィックスを取得する
 	m_graphics = Graphics::GetInstance();
+
+	m_idlingMotion = std::make_unique<PlayerIdlingMotion>
+		(dynamic_cast<Hand*>( Messenger::GetInstance()->GetObject(player->GetObjectNumber()+1))
+		,dynamic_cast<Hand*>( Messenger::GetInstance()->GetObject(player->GetObjectNumber() + 2)));
 }
 /**
  * @brief デストラクタ
@@ -57,6 +61,8 @@ void PlayerIdling::PreUpdate()
 	DirectX::SimpleMath::Vector3 velocity = m_player->GetVelocity();
 
 	m_player->SetVelocity(DirectX::SimpleMath::Vector3::Zero);
+
+	m_idlingMotion->Initialize();
 }
 
 /**
@@ -72,6 +78,8 @@ void PlayerIdling::Update(const float& elapsedTime)
 	// キーボードステートを取得する
 	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
 	
+	m_idlingMotion->Update();
+
 	//移動キーが押されたら移動状態へ遷移
 	if (key->GetLastState().Left || key->GetLastState().Right || key->GetLastState().Up || key->GetLastState().Down)
 	{
@@ -113,6 +121,7 @@ void PlayerIdling::Update(const float& elapsedTime)
  */
 void PlayerIdling::PostUpdate()
 {
+	m_idlingMotion->Reset();
 }
 
 /**

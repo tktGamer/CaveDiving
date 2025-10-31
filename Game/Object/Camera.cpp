@@ -98,10 +98,11 @@ void Camera::SetEyePosZ(float posZ)
 	m_eyePos.z = posZ;
 }
 
-void Camera::SetTartet(const DirectX::SimpleMath::Vector3& targetPos, const DirectX::SimpleMath::Quaternion& rotate)
+void Camera::SetTartet(const DirectX::SimpleMath::Vector3& targetPos, const DirectX::SimpleMath::Quaternion& rotate, const DirectX::SimpleMath::Vector3& targetVelocity)
 {
 	m_targetPos = &targetPos;
 	m_targetRotate = &rotate; // ターゲットの回転も設定
+	m_targetVelocity = &targetVelocity;
 }
 
 

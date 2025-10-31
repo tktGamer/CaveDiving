@@ -8,6 +8,8 @@
 #include<mutex>
 #include<future>
 #include<vector>
+
+#include"Game/Transitor/Transitor.h"
 // クラスの宣言 ===============================================================
 template <typename T>
 class SceneManager;
@@ -118,6 +120,9 @@ private:
 	std::future<void> m_loadingFuture;
 
 
+	//フェード
+	std::unique_ptr<Transitor> m_transitor;
+
 public:
 
 	// コンストラクタ
@@ -129,6 +134,7 @@ public:
 		,m_isScenePop{}
 		,m_gameData{gameData}
 	{
+		m_transitor = std::make_unique<Transitor>(false);
 	};
 
 	// デストラクタ
@@ -302,7 +308,7 @@ void SceneManager<T>::Update(float elapsedTime)
 	if (kb.Escape) PostQuitMessage(0);
 
 	//次のシーンがあるなら
-	if (m_nextScene !=nullptr)
+	if (m_nextScene !=nullptr && m_transitor->Update())
 	{
 
 		// シーンをスタックする
@@ -330,9 +336,12 @@ void SceneManager<T>::Update(float elapsedTime)
 		m_loadingScreen->Update(elapsedTime);
 		return;
 	}
-
+	m_transitor->Update();
 	// シーンの更新
- 	if (!m_scene.empty()) m_scene.back()->Update(elapsedTime);
+ 	if (!m_scene.empty() )
+	{
+		m_scene.back()->Update(elapsedTime);
+	}
 
 }
 
@@ -362,6 +371,7 @@ void SceneManager<T>::Render()
 		}
 	}
 
+	m_transitor->Render();
 
 }
 
@@ -448,6 +458,8 @@ inline void SceneManager<T>::PrepareNextScene(std::function<std::unique_ptr<Scen
 	//	}
 	//};
 
+	m_transitor->ReStart(false);
+
 	m_loadingFuture = std::async(
 		std::launch::async,
 		[=]()
@@ -498,6 +510,8 @@ inline void SceneManager<T>::ChangeScene()
 		m_loadingScreen.reset();
 		
 	}
+
+	m_transitor->ReStart(true);
 }
 
 template<typename T>

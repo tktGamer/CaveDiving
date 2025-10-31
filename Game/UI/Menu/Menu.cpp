@@ -12,6 +12,14 @@
 #include "pch.h"
 #include "Menu.h"
 #include"Game/Common/Sound.h"
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] width
+ * @param[in] height
+ * @param[in] cursolSound
+ */
 Menu::Menu(int width, int height, DirectX::SoundEffect* cursolSound)
     : m_menuIndex(0)
     , m_windowHeight(height)

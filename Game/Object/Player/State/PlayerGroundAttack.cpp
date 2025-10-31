@@ -12,6 +12,9 @@
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerGroundAttack.h"
 #include "Game/Object/Player/Player.h"
+#include"Game//Object//Gem/GemManager.h"
+#include"Game/Object/Gem/Unique/AllSpenningAttackGem.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -27,9 +30,20 @@ PlayerGroundAttack::PlayerGroundAttack(Player* player, Hand* pRightHand, Hand* p
 {
 
 	//m_groundCombo.emplace_back(std::make_unique<PlayerSlamAttack>(m_pHand));
-	m_groundCombo.emplace_back(std::make_unique<PlayerFirstAttackMotion>(pRightHand,pLeftHand));
-	m_groundCombo.emplace_back(std::make_unique<PlayerSecondAttackMotion>(pRightHand,pLeftHand));
-	m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand,pLeftHand));
+	if (GemManager::GetInstance()->IsHasGem<AllSpenningAttackGem>()) 
+	{
+		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
+		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
+		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
+
+	}
+	else
+	{
+
+		m_groundCombo.emplace_back(std::make_unique<PlayerFirstAttackMotion>(pRightHand, pLeftHand));
+		m_groundCombo.emplace_back(std::make_unique<PlayerSecondAttackMotion>(pRightHand, pLeftHand));
+		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
+	}
 }
 /**
  * @brief デストラクタ

@@ -40,8 +40,11 @@ ParticleManager::ParticleManager()
 	:m_pCamera{nullptr}
 	
 {
-	m_particleVanishControl = std::make_unique<ParticleVanishControl>("vanish.png");
-	m_particlePowerUpControl = std::make_unique<ParticlePowerUpControl>("powerup.png");
+	//それぞれのパーティクル管理クラスの生成
+	m_particleVanishControl   = std::make_unique<ParticleVanishControl>("vanish.png");
+	m_particlePowerUpControl  = std::make_unique<ParticlePowerUpControl>("powerup.png");
+	m_particleMoveDustControl = std::make_unique<ParticleMoveDustControl>("grounddust.png");
+	m_particleItemGetControl  = std::make_unique<ParticleItemGetControl>("itemget.png");
 }
 
 /**
@@ -52,23 +55,30 @@ ParticleManager::~ParticleManager()
 }
 
 
-/// <summary>
-/// 更新関数
-/// </summary>
-/// <param name="timer">Game等からStepTimerを受け取る</param>
+
+/**
+ * @brief 更新
+ *
+ * @param[in]  なし
+ * 
+ * @return なし
+ */
 void ParticleManager::Update()
 {
 	m_particleVanishControl->Update();
-
+	m_particleMoveDustControl->Update();
 	m_particlePowerUpControl->Update();
+	m_particleItemGetControl->Update();
 }
 
 
-/// <summary>
-/// 描画関数
-/// </summary>
-/// <param name="view">ビュー行列</param>
-/// <param name="proj">射影行列</param>
+/**
+ * @brief 描画
+ *
+ * @param[in]  なし
+ * 
+ * @return なし
+ */
 void ParticleManager::Render()
 {
 	const DirectX::SimpleMath::Vector3& target = m_pCamera->GetTargetPos();
@@ -77,33 +87,89 @@ void ParticleManager::Render()
 
 	m_particleVanishControl->Render(target,eye,up);
 	m_particlePowerUpControl->Render(target,eye,up);
+	m_particleMoveDustControl->Render(target, eye, up);
+	m_particleItemGetControl->Render(target, eye, up);
 }
 
+/**
+ * @brief リセット
+ *
+ * @param[in]  なし
+ * 
+ * @return なし
+ */
 void ParticleManager::Reset()
 {
 	m_particleVanishControl->Reset();
 	m_particlePowerUpControl->Reset();
+	m_particleMoveDustControl->Reset();
+	m_particleItemGetControl->Reset();
 }
 
-void ParticleManager::RequestParticle(ParticleType type,const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Color color)
+
+
+/**
+ * @brief 敵消滅パーティクル生成要求
+ *
+ * @param[in]  生成位置
+ *
+ * @return なし
+ */
+void ParticleManager::RequestVanishParticle(const DirectX::SimpleMath::Vector3& pos)
 {
-	switch (type)
-	{
-	case ParticleManager::Vanish:
-		m_particleVanishControl->RequestVanishParticle(pos);
-		break;
-	case ParticleManager::PowerUp:
-		m_particlePowerUpControl->RequestParticlePowerUp(pos,color);
-		break;
-	case ParticleManager::Hit:
-		break;
-	case ParticleManager::Num:
-		break;
-	default:
-		break;
-	}
+	m_particleVanishControl->RequestVanishParticle(pos);
+
 }
 
+/**
+ * @brief パワーアップパーティクル生成要求
+ *
+ * @param[in]  生成位置
+ * @param[in]  色
+ *
+ * @return なし
+ */
+void ParticleManager::RequestPowerUpParticle(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Color color)
+{
+	m_particlePowerUpControl->RequestParticlePowerUp(pos, color);
+
+}
+
+/**
+ * @brief 移動時土埃パーティクル生成要求
+ *
+ * @param[in]  生成位置
+ *
+ * @return なし
+ */
+void ParticleManager::RequestMoveDustParticle(const DirectX::SimpleMath::Vector3& pos)
+{
+	m_particleMoveDustControl->RequestMoveDustParticle(pos);
+}
+
+/**
+ * @brief アイテムゲットパーティクル生成要求
+ *
+ * @param[in]  生成位置
+ * @param[in]  目標位置
+ * @param[in]  色
+ *
+ * @return なし
+ */
+void ParticleManager::RequestItemGetParticle(const DirectX::SimpleMath::Vector3& pos,const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Color& color)
+{
+	m_particleItemGetControl->RequestItemGetParticle(pos,targetPos,color);
+
+}
+
+
+/**
+ * @brief カメラポインタ設定
+ *
+ * @param[in]  カメラクラスのポインタ
+ *
+ * @return なし
+ */
 void ParticleManager::SetCamera(Camera* pCamera)
 {
 	m_pCamera = pCamera;

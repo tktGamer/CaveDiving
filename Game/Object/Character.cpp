@@ -31,6 +31,7 @@ Character::Character(int hp, int attack, int diffence, Tag::ObjectType type, Gam
 	,m_attackPower{attack}
 	,m_diffence{diffence}
 	,m_isInvincible{false}
+	,m_damageFlash{0.0f}
 {
 }
 
@@ -94,6 +95,31 @@ void Character::TakeDamage(const int& damage)
 	if (m_currentHp < 0) 
 	{
 		m_currentHp = 0;
+	}
+}
+
+
+/**
+ * @brief ダメージフラッシュの更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void Character::DamageFlashUpdate()
+{
+	if (m_damageFlash == NO_DAMAGE_FLASH) 
+	{
+		return;
+	}
+
+	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
+	//経過時間でフラッシュを弱める
+	m_damageFlash -= elapsedTime;
+
+	if (m_damageFlash < NO_DAMAGE_FLASH) 
+	{
+		m_damageFlash = NO_DAMAGE_FLASH;
 	}
 }
 
@@ -251,3 +277,12 @@ void Character::SetDamageDirection(const DirectX::SimpleMath::Vector3& damageDir
 	m_damageDirection = damageDirection;
 }
 
+void Character::SetDamageFlash(const float& flash)
+{
+	m_damageFlash = flash;
+}
+
+const float& Character::GetDamageFlash() const
+{
+	return m_damageFlash;
+}

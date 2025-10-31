@@ -3,9 +3,9 @@
  *
  * @brief  羽に関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/10/17
  */
 
  // 多重インクルードの防止 =====================================================
@@ -18,7 +18,7 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Wing
+  * @brief コウモリの羽
   */
 class Wing : public EnemyPart
 {
@@ -28,9 +28,6 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-
-	DirectX::SimpleMath::Matrix m_world;
 
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
@@ -46,13 +43,16 @@ public:
 
 // 操作
 public:
+	//初期化
 	void Initialize() override;
 
+	//更新
 	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-
+	//描画
 	void Draw() override;
 
+	//終了
 	void Finalize();
 
 	// メッセージを取得する
@@ -61,7 +61,7 @@ public:
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
 
-	//　取得・設定
+//　取得・設定
 public:
 	
 

@@ -275,3 +275,30 @@ DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Box* box, Box* box2)
 	// 押し出し処理
 	return box2->GetCenter() + pushOutDirection * 0.5f; // 中心位置を更新
 }
+
+DirectX::SimpleMath::Vector3 CollisionManager::PushBack(Sphere* sphereA, Sphere* sphereB)
+{
+
+	// 中心間ベクトル
+	DirectX::SimpleMath::Vector3 direction = sphereA->GetCenter() - sphereB->GetCenter();
+	float distance = direction.Length();
+
+
+	//direction = direction.Normalize();
+
+	// 球AがBの外に出ているなら
+	if (distance + sphereA->GetRadius() > sphereB->GetRadius())
+	{
+		// A を B の内側ギリギリまで押し戻す
+		float targetDistance = sphereB->GetRadius() - sphereA->GetRadius();
+		float pushBackDistance = distance - targetDistance;
+
+		DirectX::SimpleMath::Vector3 correction = direction;
+		correction.Normalize();
+		correction *= -pushBackDistance;
+		
+		return sphereA->GetCenter() + correction;
+	}
+
+	return sphereA->GetCenter();
+}

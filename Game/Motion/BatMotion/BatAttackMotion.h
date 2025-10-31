@@ -57,7 +57,7 @@ public:
 
 //@æ“¾Eİ’è
 public:
-	void SetIsNextAttack(bool isNext);
+
 //@“à•”‘€ì
 private:
 

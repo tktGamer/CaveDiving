@@ -32,10 +32,7 @@ private:
 	Hand* m_pRightHand;  //右手のポインタ
 	Hand* m_pLeftHand;  //左手のポインタ
 
-	bool m_isNextAttack; //次の攻撃をするかどうか
-
-	//次の攻撃への入力時間
-	float m_inputTime;
+	int m_operate;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -58,7 +55,6 @@ public:
 
 //　取得・設定
 public:
-	void SetIsNextAttack(bool isNext);
 
 	
 //　内部操作

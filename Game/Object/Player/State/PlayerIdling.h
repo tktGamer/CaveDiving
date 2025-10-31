@@ -14,6 +14,7 @@
 #define PLAYER_IDLING_DEFINED
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
+#include"Game/Motion/PlayerMotion/PlayerIdlingMotion.h"
 // クラスの宣言 ===============================================================
 class Player;
 
@@ -33,8 +34,8 @@ private:
 	Player* m_player;
 	// グラフィックス
 	Graphics* m_graphics;
-	// ワールドマトリックス
-	DirectX::SimpleMath::Matrix m_worldMatrix;
+	
+	std::unique_ptr<Motion> m_idlingMotion;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

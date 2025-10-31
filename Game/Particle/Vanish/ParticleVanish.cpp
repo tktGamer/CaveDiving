@@ -35,7 +35,14 @@ const static float ENDLESS = -100.0f;
 /**
  * @brief コンストラクタ
  *
+ * @param[in] life
  * @param[in] pos
+ * @param[in] velocity
+ * @param[in] accele
+ * @param[in] startScale
+ * @param[in] endScale
+ * @param[in] startColor
+ * @param[in] endColor
  */
 ParticleVanish::ParticleVanish(
 	float life,
@@ -51,9 +58,9 @@ ParticleVanish::ParticleVanish(
 	m_afterColor = endColor;
 	m_afterColor.w = 0.0f;
 }
-/// <summary>
-/// デストラクタ
-/// </summary>
+/**
+ * @brief デストラクタ
+ */
 ParticleVanish::~ParticleVanish()
 {
 }
@@ -114,5 +121,6 @@ bool ParticleVanish::Update()
 
 	return true;
 }
+
 
 

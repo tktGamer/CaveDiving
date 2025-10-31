@@ -11,12 +11,15 @@
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader.h"
 #include"Game/Message/Messenger.h"
-/// <summary>
-/// コンストラクタ
-/// </summary>
-Transitor::Transitor()
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] isIn  フェードイン・アウト
+ */
+Transitor::Transitor(bool isIn)
 	:m_time{0.0f}
-	,m_isIn{false}
+	,m_isIn{isIn}
 {
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
@@ -30,21 +33,33 @@ Transitor::~Transitor()
 {
 }
 
-void Transitor::Update()
+void Transitor::ReStart(bool isIn)
+{
+	m_time = 0.0f;
+	m_isIn = isIn;
+}
+
+bool Transitor::Update()
 {
 
 	if (m_time > 1.5f) 
 	{
-		m_isIn = !m_isIn;
-		m_time = 0.0f;
+		return true;
 	}
 
 	m_time+= Messenger::GetInstance()->GetElapsedTime();
 
+	return false;
 }
 
 void Transitor::Render() 
 {
+	//トランジションが完了していたら飛ばす
+	if (m_time > 1.5f) 
+	{
+		return;
+	}
+
 
 	ID3D11DeviceContext1* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = Graphics::GetInstance()->GetCommonStates();

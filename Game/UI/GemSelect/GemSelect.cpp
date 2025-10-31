@@ -15,6 +15,14 @@
 #include"Game/Message/Messenger.h"
 #include"Game/UI/GemSelectUIManager.h"
 #include"Game/Common/Sound.h"
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] width
+ * @param[in] height
+ * @param[in] pUIManager
+ */
 GemSelect::GemSelect(int width, int height, GemSelectUIManager* pUIManager)
     : m_menuIndex(0)
     , m_windowHeight(height)

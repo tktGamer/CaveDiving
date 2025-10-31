@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/08/27
+ * @date   日付  2025/10/27
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -16,19 +16,12 @@
 /**
  * @brief コンストラクタ
  *
- */
-Gem::Gem()
-{
-}
-/**
- * @brief コンストラクタ
- *
  * @param[in] type  宝石の種類
+ * @param[in] powerUp 宝石の強化項目
  * @param[in] value 宝石の効果値
- * @param[in] discription 宝石の効果説明
  */
-Gem::Gem(int id ,Type type, int value, std::string discription)
-	:m_ability{id, type, value, discription }
+Gem::Gem(int id ,std::string type,Type powerUp, int value)
+	:m_ability{id,type , powerUp, value}
 {
 }
 
@@ -63,8 +56,9 @@ void Gem::Initialize()
 
 }
 
-
-
+void Gem::ApplyEffect()
+{
+}
 
 
 

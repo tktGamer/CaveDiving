@@ -44,6 +44,8 @@ public:
 
 	};
 
+	static constexpr float NO_DAMAGE_FLASH = 0.0f;
+
 // データメンバの宣言 -----------------------------------------------
 private:
 	//現在の体力
@@ -55,6 +57,9 @@ private:
 	int m_attackPower;
 	//防御力
 	int m_diffence;
+
+	//ダメージフラッシュ ダメージを受けたとき1.0をセット
+	float m_damageFlash;
 
 	//無敵状態か
 	bool m_isInvincible;
@@ -79,6 +84,9 @@ public:
 
 	//ダメージを受ける
 	void TakeDamage(const int& damage);
+
+	//ダメージフラッシュ更新
+	void DamageFlashUpdate();
 //　取得・設定
 public:
 	//現在の体力の取得
@@ -110,6 +118,11 @@ public:
 
 	//無敵の設定
 	void SetInvincible(const bool& isInvinccible);
+
+	//ダメージフラッシュ
+	void SetDamageFlash(const float& flash = 1.0f);
+	const float& GetDamageFlash() const;
+
 //　内部操作
 private:
 

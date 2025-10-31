@@ -22,8 +22,7 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 EnemyPart::EnemyPart(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:GameObject{Tag::EnemyPart,parent,initialPosition,initialAngle}
-	,m_parentCharacter{root}
+	:PartObject{root,parent,initialPosition,initialAngle}
 {
 }
 
@@ -53,14 +52,3 @@ void EnemyPart::OnMessegeAccepted(Message::MessageID messageID)
 	}
 }
 
-/**
- * @brief 部品をもつキャラクターの取得
- *
- * @param[in] なし
- *
- * @return 部品をもつキャラクター
- */
-Character* EnemyPart::GetRootCharacter()
-{
-	return m_parentCharacter;
-}

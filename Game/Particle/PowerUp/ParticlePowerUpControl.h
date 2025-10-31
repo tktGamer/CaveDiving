@@ -12,8 +12,8 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include<list>
 
+#include"../ParticleControl.h"
 #include"../PowerUp/ParticlePowerUp.h"
 
 // クラスの宣言 ===============================================================
@@ -22,7 +22,7 @@
 /**
   * @brief パーティクル
   */
-class ParticlePowerUpControl
+class ParticlePowerUpControl : public ParticleControl
 {
 	// クラス定数の宣言 -------------------------------------------------
 private:
@@ -45,24 +45,13 @@ private:
 		{ 1.0f, 1.0f, 1.0f }  // 右上前
 	};
 
-	struct TimerAndPos
-	{
-		//経過時間
-		float timer = 0.0f;
-		//パーティクルの発生位置
-		DirectX::SimpleMath::Vector3 pos = { 0,0,0 };
-	};
 public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4	Diffuse;
-	};
-	// データメンバの宣言 -----------------------------------------------
+
+// データメンバの宣言 -----------------------------------------------
 private:
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+
 
 	std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
 
@@ -76,16 +65,6 @@ private:
 	//	！New！
 	//	頂点情報のリスト
 	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
-	//	カメラに関する情報
-	DirectX::SimpleMath::Vector3 m_cameraPosition;
-	DirectX::SimpleMath::Vector3 m_cameraTarget;
-
-
-	DirectX::SimpleMath::Matrix m_world;
-	DirectX::SimpleMath::Matrix m_view;
-	DirectX::SimpleMath::Matrix m_proj;
-
-	DirectX::SimpleMath::Matrix m_billboard;
 
 	//	パーティクルに使う情報を保存するためのクラスオブジェクト用リスト
 	std::list<ParticlePowerUp> m_particlePowerUp;

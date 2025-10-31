@@ -24,21 +24,25 @@ cbuffer CbLight : register(b1)
 
 //	C++側から設定されるデータ②
 Texture2D tex : register(t0);
-Texture2D tex2 : register(t1);
+Texture2D toonMap : register(t1);
 SamplerState samLinear : register(s0);
 
 
 float3 ToonStep(float intensity)
 {
-    // トゥーンステップ（3段階）
-    if (intensity > 0.46f)
-        return 0.9f;
-    else if (intensity > 0.33f)
-        return 0.6f;
-    else if(intensity> 0.25f)
-        return 0.1f;
-    else
-        return 0.0f;
+    //// トゥーンステップ（3段階）
+    //if (intensity > 0.46f)
+    //    return 0.9f;
+    //else if (intensity > 0.33f)
+    //    return 0.6f;
+    //else if(intensity> 0.25f)
+    //    return 0.1f;
+    //else
+    //    return 0.0f;
+    
+    //トゥーンステップ
+    float4 map = toonMap.Sample(samLinear, float2(intensity,0));
+    return map.xyz;
 }
 
 float SmoothDistanceAttenuation
@@ -90,17 +94,17 @@ float4 main(PS_IN input) : SV_TARGET
         lights[i].Attenuation
         );
         
-        //法線を正規化する
-        float3 worldNormal = normalize(input.Norw);
+        ////法線を正規化する
+        //float3 worldNormal = normalize(input.Norw);
     
-        float lightDirection = distance(lights[i].LightPosition, input.Posw.xyz);
-        ////光の強さを内積で求める
-        float3 dotL = dot(-lightDirection, worldNormal);
+        //float lightDirection = distance(lights[i].LightPosition, input.Posw.xyz);
+        //////光の強さを内積で求める
+        //float3 dotL = dot(-lightDirection, worldNormal);
     
-        //表面(+の範囲)の場合は１、裏面(-の範囲)の場合は０ 
-        float3 zeroL = step( 0.0f, dotL);
-        //裏面のときは黒になる
-        float3 diffuse = zeroL * dotL;
+        ////表面(+の範囲)の場合は１、裏面(-の範囲)の場合は０ 
+        //float3 zeroL = step( 0.0f, dotL);
+        ////裏面のときは黒になる
+        //float3 diffuse = zeroL * dotL;
 
         //ライトからの距離を考慮した色
         float3 tem = output.xyz * lights[i].LightColor * lights[i].LightIntensity * ToonStep(intensity);
@@ -115,6 +119,7 @@ float4 main(PS_IN input) : SV_TARGET
     //透明度は固定
     //output.w = 1.0f;
     
+    return lerp( output,float4(1,1,1,1), color.x);
     
     return output;
 }

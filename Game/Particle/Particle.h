@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付  2025/10/22
  */
 
  // 多重インクルードの防止 =====================================================
@@ -25,7 +25,15 @@
 class Particle
 {
 // クラス定数の宣言 -------------------------------------------------
-private:
+public:
+	//	データ受け渡し用コンスタントバッファ(送信側)
+	struct ConstBuffer
+	{
+		DirectX::SimpleMath::Matrix		matWorld;
+		DirectX::SimpleMath::Matrix		matView;
+		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Vector4	Diffuse;
+	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -52,7 +60,6 @@ private:
 	DirectX::SimpleMath::Color m_endColor;
 
 
-	DirectX::SimpleMath::Matrix m_billboard;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -72,10 +79,6 @@ public:
 	//	更新
 	virtual bool Update()=0;
 
-
-	void CreateBillboard(
-		DirectX::SimpleMath::Vector3 eye,
-		DirectX::SimpleMath::Vector3 up);
 
 //　取得・設定
 public:
@@ -113,9 +116,7 @@ public:
 	//最終の色
 	const DirectX::SimpleMath::Color GetEndColor() const;
 
-
-	//ビルボード
-	const DirectX::SimpleMath::Matrix& GetBillBoard();
+//内部処理
 private:
 
 };

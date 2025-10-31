@@ -77,6 +77,9 @@ public:
 	//‰Ÿ‚µo‚µˆ—
 	DirectX::SimpleMath::Vector3 PushOut(Box* box, Sphere* sphere, DirectX::SimpleMath::Vector3 moveDir);
 	DirectX::SimpleMath::Vector3 PushOut(Box* box, Box* box2);
+
+	//‹…“à‚Ö‚Ì‰Ÿ‚µ–ß‚µ
+	DirectX::SimpleMath::Vector3 PushBack(Sphere* sphereA, Sphere* sphereB);
 //@æ“¾Eİ’è
 public:
 

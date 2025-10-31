@@ -15,6 +15,7 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+#include"RenderTexture.h"
 #include"../Common/SceneManager.h"
 #include"../UserResources.h"
 #include"../Common/Sound.h"
@@ -24,6 +25,7 @@
 #include"../UI/Gauge/Gauge.h"
 #include"../UI/HoldGem/HoldGem.h"
 #include"../UI/Buff/BuffUIControl.h"
+#include"../UI/ClearConditions/ClearConditions.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 #include"../Object/Enemy/EnemyManager.h"
@@ -55,6 +57,21 @@ private:
 
 	std::unique_ptr<Sound> m_gameBGM;
 
+	std::unique_ptr<DX::RenderTexture> m_renderTexture;
+
+	//レンダーテクスチャ （シーン全体）
+	std::unique_ptr<DX::RenderTexture> m_offScreenRT;
+
+	//レンダーテクスチャ（ブラー）
+	std::unique_ptr<DX::RenderTexture> m_blur1RT;
+	std::unique_ptr<DX::RenderTexture> m_blur2RT;
+
+	//ポストプロセス
+	std::unique_ptr<DirectX::BasicPostProcess> m_basicPostProcess;
+	//デュアルポストプロセス
+	std::unique_ptr<DirectX::DualPostProcess> m_dualPostProcess;
+
+
 	// オブジェクト関連
 	std::unique_ptr<EnemyManager> m_enemyManager; //<敵管理オブジェクト
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
@@ -64,6 +81,7 @@ private:
 	std::unique_ptr<Gauge> m_hpGauge;
 	std::unique_ptr<HoldGem> m_holdGem;
 	std::unique_ptr<BuffUIControl> m_buffUI;
+	std::unique_ptr<ClearConditions> m_clearConditionsUI;
 
 	std::unique_ptr< ItemManager> m_itemManager;
 

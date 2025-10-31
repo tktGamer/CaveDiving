@@ -1,11 +1,11 @@
 /**
  * @file   GolemMoving.cpp
  *
- * @brief  コウモリの移動状態に関するソースファイル
+ * @brief  ゴーレムの移動状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/09/03
+ * @date   日付 2025/10/21
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -21,10 +21,7 @@
  */
 GolemMoving::GolemMoving(Golem* golem)
 	: m_golem(golem)
-	, m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 }
 /**
  * @brief デストラクタ

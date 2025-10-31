@@ -32,12 +32,14 @@ std::unique_ptr<Player> GameObjectFactory::CreatePlayer(BuffUIControl* pBuffUICo
  *
  * @return プレイヤーの手クラス
  */
-std::unique_ptr<Hand> GameObjectFactory::CreateHand(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+std::unique_ptr<Hand> GameObjectFactory::CreateHand(
+	Character* root,GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「プレイヤーの手」を宣言する
 	std::unique_ptr<Hand> hand;
 	//Handクラスのインスタンスを生成する
-	hand = std::make_unique<Hand>(parent, initialPosition, initialAngle);
+	hand = std::make_unique<Hand>(root,parent, initialPosition, initialAngle);
 	//初期化する
 	hand->Initialize();
 
@@ -117,6 +119,16 @@ std::unique_ptr<Wing> GameObjectFactory::CreateBatWing(Character* root, GameObje
 	return std::move(wing);
 }
 
+
+/**
+ * @brief 「ゴーレム」の生成
+ *
+ * @param[in] parent   親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　初期角度
+ *
+ * @return ゴーレムクラス
+ */
 std::unique_ptr<Golem> GameObjectFactory::CreateGolem(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「ゴーレム」を宣言する
@@ -130,6 +142,16 @@ std::unique_ptr<Golem> GameObjectFactory::CreateGolem(GameObject* parent, const 
 	return std::move(golem);
 }
 
+/**
+ * @brief 「ゴーレムの手」の生成
+ *
+ * @param[in] 大元のオブジェクトポインタ
+ * @param[in] parent   親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　初期角度
+ *
+ * @return ゴーレムの手クラス
+ */
 std::unique_ptr<GolemHand> GameObjectFactory::CreateGolemHand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「ゴーレムの手」を宣言する
@@ -143,7 +165,18 @@ std::unique_ptr<GolemHand> GameObjectFactory::CreateGolemHand(Character* root, G
 	return std::move(golem);
 }
 
-std::unique_ptr<Stage> GameObjectFactory::CreateStage(GameObject* parent, 
+/**
+ * @brief 「ステージ」の生成
+ *
+ * @param[in] parent   親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　初期角度
+ * @param[in] isOnLight　　ライトのオン・オフの配列
+ * @param[in] size　　　　　配列のサイズ
+ *
+ * @return ステージクラス
+ */
+std::unique_ptr<Stage> GameObjectFactory::CreateStage(GameObject* parent,
 	const DirectX::SimpleMath::Vector3& initialPosition,
 	const DirectX::SimpleMath::Quaternion& initialAngle,
 	bool* isOnLight,

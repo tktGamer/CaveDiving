@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　22025/09/17
+ * @date   日付　22025/10/24
  */
 
  // 多重インクルードの防止 =====================================================
@@ -41,7 +41,7 @@ public:
 		DirectX::SimpleMath::Vector3 LightPosition;      // ライト位置
 		float LightInvSqrRadius;  // ライトの届く距離
 		DirectX::SimpleMath::Vector3 LightColor;         // ライトカラー
-		float LightIntensity;    // ライト強度
+		float LightIntensity = 1.0f;    // ライト強度
 		DirectX::SimpleMath::Vector4	Attenuation;
 
 	};
@@ -64,6 +64,14 @@ public:
 	};
 
 	//データ受け渡し用コンスタントバッファ(送信側)
+	struct NumberConstBuffer
+	{
+		DirectX::SimpleMath::Vector2	windowSize;
+		float AlphaData=0;
+		float dammy=0;
+	};
+
+	//データ受け渡し用コンスタントバッファ(送信側)
 	struct ParticleConstBuffer
 	{
 		DirectX::SimpleMath::Matrix		matWorld;
@@ -83,14 +91,25 @@ public:
 		DirectX::SimpleMath::Vector2 dummy;
 
 	};
+	//データ受け渡し用コンスタントバッファ(送信側)
+	struct OutlineConstBuffer
+	{
+		DirectX::SimpleMath::Matrix		matWorld;
+		DirectX::SimpleMath::Matrix		matView;
+		DirectX::SimpleMath::Matrix		matProj;
+		float outlineThickness;
+		DirectX::SimpleMath::Vector3 dummy;
+	};
 
 
 	enum ShaderType 
 	{
 		Model, //モデルシェーダー
 		UI,   //UIシェーダー
+		Number2D,
 		Particle,//パーティクルシェーダー
 		Fade,
+		Outline,
 	};
 
 // データメンバの宣言 -----------------------------------------------
@@ -134,6 +153,17 @@ private:
 	//ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_UIGS;
 
+	//UIシェーダーに関する変数---------------------------------------
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_numberCBuffer;
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_numberInputLayout;
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_numberVS;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_numberPS;
+	//ジオメトリシェーダ
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_numberGS;
+
 	//Particleシェーダーに関する変数---------------------------------------
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_ParticleCBuffer;
 	// 入力レイアウト
@@ -156,6 +186,17 @@ private:
 	//ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_fadeGS;
 
+	//Outlineシェーダーに関する変数---------------------------------------
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_outlineCBuffer;
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_outlineInputLayout;
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_outlineVS;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_outlinePS;
+	//ジオメトリシェーダ
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_outlineGS;
+
 	//ライト配列
 	std::vector<Light*> m_lights;
 
@@ -169,6 +210,8 @@ public:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> UI_INPUT_LAYOUT;
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> PARTICLE_INPUT_LAYOUT;
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> FADE_INPUT_LAYOUT;
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> OUTLINE_INPUT_LAYOUT;
+	static const std::vector<D3D11_INPUT_ELEMENT_DESC> NUMBER_INPUT_LAYOUT;
 	// コンストラクタ
 	Shader();
 	// インスタンスをコピーすることを禁止する
@@ -197,7 +240,6 @@ public:
 	//シェーダー終了
 	void EndShader();
 
-	void Draw();
 
 	void Finalize();
 
@@ -234,6 +276,10 @@ private:
 	void LoadParticleShader();
 	//Fadeシェーダー読み込み
 	void LoadFadeShader();
+	//Outlineシェーダー読み込み
+	void LoadOutlineShader();
+	//Number2Dシェーダー読み込み
+	void LoadNumber2DShader();
 	
 	//モデルシェーダー設定
 	void SetModelShader(ID3D11Buffer* cBuffer);
@@ -243,5 +289,8 @@ private:
 	void SetParticleShader(ID3D11Buffer* cBuffer);
 	//Fadeシェーダー設定
 	void SetFadeShader(ID3D11Buffer* cBuffer);
+	//Outlineシェーダー設定
+	void SetOutlineShader(ID3D11Buffer* cBuffer);
+	void SetNumber2DShader(ID3D11Buffer* cBuffer);
 };
 

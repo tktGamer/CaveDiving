@@ -31,6 +31,7 @@ public:
 		DirectX::SimpleMath::Matrix		matWorld;
 		DirectX::SimpleMath::Matrix		matView;
 		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Vector4 color;
 
 	};
 
