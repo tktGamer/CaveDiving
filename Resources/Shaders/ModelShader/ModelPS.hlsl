@@ -79,6 +79,7 @@ float4 main(PS_IN input) : SV_TARGET
     
     //元の画像の色
     float4 output = tex.Sample(samLinear, input.Tex);
+    //return output;
     
     ////ライトからの距離を考慮した色
     //float3 tem = output.xyz * LightColor * LightIntensity * att;
@@ -121,5 +122,4 @@ float4 main(PS_IN input) : SV_TARGET
     
     return lerp( output,float4(1,1,1,1), color.x);
     
-    return output;
 }

@@ -30,6 +30,8 @@ public:
 		HPAutoRecovery = 0,
 		//全攻撃回転攻撃化
 		AllRotatingAttack,
+		//HP満タンで攻撃力が上がる
+		FullHPAttackUp,
 	};
 
 
@@ -40,8 +42,6 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	UniquGem();
-	// 宝石の種類と効果値を指定して初期化
 	UniquGem(UniqueType uniqeuType, GemAbility ability,GemImagePath image);
 
 	// デストラクタ

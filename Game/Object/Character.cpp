@@ -12,6 +12,9 @@
 #include "pch.h"
 #include "Character.h"
 #include"../Common/DamageSystem.h"
+#include"../Common/Collision/CollisionManager.h"
+#include"Game/Particle/ParticleManager.h"
+#include"../Common/Collision/Sphere.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -66,8 +69,14 @@ void Character::OnDamage(GameObject* other)
 	m_damageDirection = GetCurrentPosition() - other->GetCurrentPosition();
 	m_damageDirection.Normalize();
 
+
 	// ダメージを受ける
-	DamageSystem::GetInstance()->DamageToCharacter(other->Cast<Character>(), this);
+	int damage = DamageSystem::GetInstance()->DamageToCharacter(other->Cast<Character>(), this);
+
+	
+
+	ParticleManager::GetInstance()->RequestDamageParticle(CollisionManager::GetInstance()->CheckContactPoint(this->GetShape(), other->GetShape()),{2,2,1},damage);
+	
 	//ダメージ状態へ遷移
 	OnMessegeAccepted(Message::DAMAGED);
 
@@ -130,7 +139,7 @@ void Character::DamageFlashUpdate()
  *
  * @return 現在のHP
  */
-const int& Character::GetCurrentHP()
+const int& Character::GetCurrentHP() const
 {
 	return m_currentHp;
 }
@@ -143,9 +152,9 @@ const int& Character::GetCurrentHP()
  *
  * @return なし
  */
-void Character::SetCurrentHP()
+void Character::SetCurrentHP(const int& hp)
 {
-	m_currentHp = GetMaxHP();
+	m_currentHp = hp;
 }
 
 /**

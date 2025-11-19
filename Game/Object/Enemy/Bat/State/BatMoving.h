@@ -24,6 +24,8 @@ class Bat;
   */
 class BatMoving : public IState
 {
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatMoving(Bat* bat);

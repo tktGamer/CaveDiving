@@ -230,4 +230,6 @@ bool Sphere::IntersectSphere(Sphere* other) const
 		return true;
 	}
 	return false;
+
+
 }

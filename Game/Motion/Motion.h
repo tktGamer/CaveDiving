@@ -42,11 +42,13 @@ public:
 
 // 操作
 public:
+	//初期化
 	virtual void Initialize()=0;
 
+	//更新
 	virtual bool Update() = 0;
 
-
+	//リセット
 	virtual void Reset();
 
 //　取得・設定

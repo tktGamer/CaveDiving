@@ -1,7 +1,7 @@
 /**
  * @file   ParticleManager.h
  *
- * @brief  パーティクルに関するヘッダファイル
+ * @brief  パーティクルの管理クラスに関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -17,6 +17,7 @@
 #include"../Particle/PowerUp/ParticlePowerUpControl.h"
 #include"../Particle/MoveDust/ParticleMoveDustControl.h"
 #include"../Particle/ItemGet/ParticleItemGetControl.h"
+#include"../Particle/Damage/ParticleDamageControl.h"
 // クラスの宣言 ===============================================================
 class Camera;
 // クラスの定義 ===============================================================
@@ -52,6 +53,8 @@ private:
 	std::unique_ptr<ParticleMoveDustControl> m_particleMoveDustControl;
 	//アイテムゲットパーティクルの管理クラス
 	std::unique_ptr<ParticleItemGetControl> m_particleItemGetControl;
+	//ダメージパーティクルの管理クラス
+	std::unique_ptr<ParticleDamageControl> m_particleDamageControl;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 private:
@@ -66,9 +69,10 @@ private:
 	// ムーブコンストラクタは禁止する
 	ParticleManager(ParticleManager&&) = delete;
 
-// 操作
 public:
 	~ParticleManager();
+// 操作
+public:
 	// ParticleManagerクラスのインスタンスを取得する
 	static ParticleManager* const GetInstance();
 
@@ -80,8 +84,6 @@ public:
 	//リセット
 	void Reset();
 
-//　取得・設定
-public:
 	//敵消滅パーティクル生成
 	void RequestVanishParticle(
 		const DirectX::SimpleMath::Vector3& pos//パーティクルの発生位置
@@ -89,7 +91,7 @@ public:
 	//パワーアップパーティクル生成
 	void RequestPowerUpParticle(
 		const DirectX::SimpleMath::Vector3& pos,//パーティクルの発生位置
-		DirectX::SimpleMath::Color color//パーティクルの色
+		const DirectX::SimpleMath::Color& color//パーティクルの色
 	);
 	//移動時土埃パーティクル生成
 	void RequestMoveDustParticle(
@@ -101,8 +103,18 @@ public:
 		const DirectX::SimpleMath::Vector3& targetPos,//向かっていくオブジェクト位置
 		const DirectX::SimpleMath::Color& color //パーティクルの色
 	);
+	//ダメージパーティクル生成
+	void RequestDamageParticle(
+		const DirectX::SimpleMath::Vector3& pos,//パーティクルの発生位置
+		const DirectX::SimpleMath::Vector3& randomRange, 
+		int damage
+	);
 
+//　取得・設定
+public:
+	//カメラオブジェクトの設定
 	void SetCamera(Camera* pCamera);
+//内部処理
 private:
 
 	

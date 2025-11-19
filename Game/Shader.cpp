@@ -152,6 +152,10 @@ void Shader::StartShader(ShaderType type, ID3D11Buffer* cBuffer)
 		break;
 	case Shader::Number2D:
 		SetNumber2DShader(cBuffer);
+		break;
+	case Shader::Number3D:
+		SetNumber3DShader(cBuffer);
+		break;
 	default:
 		break;
 	}
@@ -218,6 +222,9 @@ ID3D11InputLayout* Shader::GetInputLayout(ShaderType type)
 	case Shader::Number2D:
 		return m_numberInputLayout.Get();
 		break;
+	case Shader::Number3D:
+		return m_number3DInputLayout.Get();
+		break;
 	case Shader::Particle:
 		return m_ParticleInputLayout.Get();
 		break;
@@ -252,6 +259,9 @@ ID3D11Buffer* Shader::GetCBuffer(ShaderType type)
 		break;
 	case Shader::Number2D:
 		return m_numberCBuffer.Get();
+		break;
+	case Shader::Number3D:
+		return m_number3DCBuffer.Get();
 		break;
 	case Shader::Particle:
 		return m_ParticleCBuffer.Get();
@@ -349,6 +359,7 @@ void Shader::CreateShader()
 	LoadFadeShader();
 	LoadOutlineShader();
 	LoadNumber2DShader();
+	LoadNumber3DShader();
 }
 
 /**
@@ -590,6 +601,40 @@ void Shader::LoadNumber2DShader()
 
 }
 
+void Shader::LoadNumber3DShader()
+{
+	// シェーダーのバイナリデータを読み込む
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	BinaryFile VSData = resourceManager->RequestBinaryFile(L"Resources/Shaders/NumberShader/3D/Number3DVS.cso");
+	BinaryFile PSData = resourceManager->RequestBinaryFile(L"Resources/Shaders/NumberShader/3D/Number3DPS.cso");
+	BinaryFile GSData = resourceManager->RequestBinaryFile(L"Resources/Shaders/NumberShader/3D/Number3DGS.cso");
+	// シェーダーを作成する
+	m_graphics->GetDeviceResources()->GetD3DDevice()->CreateVertexShader(
+		VSData.GetData(), VSData.GetSize(), nullptr, m_number3DVS.ReleaseAndGetAddressOf());
+	m_graphics->GetDeviceResources()->GetD3DDevice()->CreatePixelShader(
+		PSData.GetData(), PSData.GetSize(), nullptr, m_number3DPS.ReleaseAndGetAddressOf());
+	m_graphics->GetDeviceResources()->GetD3DDevice()->CreateGeometryShader(
+		GSData.GetData(), GSData.GetSize(), nullptr, m_number3DGS.ReleaseAndGetAddressOf());
+
+	//インプットレイアウトの作成
+	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateInputLayout(
+		&PARTICLE_INPUT_LAYOUT[0],
+		static_cast<UINT>(PARTICLE_INPUT_LAYOUT.size()),
+		VSData.GetData(),
+		VSData.GetSize(),
+		m_number3DInputLayout.GetAddressOf());
+
+	//	シェーダーにデータを渡すためのコンスタントバッファ生成
+	D3D11_BUFFER_DESC bd;
+	ZeroMemory(&bd, sizeof(bd));
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(ParticleConstBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.CPUAccessFlags = 0;
+	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_number3DCBuffer);
+
+}
+
 void Shader::SetModelShader(ID3D11Buffer* cBuffer)
 {
 	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
@@ -717,5 +762,22 @@ void Shader::SetNumber2DShader(ID3D11Buffer* cBuffer)
 	context->PSSetShader(m_numberPS.Get(), nullptr, 0);
 	context->GSSetShader(m_numberGS.Get(), nullptr, 0);
 
+
+}
+
+void Shader::SetNumber3DShader(ID3D11Buffer* cBuffer)
+{
+	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
+	//	シェーダーにバッファを渡す
+	ID3D11Buffer* cb[1] = { cBuffer };
+
+	// コンスタントバッファを設定
+	context->VSSetConstantBuffers(0, 1, cb);
+	context->PSSetConstantBuffers(0, 1, cb);
+	context->GSSetConstantBuffers(0, 1, cb);
+	// シェーダーを設定
+	context->VSSetShader(m_number3DVS.Get(), nullptr, 0);
+	context->PSSetShader(m_number3DPS.Get(), nullptr, 0);
+	context->GSSetShader(m_number3DGS.Get(), nullptr, 0);
 
 }

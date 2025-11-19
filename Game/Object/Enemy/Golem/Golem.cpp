@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/12
+ * @date   日付　2025/11/15
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -25,8 +25,8 @@
  */
 Golem::Golem(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, Character(1,13,0,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
-	, m_sphere{ GetPosition(), 2.0f } // 初期位置とサイズを設定
+	, Character(GOLEM_HP,13,0,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
+	, m_sphere{ GetPosition(), 4.0f } // 初期位置とサイズを設定
 	,m_frameCount{}
 	,m_messageID{}
 	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
@@ -169,6 +169,32 @@ void Golem::Draw()
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
 
+	Shader::OutlineConstBuffer outline;
+	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
+	outline.matView = graphics->GetViewMatrix().Transpose();
+	outline.matProj = graphics->GetProjectionMatrix().Transpose();
+	outline.outlineThickness = 0.04f;
+	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
+
+
+
+	// モデル描画（アウトライン専用）
+	GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
+		// カリングを FrontFace にして裏面を描画（アウトライン用）
+		context->RSSetState(states->CullCounterClockwise());
+
+		// ブレンド・デプスステート（深度は通常通り or 調整）
+		context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+		context->OMSetDepthStencilState(states->DepthDefault(), 0);
+
+		// アウトラインシェーダを設定
+		Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
+		context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+
+		});
+
+	Shader::GetInstance()->EndShader();
+
 
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
@@ -298,7 +324,7 @@ void Golem::CollisionResponce(GameObject* other)
 			Weapon* weapon = other->Cast<Weapon>();
 			//攻撃力をもっている所有者を渡す
 			OnDamage(weapon->GetOwner());
-
+			SetDamageFlash();
 			break;
 		}
 	default:
@@ -342,7 +368,7 @@ void Golem::SetVelocity(DirectX::SimpleMath::Vector3 v)
 	m_velocity = v;
 }
 
-const Message::AttackMesssage Golem::GetAttackMessage()
+const Message::AttackMesssage Golem::GetAttackMessage() const
 {
 	return m_attackMessage;
 }
@@ -353,7 +379,7 @@ void Golem::SetAttackMessage(const Message::AttackMesssage& message)
 }
 
 
-DirectX::SimpleMath::Quaternion Golem::GetMotionAngle()
+DirectX::SimpleMath::Quaternion Golem::GetMotionAngle() const
 {
 	return m_motionAngle;
 }

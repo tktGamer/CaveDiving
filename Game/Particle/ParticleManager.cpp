@@ -1,10 +1,14 @@
-//--------------------------------------------------------------------------------------
-// File: ParticleManager.cpp
-//
-// パーティクルクラス
-//
-//-------------------------------------------------------------------------------------
+/**
+ * @file   ParticleManager.cpp
+ *
+ * @brief  パーティクルの管理クラスに関するソースファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2025/10/31
+ */
 
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleManager.h"
 #include"Game/Object/Camera.h"
@@ -45,6 +49,7 @@ ParticleManager::ParticleManager()
 	m_particlePowerUpControl  = std::make_unique<ParticlePowerUpControl>("powerup.png");
 	m_particleMoveDustControl = std::make_unique<ParticleMoveDustControl>("grounddust.png");
 	m_particleItemGetControl  = std::make_unique<ParticleItemGetControl>("itemget.png");
+	m_particleDamageControl = std::make_unique<ParticleDamageControl>("number.png");
 }
 
 /**
@@ -69,6 +74,7 @@ void ParticleManager::Update()
 	m_particleMoveDustControl->Update();
 	m_particlePowerUpControl->Update();
 	m_particleItemGetControl->Update();
+	m_particleDamageControl->Update();
 }
 
 
@@ -81,6 +87,7 @@ void ParticleManager::Update()
  */
 void ParticleManager::Render()
 {
+	//カメラの情報を取得
 	const DirectX::SimpleMath::Vector3& target = m_pCamera->GetTargetPos();
 	const DirectX::SimpleMath::Vector3& eye = m_pCamera->GetEyePos();
 	const DirectX::SimpleMath::Vector3& up = m_pCamera->GetUP();
@@ -89,6 +96,7 @@ void ParticleManager::Render()
 	m_particlePowerUpControl->Render(target,eye,up);
 	m_particleMoveDustControl->Render(target, eye, up);
 	m_particleItemGetControl->Render(target, eye, up);
+	m_particleDamageControl->Render(target, eye, up);
 }
 
 /**
@@ -104,6 +112,7 @@ void ParticleManager::Reset()
 	m_particlePowerUpControl->Reset();
 	m_particleMoveDustControl->Reset();
 	m_particleItemGetControl->Reset();
+	m_particleDamageControl->Reset();
 }
 
 
@@ -111,7 +120,7 @@ void ParticleManager::Reset()
 /**
  * @brief 敵消滅パーティクル生成要求
  *
- * @param[in]  生成位置
+ * @param[in]  pos  生成位置
  *
  * @return なし
  */
@@ -124,12 +133,12 @@ void ParticleManager::RequestVanishParticle(const DirectX::SimpleMath::Vector3& 
 /**
  * @brief パワーアップパーティクル生成要求
  *
- * @param[in]  生成位置
- * @param[in]  色
+ * @param[in]  pos    生成位置
+ * @param[in]  color  色
  *
  * @return なし
  */
-void ParticleManager::RequestPowerUpParticle(const DirectX::SimpleMath::Vector3& pos, DirectX::SimpleMath::Color color)
+void ParticleManager::RequestPowerUpParticle(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Color& color)
 {
 	m_particlePowerUpControl->RequestParticlePowerUp(pos, color);
 
@@ -138,7 +147,7 @@ void ParticleManager::RequestPowerUpParticle(const DirectX::SimpleMath::Vector3&
 /**
  * @brief 移動時土埃パーティクル生成要求
  *
- * @param[in]  生成位置
+ * @param[in]  pos  生成位置
  *
  * @return なし
  */
@@ -150,9 +159,9 @@ void ParticleManager::RequestMoveDustParticle(const DirectX::SimpleMath::Vector3
 /**
  * @brief アイテムゲットパーティクル生成要求
  *
- * @param[in]  生成位置
- * @param[in]  目標位置
- * @param[in]  色
+ * @param[in]  pos        生成位置
+ * @param[in]  targetPos  目標位置
+ * @param[in]  color      色
  *
  * @return なし
  */
@@ -160,6 +169,21 @@ void ParticleManager::RequestItemGetParticle(const DirectX::SimpleMath::Vector3&
 {
 	m_particleItemGetControl->RequestItemGetParticle(pos,targetPos,color);
 
+}
+
+
+/**
+ * @brief ダメージパーティクル生成要求
+ *
+ * @param[in]  pos 生成位置
+ * @param[in]  randomRange
+ * @param[in]  damage
+ *
+ * @return なし
+ */
+void ParticleManager::RequestDamageParticle(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& randomRange,int damage)
+{
+	m_particleDamageControl->RequestParticleDamage(pos, randomRange, damage);
 }
 
 

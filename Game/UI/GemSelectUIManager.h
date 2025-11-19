@@ -16,7 +16,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"../Common/SceneManager.h"
-#include"Game/UserResources.h"
+#include"Game/GameData.h"
 #include"Game/Object/Camera.h"
 
 #include"Game/Interface/IUI.h"

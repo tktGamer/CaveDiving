@@ -24,6 +24,8 @@ class Bat;
   */
 class BatIdling : public IState
 {
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatIdling(Bat* bat);

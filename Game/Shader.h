@@ -107,6 +107,7 @@ public:
 		Model, //モデルシェーダー
 		UI,   //UIシェーダー
 		Number2D,
+		Number3D,
 		Particle,//パーティクルシェーダー
 		Fade,
 		Outline,
@@ -153,7 +154,7 @@ private:
 	//ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_UIGS;
 
-	//UIシェーダーに関する変数---------------------------------------
+	//Numberシェーダーに関する変数---------------------------------------
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_numberCBuffer;
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_numberInputLayout;
@@ -163,6 +164,17 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_numberPS;
 	//ジオメトリシェーダ
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_numberGS;
+
+	//Numberシェーダーに関する変数---------------------------------------
+	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_number3DCBuffer;
+	// 入力レイアウト
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_number3DInputLayout;
+	//	頂点シェーダ
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_number3DVS;
+	//	ピクセルシェーダ
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_number3DPS;
+	//ジオメトリシェーダ
+	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_number3DGS;
 
 	//Particleシェーダーに関する変数---------------------------------------
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_ParticleCBuffer;
@@ -280,6 +292,8 @@ private:
 	void LoadOutlineShader();
 	//Number2Dシェーダー読み込み
 	void LoadNumber2DShader();
+	//Number2Dシェーダー読み込み
+	void LoadNumber3DShader();
 	
 	//モデルシェーダー設定
 	void SetModelShader(ID3D11Buffer* cBuffer);
@@ -292,5 +306,6 @@ private:
 	//Outlineシェーダー設定
 	void SetOutlineShader(ID3D11Buffer* cBuffer);
 	void SetNumber2DShader(ID3D11Buffer* cBuffer);
+	void SetNumber3DShader(ID3D11Buffer* cBuffer);
 };
 

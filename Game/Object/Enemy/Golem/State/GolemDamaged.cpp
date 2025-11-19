@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付 2025/11/15
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -17,14 +17,11 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] golem コウモリのポインタ
+ * @param[in] golem ゴーレムのポインタ
  */
 GolemDamaged::GolemDamaged(Golem* golem)
 	:m_golem(golem)
-	, m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 }
 /**
  * @brief デストラクタ

@@ -3,9 +3,9 @@
  *
  * @brief  アイテムの基底に関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025//11//19
  */
 
  // 多重インクルードの防止 =====================================================
@@ -18,7 +18,7 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief キャラクター
+  * @brief アイテム
   */
 class Item : public GameObject
 {
@@ -34,9 +34,9 @@ public:
 	//	データ受け渡し用コンスタントバッファ(送信側)
 	struct ConstBuffer
 	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Matrix	 matWorld;
+		DirectX::SimpleMath::Matrix	 matView;
+		DirectX::SimpleMath::Matrix	 matProj;
 		DirectX::SimpleMath::Vector4 color;
 	};
 
@@ -72,10 +72,10 @@ public:
 
 // 操作
 public:
-
+	//更新
 	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-
+	//描画
 	void Draw() override;
 
 	// メッセージを取得する
@@ -102,6 +102,7 @@ public:
 	const DirectX::SimpleMath::Vector4& GetColor();
 //　内部操作
 private:
+	//アイテムの色を決める
 	void DecideColor();
 };
 

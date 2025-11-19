@@ -1,12 +1,28 @@
+/**
+ * @file   Messenger.h
+ *
+ * @brief  メッセンジャーに関するヘッダファイル
+ *
+ * @author 制作者名  福地貴翔
+ *
+ * @date   日付
+ */
+
+ // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef MESSENGER_DEFINED
 #define MESSENGER_DEFINED
+// ヘッダファイルの読み込み ===================================================
 #include "Game/Message/Message.h"
 #include <unordered_map>
 
+// クラスの宣言 ===============================================================
 class GameObject;
 
-// Messengerクラス
+// クラスの定義 ===============================================================
+/**
+  * @brief メッセンジャー
+  */
 class Messenger
 {
 private:

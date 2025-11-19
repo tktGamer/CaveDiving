@@ -28,8 +28,6 @@ public:
 private:
 	//回復間隔タイマー
 	float m_recoveryIntervalTimer = 0.0f;
-	//回復間隔
-	float m_recoveryInterval = 0.0f;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -46,7 +44,7 @@ public:
 public:
 	void Initialize();
 
-	void UniqueEffect();
+	int RecoveryHP(int currentHP,const int& maxHP);
 
 	void Finalize();
 //取得・設定

@@ -26,14 +26,6 @@ class Particle
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4	Diffuse;
-	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -53,7 +45,7 @@ private:
 	//	生存時間
 	float m_life;
 	float m_startLife;
-	//float m_afterLife; //	生存時間が経過した後の時間（消滅までの時間）
+
 	//	カラー
 	DirectX::SimpleMath::Color m_nowColor;
 	DirectX::SimpleMath::Color m_startColor;

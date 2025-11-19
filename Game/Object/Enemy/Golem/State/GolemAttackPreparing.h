@@ -1,11 +1,11 @@
 /**
  * @file   GolemAttackPreparing.h
  *
- * @brief  コウモリの攻撃準備状態に関するヘッダファイル
+ * @brief  ゴーレムの攻撃準備状態に関するヘッダファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/11/15
  */
 
  // 多重インクルードの防止 =====================================================
@@ -23,15 +23,28 @@ class Golem;
 
 // クラスの定義 ===============================================================
 /**
-  * @brief コウモリの攻撃状態
+  * @brief ゴーレムの攻撃準備状態
   */
 class GolemAttackPreparing : public IState
 {
+// クラス定数の宣言 -------------------------------------------------
+public:
+// データメンバの宣言 -----------------------------------------------
+private:
+	// ゴーレム
+	Golem* m_golem;
+	GolemHand* m_pRightHand;
+	GolemHand* m_pLeftHand;
+	//攻撃準備モーション
+	std::unique_ptr<Motion> m_attackPreparingMotion;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	GolemAttackPreparing(Golem* golem,GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
 	// デストラクタ
 	~GolemAttackPreparing();
+public:
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -50,15 +63,6 @@ public:
 
 	//攻撃方法を決める
 	void DecideMotion();
-private:
-	// ゴーレム
-	Golem* m_golem;
-	GolemHand* m_pRightHand;
-	GolemHand* m_pLeftHand;
-	// グラフィックス
-	Graphics* m_graphics;
-	//攻撃準備モーション
-	std::unique_ptr<Motion> m_attackPreparingMotion;
 
 };
 

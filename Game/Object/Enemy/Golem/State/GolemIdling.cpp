@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/12
+ * @date   日付  2025/11/15
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -21,10 +21,7 @@
  */
 GolemIdling::GolemIdling(Golem* golem)
 	:m_golem(golem)
-	,m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 }
 /**
  * @brief デストラクタ
@@ -91,14 +88,6 @@ void GolemIdling::Update(const float& elapsedTime)
 		}
 	}
 
-
-	//DirectX::SimpleMath::Vector3 v = m_golem->GetVelocity();
-	//
-	//v.y += -0.8f * elapsedTime;
-
-	//m_golem->SetVelocity(v);
-
-	//m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
 }
 

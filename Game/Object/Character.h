@@ -90,9 +90,9 @@ public:
 //@æ“¾Eİ’è
 public:
 	//Œ»İ‚Ì‘Ì—Í‚Ìæ“¾
-	const int& GetCurrentHP();
+	const int& GetCurrentHP() const;
 	//Œ»İ‚Ì‘Ì—Í‚Ìİ’è
-	virtual void SetCurrentHP();
+	virtual void SetCurrentHP(const int& hp);
 	// ‘Ì—Í‚Ìİ’è
 	void SetMaxHP(const int& hp);
 	// ‘Ì—Í‚Ìæ“¾

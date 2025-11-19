@@ -19,14 +19,14 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] life
- * @param[in] pos
- * @param[in] velocity
- * @param[in] accele
- * @param[in] startScale
- * @param[in] endScale
- * @param[in] startColor
- * @param[in] endColor
+ * @param[in] life　　　　生存時間
+ * @param[in] pos　　　　 座標
+ * @param[in] velocity　　速度
+ * @param[in] accele　　　加速度
+ * @param[in] startScale　初期スケール
+ * @param[in] endScale　　最終スケール
+ * @param[in] startColor　初期カラー
+ * @param[in] endColor　　最終カラー
  */
 Particle::Particle(float life,
 	DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity, 

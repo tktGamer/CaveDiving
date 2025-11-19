@@ -1,7 +1,7 @@
 /**
  * @file   ParticleControl.h
  *
- * @brief  パーティクルコントロールの基底関するヘッダファイル
+ * @brief  パーティクルコントロールの基底に関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -14,7 +14,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include <list>
 #include <string>
-
+#include"../Particle/Particle.h"
 
 // クラスの宣言 ===============================================================
 
@@ -38,9 +38,9 @@ protected:
 	struct CameraBuffer
 	{
 		DirectX::SimpleMath::Vector3 cameraPos; // カメラの右方向ベクトル
-		float dummy1;
+		float dummy1 = 0;
 		DirectX::SimpleMath::Vector3 cameraUp; // カメラの上方向ベクトル
-		float dummy2;
+		float dummy2 = 0;
 	};
 
 
@@ -51,8 +51,9 @@ protected:
 		//パーティクルの発生位置
 		DirectX::SimpleMath::Vector3 pos = { 0,0,0 };
 	};
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
+	//カメラのコンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_cameraCBuffer;
 
 
@@ -70,7 +71,8 @@ private:
 	// テクスチャハンドル
 	ID3D11ShaderResourceView** m_texture;
 
-
+	//パーティクルのリスト
+	std::list<std::unique_ptr<Particle>> m_particles;
 
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -111,7 +113,8 @@ protected:
 	void AddVertex(const DirectX::VertexPositionColorTexture& vPCT);
 	//頂点消去
 	void ClearVertex();
-
+	//発生位置・タイマー追加
+	void AddTimerAndPos(const TimerAndPos& timerAnPos);
 
 	//カメラの情報をバッファに渡す
 	void SetCameraBuffer(const CameraBuffer& cameraCB , const UINT& startSlot = 1, const UINT& numBuffer = 1);

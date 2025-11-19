@@ -26,24 +26,7 @@ class ParticlePowerUpControl : public ParticleControl
 {
 	// クラス定数の宣言 -------------------------------------------------
 private:
-	static constexpr int VANISH_PARTICLE_NUM = 14; // 消滅パーティクルの数
-	static constexpr DirectX::SimpleMath::Vector3 VANISH_PARTICLE_DIRECTION[VANISH_PARTICLE_NUM] =
-	{
-		{ 0.0f, 1.0f, 0.0f }, // 上
-		{ 0.0f, -1.0f, 0.0f }, // 下
-		{ 1.0f, 0.0f, 0.0f }, // 右
-		{ 0.0f, 0.0f, 1.0f }, // 前
-		{ -1.0f, 0.0f, 0.0f }, // 左
-		{ 0.0f, 0.0f, -1.0f }, // 後ろ
-		{ -1.0f, -1.0f, -1.0f }, // 左下後ろ
-		{ -1.0f, -1.0f, 1.0f }, // 左下前
-		{ -1.0f, 1.0f, -1.0f }, // 左上後ろ
-		{ -1.0f, 1.0f, 1.0f }, // 左上前
-		{ 1.0f, -1.0f, -1.0f }, // 右下後ろ
-		{ 1.0f, -1.0f, 1.0f }, // 右下前
-		{ 1.0f, 1.0f, -1.0f }, // 右上後ろ
-		{ 1.0f, 1.0f, 1.0f }  // 右上前
-	};
+	
 
 public:
 

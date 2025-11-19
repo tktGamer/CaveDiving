@@ -21,6 +21,7 @@
 #include"Game/Fuctory/GameObjectFactory.h"
 #include"Game/Particle/ParticleManager.h"
 #include"Game/UI/Buff/BuffUIControl.h"
+#include"Game/Object/Gem/Unique/HPAutoRecoveryGem.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -62,9 +63,8 @@ Player::~Player()
 void Player::Initialize()
 {
 	//手の生成
-	//std::unique_ptr<Hand> handR = std::make_unique<Hand>(this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
-	std::unique_ptr<Hand> handR =GameObjectFactory::CreateHand(this,this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
-	std::unique_ptr<Hand> handL = std::make_unique<Hand>(this,this, DirectX::SimpleMath::Vector3{ -1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
+	std::unique_ptr<Hand> handR = GameObjectFactory::CreateHand(this, this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
+	std::unique_ptr<Hand> handL = GameObjectFactory::CreateHand(this, this, DirectX::SimpleMath::Vector3{-1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
 
 	handR->HaveWeapon(GameObjectFactory::CreatePikle(this, handR.get()));
 
@@ -145,8 +145,16 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 	}
 
 
+	//ParticleManager::GetInstance()->RequestDamageParticle({0,3,0}, {1,1,1,1}, 103);
+
 
 	//HP自動回復の宝石をもっているか
+	std::vector<HPAutoRecoveryGem*> gems = GemManager::GetInstance()->IsHasGem<HPAutoRecoveryGem>();
+	for(HPAutoRecoveryGem* gem : gems)
+	{
+		//回復したHPをセット
+		SetCurrentHP( gem->RecoveryHP(GetCurrentHP(), GetMaxHP()));
+	}
 }
 
 
@@ -286,6 +294,7 @@ void Player::Draw()
 
 
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
+	
 	//Y軸
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_currentAngle.y)), DirectX::SimpleMath::Vector2(50.0f, 50.0f));
 	//現在の体力
@@ -300,6 +309,13 @@ void Player::Draw()
 	//最大の体力
 	debugFont->AddString(L"MaxHP::", DirectX::SimpleMath::Vector2(0.0f, 250.0f));
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetMaxHP())), DirectX::SimpleMath::Vector2(100.0f, 250.0f));
+	//現在座標
+	debugFont->AddString(L"X::", DirectX::SimpleMath::Vector2(0.0f, 300.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().x)), DirectX::SimpleMath::Vector2(25.0f, 300.0f));
+	debugFont->AddString(L"Y::", DirectX::SimpleMath::Vector2(0.0f, 330.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().y)), DirectX::SimpleMath::Vector2(25.0f, 330.0f));
+	debugFont->AddString(L"Z::", DirectX::SimpleMath::Vector2(0.0f, 360.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().z)), DirectX::SimpleMath::Vector2(25.0f, 360.0f));
 
 	//パーツの描画
 	for (std::unique_ptr<GameObject>& part : m_bodyParts) 
@@ -375,13 +391,17 @@ void Player::CollisionResponce(GameObject* other)
 	{
 		case Tag::ObjectType::Enemy:
 		{
-			if (GetState() == m_damagedState.get())
+			if (GetState() == m_damagedState.get() || GetState() == m_avoidState.get())
 			{
 				break;
 			}
 
+			DirectX::SimpleMath::Vector3 contactPos = CollisionManager::GetInstance()->CheckContactPoint(dynamic_cast<Sphere*>(GetShape()), dynamic_cast<Sphere*>(other->GetShape()));
 			//ダメージ
 			OnDamage(other);
+
+
+			//ParticleManager::GetInstance()->RequestDamageParticle(contactPos, DirectX::SimpleMath::Vector3{ 2,2,2 }, 10);
 		}
 		break;
 
@@ -628,12 +648,12 @@ void Player::ChangeDirection()
 
 	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::Identity;
 
-	if (key->GetLastState().A)
+	if (key->GetLastState().LeftShift)
 	{
 		//左旋回
 		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(180.0f*elapsedTime));
 	}
-	if (key->GetLastState().D)
+	if (key->GetLastState().C)
 	{
 		//右旋回
 		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-180.0f*elapsedTime));
@@ -677,6 +697,14 @@ int Player::GemPlusStatus(const Gem::Type type)
 	return total;
 }
 
+
+/**
+ * @brief アイテムによる強化量を取得
+ *
+ * @param[in] upStatus 取得するステータス
+ *
+ * @return 強化量
+ */
 int Player::ItemBuff(const Item::UpStatus& upStatus)
 {
 	int total = 0;

@@ -149,6 +149,12 @@
     <Filter Include="Resources\Shaders\NumberShader">
       <UniqueIdentifier>{9b3c4de2-0e99-4e36-9f98-afb171a9f238}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Particle\Damage">
+      <UniqueIdentifier>{d86bec97-cc24-43c6-85af-08080cf96eb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\NumberShader\3D">
+      <UniqueIdentifier>{38d00b96-c94f-446c-b0dd-de154f36176b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -266,7 +272,7 @@
     <ClInclude Include="Game\Object\Enemy\Bat\Bat.h">
       <Filter>Game\Object\Enemy\Bat</Filter>
     </ClInclude>
-    <ClInclude Include="Game\UserResources.h" />
+    <ClInclude Include="Game\GameData.h" />
     <ClInclude Include="Game\Object\Enemy\Bat\State\BatAttack.h">
       <Filter>Game\Object\Enemy\Bat\State</Filter>
     </ClInclude>
@@ -515,6 +521,18 @@
     </ClInclude>
     <ClInclude Include="Game\UI\NumberControl.h">
       <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\Damage\ParticleDamageNumber.h">
+      <Filter>Game\Particle\Damage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\Damage\ParticleDamageControl.h">
+      <Filter>Game\Particle\Damage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\Damage\ParticleNumber3D.h">
+      <Filter>Game\Particle\Damage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\Unique\FullHPAttackUp.h">
+      <Filter>Game\Object\Gem\Unique</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -856,6 +874,18 @@
     <ClCompile Include="Game\UI\NumberControl.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Particle\Damage\ParticleDamageNumber.cpp">
+      <Filter>Game\Particle\Damage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\Damage\ParticleDamageControl.cpp">
+      <Filter>Game\Particle\Damage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\Damage\ParticleNumber3D.cpp">
+      <Filter>Game\Particle\Damage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\Unique\FullHPAttackUp.cpp">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -893,6 +923,9 @@
     </None>
     <None Include="Resources\Shaders\NumberShader\Number.hlsli">
       <Filter>Resources\Shaders\NumberShader</Filter>
+    </None>
+    <None Include="Resources\Shaders\NumberShader\3D\Number3D.hlsli">
+      <Filter>Resources\Shaders\NumberShader\3D</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -964,6 +997,15 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\NumberShader\NumberVS.hlsl">
       <Filter>Resources\Shaders\NumberShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\3D\Number3DGS.hlsl">
+      <Filter>Resources\Shaders\NumberShader\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\3D\Number3DPS.hlsl">
+      <Filter>Resources\Shaders\NumberShader\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\3D\Number3DVS.hlsl">
+      <Filter>Resources\Shaders\NumberShader\3D</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

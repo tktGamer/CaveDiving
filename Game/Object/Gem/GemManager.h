@@ -122,7 +122,7 @@ public:
 
 	//指定の宝石をもっているか
 	template<typename T>
-	T*  IsHasGem();
+	std::vector<T*>  IsHasGem();
 
 	//プレイヤーの持つ宝石をセット
 	void SetHoldGem(Gem* pGem, int index=-1);
@@ -139,17 +139,20 @@ private:
 };
 
 template<typename T>
-inline T* GemManager::IsHasGem()
+inline std::vector<T*> GemManager::IsHasGem()
 {
+	std::vector<T*> result;
+
 	for (int i = 0; i < PLAYER_HOLD_GEM_NUM; ++i)
 	{
 		if (auto gem = m_playerKeepGem[i])
 		{
-			if (dynamic_cast<T*>(gem))
+			if (auto targetGem = dynamic_cast<T*>(gem))
 			{
-				return dynamic_cast<T*>(gem); // T 型の Gem を発見
+				//T型のGemを追加
+				result.push_back(targetGem);
 			}
 		}
 	}
-	return nullptr;
+	return result;
 }

@@ -17,7 +17,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include"RenderTexture.h"
 #include"../Common/SceneManager.h"
-#include"../UserResources.h"
+#include"../GameData.h"
 #include"../Common/Sound.h"
 #include"../Object/Camera.h"
 #include"../Common/Collision/DisplayCollision.h"
@@ -41,7 +41,7 @@ class ResourceManager;    ///< リソースマネージャ
 /**
  * @brief ゲームシーン
  */
-class GameScene : public Scene<UserResources>
+class GameScene : public Scene<GameData>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:

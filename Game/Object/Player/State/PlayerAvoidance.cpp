@@ -59,7 +59,7 @@ void PlayerAvoidance::PreUpdate()
 
 	m_dodgeTime = 0;
 	//‰ñ”ð•ûŒü‚ðŒˆ’è‚·‚é
-	m_dodgeDirection = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f,0.0f,-5.0f),m_player->GetQuaternion());
+	//m_dodgeDirection = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f,0.0f,-1.0f),m_player->GetQuaternion());
 
 	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Zero;
 

@@ -25,6 +25,7 @@
   */
 class IObserver
 {
+// 操作
 public:
 	// メッセージを受け取る
 	virtual void OnMessegeAccepted(Message::MessageID messageID) = 0;

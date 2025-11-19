@@ -31,7 +31,6 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	StatusUpGem();
 	// 宝石の種類と効果値を指定して初期化
 	StatusUpGem(Gem::GemAbility ability,Gem::GemImagePath image);
 

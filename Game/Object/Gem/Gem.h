@@ -69,6 +69,7 @@ public:
 
 //‘€ì
 public:
+	//‰Šú‰»
 	void Initialize();
 
 	virtual void ApplyEffect();
@@ -76,6 +77,7 @@ public:
 	void Finalize();
 //æ“¾Eİ’è
 public:
+	//•óÎî•ñ‚Ìæ“¾
 	GemAbility GetAbility() const;
 	GemImagePath GetImagePath() const;
 //“à•”‘€ì

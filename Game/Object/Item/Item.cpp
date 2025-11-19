@@ -54,6 +54,15 @@ Item::~Item()
 }
 
 
+
+/**
+ * @brief çXêV
+ *
+ * @param[in] currentPosition 
+ * @param[in] currentAngle 
+ *
+ * @return Ç»Çµ
+ */
 void Item::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_currentPosition = currentPosition + GetPosition();
@@ -63,6 +72,14 @@ void Item::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& current
 
 }
 
+
+/**
+ * @brief ï`âÊ
+ *
+ * @param[in] Ç»Çµ
+ *
+ * @return Ç»Çµ
+ */
 void Item::Draw()
 {
 	Graphics* graphics = Graphics::GetInstance();

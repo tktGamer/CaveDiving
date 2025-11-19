@@ -26,6 +26,8 @@ class Sound;
   */
 class BatAttack : public IState
 {
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatAttack(Bat* bat, Wing* pRightWing, Wing* pLeftWing);

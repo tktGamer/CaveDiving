@@ -59,7 +59,7 @@ void Wall::Initialize()
 	SetPosition(DirectX::SimpleMath::Vector3::Zero);
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
 	SetScale(DirectX::SimpleMath::Vector3(60.0f, 50.0f, 60.0f));
-	SetTexture(ResourceManager::GetInstance()->RequestTexture("cave.png"));
+	SetTexture(ResourceManager::GetInstance()->RequestTexture("block.png"));
 	
 	SetShape(&m_sphere);
 

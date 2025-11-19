@@ -26,6 +26,8 @@ class Bat;
   */
 class BatAttackPreparing : public IState
 {
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatAttackPreparing(Bat* bat, Wing* pRightWing, Wing* pLeftWing);

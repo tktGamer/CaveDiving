@@ -1,17 +1,17 @@
 /**
  * @file   GolemMoving.h
  *
- * @brief  コウモリの移動状態に関するヘッダファイル
+ * @brief  ゴーレムの移動状態に関するヘッダファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/11/15
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-#ifndef BAT_MOVING_DEFINED
-#define BAT_MOVING_DEFINED
+#ifndef GOLEM_MOVING_DEFINED
+#define GOLEM_MOVING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
 #include "Game/Common/Graphics.h"
@@ -20,10 +20,18 @@ class Golem;
 
 // クラスの定義 ===============================================================
 /**
-  * @brief コウモリの移動状態
+  * @brief ゴーレムの移動状態
   */
 class GolemMoving : public IState
 {
+	// クラス定数の宣言 -------------------------------------------------
+public:
+	// データメンバの宣言 -----------------------------------------------
+private:
+	// ゴーレム
+	Golem* m_golem;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	GolemMoving(Golem* golem);
@@ -42,8 +50,5 @@ public:
 	// 後処理を行う
 	void Finalize();
 
-private:
-	// プレイヤー
-	Golem* m_golem;
 };
-#endif		// BAT_IDLING_DEFINED
+#endif		// GOLEM_IDLING_DEFINED

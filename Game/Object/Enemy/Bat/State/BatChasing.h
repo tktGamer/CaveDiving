@@ -24,6 +24,8 @@ class GameObject;
   */
 class BatChasing : public IState
 {
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatChasing(Bat* bat);

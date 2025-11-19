@@ -123,7 +123,8 @@ void TitleScene::Update(float elapsedTime)
 			GemManager::GetInstance()->LoadPlayerHoldGem();
 		}
 		m_gameStartSound->Play(false);
-		GetGameData()->SetNextStage(UserResources::Stage::FIRST);
+		GetGameData()->SetNextStage(GameData::Stage::FIRST);
+		GetGameData()->SetIsGameClear(false);
 		ChangeScene<GameScene,LoadScene>();
 	}
 

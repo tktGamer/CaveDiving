@@ -58,17 +58,6 @@ Number::~Number()
  */
 void Number::Initialize()
 {
-    //m_sprites = std::make_unique<SpriteSheet>();
-    //m_sprites->Load(*m_pNumberSRV, L"Resources/Textures/number.txt");
-
-    ////各数字のスプライトフレームへのポインタ
-    //for (size_t i = 0; i < 10; i++)
-    //{
-    //    std::wostringstream oss;
-    //    oss << "number_b_" << i;
-    //    m_frame[i] = m_sprites->Find(oss.str().c_str());
-    //    assert(m_frame[i] != 0);
-    //}
 
 }
 
@@ -109,7 +98,7 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 	DirectX::VertexPositionColorTexture vertex[1] = {
 		DirectX::VertexPositionColorTexture(
 			 DirectX::SimpleMath::Vector3(scale.x, scale.y, static_cast<float>(m_anchor))
-			,DirectX::SimpleMath::Vector4(pos.x /*- number* 130*/, pos.y, 130, 205)
+			,DirectX::SimpleMath::Vector4(pos.x , pos.y, 130, 205)
 			,m_textureSize)
 	};
 	//スクリーンサイズ取得
@@ -129,11 +118,6 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 	context->UpdateSubresource(shader->GetCBuffer(Shader::ShaderType::Number2D), 0, NULL, &cbuff, 0, 0);
 	shader->StartShader(Shader::ShaderType::Number2D, shader->GetCBuffer(Shader::ShaderType::Number2D));
 
-	//	シェーダーにバッファを渡す
-	//ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
-	//context->VSSetConstantBuffers(0, 1, cb);
-	//context->GSSetConstantBuffers(0, 1, cb);
-	//context->PSSetConstantBuffers(0, 1, cb);
 
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { Graphics::GetInstance()->GetCommonStates()->LinearWrap()};
@@ -151,10 +135,6 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 	//	カリングは左周り
 	context->RSSetState(Graphics::GetInstance()->GetCommonStates()->CullNone());
 
-	//	シェーダをセットする
-	//context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
-	//context->GSSetShader(m_geometryShader.Get(), nullptr, 0);
-	//context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 
 	//	ピクセルシェーダにテクスチャを登録する。
 	context->PSSetShaderResources(0, 1, m_pNumberTexture);

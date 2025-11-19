@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/05
+ * @date   日付　2025/11/18
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -65,7 +65,7 @@ void BatAttackPreparingMotion::Initialize()
  */
 bool BatAttackPreparingMotion::Update()
 {
-	if (m_numLoop >= 3)
+	if (m_numLoop >= MOTION_LOOP)
 	{
 		return true;
 	}

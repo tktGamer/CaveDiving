@@ -36,7 +36,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Box(DirectX::SimpleMath::Vector3 center,DirectX::SimpleMath::Vector3 halfSize);
+	Box(const DirectX::SimpleMath::Vector3& center,const DirectX::SimpleMath::Vector3& halfSize);
 
 	// デストラクタ
 	~Box();

@@ -22,7 +22,7 @@
  * @param[in] halfSize ”¼•ª‚ÌƒTƒCƒY
  * 
  */
-Box::Box(DirectX::SimpleMath::Vector3 center, DirectX::SimpleMath::Vector3 halfSize)
+Box::Box(const DirectX::SimpleMath::Vector3& center,const DirectX::SimpleMath::Vector3& halfSize)
 	:Shape(ShapeType::Box)
 	, m_center(center)
 	, m_halfSize(halfSize)

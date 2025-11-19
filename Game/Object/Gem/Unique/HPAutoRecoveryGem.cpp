@@ -26,7 +26,6 @@ REGISTER_GEM_CLASS("HPAutoRecoveryGem", HPAutoRecoveryGem);
  */
 HPAutoRecoveryGem::HPAutoRecoveryGem(int id, std::string type, Type powerUp, int value)
 	:Gem{id,type,powerUp,value}
-	,m_recoveryInterval{0.0f}
 	,m_recoveryIntervalTimer{0.0f}
 {
 }
@@ -62,18 +61,24 @@ void HPAutoRecoveryGem::Initialize()
 
 }
 
-void HPAutoRecoveryGem::UniqueEffect()
+int HPAutoRecoveryGem::RecoveryHP(int currentHP, const int& maxHP)
 {
 	m_recoveryIntervalTimer += Messenger::GetInstance()->GetElapsedTime();
 	//‰ñ•œŠÔŠu‚É’B‚µ‚Ä‚¢‚È‚©‚Á‚½‚çˆ—‚ð”ò‚Î‚·
-	if (m_recoveryIntervalTimer >= GetAbility().interval) 
+	if (m_recoveryIntervalTimer <= GetAbility().interval) 
 	{
-		return;
+		return currentHP;
 	}
 
 	//Œø‰Ê’l‚É€‹’‚µ‚ÄHP‚ð‰ñ•œ
-
+	currentHP += GetAbility().value;
 	//Å‘å‚g‚o‚ð’´‚¦‚Ä‚½‚ç•â³
+	if (currentHP > maxHP) 
+	{
+		currentHP = maxHP;
+	}
+	m_recoveryIntervalTimer = 0.0f;
+	return currentHP;
 }
 
 

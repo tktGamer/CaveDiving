@@ -120,6 +120,10 @@ void ItemManager::GenerateItem()
 	m_items.back()->Initialize();
 	m_items.back()->SetPosition({ -10.0f,2.0f,0.0f });
 	
+	m_items.emplace_back(std::make_unique<Item>(Item::UpStatus::Attack, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
+	m_items.back()->Initialize();
+	m_items.back()->SetPosition({  40.0f,2.0f,-20.0f });
+	
 	m_items.emplace_back(std::make_unique<Item>(Item::UpStatus::Diffece, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
 	m_items.back()->Initialize();
 	m_items.back()->SetPosition({ -20.0f,2.0f,20.0f });

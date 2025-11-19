@@ -104,7 +104,9 @@ void ParticleVanishControl::Update()
 /**
  * @brief 描画処理
  *
- * @param[in] なし
+ * @param[in] target  　 カメラの注視点
+ * @param[in] cameraPos　カメラの座標
+ * @param[in] cameraUp　 カメラの上ベクトル
  *
  * @return なし
  */

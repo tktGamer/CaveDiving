@@ -27,15 +27,12 @@ class PlayerAvoidance : public IState
 	// クラス定数の宣言 -------------------------------------------------
 public:
 	//回避スピード
-	static constexpr float DODGE_SPEED = 4.0f;
+	static constexpr float DODGE_SPEED = 1.0f;
 
 	// データメンバの宣言 -----------------------------------------------
 private:
 	// プレイヤー
 	Player* m_player;
-
-	// ワールドマトリックス
-	DirectX::SimpleMath::Matrix m_worldMatrix;
 
 	//回避方向
 	DirectX::SimpleMath::Vector3 m_dodgeDirection;

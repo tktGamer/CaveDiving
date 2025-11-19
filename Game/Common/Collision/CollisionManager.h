@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付 2025/08/22
+ * @date   日付 2025/11/17
  */
 
  // 多重インクルードの防止 =====================================================
@@ -80,11 +80,15 @@ public:
 
 	//球内への押し戻し
 	DirectX::SimpleMath::Vector3 PushBack(Sphere* sphereA, Sphere* sphereB);
+
+	//接触点を調べる
+	DirectX::SimpleMath::Vector3 CheckContactPoint(Shape* shapeA, Shape* shapeB);
 //　取得・設定
 public:
 
 //　内部操作
 private:
+	DirectX::SimpleMath::Vector3 ContactPointSphereToSphere(Sphere* shapeA, Sphere* shapeB);
 
 };
 

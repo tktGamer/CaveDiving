@@ -16,7 +16,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"../Common/SceneManager.h"
-#include"Game/UserResources.h"
+#include"Game/GameData.h"
 #include"Game/Object/Camera.h"
 
 
@@ -33,7 +33,7 @@ class ResourceManager;    ///< リソースマネージャ
 /**
  * @brief ロゴシーン
  */
-class GemSelectScene : public Scene<UserResources>
+class GemSelectScene : public Scene<GameData>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:

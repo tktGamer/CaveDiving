@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerJumping.h"
 #include "Game/Object/Player/Player.h"
-
+#include"Game/Particle/ParticleManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

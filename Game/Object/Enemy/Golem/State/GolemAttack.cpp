@@ -1,11 +1,11 @@
 /**
  * @file   GolemAttack.cpp
  *
- * @brief  コウモリの攻撃状態に関するソースファイル
+ * @brief  ゴーレムの攻撃状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/11/15
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -17,16 +17,15 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] golem コウモリのポインタ
+ * @param[in] golem ゴーレムのポインタ
+ * @param[in] pRightGolemHand ゴーレムの右手のポインタ
+ * @param[in] pLeftGolemHand ゴーレムの左手のポインタ
  */
 GolemAttack::GolemAttack(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
 	:m_golem(golem)
 	, m_pRightHand{ pRightGolemHand }
 	, m_pLeftHand{ pLeftGolemHand }
-	, m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 
 	m_attackMotion = std::make_unique<GolemPunchMotion>(golem, pRightGolemHand, pLeftGolemHand);
 }
@@ -61,8 +60,6 @@ void GolemAttack::PreUpdate()
 	DecideMotion();
 	m_attackMotion->Initialize();
 
-	//m_golem->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 15.0f * Messenger::GetInstance()->GetElapsedTime(), m_golem->GetCurrentQuaternion()));
-
 }
 
 /**
@@ -75,18 +72,20 @@ void GolemAttack::PreUpdate()
 void GolemAttack::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-	DirectX::SimpleMath::Vector3 v = m_golem->GetVelocity();
+	DirectX::SimpleMath::Vector3 velocity = m_golem->GetVelocity();
 
+	//モーションが終了したら状態を遷移
 	if(m_attackMotion->Update()) 
 	{
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MessageID::IDLING);
 
 	}
 
-	v.y += -0.05f * elapsedTime;
+	//重力
+	velocity.y += -0.05f * elapsedTime;
 
 
-	m_golem->SetVelocity(v);
+	m_golem->SetVelocity(velocity);
 
 	//m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
@@ -132,6 +131,13 @@ void GolemAttack::Finalize()
 {
 }
 
+/**
+ * @brief 攻撃のモーションを決定する
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void  GolemAttack::DecideMotion()
 {
 	switch (m_golem->GetAttackMessage())

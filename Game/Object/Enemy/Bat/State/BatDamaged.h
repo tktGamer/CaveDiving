@@ -30,6 +30,8 @@ private:
 	Bat* m_bat;
 	//ダメージリアクションモーション
 	std::unique_ptr<Motion> m_damageMotion;
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatDamaged(Bat* bat);

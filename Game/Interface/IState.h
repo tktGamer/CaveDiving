@@ -1,7 +1,7 @@
 /**
  * @file   IState.h
  *
- * @brief  ステイトのインターフェイスの定義に関するヘッダファイル
+ * @brief  ステートのインターフェイスの定義に関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -27,6 +27,12 @@
   */
 class IState
 {
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
+public:
+	// 仮想デストラクタ
+	virtual ~IState() = default;
+// 操作
 public:
 	// 初期化する 
 	virtual void Initialize() = 0;
@@ -40,8 +46,6 @@ public:
 	virtual void Render() = 0;
 	// 後始末をする
 	virtual void Finalize() = 0;
-	// 仮想デストラクタ
-	virtual ~IState() = default;
 };
 
 #endif // STATE_DEFINED

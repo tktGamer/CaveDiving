@@ -138,7 +138,7 @@ void Game::Render()
     std::wostringstream str;
     str << L"fps: " << m_timer.GetFramesPerSecond();
     m_debugFont->AddString(str.str().c_str(), DirectX::SimpleMath::Vector2::Zero);
-    //m_debugFont->Render(m_graphics->GetCommonStates());
+    m_debugFont->Render(m_graphics->GetCommonStates());
 
     m_deviceResources->PIXEndEvent();
 
@@ -238,10 +238,10 @@ void Game::CreateDeviceDependentResources()
     //マネージャー生成
     m_resourceManager = ResourceManager::GetInstance();
     // ユーザーリソースの作成
-    if (!m_userResources) m_userResources = std::make_unique<UserResources>();
+    if (!m_userResources) m_userResources = std::make_unique<GameData>();
 
     // シーンマネージャーの作成
-    if (!m_sceneManager) m_sceneManager = std::make_unique<SceneManager<UserResources>>(m_userResources.get());
+    if (!m_sceneManager) m_sceneManager = std::make_unique<SceneManager<GameData>>(m_userResources.get());
 
 
 	m_resourceManager->SetAudioEngine(m_audioEngine.get());

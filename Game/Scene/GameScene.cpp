@@ -13,9 +13,10 @@
 #include "GameScene.h"
 #include"../Scene/TitleScene.h"
 #include"../Scene/GemSelectScene.h"
+#include"Game/Scene/ResultScene.h"
+
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
-#include"Game/Scene/ResultScene.h"
 
 #include"Game/Common/Collision/Sphere.h"
 #include"../Fuctory/UIFactory.h"
@@ -63,7 +64,7 @@ void GameScene::Initialize()
 {
 	Messenger::GetInstance()->DestroyInstance();
 
-	UserResources* gameData = GetGameData();
+	GameData* gameData = GetGameData();
 
 	//ゲーム中のBGM再生
 	m_gameBGM = std::make_unique<Sound>(m_pResourceManager->RequestSound("gamebgm.wav"));
@@ -81,20 +82,20 @@ void GameScene::Initialize()
 
 	//オブジェクトの生成--
 	//プレイヤーの生成
-	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), nullptr, DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f});
+	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f });
 	m_cM->Register(m_player.get());
 
 	//ステージの生成
-	m_stage =GameObjectFactory::CreateStage(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f },DirectX::SimpleMath::Quaternion::Identity
-											,GetGameData()->GetIsOnLights(),10);
+	m_stage = GameObjectFactory::CreateStage(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity
+		, GetGameData()->GetIsOnLights(), 10);
 
 	//敵の生成
 	m_enemyManager = std::make_unique<EnemyManager>();
-	if (gameData->GetNextStage() == UserResources::Stage::FIRST) 
+	if (gameData->GetNextStage() == GameData::Stage::FIRST)
 	{
 		m_enemyManager->Spawn();
 	}
-	if (gameData->GetNextStage() == UserResources::Stage::BOSS) 
+	if (gameData->GetNextStage() == GameData::Stage::BOSS)
 	{
 		m_enemyManager->SpawnBoss();
 	}
@@ -103,7 +104,7 @@ void GameScene::Initialize()
 	m_camera = std::make_unique<Camera>();
 	m_camera->Initialize({ 0,1.0f,25.0f });
 	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
-	m_camera->SetTartet(m_player->GetCurrentPosition(), m_player->GetQuaternion(),m_player->GetVelocity());
+	m_camera->SetTartet(m_player->GetCurrentPosition(), m_player->GetQuaternion(), m_player->GetVelocity());
 
 	//アイテム管理クラスの生成
 	m_itemManager = std::make_unique<ItemManager>();
@@ -115,8 +116,8 @@ void GameScene::Initialize()
 	//所持宝石UIの生成
 	m_holdGem = UIFactory::CreateHoldGem();
 
-	m_clearConditionsUI = std::make_unique<ClearConditions>(DirectX::SimpleMath::Vector2{1240,150});
-	m_clearConditionsUI->Initialize(w,h);
+	m_clearConditionsUI = std::make_unique<ClearConditions>(DirectX::SimpleMath::Vector2{ 1240,150 });
+	m_clearConditionsUI->Initialize(w, h);
 	ParticleManager::GetInstance()->SetCamera(m_camera.get());
 	Sound::SetListenerObject(m_player.get());
 
@@ -141,21 +142,21 @@ void GameScene::Update(float elapsedTime)
 	m_holdGem->Update();
 	m_buffUI->Update();
 
-	 std::list<std::unique_ptr<Character>>& enemies =  m_enemyManager->GetEnemies();
-	 m_clearConditionsUI->Update(enemies.size());
+	std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
+	m_clearConditionsUI->Update(enemies.size());
 
-	 //ゲームクリア・ゲームオーバー判定
-	if (traker->pressed.Q || enemies.size()==0)
+	//ゲームクリア・ゲームオーバー判定
+	if (traker->pressed.Q || enemies.size() == 0)
 	{
 		ParticleManager::GetInstance()->Reset();
-		if (GetGameData()->GetNextStage()==UserResources::Stage::BOSS) 
+		if (GetGameData()->GetNextStage() == GameData::Stage::BOSS)
 		{
 			//SaveLight();
 			GetGameData()->SetIsGameClear(true);
-			ChangeScene<ResultScene>();
+			ChangeScene<GemSelectScene>();
 			return;
 		}
-		GetGameData()->SetNextStage(UserResources::Stage::BOSS);
+		GetGameData()->SetNextStage(GameData::Stage::BOSS);
 		//ステージのライト状況を保存
 		SaveLight();
 		ChangeScene<GemSelectScene>();
@@ -291,7 +292,7 @@ void GameScene::Render()
 
 
 	context->ClearRenderTargetView(renderTarget, DirectX::Colors::Black);
-	context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	context->ClearDepthStencilView(depthStencil, /*D3D11_CLEAR_DEPTH |*/ D3D11_CLEAR_STENCIL, 1.0f, 0);
 	context->OMSetRenderTargets(1, &renderTarget, depthStencil);
 	//-----------------------------------------------------
 	// ビューポートを元に戻す

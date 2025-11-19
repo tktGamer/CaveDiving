@@ -62,9 +62,9 @@ DamageSystem::~DamageSystem()
  * @param[in] attacker UŒ‚‘¤
  * @param[in] defender –hŒä‘¤
  *
- * @return ‚È‚µ
+ * @return ƒ_ƒ[ƒW—Ê
  */
-void DamageSystem::DamageToCharacter(Character* attacker, Character* defender)
+int DamageSystem::DamageToCharacter(Character* attacker, Character* defender)
 {
 	int attackerPower = attacker->GetAttackPower();
 	int defenderDiffence = defender->GetDiffence();
@@ -72,6 +72,8 @@ void DamageSystem::DamageToCharacter(Character* attacker, Character* defender)
 	int damage = DamageCalculation(attackerPower, defenderDiffence);
 
 	defender->TakeDamage(damage);
+
+	return damage;
 }
 
 /**

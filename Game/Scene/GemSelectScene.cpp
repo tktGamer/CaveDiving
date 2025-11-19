@@ -16,6 +16,7 @@
 
 #include"../Scene/GameScene.h"
 #include "../Scene/LoadScene.h"
+#include"Game/Scene/ResultScene.h"
 
 
 // メンバ関数の定義 ===========================================================
@@ -87,6 +88,11 @@ void GemSelectScene::Update(float elapsedTime)
 	//宝石の選択が終わったらゲームシーンへ
 	if (m_gemSelectManager->IsFinishSelect())
 	{
+		if (GetGameData()->IsGameClear()) 
+		{
+			ChangeScene<ResultScene>();
+			return;
+		}
 		ChangeScene<GameScene,LoadScene>();
 	}
 

@@ -16,7 +16,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"../Common/SceneManager.h"
-#include"Game/UserResources.h"
+#include"Game/GameData.h"
 #include"Game/Object/Camera.h"
 
 #include"math.h"
@@ -34,7 +34,7 @@ class Sound;
 /**
  * @brief ロゴシーン
  */
-class ResultScene : public Scene<UserResources>
+class ResultScene : public Scene<GameData>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:

@@ -1,11 +1,11 @@
 /**
  * @file   GolemChasing.h
  *
- * @brief  コウモリの移動状態に関するヘッダファイル
+ * @brief  ゴーレムの移動状態に関するヘッダファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/11/15
  */
 
  // 多重インクルードの防止 =====================================================
@@ -20,10 +20,21 @@ class Golem;
 class GameObject;
 // クラスの定義 ===============================================================
 /**
-  * @brief コウモリの追跡状態
+  * @brief ゴーレムの追跡状態
   */
 class GolemChasing : public IState
 {
+	// クラス定数の宣言 -------------------------------------------------
+public:
+	// データメンバの宣言 -----------------------------------------------
+private:
+	// ゴーレム
+	Golem* m_golem;
+
+	//プレイヤーオブジェクトのポインタ
+	const GameObject* m_pPlayer;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	GolemChasing(Golem* golem);
@@ -45,10 +56,5 @@ public:
 private:
 	//二点のラジアン角を求める
 	const float CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target);
-private:
-	// コウモリ
-	Golem* m_golem;
-
-	const GameObject* m_pPlayer;
 };
 #endif		// BAT_IDLING_DEFINED

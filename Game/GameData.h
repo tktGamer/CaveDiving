@@ -14,7 +14,7 @@
 
 
 // 各シーンに渡す共通リソースを記述してください
-class UserResources
+class GameData
 {
 public:
 	enum Stage
@@ -34,7 +34,7 @@ private:
 public:
 
 	// コンストラクタ
-	UserResources()
+	GameData()
 		:m_isGameClear{false}
 		,m_nextStage{Stage::FIRST}
 		,m_playerHP{}
@@ -53,7 +53,6 @@ public:
 		m_isGameClear = isGameClear;
 
 		//ライトをすべて消す
-		
 		for (int i = 0; i < 10; i++)
 		{
 			m_isOnLights[i] = false;

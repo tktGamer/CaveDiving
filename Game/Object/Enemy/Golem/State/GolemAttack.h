@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/15
+ * @date   日付　2025/11/15
  */
 
  // 多重インクルードの防止 =====================================================
@@ -29,11 +29,25 @@ class Golem;
   */
 class GolemAttack : public IState
 {
+// クラス定数の宣言 -------------------------------------------------
+public:
+// データメンバの宣言 -----------------------------------------------
+private:
+	// ゴーレム
+	Golem* m_golem;
+	GolemHand* m_pRightHand;
+	GolemHand* m_pLeftHand;
+
+	//攻撃モーション
+	std::unique_ptr<Motion> m_attackMotion;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	GolemAttack(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
 	// デストラクタ
 	~GolemAttack();
+public:
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -47,20 +61,10 @@ public:
 	// 後処理を行う
 	void Finalize();
 
-
+private:
 	//攻撃方法を決める
 	void DecideMotion();
 
-private:
-	// ゴーレム
-	Golem* m_golem;
-	GolemHand* m_pRightHand;
-	GolemHand* m_pLeftHand;
-
-	// グラフィックス
-	Graphics* m_graphics;
-	//攻撃モーション
-	std::unique_ptr<Motion> m_attackMotion;
 
 };
 

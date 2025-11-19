@@ -6,7 +6,7 @@
 
 #include "DeviceResources.h"
 #include "StepTimer.h"
-#include"Game/UserResources.h"
+#include"Game/GameData.h"
 #include"Game/Common/Graphics.h"
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
@@ -77,10 +77,10 @@ private:
 
     // マネージャ関連
     ResourceManager* m_resourceManager;    ///< リソースマネージャ
-    std::unique_ptr<SceneManager<UserResources>>    m_sceneManager;       ///< シーンマネージャ
+    std::unique_ptr<SceneManager<GameData>>    m_sceneManager;       ///< シーンマネージャ
     GemManager*      m_gemManager;         ///< 宝石マネージャ
     Graphics* m_graphics;  ///< Graphicsクラスのインスタンス
     // シーンへ渡すユーザー定義のリソースへのポインタ
-    std::unique_ptr<UserResources> m_userResources;
+    std::unique_ptr<GameData> m_userResources;
 
 };

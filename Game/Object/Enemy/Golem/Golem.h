@@ -50,6 +50,7 @@ public:
 		Angry,
 	};
 
+	static constexpr int GOLEM_HP = 15;
 // データメンバの宣言 -----------------------------------------------
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
@@ -118,7 +119,7 @@ public:
 	//経過時間リセット
 	void ResetFrameCount();
 
-	DirectX::SimpleMath::Quaternion GetMotionAngle();
+	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
 	void SetMotionAngle(DirectX::SimpleMath::Quaternion angle);
 
 
@@ -126,7 +127,7 @@ public:
 	void SetVelocity(DirectX::SimpleMath::Vector3 v);
 
 	//攻撃メッセージ
-	const Message::AttackMesssage GetAttackMessage();
+	const Message::AttackMesssage GetAttackMessage() const;
 	void SetAttackMessage(const Message::AttackMesssage& message);
 	//　内部操作
 private:

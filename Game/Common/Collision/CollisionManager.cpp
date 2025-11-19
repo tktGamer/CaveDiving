@@ -276,6 +276,15 @@ DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Box* box, Box* box2)
 	return box2->GetCenter() + pushOutDirection * 0.5f; // 中心位置を更新
 }
 
+
+/**
+ * @brief 球同士の押し戻し処理
+ *
+ * @param[in] sphereA 球A (小さい球)
+ * @param[in] sphereB 球B (大きい球)
+ *
+ * @return 押し戻された球Aの位置
+ */
 DirectX::SimpleMath::Vector3 CollisionManager::PushBack(Sphere* sphereA, Sphere* sphereB)
 {
 
@@ -301,4 +310,55 @@ DirectX::SimpleMath::Vector3 CollisionManager::PushBack(Sphere* sphereA, Sphere*
 	}
 
 	return sphereA->GetCenter();
+}
+
+
+/**
+ * @brief 当たり判定の接触点（中間地点）の取得
+ *
+ * @param[in] shapeA 当たり判定A 
+ * @param[in] shapeB 当たり判定B 
+ *
+ * @return 中間点
+ */
+DirectX::SimpleMath::Vector3 CollisionManager::CheckContactPoint(Shape* shapeA, Shape* shapeB)
+{
+	Shape::ShapeType shapeTypeA = shapeA->GetShapeType();
+	Shape::ShapeType shapeTypeB = shapeB->GetShapeType();
+
+	if (shapeTypeA == Shape::ShapeType::Sphere) 
+	{
+		if (shapeTypeB == Shape::ShapeType::Sphere) 
+		{
+			return ContactPointSphereToSphere(dynamic_cast<Sphere*>(shapeA), dynamic_cast<Sphere*>(shapeB));
+		}
+	}
+
+	//どこにも属さなかった
+	return { 0,0,0 };
+}
+
+
+/**
+ * @brief 球同士の接触点（中間地点）の取得
+ *
+ * @param[in] sphereA 球A
+ * @param[in] sphereB 球B
+ *
+ * @return 球Aと球Bの中間点
+ */
+DirectX::SimpleMath::Vector3 CollisionManager::ContactPointSphereToSphere(Sphere* sphereA, Sphere* sphereB)
+{
+	DirectX::SimpleMath::Vector3 diff = sphereB->GetCenter() - sphereA->GetCenter();
+	//距離を求める
+	float dist = diff.Length();
+	float sumR = sphereA->GetRadius() + sphereB->GetRadius();
+
+	//if (dist >= sumR)
+	//	return false; // 接触していない
+
+	DirectX::SimpleMath::Vector3 n = diff / dist; // 正規化方向ベクトル
+	DirectX::SimpleMath::Vector3 pa = sphereA->GetCenter() + n * sphereA->GetRadius(); // 球Aの表面
+	DirectX::SimpleMath::Vector3 pb = sphereB->GetCenter() - n * sphereB->GetRadius(); // 球Bの表面
+	return (pa + pb) * 0.5f;  // 中点を接触点とする
 }

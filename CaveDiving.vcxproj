@@ -241,6 +241,7 @@
     <ClInclude Include="Game\Object\Gem\GemManager.h" />
     <ClInclude Include="Game\Object\Gem\StatusUpGem.h" />
     <ClInclude Include="Game\Object\Gem\Unique\AllSpenningAttackGem.h" />
+    <ClInclude Include="Game\Object\Gem\Unique\FullHPAttackUp.h" />
     <ClInclude Include="Game\Object\Gem\Unique\HPAutoRecoveryGem.h" />
     <ClInclude Include="Game\Object\Gem\Unique\UniquGem.h" />
     <ClInclude Include="Game\Object\Item\Item.h" />
@@ -262,6 +263,9 @@
     <ClInclude Include="Game\Object\Stage\Stage.h" />
     <ClInclude Include="Game\Object\Stage\Wall.h" />
     <ClInclude Include="Game\Object\Weapon.h" />
+    <ClInclude Include="Game\Particle\Damage\ParticleNumber3D.h" />
+    <ClInclude Include="Game\Particle\Damage\ParticleDamageNumber.h" />
+    <ClInclude Include="Game\Particle\Damage\ParticleDamageControl.h" />
     <ClInclude Include="Game\Particle\ItemGet\ParticleItemGet.h" />
     <ClInclude Include="Game\Particle\ItemGet\ParticleItemGetControl.h" />
     <ClInclude Include="Game\Particle\MoveDust\ParticleMoveDust.h" />
@@ -296,7 +300,7 @@
     <ClInclude Include="Game\UI\NumberControl.h" />
     <ClInclude Include="Game\UI\Result\SaveConfirm.h" />
     <ClInclude Include="Game\UI\UserInterface.h" />
-    <ClInclude Include="Game\UserResources.h" />
+    <ClInclude Include="Game\GameData.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderTexture.h" />
     <ClInclude Include="StepTimer.h" />
@@ -360,6 +364,7 @@
     <ClCompile Include="Game\Object\Gem\GemManager.cpp" />
     <ClCompile Include="Game\Object\Gem\StatusUpGem.cpp" />
     <ClCompile Include="Game\Object\Gem\Unique\AllSpenningAttackGem.cpp" />
+    <ClCompile Include="Game\Object\Gem\Unique\FullHPAttackUp.cpp" />
     <ClCompile Include="Game\Object\Gem\Unique\HPAutoRecoveryGem.cpp" />
     <ClCompile Include="Game\Object\Gem\Unique\UniquGem.cpp" />
     <ClCompile Include="Game\Object\Item\Item.cpp" />
@@ -381,6 +386,9 @@
     <ClCompile Include="Game\Object\Stage\Stage.cpp" />
     <ClCompile Include="Game\Object\Stage\Wall.cpp" />
     <ClCompile Include="Game\Object\Weapon.cpp" />
+    <ClCompile Include="Game\Particle\Damage\ParticleNumber3D.cpp" />
+    <ClCompile Include="Game\Particle\Damage\ParticleDamageNumber.cpp" />
+    <ClCompile Include="Game\Particle\Damage\ParticleDamageControl.cpp" />
     <ClCompile Include="Game\Particle\ItemGet\ParticleItemGet.cpp" />
     <ClCompile Include="Game\Particle\ItemGet\ParticleItemGetControl.cpp" />
     <ClCompile Include="Game\Particle\MoveDust\ParticleMoveDust.cpp" />
@@ -439,6 +447,7 @@
     <None Include="Resources\Shaders\FadeShader\Fade.hlsli" />
     <None Include="Resources\Shaders\LumiRockShader\LumiRockShader.hlsli" />
     <None Include="Resources\Shaders\ModelShader\ModelShader.hlsli" />
+    <None Include="Resources\Shaders\NumberShader\3D\Number3D.hlsli" />
     <None Include="Resources\Shaders\NumberShader\Number.hlsli" />
     <None Include="Resources\Shaders\OutLineShader\OutLineShader.hlsli" />
     <None Include="Resources\Shaders\ParticleShader\Particle.hlsli" />
@@ -520,6 +529,26 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ModelShader\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ModelShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\3D\Number3DGS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\NumberShader\3D\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\NumberShader\3D\%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\3D\Number3DPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\NumberShader\3D\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\NumberShader\3D\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\NumberShader\3D\Number3DVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\NumberShader\3D\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\NumberShader\3D\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\NumberShader\NumberGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>

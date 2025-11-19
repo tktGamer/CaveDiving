@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/11/15
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -18,14 +18,14 @@
  * @brief コンストラクタ
  *
  * @param[in] golem ゴーレムのポインタ
+ * @param[in] pRightGolemHand ゴーレムの右手のポインタ
+ * @param[in] pLeftGolemHand ゴーレムの左手のポインタ
  */
 GolemAttackPreparing::GolemAttackPreparing(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
 	:m_golem(golem)
-	, m_pRightHand{pRightGolemHand}
+	,m_pRightHand{pRightGolemHand}
 	,m_pLeftHand{pLeftGolemHand}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 
 
 }
@@ -72,7 +72,7 @@ void GolemAttackPreparing::PreUpdate()
 void GolemAttackPreparing::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-
+	//プレイヤーのオブジェクトを取得
 	GameObject* pPlayer = Messenger::GetInstance()->GetObject(0);
 
 	//自分からプレイヤーの角度を求める
@@ -155,6 +155,13 @@ const float GolemAttackPreparing::CaluculateRadian(const DirectX::SimpleMath::Ve
 	return angle;
 }
 
+/**
+ * @brief 攻撃の準備モーションを決定する
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GolemAttackPreparing::DecideMotion()
 {
 	switch (m_golem->GetAttackMessage()) 

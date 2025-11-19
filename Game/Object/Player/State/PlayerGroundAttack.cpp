@@ -30,7 +30,10 @@ PlayerGroundAttack::PlayerGroundAttack(Player* player, Hand* pRightHand, Hand* p
 {
 
 	//m_groundCombo.emplace_back(std::make_unique<PlayerSlamAttack>(m_pHand));
-	if (GemManager::GetInstance()->IsHasGem<AllSpenningAttackGem>()) 
+
+	std::vector<AllSpenningAttackGem*> gems = GemManager::GetInstance()->IsHasGem<AllSpenningAttackGem>();
+
+	if (!gems.empty()) 
 	{
 		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
 		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));

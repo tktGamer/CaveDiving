@@ -20,10 +20,18 @@ class Golem;
 
 // クラスの定義 ===============================================================
 /**
-  * @brief コウモリの待機状態
+  * @brief ゴーレムの待機状態
   */
 class GolemIdling : public IState
 {
+// クラス定数の宣言 -------------------------------------------------
+public:
+// データメンバの宣言 -----------------------------------------------
+private:
+	// ゴーレム
+	Golem* m_golem;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	GolemIdling(Golem* golem);
@@ -42,13 +50,6 @@ public:
 	// 後処理を行う
 	void Finalize();
 
-private:
-	// プレイヤー
-	Golem* m_golem;
-	// グラフィックス
-	Graphics* m_graphics;
-	// ワールドマトリックス
-	DirectX::SimpleMath::Matrix m_worldMatrix;
 };
 
 #endif		// SOLDIER_IDLING_DEFINED

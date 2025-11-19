@@ -23,6 +23,7 @@
  */
 ParticleControl::ParticleControl(const std::string& texturePath)
 	: m_timerAndPos{}
+	, m_vertices{}
 {
 	m_texture = ResourceManager::GetInstance()->RequestTexture(texturePath);
 	//	プリミティブバッチの作成
@@ -95,6 +96,21 @@ void ParticleControl::ClearVertex()
 	m_vertices.clear();
 }
 
+
+/**
+ * @brief 1つのパーティクルの経過時間
+ *
+ * @param[in] cameraCB   カメラ情報
+ * @param[in] startSlot  スタートスロット
+ * @param[in] numBuffer  バッファ数
+ *
+ * @return なし
+ */
+void ParticleControl::AddTimerAndPos(const TimerAndPos& timerAnPos)
+{
+	m_timerAndPos.push_back(timerAnPos);
+}
+
 /**
  * @brief カメラの情報をバッファに渡す
  *
@@ -123,8 +139,8 @@ void ParticleControl::SetShaderState()
 {
 	auto context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = Graphics::GetInstance()->GetCommonStates();
-	//	画像用サンプラーの登録
 
+	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { states->LinearWrap() };
 	context->PSSetSamplers(0, 1, sampler);
 
