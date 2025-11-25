@@ -114,9 +114,10 @@ void Player::Initialize()
  *
  * @return なし
  */
-void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	
+	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
+
 	//向きを変える
 	ChangeDirection();
 
@@ -128,7 +129,7 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 
 	DamageFlashUpdate();
 
-	m_light->Update(elapsedTime,currentPosition + GetPosition(), currentAngle * GetQuaternion());
+	m_light->Update(currentPosition + GetPosition(), currentAngle * GetQuaternion());
 
 	//取得アイテムの更新
 	UpdateGotItems();
@@ -141,7 +142,7 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curre
 	//パーツの更新
 	for (std::unique_ptr<GameObject>& part : m_bodyParts)
 	{
-		part->Update(elapsedTime,m_currentPosition,m_currentAngle);
+		part->Update(m_currentPosition,m_currentAngle);
 	}
 
 

@@ -1,7 +1,7 @@
 /**
  * @file   Wing.h
  *
- * @brief  羽に関するヘッダファイル
+ * @brief  コウモリの羽に関するヘッダファイル
  *
  * @author 制作者名　福地貴翔
  *
@@ -47,7 +47,7 @@ public:
 	void Initialize() override;
 
 	//更新
-	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
 	//描画
 	void Draw() override;

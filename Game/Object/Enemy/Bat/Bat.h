@@ -88,7 +88,7 @@ public:
 	//‰Šú‰»
 	void Initialize();
 	//XV
-	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
 	//•`‰æ
 	void Draw() override;

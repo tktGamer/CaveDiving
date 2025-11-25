@@ -5,13 +5,17 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/05
+ * @date   日付  2025/11/19
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerAirAttack.h"
 #include "Game/Object/Player/Player.h"
+#include"Game/Motion/PlayerMotion/PlayerAirSpenningMotion.h"
+#include"Game/Object/Gem/GemManager.h"
+#include"Game/Object/Gem/Unique/AllSpenningAttackGem.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,9 +24,17 @@
  */
 PlayerAirAttack::PlayerAirAttack(Player* player, Hand* pRightHand, Hand* pLeftHand)
 	:m_player(player)
-	,m_isNextAttack{false}
 {
-	m_airAttack = std::make_unique<PlayerSlamAttackMotion>(player,pRightHand,pLeftHand);
+	std::vector<AllSpenningAttackGem*> gems = GemManager::GetInstance()->IsHasGem<AllSpenningAttackGem>();
+	if (gems.size() >= 2) 
+	{
+		m_airAttack = std::make_unique<PlayerAirSpenningMotion>(player, pRightHand, pLeftHand);
+	}
+	else
+	{
+		m_airAttack = std::make_unique<PlayerSlamAttackMotion>(player,pRightHand,pLeftHand);
+
+	}
 }
 /**
  * @brief デストラクタ

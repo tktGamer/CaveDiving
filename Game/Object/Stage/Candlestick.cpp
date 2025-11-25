@@ -80,13 +80,13 @@ void CandleStick::Initialize(bool isOnLight)
  *
  * @return ‚È‚µ
  */
-void CandleStick::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void CandleStick::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 
 	m_currentAngle =m_initialAngle* GetQuaternion() * currentAngle;
 	m_currentPosition = m_initialPosition + GetPosition() + currentPosition;
 
-	m_light->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	m_light->Update(m_currentPosition, m_currentAngle);
 	m_box.SetCenter(GetCurrentPosition());
 
 }

@@ -63,7 +63,7 @@ Item::~Item()
  *
  * @return ‚È‚µ
  */
-void Item::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Item::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_currentPosition = currentPosition + GetPosition();
 	m_currentAngle = GetQuaternion() * currentAngle;

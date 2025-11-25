@@ -1,52 +1,50 @@
 /**
- * @file   PlayerFirstAttackMotion.h
+ * @file   PlayerAirSpenningMotion.h
  *
- * @brief  プレイヤーの第一攻撃のモーションに関するヘッダファイル
+ * @brief  プレイヤーの空中回転攻撃のモーションに関するヘッダファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/05
+ * @date   日付　　2025/11/19
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"../AttackMotion.h"
+#include"../Motion.h"
 #include"Game/Object/Player/Hand.h"
+#include"Game/Object/Player/Player.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief プレイヤーの攻撃のモーション
+  * @brief プレイヤーの空中回転攻撃のモーション
   */
-class PlayerFirstAttackMotion : public AttackMotion
+class PlayerAirSpenningMotion : public Motion
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
 public:
 
 
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
+	//プレイヤーのポインタ
+	Player * m_pPlayer;
+	//右手のポインタ
+	Hand* m_pRightHand;
+	//左手のポインタ
+	Hand* m_pLeftHand;
 
-	Hand* m_pRightHand;  //右手のポインタ
-	Hand* m_pLeftHand;  //左手のポインタ
 
-	bool m_isNextAttack; //次の攻撃をするかどうか
-
-	//次の攻撃への入力時間
-	float m_inputTime;
-
-	//効果音
-	std::unique_ptr<Sound> m_sound;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerFirstAttackMotion(Hand* pRightHand,Hand* pLeftHand);
+	PlayerAirSpenningMotion(Player* pPlayer, Hand* pRightHand,Hand* pLeftHand);
 
 	// デストラクタ
-	~PlayerFirstAttackMotion();
+	~PlayerAirSpenningMotion();
 
 
 // 操作
@@ -61,8 +59,6 @@ public:
 //　取得・設定
 public:
 	void SetIsNextAttack(bool isNext);
-
-	
 //　内部操作
 private:
 

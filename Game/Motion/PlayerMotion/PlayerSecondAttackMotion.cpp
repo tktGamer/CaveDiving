@@ -20,7 +20,8 @@
  * @param[in] pLeftHand 　左手オブジェクトのポインタ
  */
 PlayerSecondAttackMotion::PlayerSecondAttackMotion(Hand* pRightHand, Hand* pLeftHand)
-	: m_pRightHand{ pRightHand }
+	: AttackMotion{1.0f}
+	, m_pRightHand{ pRightHand }
 	, m_pLeftHand{pLeftHand}
 	, m_isNextAttack{ false }
 {

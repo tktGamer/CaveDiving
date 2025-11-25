@@ -76,7 +76,7 @@ void Wall::Initialize()
  *
  * @return ‚È‚µ
  */
-void Wall::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Wall::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_sphere.SetCenter(currentPosition + GetPosition());
 }

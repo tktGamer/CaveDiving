@@ -1,7 +1,7 @@
 /**
  * @file   ParticleMoveDustControl.h
  *
- * @brief  パーティクルに関するヘッダファイル
+ * @brief  歩行パーティクルに関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -25,31 +25,31 @@
   */
 class ParticleMoveDustControl :public ParticleControl
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
 public:
 
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 
 
-	std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
+	//std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
 
 
-	//	プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-	//	コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
-	// テクスチャハンドル
-	ID3D11ShaderResourceView** m_texture;
-	//	！New！
-	//	頂点情報のリスト
-	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
+	////	プリミティブバッチ
+	//std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
+	////	コモンステート
+	//std::unique_ptr<DirectX::CommonStates> m_states;
+	//// テクスチャハンドル
+	//ID3D11ShaderResourceView** m_texture;
+	////	！New！
+	////	頂点情報のリスト
+	//std::vector<DirectX::VertexPositionColorTexture> m_vertices;
 
 
 
-	std::list<ParticleMoveDust> m_particleMoveDust;
+	//std::list<ParticleMoveDust> m_particleMoveDust;
 
 	// メンバ関数の宣言 -------------------------------------------------
 	// コンストラクタ/デストラクタ

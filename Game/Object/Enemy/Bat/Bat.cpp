@@ -97,8 +97,10 @@ void Bat::Initialize()
  *
  * @return なし
  */
-void Bat::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Bat::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
+
 	//生きていない場合更新しない
 	if (!IsAlive())
 	{
@@ -118,8 +120,8 @@ void Bat::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentP
 	m_sphere.SetCenter(m_currentPosition);
 
 	//子クラス更新
-	m_leftWing->Update(elapsedTime, GetCurrentPosition(), GetCurrentQuaternion());
-	m_rightWing->Update(elapsedTime, GetCurrentPosition(), GetCurrentQuaternion());
+	m_leftWing->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	m_rightWing->Update(GetCurrentPosition(), GetCurrentQuaternion());
 
 	//時間経過
 	m_frameCount += elapsedTime;

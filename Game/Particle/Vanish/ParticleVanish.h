@@ -43,12 +43,12 @@ public:
 	//	関数
 	//	コンストラクタ（初期設定）
 	ParticleVanish(
-		float life,
-		DirectX::SimpleMath::Vector3 pos,
-		DirectX::SimpleMath::Vector3 velocity,
-		DirectX::SimpleMath::Vector3 accele,
-		DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-		DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor);
+			const float& life,
+			const DirectX::SimpleMath::Vector3& pos,
+			const DirectX::SimpleMath::Vector3& velocity,
+			const DirectX::SimpleMath::Vector3& accele,
+			const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,
+			const DirectX::SimpleMath::Color& startColor, const DirectX::SimpleMath::Color& endColor);
 	//	デストラクタ
 	~ParticleVanish();
 

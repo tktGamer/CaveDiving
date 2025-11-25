@@ -12,7 +12,7 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"../Motion.h"
+#include"../AttackMotion.h"
 #include"Game/Object/Player/Hand.h"
 // クラスの宣言 ===============================================================
 
@@ -20,7 +20,7 @@
 /**
   * @brief プレイヤーの攻撃のモーション
   */
-class PlayerSecondAttackMotion : public Motion
+class PlayerSecondAttackMotion : public AttackMotion
 {
 	// クラス定数の宣言 -------------------------------------------------
 public:

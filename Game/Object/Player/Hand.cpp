@@ -75,13 +75,13 @@ void Hand::Initialize()
  *
  * @return ‚È‚µ
  */
-void Hand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Hand::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_currentAngle = GetQuaternion()   * m_motionAngle* currentAngle;
 	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition+ GetPosition(), m_motionAngle* currentAngle)+ currentPosition ;
 	
 	if(m_weapon)
-	m_weapon->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	m_weapon->Update(m_currentPosition, m_currentAngle);
 }
 
 

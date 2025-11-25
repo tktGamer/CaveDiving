@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/25
+ * @date   日付  2025/11/25
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -25,7 +25,6 @@
  */
 ParticleVanishControl::ParticleVanishControl(const std::string& texturePath)
 	:ParticleControl{texturePath}
-	,m_timerAndPos{}
 {
 
 }
@@ -50,7 +49,7 @@ void ParticleVanishControl::Update()
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 	//	0.1秒ごとに1つパーティクルを生成
-	for (std::vector<TimerAndPos>::iterator ite = m_timerAndPos.begin(); ite != m_timerAndPos.end(); )
+	for (std::vector<TimerAndPos>::iterator ite = GetTimerAndPos().begin(); ite != GetTimerAndPos().end(); )
 	{
 		//	タイマーの更新
 		ite->timer += elapsedTime;
@@ -60,19 +59,17 @@ void ParticleVanishControl::Update()
 			for (int i = 6; i < VANISH_PARTICLE_NUM; i++)
 			{
 
-				m_particleVanish.push_back(
-					ParticleVanish(
-						0.2f,																					//	生存時間(s)
-						ite->pos,																				//	基準座標
-						VANISH_PARTICLE_DIRECTION[i] * 7.0f,													//	速度
-						DirectX::SimpleMath::Vector3::One * -0.4f,												//	加速度
-						DirectX::SimpleMath::Vector3::One * 0.1f, DirectX::SimpleMath::Vector3::One * 0.5f,		//	初期スケール、最終スケール
-						DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f), DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f)	//	初期カラー、最終カラー
-					)
-				);
+				AddParticle(std::make_unique<ParticleVanish>(
+					0.2f,																					//	生存時間(s)
+					ite->pos,																				//	基準座標
+					VANISH_PARTICLE_DIRECTION[i] * 7.0f,													//	速度
+					DirectX::SimpleMath::Vector3::One * -0.4f,												//	加速度
+					DirectX::SimpleMath::Vector3::One * 0.1f, DirectX::SimpleMath::Vector3::One * 0.5f,		//	初期スケール、最終スケール
+					DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f), DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f)	//	初期カラー、最終カラー
+				));
 			}
 			//	タイマーと位置のリストから、生成したパーティクルの情報を削除する
-			ite = m_timerAndPos.erase(ite);
+			ite = GetTimerAndPos().erase(ite);
 		}
 		else
 		{
@@ -80,24 +77,8 @@ void ParticleVanishControl::Update()
 			ite++;
 		}
 	}
-
-
-	//	timerを渡してm_effectの更新処理を行う
-	for (std::list<ParticleVanish>::iterator ite = m_particleVanish.begin(); ite != m_particleVanish.end(); ite++)
-	{
-		//	更新結果の戻り値（true / false）をチェック
-		if (!(ite)->Update())
-		{
-			//	falseが返ってきたら、消す
-			ite = m_particleVanish.erase(ite);
-
-			if (ite == m_particleVanish.end())
-			{
-				//	最後のオブジェクトを消したので、ループ終了
-				break;
-			}
-		}
-	}
+	//	パーティクルの更新
+	UpdateParticles();
 }
 
 
@@ -118,26 +99,13 @@ void ParticleVanishControl::Render(const DirectX::SimpleMath::Vector3& target, c
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 
 	//	頂点情報の作成
-	CreateVertex<ParticleVanish>(m_particleVanish, target, cameraPos);
+	CreateVertex(target, cameraPos);
 
 	//	頂点情報がない場合は描画を終わる
 	if (!HasVertex()) 
 	{
 		return;
 	}
-
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ParticleControl::ConstBuffer cbuff;
-	//	ビュー設定
-	cbuff.matView = graphics->GetViewMatrix().Transpose();
-	//	プロジェクション設定
-	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
-	//	ワールド設定
-	cbuff.matWorld = DirectX::SimpleMath::Matrix::Identity.Transpose();
-	cbuff.Diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::ShaderType::Particle), 0, NULL, &cbuff, 0, 0);
-
 
 	//カメラの情報を渡す
 	ParticleControl::CameraBuffer cameraBuff;
@@ -164,9 +132,9 @@ void ParticleVanishControl::Render(const DirectX::SimpleMath::Vector3& target, c
  */
 void ParticleVanishControl::Reset()
 {
+	ClearParticles();
 	ClearVertex();
-	m_particleVanish.clear();
-	m_timerAndPos.clear();
+	ClearTimerAndPos();
 }
 
 
@@ -183,17 +151,27 @@ void ParticleVanishControl::RequestVanishParticle(DirectX::SimpleMath::Vector3 p
 	for (int i = 0; i < 6; i++)
 	{
 
-		m_particleVanish.push_back(
-			ParticleVanish(
-				0.2f,																							//	生存時間(s)
-				pos,																							//	基準座標
-				VANISH_PARTICLE_DIRECTION[i]*7.0f,													//	速度
-				DirectX::SimpleMath::Vector3::One*-0.4f,																//	加速度
-				DirectX::SimpleMath::Vector3::One*0.1f, DirectX::SimpleMath::Vector3::One*0.5f,							//	初期スケール、最終スケール
-				DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f), DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f)	//	初期カラー、最終カラー
-			)
-		);
+		//m_particleVanish.push_back(
+		//	ParticleVanish(
+		//		0.2f,																							//	生存時間(s)
+		//		pos,																							//	基準座標
+		//		VANISH_PARTICLE_DIRECTION[i]*7.0f,													//	速度
+		//		DirectX::SimpleMath::Vector3::One*-0.4f,																//	加速度
+		//		DirectX::SimpleMath::Vector3::One*0.1f, DirectX::SimpleMath::Vector3::One*0.5f,							//	初期スケール、最終スケール
+		//		DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f), DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f)	//	初期カラー、最終カラー
+		//	)
+		//);
+
+		AddParticle(std::make_unique<ParticleVanish>(
+			0.2f,																							//	生存時間(s)
+			pos,																							//	基準座標
+			VANISH_PARTICLE_DIRECTION[i] * 7.0f,															//	速度
+			DirectX::SimpleMath::Vector3::One * -0.4f,														//	加速度
+			DirectX::SimpleMath::Vector3::One * 0.1f, DirectX::SimpleMath::Vector3::One * 0.5f,				//	初期スケール、最終スケール
+			DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f), DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f)	//	初期カラー、最終カラー
+		));
 	}
 	//	パーティクルの発生位置とタイマーを追加
-	m_timerAndPos.push_back({ 0.0f, pos });
+	//m_timerAndPos.push_back({ 0.0f, pos });
+	AddTimerAndPos(TimerAndPos{ 0.0f, pos });
 }

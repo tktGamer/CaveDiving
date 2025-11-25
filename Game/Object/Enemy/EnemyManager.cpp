@@ -64,7 +64,6 @@ void EnemyManager::Initialize()
  */
 void EnemyManager::Update()
 {
-	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 
 	//“G‚ÌÁ‹
 	DeleteEnemy();
@@ -72,7 +71,7 @@ void EnemyManager::Update()
 	//“G‚ÌXV
 	for (std::unique_ptr<Character>& enemy : m_enemies)
 	{
-		enemy->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);	
+		enemy->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);	
 	}
 }
 

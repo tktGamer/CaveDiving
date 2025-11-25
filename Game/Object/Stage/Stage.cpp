@@ -99,15 +99,15 @@ void Stage::Initialize(bool* isOnLight, int size)
  *
  * @return ‚È‚µ
  */
-void Stage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Stage::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	
-	m_ground->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
-	m_wall->Update(elapsedTime,DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
+	m_ground->Update(DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
+	m_wall->Update(DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
 
 	for (std::unique_ptr<CandleStick>& rock : m_rocks) 
 	{
-		rock->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+		rock->Update( DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	}
 }
 

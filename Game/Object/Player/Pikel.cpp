@@ -73,7 +73,7 @@ void Pikel::Initialize()
  *
  * @return ‚È‚µ
  */
-void Pikel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Pikel::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_currentAngle = GetQuaternion() * currentAngle;
 	m_currentPosition = m_initialPosition + currentPosition + GetPosition();

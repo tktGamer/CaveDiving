@@ -65,7 +65,7 @@ void Light::Initialize()
  *
  * @return ‚È‚µ
  */
-void Light::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Light::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_currentAngle = m_initialAngle * GetQuaternion() * currentAngle;
 	m_currentPosition = m_initialPosition + GetPosition() + currentPosition;

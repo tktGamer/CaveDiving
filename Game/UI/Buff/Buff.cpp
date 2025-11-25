@@ -92,6 +92,14 @@ void Buff::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Direc
 
 }
 
+
+/**
+ * @brief ƒoƒtUI‚Ì’Ç‰Á
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
 const float& Buff::GetRemainingTime()
 {
     return *m_remainingTime;

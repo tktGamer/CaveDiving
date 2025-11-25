@@ -1,11 +1,11 @@
 /**
  * @file   ParticleDamageNumber.h
  *
- * @brief  パーティクルに関するヘッダファイル
+ * @brief  ダメージ数値パーティクルに関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付　2025//11/25
  */
 
  // 多重インクルードの防止 =====================================================
@@ -27,34 +27,14 @@ class ParticleDamageNumber : public ParticleControl
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	変数
 
 
 // データメンバの宣言 -----------------------------------------------
 private:
 
-
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
-
-
-	std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
-
-
-	//	プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-	//	コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
-	// テクスチャハンドル
-	ID3D11ShaderResourceView** m_texture;
-
-	//	頂点情報のリスト
-	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
-
-	//	パーティクルに使う情報を保存するためのクラスオブジェクト用リスト
-	std::list<ParticleNumber3D> m_particleNumber;
-
-	
+	//数字の基準位置	
 	DirectX::SimpleMath::Vector3 m_basePosition;
+	//ビルボード
 	DirectX::SimpleMath::Matrix m_billboard;
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -78,11 +58,16 @@ public:
 
 	void Reset();
 
+	//取得・設定
 public:
+	//削除するか
 	bool IsDelete();
+//内部処理
 private:
+	//桁数カウント
 	int CheckDigit(const int& num);
 
+	//ビルボード
 	void CreateBillboard(DirectX::SimpleMath::Vector3 eye, DirectX::SimpleMath::Vector3 up);
 
 };

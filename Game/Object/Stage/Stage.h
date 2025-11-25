@@ -64,7 +64,7 @@ public:
 public:
 	void Initialize(bool* isOnLight, int size);
 
-	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle);
+	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle);
 
 
 	void Draw();

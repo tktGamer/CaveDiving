@@ -33,24 +33,24 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
+	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 
 
-	std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
+	//std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
 
 
-	//	プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-	//	コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
-	// テクスチャハンドル
-	ID3D11ShaderResourceView** m_texture;
-	//	！New！
-	//	頂点情報のリスト
-	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
+	////	プリミティブバッチ
+	//std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
+	////	コモンステート
+	//std::unique_ptr<DirectX::CommonStates> m_states;
+	//// テクスチャハンドル
+	//ID3D11ShaderResourceView** m_texture;
+	////	！New！
+	////	頂点情報のリスト
+	//std::vector<DirectX::VertexPositionColorTexture> m_vertices;
 
-	//	パーティクルに使う情報を保存するためのクラスオブジェクト用リスト
-	std::list<ParticlePowerUp> m_particlePowerUp;
+	////	パーティクルに使う情報を保存するためのクラスオブジェクト用リスト
+	//std::list<ParticlePowerUp> m_particlePowerUp;
 
 	const DirectX::SimpleMath::Vector3* m_centerPos;
 // メンバ関数の宣言 -------------------------------------------------

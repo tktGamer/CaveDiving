@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/10/22
+ * @date   日付  2025/11/20
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -28,34 +28,22 @@
  * @param[in] startColor　初期カラー
  * @param[in] endColor　　最終カラー
  */
-Particle::Particle(float life,
-	DirectX::SimpleMath::Vector3 pos, DirectX::SimpleMath::Vector3 velocity, 
-	DirectX::SimpleMath::Vector3 accele, DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-	DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor)
+Particle::Particle(const float& life,
+	const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& velocity,
+	const DirectX::SimpleMath::Vector3& accele, const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,
+	const DirectX::SimpleMath::Color& startColor, const DirectX::SimpleMath::Color& endColor)
+	:m_startLife{life}
+	,m_life{life}
+	,m_position{pos}
+	,m_velocity{velocity}
+	,m_accele{accele}
+	,m_startScale{startScale}
+	,m_nowScale{startScale}
+	,m_endScale{endScale}
+	,m_startColor{startColor}
+	,m_nowColor{startColor}
+	,m_endColor{endColor}
 {
-	//	与えられた生存時間（s）を取得
-	m_startLife =
-		m_life = life;
-	//	初期位置を取得
-	m_position = pos;
-	//	移動ベクトルを取得
-	m_velocity = velocity;
-	//	加速度ベクトルを取得
-	m_accele = accele;
-
-	//	初めのサイズを取得
-	m_startScale =
-		m_nowScale = startScale;
-	//	終了のサイズを取得
-	m_endScale = endScale;
-
-
-	//	初めの色を取得
-	m_startColor =
-		m_nowColor = startColor;
-	//	終了の色を取得
-	m_endColor = endColor;
-
 }
 
 /**

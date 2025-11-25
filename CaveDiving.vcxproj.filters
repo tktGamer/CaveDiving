@@ -534,6 +534,12 @@
     <ClInclude Include="Game\Object\Gem\Unique\FullHPAttackUp.h">
       <Filter>Game\Object\Gem\Unique</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Motion\PlayerMotion\PlayerAirSpenningMotion.h">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Motion\AttackMotion.h">
+      <Filter>Game\Motion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -885,6 +891,12 @@
     </ClCompile>
     <ClCompile Include="Game\Object\Gem\Unique\FullHPAttackUp.cpp">
       <Filter>Game\Object\Gem\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\PlayerMotion\PlayerAirSpenningMotion.cpp">
+      <Filter>Game\Motion\PlayerMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Motion\AttackMotion.cpp">
+      <Filter>Game\Motion</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

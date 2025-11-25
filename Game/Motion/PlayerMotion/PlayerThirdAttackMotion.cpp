@@ -19,8 +19,9 @@
  * @param[in] ‚È‚µ
  */
 PlayerThirdAttackMotion::PlayerThirdAttackMotion(Hand* pRightHand, Hand* pLeftHand)
-	: m_pRightHand{ pRightHand }
-	,m_pLeftHand{pLeftHand}
+	: AttackMotion{1.5f}
+	, m_pRightHand{ pRightHand }
+	, m_pLeftHand{pLeftHand}
 	, m_isNextAttack{ false }
 {
 	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("turnattack.wav"));

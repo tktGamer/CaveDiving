@@ -67,7 +67,7 @@ void Wing::Initialize()
  *
  * @return ‚È‚µ
  */
-void Wing::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Wing::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 
 	m_currentAngle =m_initialAngle * GetQuaternion() * m_motionAngle * currentAngle;

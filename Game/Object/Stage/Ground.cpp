@@ -73,7 +73,7 @@ void Ground::Initialize()
  *
  * @return ‚È‚µ
  */
-void Ground::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Ground::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_box.SetCenter(currentPosition + GetPosition());
 }

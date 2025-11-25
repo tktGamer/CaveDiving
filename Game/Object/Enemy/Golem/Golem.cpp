@@ -102,8 +102,9 @@ void Golem::Initialize()
  *
  * @return なし
  */
-void Golem::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 	//生きていない場合更新しない
 	if (!IsAlive())
 	{
@@ -123,8 +124,8 @@ void Golem::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
 	m_sphere.SetCenter(m_currentPosition);
 
 	//子クラス更新
-	m_rightHand->Update(elapsedTime, m_currentPosition, m_currentAngle);
-	m_leftHand->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	m_rightHand->Update(m_currentPosition, m_currentAngle);
+	m_leftHand->Update(m_currentPosition, m_currentAngle);
 	//時間経過
 	m_frameCount += elapsedTime;
 }

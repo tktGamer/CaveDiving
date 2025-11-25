@@ -56,6 +56,8 @@ ParticleControl::~ParticleControl()
 /**
  * @brief 頂点があるか
  *
+ * @param[in] なし
+ *
  * @return true  頂点がある
 		   false 頂点がない
  */
@@ -67,11 +69,140 @@ bool ParticleControl::HasVertex() const
 /**
  * @brief テクスチャの取得
  *
+ * @param[in] なし
+ * 
  * @return テクスチャハンドル
  */
 ID3D11ShaderResourceView** ParticleControl::GetTexture() const
 {
 	return m_texture;
+}
+
+
+
+/**
+ * @brief パーティクルの更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void ParticleControl::UpdateParticles()
+{
+	//パーティクルのリストを先頭から順に更新していく
+	for (std::list<std::unique_ptr<Particle>>::iterator ite = m_particles.begin(); ite != m_particles.end(); ite++)
+	{
+		//	更新結果の戻り値（true / false）をチェック
+		if (!(ite)->get()->Update())
+		{
+			//	falseが返ってきたら、消す
+			ite = m_particles.erase(ite);
+
+			if (ite == m_particles.end())
+			{
+				//	最後のオブジェクトを消したので、ループ終了
+				break;
+			}
+		}
+	}
+
+}
+
+/**
+ * @brief パーティクルの追加
+ *
+ * @param[in] pParticle パーティクルポインタ
+ *
+ * @return なし
+ */
+void ParticleControl::AddParticle(std::unique_ptr<Particle> pParticle)
+{
+	m_particles.push_back(std::move(pParticle));
+}
+
+/**
+ * @brief パーティクルリスト取得
+ *
+ * @param[in] なし
+ * 
+ * @return パーティクルリストの参照
+ */
+std::list<std::unique_ptr<Particle>>& ParticleControl::GetParticleList()
+{
+	return m_particles;
+}
+
+/**
+ * @brief パーティクルの消去
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void ParticleControl::ClearParticles()
+{
+	m_particles.clear();
+}
+
+/**
+ * @brief 頂点を作成
+ *
+ * @param[in] target  カメラの注視点座標
+ * @param[in] cameraPos カメラの座標
+ * @param[in] customCreate  カスタム生成処理
+ *
+ * @return　なし
+ */
+void ParticleControl::CreateVertex(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const std::function<void()>& customCreate)
+{
+	//関数が渡されてきたら実行する
+	if (customCreate)
+	{
+		customCreate();
+		return;
+	}
+
+
+
+	//	ビルボード設定時にもらったカメラ情報から、視線ベクトルを計算する
+	DirectX::SimpleMath::Vector3 cameraDir = target - cameraPos;
+	//	視線ベクトルは正規化しておく
+	cameraDir.Normalize();
+
+	//	パーティクル情報を、カメラからの距離順でソートする
+	m_particles.sort(
+		//	ソート処理の基準を示す関数については、ラムダ式で指定する
+		[&](const std::unique_ptr<Particle>& lhs, const std::unique_ptr<Particle>& rhs)
+		{
+			//	カメラ正面の距離でソート
+			return cameraDir.Dot(lhs.get()->GetPosition() - cameraPos) > cameraDir.Dot(rhs.get()->GetPosition() - cameraPos);
+		});
+
+
+	//	表示に使う頂点リストに登録されているデータを全削除
+	ClearVertex();
+	//	パーティクル情報から、表示に使う頂点リストを生成する
+	for (const std::unique_ptr<Particle>& particle : m_particles)
+	{
+		if (cameraDir.Dot(particle.get()->GetPosition() - cameraPos) < 0.0f)
+		{
+			//	内積の結果がマイナスの場合はカメラの後ろなので表示する必要なし
+			continue;
+		}
+
+		DirectX::VertexPositionColorTexture vPCT;
+		//	表示するパーティクルの中心座標のみを入れる。
+		vPCT.position = DirectX::XMFLOAT3(particle.get()->GetPosition());
+		//	テクスチャの色
+		vPCT.color = DirectX::XMFLOAT4(particle.get()->GetNowColor());
+		//	現在のテクスチャのスケールを「XMFLOAT2」のXに入れる。
+		//	Yは使用しないため、0.0fを入れておく
+		vPCT.textureCoordinate = DirectX::XMFLOAT2(particle.get()->GetNowScale().x, 0.0f);
+
+		//	頂点情報を1つだけ追加。
+		AddVertex(vPCT);
+	}
+
 }
 
 /**
@@ -112,6 +243,28 @@ void ParticleControl::AddTimerAndPos(const TimerAndPos& timerAnPos)
 }
 
 /**
+ * @brief 発生位置・タイマーの取得
+ *
+ * @param[in] なし
+ * 
+ * @return 発生位置・タイマーの参照
+ */
+std::vector<ParticleControl::TimerAndPos>& ParticleControl::GetTimerAndPos()
+{
+	return m_timerAndPos;
+}
+
+/**
+ * @brief 発生位置・タイマーの消去
+ *
+ * @return なし
+ */
+void ParticleControl::ClearTimerAndPos()
+{
+	m_timerAndPos.clear();
+}
+
+/**
  * @brief カメラの情報をバッファに渡す
  *
  * @param[in] cameraCB   カメラ情報
@@ -135,10 +288,23 @@ void ParticleControl::SetCameraBuffer(const CameraBuffer& cameraCB, const UINT& 
  *
  * @return なし
  */
-void ParticleControl::SetShaderState()
+void ParticleControl::SetShaderState() const
 {
 	auto context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = Graphics::GetInstance()->GetCommonStates();
+
+	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	ParticleControl::ConstBuffer cbuff;
+	//	ビュー設定
+	cbuff.matView = Graphics::GetInstance()->GetViewMatrix().Transpose();
+	//	プロジェクション設定
+	cbuff.matProj = Graphics::GetInstance()->GetProjectionMatrix().Transpose();
+	//	ワールド設定
+	cbuff.matWorld = DirectX::SimpleMath::Matrix::Identity.Transpose();
+	cbuff.Diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
+	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	context->UpdateSubresource(Shader::GetInstance()->GetCBuffer(Shader::ShaderType::Particle), 0, NULL, &cbuff, 0, 0);
+
 
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { states->LinearWrap() };

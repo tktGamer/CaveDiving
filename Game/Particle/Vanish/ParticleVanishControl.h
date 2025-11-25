@@ -52,15 +52,6 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-
-
-	std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
-
-
-
-
-	std::list<ParticleVanish> m_particleVanish;
-
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

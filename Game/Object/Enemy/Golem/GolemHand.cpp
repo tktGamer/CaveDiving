@@ -79,7 +79,7 @@ void GolemHand::Initialize()
  *
  * @return ‚È‚µ
  */
-void GolemHand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void GolemHand::Update( const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 
 	m_currentAngle =m_initialAngle * GetQuaternion()   * m_motionAngle * currentAngle;
@@ -89,7 +89,7 @@ void GolemHand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& cu
 	m_sphere.SetCenter(GetCurrentPosition());
 
 	if(m_weapon)
-	m_weapon->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	m_weapon->Update(m_currentPosition, m_currentAngle);
 }
 
 

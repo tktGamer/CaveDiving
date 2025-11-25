@@ -26,32 +26,11 @@
   */
 class ParticleItemGetControl :public ParticleControl
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
 public:
 
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
-
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
-
-
-	std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
-
-
-	//	プリミティブバッチ
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-	//	コモンステート
-	std::unique_ptr<DirectX::CommonStates> m_states;
-	// テクスチャハンドル
-	ID3D11ShaderResourceView** m_texture;
-	//	！New！
-	//	頂点情報のリスト
-	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
-
-
-
-	std::list<ParticleItemGet> m_particleItemGet;
-
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -59,15 +38,16 @@ public:
 
 	ParticleItemGetControl(const std::string& texturePath);
 	~ParticleItemGetControl();
-	// 操作
+// 操作
 public:
 
-
+	//更新
 	void Update();
 
+	//描画
 	void Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp);
 
-
+	//パーティクルのリクエスト
 	void RequestItemGetParticle(
 		const DirectX::SimpleMath::Vector3& pos,//パーティクルの発生位置
 		const DirectX::SimpleMath::Vector3& targetPos,//向かっていくオブジェクトの位置

@@ -19,7 +19,8 @@
  * @param[in] ‚È‚µ
  */
 PlayerFirstAttackMotion::PlayerFirstAttackMotion( Hand* pRightHand, Hand* pLeftHand)
-	: m_pRightHand{ pRightHand }
+	: AttackMotion{0.9f}
+	, m_pRightHand{ pRightHand }
 	, m_pLeftHand{pLeftHand}
 	, m_isNextAttack{ false }
 	, m_inputTime{1.0f}

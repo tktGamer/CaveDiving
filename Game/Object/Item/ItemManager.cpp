@@ -61,7 +61,6 @@ void ItemManager::Initialize()
  */
 void ItemManager::Update()
 {
-	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 
 	//アイテムの消去
 	DeleteItem();
@@ -69,7 +68,7 @@ void ItemManager::Update()
 	//アイテムの更新
 	for (std::unique_ptr<Item>& item : m_items)
 	{
-		item->Update(elapsedTime, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);	
+		item->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);	
 	}
 }
 

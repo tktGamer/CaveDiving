@@ -3,9 +3,9 @@
  *
  * @brief  ゲームシーンに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付  2025/11/20
  */
 
 // 多重インクルードの防止 =====================================================
@@ -83,7 +83,7 @@ private:
 	std::unique_ptr<BuffUIControl> m_buffUI;
 	std::unique_ptr<ClearConditions> m_clearConditionsUI;
 
-	std::unique_ptr< ItemManager> m_itemManager;
+	std::unique_ptr<ItemManager> m_itemManager;
 
 
 // メンバ関数の宣言 -------------------------------------------------
