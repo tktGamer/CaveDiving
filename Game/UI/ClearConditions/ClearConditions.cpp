@@ -54,7 +54,7 @@ void ClearConditions::Initialize(int width, int height)
     nTData.col = 10;
     nTData.raw = 1;
 
-    m_restEnemy = std::make_unique<NumberControl>(nTData,m_position);
+    m_restEnemy = std::make_unique<NumberControl>(nTData,m_position,DirectX::SimpleMath::Vector4(1,1,1,1));
     m_restEnemy->Initialize();
     m_restEnemy->SetScale(DirectX::SimpleMath::Vector2(0.3f, 0.3f));
     m_restEnemy->SetDrawMinDigit(2);

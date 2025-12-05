@@ -21,19 +21,11 @@ void main(
         element.Pos = mul(element.Pos, matView);
 		//	上記の結果に、プロジェクション行列を掛け算する
         element.Pos = mul(element.Pos, matProj);
-  //      // ワールド座標の法線を計算
-  //      element.Norw = mul(input[i].Nor, matWorld);
-		////	ポリゴンに表示するテクスチャのUV情報を算出する		
-  //      element.Tex = input[i].Tex;
 
 		
 		//	ストリームへ頂点情報を追加する		
         output.Append(element);
     }
 	
-	//	追加した情報を適切に処理して、次のシェーダへ渡せるように再構成する。
-	//	今回はTriangleStreamとなるため、三角形ポリゴン用の頂点データとして次のシェーダへデータが渡せるよう、
-	//	良い感じに処理される
-	//	※これ以降にAppendで追加しても、それまでの三角形ポリゴンとは別の「グループ」のポリゴンとなってしまう
     output.RestartStrip();
 }

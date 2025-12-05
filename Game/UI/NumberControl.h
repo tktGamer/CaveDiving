@@ -51,14 +51,14 @@ private:
 
 	//1つの数字のサイズ
 	DirectX::SimpleMath::Vector2 m_numberSize;
-	
+	DirectX::SimpleMath::Vector4 m_color;
 	//各桁を表示するクラス 一桁目が０番目
 	std::unique_ptr<Number> m_numberUI;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	NumberControl(const NumberTextureData& data, const DirectX::SimpleMath::Vector2& pos);
+	NumberControl(const NumberTextureData& data, const DirectX::SimpleMath::Vector2& pos,const DirectX::SimpleMath::Vector4& color);
 
 	// デストラクタ
 	~NumberControl();

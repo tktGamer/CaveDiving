@@ -36,7 +36,7 @@ public:
 		// 効果
 		int			effect=0;		
 		//効果適用間隔
-		int interval;
+		int interval=0;
 
 		// 説明
 		std::string description;	
@@ -118,7 +118,7 @@ public:
 	bool IsBlankSlot() const;
 
 	//プレイヤーの持つ宝石を取得
-	const Gem* const* GetPlayerHoldGem() const ;
+	const Gem* const* GetPlayerHoldGem() const;
 
 	//指定の宝石をもっているか
 	template<typename T>

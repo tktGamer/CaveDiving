@@ -63,7 +63,8 @@ void HoldGemInfoDraw::Update()
 
     auto tracker = Graphics::GetInstance()->GetKeyboardTracker();
 
-
+    static float time;
+    time += Messenger::GetInstance()->GetElapsedTime();
 
     if (tracker->pressed.Right)
     {
@@ -87,6 +88,8 @@ void HoldGemInfoDraw::Update()
     m_candidateGemUI->SetTexture(GemManager::GetInstance()->GetPlayerHoldGem()[m_menuIndex]->GetImagePath().panel);
 
     m_cursol->SetPosition({ 650.0f + HoldGem::GEM_POS_X[m_menuIndex]*2.0f ,450.0f });
+    float scale=abs(std::sin(time)) + 1.0f;
+    m_cursol->SetScale({ scale,scale });
 }
 
 void HoldGemInfoDraw::Render()

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025//11//19
+ * @date   日付　2025//11//26
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,11 +24,12 @@ class Item : public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	enum UpStatus 
+	enum EffectType 
 	{
 		Attack,
 		Diffece,
-		Speed
+		Speed,
+		Outline
 	};
 
 	//	データ受け渡し用コンスタントバッファ(送信側)
@@ -47,8 +48,8 @@ private:
 	Box m_box;
 
 	//上昇するステータス
-	UpStatus m_upStatus;
-	//上昇量
+	EffectType m_effectType;
+	//効果量
 	int m_increase;
 	//効果時間
 	float m_time;
@@ -59,24 +60,24 @@ private:
 	const DirectX::SimpleMath::Vector3* m_gotObjectPos;
 	//アイテムの色
 	DirectX::SimpleMath::Vector4 m_color;
-// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Item(UpStatus upStatus,int increase,
+	Item(EffectType effectType, int increase,
 		GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	virtual ~Item();
 
 
-// 操作
+	// 操作
 public:
 	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	virtual void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
 	//描画
-	void Draw() override;
+	virtual void Draw() override;
 
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
@@ -84,16 +85,21 @@ public:
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other);
 
-//　取得・設定
+	//当たり範囲更新
+	void UpdateCollision(const DirectX::SimpleMath::Vector3& center);
+	//　取得・設定
 public:
+
 	//上昇するステータス
-	UpStatus GetUpStatus() const;
+	EffectType GetEffectType() const;
 	//上昇量
 	int GetIncrease() const;
 	//効果時間
 	float GetTime() const;
 
 	bool IsGet() const;
+
+	void SetIsGet(const bool& isGet);
 
 	void SetItemGetObjectPos(const DirectX::SimpleMath::Vector3& pos);
 

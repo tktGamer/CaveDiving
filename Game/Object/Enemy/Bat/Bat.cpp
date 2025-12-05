@@ -25,7 +25,7 @@
  */
 Bat::Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, Character(50,13,5,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
+	, Character(40,30,5,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
 	, m_sphere{ GetPosition(), 2.0f } // 初期位置とサイズを設定
 	,m_frameCount{}
 	,m_messageID{}
@@ -175,6 +175,7 @@ void Bat::Draw()
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
 
 
+	if (Messenger::GetInstance()->IsOutLineActive()) {
 
 	// モデル描画（アウトライン専用）
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
@@ -192,6 +193,7 @@ void Bat::Draw()
 		});
 
 	Shader::GetInstance()->EndShader();
+	}
 
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()

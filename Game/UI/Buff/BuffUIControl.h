@@ -57,7 +57,7 @@ public:
 
 //@æ“¾Eİ’è
 public:
-	void AddUI(const Item::UpStatus& upStatus,const float& buffTime);
+	void AddUI(const Item::EffectType& effectType,const float& buffTime);
 
 //@“à•”‘€ì
 private:

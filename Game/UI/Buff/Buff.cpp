@@ -33,6 +33,15 @@ Buff::~Buff()
 {
 }
 
+/**
+ * @brief ‰Šú‰»ˆ—
+ *
+ * @param[in] path
+ * @param[in] width
+ * @param[in] height
+ *
+ * @return ‚È‚µ
+ */
 void Buff::Initialize(const wchar_t* path, int width, int height)
 {
 

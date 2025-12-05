@@ -13,7 +13,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
-#include"Game/Object/Item/Item.h"
+#include"../Item/StatusUpItem.h"
+#include"../Item/UniquItem/OutlineItem.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -24,14 +25,39 @@ class ItemManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	static  std::unordered_map<Item::UpStatus, DirectX::SimpleMath::Vector3> ITEM_COLOR;
+	static  std::unordered_map<Item::EffectType, DirectX::SimpleMath::Vector3> ITEM_COLOR;
 	
+	//アイテムデータ項目
+	struct ItemData
+	{
+		// ID
+		int id = 0;
+		// 種類
+		std::string type;
+		//強化項目
+		std::string item;
+		// 効果
+		int			effect = 0;
+		//効果適用間隔
+		int interval;
+
+
+		//宝石の画像パス
+		std::string  gem;
+		//名前の画像パス
+		std::string  name;
+		//説明の画像パス
+		std::string  explanation;
+
+	};
+
+
 // データメンバの宣言 -----------------------------------------------
 private:
 	// グラフィックスクラスのポインタ
 	Graphics* m_graphics;	
 
-	//敵リスト
+	//アイテムリスト
 	std::list<std::unique_ptr<Item>> m_items;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -60,11 +86,11 @@ public:
 	
 //　取得・設定
 public:
-	//敵を取得
+	//アイテムを取得
 	std::list<std::unique_ptr<Item>>& GetItems() { return m_items; }
 //　内部操作
 private:
-	//敵を消去
+	//アイテムを消去
 	void DeleteItem();
 };
 

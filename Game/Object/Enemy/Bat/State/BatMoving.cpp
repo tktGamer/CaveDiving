@@ -17,14 +17,11 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] player プレイヤーのポインタ
+ * @param[in] bat コウモリのポインタ
  */
 BatMoving::BatMoving(Bat* bat)
 	: m_bat(bat)
-	, m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 }
 /**
  * @brief デストラクタ

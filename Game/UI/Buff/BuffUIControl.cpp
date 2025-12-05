@@ -81,7 +81,7 @@ void BuffUIControl::Render()
     }
 }
 
-void BuffUIControl::AddUI(const Item::UpStatus& upStatus, const float& buffTime)
+void BuffUIControl::AddUI(const Item::EffectType& upStatus, const float& buffTime)
 {
     m_buffUIs.emplace_back(std::make_unique<Buff>(buffTime));
 
@@ -89,11 +89,14 @@ void BuffUIControl::AddUI(const Item::UpStatus& upStatus, const float& buffTime)
 
     switch (upStatus)
     {
-    case Item::UpStatus::Attack:
+    case Item::EffectType::Attack:
         texturePath = L"UI/attackup001A-01.png";
         break;
-    case Item::UpStatus::Diffece:
+    case Item::EffectType::Diffece:
         texturePath = L"UI/defense-up01-1-64x64.png";
+        break;
+    case Item::EffectType::Outline:
+        texturePath = L"UI/outlineicon.png";
         break;
     default:
         break;

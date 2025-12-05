@@ -50,7 +50,7 @@ public:
 		Angry,
 	};
 
-	static constexpr int GOLEM_HP = 15;
+	static constexpr int GOLEM_HP = 150;
 // データメンバの宣言 -----------------------------------------------
 private:
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ

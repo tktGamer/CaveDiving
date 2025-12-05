@@ -25,7 +25,7 @@
  */
 Golem::Golem(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
-	, Character(GOLEM_HP,13,0,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
+	, Character(GOLEM_HP,70,20,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
 	, m_sphere{ GetPosition(), 4.0f } // 初期位置とサイズを設定
 	,m_frameCount{}
 	,m_messageID{}
@@ -115,7 +115,11 @@ void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 	//現在の状態を更新
 	GetState()->Update(elapsedTime);
 
-	DamageFlashUpdate();
+	if (!DamageFlashUpdate()) 
+	{
+		SetInvincible(false);
+
+	}
 
 	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
 	m_currentAngle =m_initialAngle * m_motionAngle* GetQuaternion() * currentAngle;
@@ -128,6 +132,7 @@ void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 	m_leftHand->Update(m_currentPosition, m_currentAngle);
 	//時間経過
 	m_frameCount += elapsedTime;
+
 }
 
 
@@ -179,22 +184,25 @@ void Golem::Draw()
 
 
 
-	// モデル描画（アウトライン専用）
-	GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
-		// カリングを FrontFace にして裏面を描画（アウトライン用）
-		context->RSSetState(states->CullCounterClockwise());
+	if (Messenger::GetInstance()->IsOutLineActive()) {
 
-		// ブレンド・デプスステート（深度は通常通り or 調整）
-		context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-		context->OMSetDepthStencilState(states->DepthDefault(), 0);
+		// モデル描画（アウトライン専用）
+		GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
+			// カリングを FrontFace にして裏面を描画（アウトライン用）
+			context->RSSetState(states->CullCounterClockwise());
 
-		// アウトラインシェーダを設定
-		Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
-		context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+			// ブレンド・デプスステート（深度は通常通り or 調整）
+			context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+			context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
-		});
+			// アウトラインシェーダを設定
+			Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
+			context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
 
-	Shader::GetInstance()->EndShader();
+			});
+
+		Shader::GetInstance()->EndShader();
+	}
 
 
 
@@ -237,9 +245,9 @@ void Golem::Draw()
 	m_rightHand->Draw();
 	m_leftHand->Draw();
 
-	m_sphere.AddDisplayCollision(&m_display);
-	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
-		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
+	//m_sphere.AddDisplayCollision(&m_display);
+	//m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
+	//	, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
 }
 

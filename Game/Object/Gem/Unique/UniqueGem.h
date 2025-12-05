@@ -1,5 +1,5 @@
 /**
- * @file   UniquGem.h
+ * @file   UniqueGem.h
  *
  * @brief  特殊効果宝石に関するヘッダファイル
  *
@@ -20,7 +20,7 @@
 /**
   * @brief 宝石
   */
-class UniquGem :public Gem
+class UniqueGem :public Gem
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -42,10 +42,10 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	UniquGem(UniqueType uniqeuType, GemAbility ability,GemImagePath image);
+	UniqueGem(UniqueType uniqeuType, GemAbility ability,GemImagePath image);
 
 	// デストラクタ
-	~UniquGem();
+	~UniqueGem();
 
 
 //操作

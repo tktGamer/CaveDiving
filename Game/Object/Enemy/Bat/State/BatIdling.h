@@ -24,8 +24,14 @@ class Bat;
   */
 class BatIdling : public IState
 {
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
+	// クラス定数の宣言 -------------------------------------------------
+public:
+private:
+	// コウモリのポインタ
+	Bat* m_bat;
+
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatIdling(Bat* bat);
@@ -44,13 +50,6 @@ public:
 	// 後処理を行う
 	void Finalize();
 
-private:
-	// プレイヤー
-	Bat* m_bat;
-	// グラフィックス
-	Graphics* m_graphics;
-	// ワールドマトリックス
-	DirectX::SimpleMath::Matrix m_worldMatrix;
 };
 
 #endif		// SOLDIER_IDLING_DEFINED

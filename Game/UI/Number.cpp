@@ -84,7 +84,7 @@ void Number::Update()
  *
  * @return なし
  */
-void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, const DirectX::SimpleMath::Vector2& scale)
+void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, const DirectX::SimpleMath::Vector2& scale, const DirectX::SimpleMath::Vector4& color)
 {
 	Shader* shader = Shader::GetInstance();
 
@@ -110,8 +110,8 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 	//	ウィンドウサイズ
 	cbuff.windowSize = DirectX::SimpleMath::Vector2(static_cast<float>(w), static_cast<float>(h));
 	cbuff.AlphaData = m_renderRatio - m_renderRatioOffset;
-	cbuff.dammy = number; //	未使用
-
+	cbuff.dammy = number; 
+	cbuff.numberColor = color;
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	//context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);

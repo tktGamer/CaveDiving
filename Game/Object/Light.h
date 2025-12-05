@@ -1,7 +1,7 @@
 /**
  * @file   Light.h
  *
- * @brief  Lightに関するヘッダファイル
+ * @brief  ライトに関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -13,12 +13,12 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Object/GameObject.h"
-#include"Game/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Light
+  * @brief ライト
   */
 class Light : public GameObject
 {
@@ -32,7 +32,7 @@ private:
 	// メッセージID
 	Message::MessageID m_messageID;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_lBuffer;
-	Shader::PointLight m_pointLight;
+	ShaderManager::PointLight m_pointLight;
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 	bool m_isOn; //ライトのオンオフ状態
 	
@@ -73,9 +73,9 @@ public:
 	bool IsOn()const;
 	ID3D11Buffer* GetLightBuffer() const;
 
-	Shader::PointLight GetLightData();
+	ShaderManager::PointLight GetLightData();
 
-	void SetLightData(const Shader::PointLight& lightData);
+	void SetLightData(const ShaderManager::PointLight& lightData);
 
 	void SetLightColor(const DirectX::SimpleMath::Vector3& color);
 //　内部操作

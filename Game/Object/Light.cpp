@@ -1,11 +1,11 @@
 /**
  * @file   Light.cpp
  *
- * @brief  ＸＸＸＸに関するソースファイル
+ * @brief  ライトに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/12/02
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -16,7 +16,9 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] parent　		   親オブジェクト 
+ * @param[in] initialPosition　初期座標 
+ * @param[in] initialAngle　　 初期角度 
  */
 Light::Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{Tag::ObjectType::Light,parent,initialPosition,initialAngle}

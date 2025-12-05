@@ -65,7 +65,7 @@ public:
 
 	void Update();
 
-	void Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, const DirectX::SimpleMath::Vector2& scale);
+	void Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, const DirectX::SimpleMath::Vector2& scale, const DirectX::SimpleMath::Vector4& color);
 
 	void Finalize();
 //@æ“¾Eİ’è

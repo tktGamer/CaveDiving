@@ -32,7 +32,8 @@ private:
 	// DamageSystemクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<DamageSystem> s_damageSystem;
 
-
+	//プレイヤーが与えたトータルダメージ
+	int m_totalDamage;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -63,7 +64,10 @@ public:
 	int DamageCalculation(const int attackPower, const int diffence);
 //　取得・設定
 public:
-
+	//プレイヤーが与えたトータルダメージの取得
+	int GetTotalDamage() const;
+	//トータルダメージのリセット
+	void ResetTotalDamage();
 //　内部操作
 private:
 

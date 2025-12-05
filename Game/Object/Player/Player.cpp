@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　　2025/09/08
+ * @date   日付　　2025/12/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -13,7 +13,7 @@
 #include "Player.h"
 
 #include "Game/Interface/IState.h"
-#include"Game/Shader.h"
+#include"Game/Shader/Shader.h"
 #include"Game/Common/Collision/Sphere.h"
 #include"Game/Common/Collision/CollisionManager.h"
 #include"../Gem/GemManager.h"
@@ -22,6 +22,7 @@
 #include"Game/Particle/ParticleManager.h"
 #include"Game/UI/Buff/BuffUIControl.h"
 #include"Game/Object/Gem/Unique/HPAutoRecoveryGem.h"
+#include"Game/Object/Gem/StatusUp/FullHPStatusUpGem.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -199,60 +200,28 @@ void Player::Draw()
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
 
 
+	//アウトラインアイテムを取得した状態か判断
+
+	if (Messenger::GetInstance()->IsOutLineActive()) {
 
 	// モデル描画（アウトライン専用）
-	GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
-	// カリングを FrontFace にして裏面を描画（アウトライン用）
-	context->RSSetState(states->CullCounterClockwise());
+	GetModel()->Draw(context, *states, world, view, proj, false, [&]() 
+	{
+		// カリングを FrontFace にして裏面を描画（アウトライン用）
+		context->RSSetState(states->CullCounterClockwise());
 
-	// ブレンド・デプスステート（深度は通常通り or 調整）
-	context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(states->DepthDefault(), 0);
-	
-	// アウトラインシェーダを設定
-	Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
-	context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+		// ブレンド・デプスステート（深度は通常通り or 調整）
+		context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+		context->OMSetDepthStencilState(states->DepthDefault(), 0);
+		
+		// アウトラインシェーダを設定
+		Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
+		context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
 
-		});
+	});
+	}
 
 	Shader::GetInstance()->EndShader();
-	//GetModel()->Draw(context, *states, world, view, proj, false, [&]()
-	//	{
-	//		//	モデル表示をするための自作シェーダに関連する設定を行う
-
-
-	//		//	画像用サンプラーの登録
-	//		ID3D11SamplerState* sampler[1] = { states->PointWrap() };
-	//		context->PSSetSamplers(0, 1, sampler);
-
-	//		if (GetTexture() != nullptr)
-	//		{
-	//			//	読み込んだ画像をピクセルシェーダに伝える
-	//			//	自作VSはt0を使っているため、
-	//			//	t0がメインで使われていると勝手に想定。
-	//			context->PSSetShaderResources(0, 1, GetTexture());
-	//		}
-
-	//		//	半透明描画指定
-	//		ID3D11BlendState* blendstate = states->NonPremultiplied();
-
-	//		//	透明判定処理
-	//		context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
-	//		//	深度バッファに書き込み参照する
-	//		context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
-	//		//	カリングはなし
-	//		context->RSSetState(states->CullCounterClockwise());
-
-	//		//シェーダーの設定
-	//		Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
-
-	//		//頂点情報を設定
-	//		context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
-
-	//	});
-	//Shader::GetInstance()->EndShader();
 	
 	
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
@@ -294,10 +263,13 @@ void Player::Draw()
 	Shader::GetInstance()->EndShader();
 
 
+#ifdef _DEBUG
+
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 	
 	//Y軸
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_currentAngle.y)), DirectX::SimpleMath::Vector2(50.0f, 50.0f));
+	debugFont->AddString(L"AngleY::", DirectX::SimpleMath::Vector2(0.0f, 50.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_currentAngle.y)), DirectX::SimpleMath::Vector2(100.0f, 50.0f));
 	//現在の体力
 	debugFont->AddString(L"NowHP::", DirectX::SimpleMath::Vector2(0.0f, 100.0f));
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentHP())), DirectX::SimpleMath::Vector2(100.0f, 100.0f));
@@ -317,6 +289,7 @@ void Player::Draw()
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().y)), DirectX::SimpleMath::Vector2(25.0f, 330.0f));
 	debugFont->AddString(L"Z::", DirectX::SimpleMath::Vector2(0.0f, 360.0f));
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().z)), DirectX::SimpleMath::Vector2(25.0f, 360.0f));
+#endif // DEBUG
 
 	//パーツの描画
 	for (std::unique_ptr<GameObject>& part : m_bodyParts) 
@@ -336,6 +309,7 @@ void Player::Draw()
  */
 void Player::Finalize()
 {
+
 }
 
 
@@ -476,9 +450,12 @@ void Player::CollisionResponce(GameObject* other)
 			m_getItemSound->Play(false);
 			//Item型へキャスト
 			Item* item = other->Cast<Item>();
-
-			m_gotItems.emplace_back(ItemInfo{ item->GetUpStatus(),item->GetIncrease(),item->GetTime() });
-			m_pBuffUIControl->AddUI(m_gotItems.back().upStatus,m_gotItems.back().time);
+			if (item == nullptr) 
+			{
+				return;
+			}
+			m_gotItems.emplace_back(ItemInfo{ item->GetEffectType(),item->GetIncrease(),item->GetTime() });
+			m_pBuffUIControl->AddUI(m_gotItems.back().effectType,m_gotItems.back().time);
 			//得たバフのアイコンを表示する
 			ParticleManager::GetInstance()->RequestPowerUpParticle( GetCurrentPosition(),item->GetColor());
 		}
@@ -492,6 +469,7 @@ void Player::CollisionResponce(GameObject* other)
 			ResetJumpCount();
 
 		}
+		break;
 	default:
 		break;
 	}
@@ -518,7 +496,7 @@ void Player::SetVelocity(const DirectX::SimpleMath::Vector3& v)
  */
 const int Player::GetMaxHP()
 {
-	return  GemPlusStatus(Gem::Type::HP)+/*ItemBuff(Item::UpStatus::HP) +*/ Character::GetMaxHP();
+	return  GemPlusStatus(Gem::Type::HP)+/*ItemBuff(Item::EffectType::HP) +*/ Character::GetMaxHP();
 }
 
 /**
@@ -530,7 +508,7 @@ const int Player::GetMaxHP()
  */
 const int Player::GetAttackPower()
 {
-	return GemPlusStatus(Gem::Type::STR) + ItemBuff(Item::UpStatus::Attack) + Character::GetAttackPower();
+	return GemPlusStatus(Gem::Type::STR) + ItemBuff(Item::EffectType::Attack) + Character::GetAttackPower();
 }
 
 /**
@@ -542,7 +520,7 @@ const int Player::GetAttackPower()
  */
 const int Player::GetDiffence()
 {
-	return GemPlusStatus(Gem::Type::DEF)+ ItemBuff(Item::UpStatus::Diffece) + Character::GetDiffence();
+	return GemPlusStatus(Gem::Type::DEF) + ItemBuff(Item::EffectType::Diffece) + Character::GetDiffence();
 }
 
 
@@ -597,7 +575,7 @@ void Player::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 bool Player::ReduceJumpCount()
 {
 	//残り回数がないなら偽を返す
-	if (m_remainingJumpCount == 0) 
+	if (m_remainingJumpCount == 0)
 	{
 		return false;
 	}
@@ -624,15 +602,19 @@ void Player::ResetJumpCount()
 void Player::UpdateGotItems()
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
-	for (ItemInfo& iteminfo : m_gotItems) 
+	for (ItemInfo& iteminfo : m_gotItems)
 	{
 		//制限時間を減らす
 		iteminfo.time -= elapsedTime;
 
+		if (iteminfo.effectType == Item::EffectType::Outline && iteminfo.time <= 0) 
+		{
+			Messenger::GetInstance()->SetOutLineActive(false);
+		}
 	}
 
 	//効果時間が0になったものを消す
-	m_gotItems.remove_if([](ItemInfo iteminfo) {return iteminfo.time < 0.0f; });
+	m_gotItems.remove_if([](ItemInfo& iteminfo) {return iteminfo.time < 0.0f; });
 }
 
 /**
@@ -652,12 +634,12 @@ void Player::ChangeDirection()
 	if (key->GetLastState().LeftShift)
 	{
 		//左旋回
-		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(180.0f*elapsedTime));
+		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(180.0f * elapsedTime));
 	}
 	if (key->GetLastState().C)
 	{
 		//右旋回
-		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-180.0f*elapsedTime));
+		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-180.0f * elapsedTime));
 	}
 
 	// 姿勢に回転を加える
@@ -675,12 +657,12 @@ void Player::ChangeDirection()
 int Player::GemPlusStatus(const Gem::Type type)
 {
 	//プレイヤーの持つ宝石を管理クラスから取得
-	const Gem*const* holdGems = GemManager::GetInstance()->GetPlayerHoldGem();
+	const Gem* const* holdGems = GemManager::GetInstance()->GetPlayerHoldGem();
 	//強化値の合計
 	int total = 0;
 
 	//所持できる数だけ処理する（３回）
-	for (int i = 0; i < 3; i++) 
+	for (int i = 0; i < 3; i++)
 	{
 		//空なら飛ばす
 		if (!holdGems[i])
@@ -689,9 +671,23 @@ int Player::GemPlusStatus(const Gem::Type type)
 		}
 
 		//所持している宝石が指定されたステータスを強化するものか
-		if (holdGems[i]->GetAbility().powerUp == type) 
+		if (holdGems[i]->GetAbility().powerUp == type)
 		{
+			//HPが満タンのときに効果を適用する宝石か
+			if (const FullHPStatusUpGem* gem = dynamic_cast<const FullHPStatusUpGem*>(holdGems[i])) 
+			{
+				//効果を適用していいか判断
+				if (gem->IsApplicable(GetCurrentHP(), GetMaxHP())) 
+				{
+					//効果を適用
+					total += gem->GetAbility().value;
+				}
+				//加算したの次
+				continue;
+			}
+			//普通のステータス強化の宝石なので普通に加算
 			total += holdGems[i]->GetAbility().value;
+
 		}
 	}
 
@@ -706,14 +702,14 @@ int Player::GemPlusStatus(const Gem::Type type)
  *
  * @return 強化量
  */
-int Player::ItemBuff(const Item::UpStatus& upStatus)
+int Player::ItemBuff(const Item::EffectType& upStatus)
 {
 	int total = 0;
 
 	for (ItemInfo itemInfo : m_gotItems) 
 	{
 		//指定されたステータスを強化するものか
-		if (itemInfo.upStatus != upStatus)
+		if (itemInfo.effectType != upStatus)
 		{
 			continue;
 		}

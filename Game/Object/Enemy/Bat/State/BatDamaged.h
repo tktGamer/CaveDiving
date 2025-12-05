@@ -25,6 +25,8 @@ class Bat;
   */
 class BatDamaged : public IState
 {
+	// クラス定数の宣言 -------------------------------------------------
+public:
 private:
 	// コウモリ
 	Bat* m_bat;

@@ -1,11 +1,11 @@
 /**
  * @file   ParticlePowerUpControl.cpp
  *
- * @brief  敵消滅パーティクル管理に関するソースファイル
+ * @brief  パワーアップパーティクル管理に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/25
+ * @date   日付  2025/12/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -13,7 +13,7 @@
 #include "ParticlePowerUpControl.h"
 
 #include"Game/Common/ResourceManager.h"
-#include"Game/Shader.h"
+#include"Game/Shader/Shader.h"
 #include"Game/Message/Messenger.h"
 
 

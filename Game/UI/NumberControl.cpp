@@ -19,12 +19,13 @@
  * @param[in] data
  * @param[in] pos
  */
-NumberControl::NumberControl(const NumberTextureData& data, const DirectX::SimpleMath::Vector2& pos)
+NumberControl::NumberControl(const NumberTextureData& data, const DirectX::SimpleMath::Vector2& pos, const DirectX::SimpleMath::Vector4& color)
 	:m_graphics{Graphics::GetInstance()}
 	,m_drawDigit{1}
 	,m_scale{1.0f,1.0f}
 	,m_number{}
 	,m_position{pos}
+	,m_color{color}
 {
 	//数字テクスチャの画像サイズを取得
 	int textureWidth = 0, textureHeight = 0;
@@ -100,7 +101,7 @@ const DirectX::SimpleMath::Vector2 NumberControl::Draw()
 		//下位桁から表示する
 		int num = number % 10;
 		number /= 10;
-		m_numberUI->Draw(num, pos,m_scale);
+		m_numberUI->Draw(num, pos,m_scale,m_color);
 		//数字の大きさ分ずらす
 		pos.x -= static_cast<float>(m_numberSize.x) * m_scale.x ;
 

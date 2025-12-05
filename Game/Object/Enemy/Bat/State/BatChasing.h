@@ -24,6 +24,13 @@ class GameObject;
   */
 class BatChasing : public IState
 {
+	// クラス定数の宣言 -------------------------------------------------
+public:
+private:
+	// コウモリ
+	Bat* m_bat;
+
+	const GameObject* m_pPlayer;
 	// メンバ関数の宣言 -------------------------------------------------
 	// コンストラクタ/デストラクタ
 public:
@@ -47,10 +54,5 @@ public:
 private:
 	//二点のラジアン角を求める
 	const float CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target);
-private:
-	// コウモリ
-	Bat* m_bat;
-
-	const GameObject* m_pPlayer;
 };
 #endif		// BAT_IDLING_DEFINED

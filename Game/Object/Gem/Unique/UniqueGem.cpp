@@ -1,5 +1,5 @@
 /**
- * @file   UniquGem.cpp
+ * @file   UniqueGem.cpp
  *
  * @brief  宝石に関するソースファイル
  *
@@ -10,7 +10,7 @@
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "UniquGem.h"
+#include "UniqueGem.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -20,7 +20,7 @@
  * @param[in] value 宝石の効果値
  * @param[in] discription 宝石の効果説明
  */
-UniquGem::UniquGem(UniqueType uniqeuType, GemAbility ability, GemImagePath image)
+UniqueGem::UniqueGem(UniqueType uniqeuType, GemAbility ability, GemImagePath image)
 	:Gem{ ability,image }
 {
 }
@@ -31,7 +31,7 @@ UniquGem::UniquGem(UniqueType uniqeuType, GemAbility ability, GemImagePath image
 /**
  * @brief デストラクタ
  */
-UniquGem::~UniquGem()
+UniqueGem::~UniqueGem()
 {
 
 }
@@ -45,12 +45,12 @@ UniquGem::~UniquGem()
  *
  * @return なし
  */
-void UniquGem::Initialize()
+void UniqueGem::Initialize()
 {
 
 }
 
-void UniquGem::ApplyEffect()
+void UniqueGem::ApplyEffect()
 {
 }
 
@@ -63,7 +63,7 @@ void UniquGem::ApplyEffect()
  *
  * @return なし
  */
-void UniquGem::Finalize()
+void UniqueGem::Finalize()
 {
 
 }

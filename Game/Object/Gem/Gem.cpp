@@ -56,11 +56,21 @@ void Gem::Initialize()
 
 }
 
-void Gem::ApplyEffect()
+
+
+
+
+/**
+ * @brief ‰Šú‰»ˆ—
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
+bool Gem::IsApplicable()
 {
+	return true;
 }
-
-
 
 /**
  * @brief I—¹ˆ—

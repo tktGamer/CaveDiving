@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付  22025/12/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -94,8 +94,9 @@ void BatChasing::Update(const float& elapsedTime)
 
 	}
 
-
+	//摩擦
 	v *= 0.95f;
+	//重力
 	v.y += -0.8f * elapsedTime;
 
 	m_bat->SetVelocity(v);

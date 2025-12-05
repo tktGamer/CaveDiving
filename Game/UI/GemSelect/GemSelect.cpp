@@ -80,7 +80,7 @@ void GemSelect::Update()
     //スペースキーを押したら
     if (tracker->pressed.Space) 
     {
-        //「いいえ」ならUI削除
+        //「取得しない」ならUI削除
         if (m_menuIndex >= 3) 
         {
             m_pUIManager->RequestClearUI();
@@ -188,7 +188,7 @@ void GemSelect::Randomize()
     //  背景用のウィンドウ画像も追加する
     std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
     base->Create(
-        L"UI/cancelframe.png"
+        L"UI/notacquiredframe.png"
         , { 650.0f,625.0f }
         , { 1.0f, 1.0f }
         , UserInterface::ANCHOR::MIDDLE_CENTER

@@ -86,7 +86,7 @@ public:
 	void TakeDamage(const int& damage);
 
 	//ダメージフラッシュ更新
-	void DamageFlashUpdate();
+	bool DamageFlashUpdate();
 //　取得・設定
 public:
 	//現在の体力の取得

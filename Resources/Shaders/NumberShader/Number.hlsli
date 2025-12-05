@@ -2,7 +2,9 @@ cbuffer ConstBuffer	: register(b0)
 {
 	float2 windowSize;
 	float alphaData;
-	float dammy;
+	float number;
+	
+    float4 numberColor;
 };
 
 struct VS_INPUT

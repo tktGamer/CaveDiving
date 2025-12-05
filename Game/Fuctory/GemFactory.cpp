@@ -1,3 +1,14 @@
+/**
+ * @file   GemFactory.cpp
+ *
+ * @brief  宝石生成に関するソースファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2025/11/25
+ */
+
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GemFactory.h"
 std::unordered_map<std::string, GemFactory::CreatorFunc> GemFactory::creators;

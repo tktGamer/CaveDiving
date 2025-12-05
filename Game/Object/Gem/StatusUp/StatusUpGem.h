@@ -1,5 +1,5 @@
 /**
- * @file   FullHPAttackUp.h
+ * @file   StatusUpGem.h
  *
  * @brief  宝石に関するヘッダファイル
  *
@@ -10,6 +10,7 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
+#include <string>
 
 // ヘッダファイルの読み込み ===================================================
 #include"../Gem.h"
@@ -19,31 +20,28 @@
 /**
   * @brief 宝石
   */
-class FullHPAttackUp :public Gem
+class StatusUpGem : public Gem
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
 public:
 
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
-
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	// 宝石の種類と効果値を指定して初期化
-	FullHPAttackUp(int id, std::string type, Type powerUp, int value);
-	FullHPAttackUp(GemAbility ability, GemImagePath image);
+	StatusUpGem(Gem::GemAbility ability,Gem::GemImagePath image);
 
 	// デストラクタ
-	~FullHPAttackUp();
+	~StatusUpGem();
 
 
 //操作
 public:
 	void Initialize();
 
-	int GetAttackPower(const int& currentHP,const int& maxHP);
 
 	void Finalize();
 //取得・設定

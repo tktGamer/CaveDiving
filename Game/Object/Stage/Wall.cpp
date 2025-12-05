@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "Wall.h"
 #include"Game/Common/Collision/CollisionManager.h"
+#include"Game/Shader/Shader.h"
 
 // ƒƒ“ƒoŠÖ”‚Ì’è‹` ===========================================================
 /**

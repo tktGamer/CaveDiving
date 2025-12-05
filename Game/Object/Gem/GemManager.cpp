@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付   2025/08/27
+ * @date   日付   2025/12/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -194,6 +194,14 @@ bool GemManager::LoadPlayerHoldGem()
 	return true;
 }
 
+
+/**
+ * @brief 所持宝石を空にする
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemManager::EmptyPlayerHoldGem()
 {
 	for (int i = 0; i < 3; i++) 
@@ -458,7 +466,7 @@ void GemManager::LoadGemData()
 		// 画像パス（最後の列）
 		std::getline(ss, gemData.gem, '\n');
 
-		// ====== Gem生成 ======
+		// ====== Gem生成 ====== //
 		Gem::GemAbility ability = {
 			gemData.id,
 			gemData.type,

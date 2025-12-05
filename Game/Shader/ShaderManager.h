@@ -1,5 +1,5 @@
 /**
- * @file   Shader.h
+ * @file   ShaderManager.h
  *
  * @brief  シェーダーに関するヘッダファイル
  *
@@ -21,7 +21,7 @@ class Light;
 /**
   * @brief シェーダー
   */
-class Shader
+class ShaderManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -69,6 +69,7 @@ public:
 		DirectX::SimpleMath::Vector2	windowSize;
 		float AlphaData=0;
 		float dammy=0;
+		DirectX::SimpleMath::Vector4 numberColor;
 	};
 
 	//データ受け渡し用コンスタントバッファ(送信側)
@@ -116,7 +117,7 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	// Shaderクラスのインスタンスへのユニークポインタ「シングルトン化する」
-	static std::unique_ptr<Shader> s_shader;
+	static std::unique_ptr<ShaderManager> s_shader;
 
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 	//モデルシェーダーに関する変数-----------------------------------
@@ -225,18 +226,18 @@ public:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> OUTLINE_INPUT_LAYOUT;
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> NUMBER_INPUT_LAYOUT;
 	// コンストラクタ
-	Shader();
+	ShaderManager();
 	// インスタンスをコピーすることを禁止する
-	void operator=(const Shader&) = delete;
+	void operator=(const ShaderManager&) = delete;
 	// インスタンスをムーブすることを禁止する
-	Shader& operator= (Shader&&) = delete;
+	ShaderManager& operator= (ShaderManager&&) = delete;
 	// コピーコンストラクタは禁止する
-	Shader(const Shader&) = delete;
+	ShaderManager(const ShaderManager&) = delete;
 	// ムーブコンストラクタは禁止する
-	Shader(Shader&&) = delete;
+	ShaderManager(ShaderManager&&) = delete;
 
 	// デストラクタ
-	~Shader()=default;
+	~ShaderManager()=default;
 
 
 // 操作
@@ -257,7 +258,7 @@ public:
 
 //　取得・設定
 public:
-	static  Shader* const GetInstance();
+	static  ShaderManager* const GetInstance();
 
 	//インプットレイアウトの取得
 	ID3D11InputLayout* GetInputLayout(ShaderType type);

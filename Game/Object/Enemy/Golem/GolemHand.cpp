@@ -75,7 +75,8 @@ void GolemHand::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] currentPosition
+ * @param[in] currentAngle
  *
  * @return なし
  */
@@ -120,6 +121,34 @@ void GolemHand::Draw()
 	cbuff.color.x = GetRootCharacter()->GetDamageFlash();
 
 	//GetModel()->Draw(context, *states, world, view, proj);
+	Shader::OutlineConstBuffer outline;
+	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
+	outline.matView = graphics->GetViewMatrix().Transpose();
+	outline.matProj = graphics->GetProjectionMatrix().Transpose();
+	outline.outlineThickness = 0.04f;
+	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
+
+
+
+	if (Messenger::GetInstance()->IsOutLineActive()) {
+
+		// モデル描画（アウトライン専用）
+		GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
+			// カリングを FrontFace にして裏面を描画（アウトライン用）
+			context->RSSetState(states->CullCounterClockwise());
+
+			// ブレンド・デプスステート（深度は通常通り or 調整）
+			context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+			context->OMSetDepthStencilState(states->DepthDefault(), 0);
+
+			// アウトラインシェーダを設定
+			Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
+			context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+
+			});
+
+		Shader::GetInstance()->EndShader();
+	}
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
@@ -162,9 +191,9 @@ void GolemHand::Draw()
 	if (m_weapon)
 	m_weapon->Draw();
 
-	m_sphere.AddDisplayCollision(&m_display);
-	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
-		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
+	//m_sphere.AddDisplayCollision(&m_display);
+	//m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
+	//	, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
 }
 

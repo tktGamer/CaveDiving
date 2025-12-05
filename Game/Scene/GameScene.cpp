@@ -91,7 +91,7 @@ void GameScene::Initialize()
 
 	//敵の生成
 	m_enemyManager = std::make_unique<EnemyManager>();
-	if (gameData->GetNextStage() == GameData::Stage::FIRST)
+	if (gameData->GetNextStage() != GameData::Stage::BOSS)
 	{
 		m_enemyManager->Spawn();
 	}
@@ -99,6 +99,7 @@ void GameScene::Initialize()
 	{
 		m_enemyManager->SpawnBoss();
 	}
+	gameData->SetIsStageClear(false);
 
 	//カメラの生成
 	m_camera = std::make_unique<Camera>();
@@ -143,10 +144,10 @@ void GameScene::Update(float elapsedTime)
 	m_buffUI->Update();
 
 	std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
-	m_clearConditionsUI->Update(enemies.size());
+	m_clearConditionsUI->Update((int)enemies.size());
 
 	//ゲームクリア・ゲームオーバー判定
-	if (traker->pressed.Q || enemies.size() == 0)
+	if (traker->pressed.Q || enemies.size() == 0 && !GetGameData()->IsStageClear())
 	{
 		ParticleManager::GetInstance()->Reset();
 		if (GetGameData()->GetNextStage() == GameData::Stage::BOSS)
@@ -156,9 +157,11 @@ void GameScene::Update(float elapsedTime)
 			ChangeScene<GemSelectScene>();
 			return;
 		}
-		GetGameData()->SetNextStage(GameData::Stage::BOSS);
+		GetGameData()->SetNextStage();
+		
 		//ステージのライト状況を保存
 		SaveLight();
+		GetGameData()->SetIsStageClear(true);
 		ChangeScene<GemSelectScene>();
 	}
 	else if (!m_player->IsAlive()) 
@@ -212,6 +215,7 @@ void GameScene::Render()
 
 	// 画面のサイズを取得
 	RECT rect = Graphics::GetInstance()->GetDeviceResources()->GetOutputSize();
+
 
 
 	//レンダーターゲットを変更----------------
@@ -320,7 +324,7 @@ void GameScene::Render()
 
 
 	//------------------------------------------------------
-		//---------------------------------------------------------------------------//
+	//---------------------------------------------------------------------------//
 	//通常描画
 	//---------------------------------------------------------------------------//
 
@@ -371,6 +375,39 @@ void GameScene::CreateDeviceDependentResources()
 	//std::this_thread::sleep_for(std::chrono::seconds{ 3 });
 	auto device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
 
+	////レンダーテクスチャの作成
+	//m_offScreenRT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);//画像の保存形式の指定
+	//m_offScreenRT->SetDevice(device);
+	//RECT rect = Graphics::GetInstance()->GetDeviceResources()->GetOutputSize();
+	//m_offScreenRT->SetWindow(rect);
+
+
+	////ベーシックエフェクト作成
+	//m_basicPostProcess = std::make_unique<DirectX::BasicPostProcess>(device);
+
+	////レンダーテクスチャの作成
+	////画面サイズを半分にする
+	//rect.right /= 2.0f;
+	//rect.bottom /= 2.0f;
+
+	////ブラーの作成
+	//m_blur1RT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);
+	//m_blur1RT->SetDevice(device);
+	//m_blur1RT->SetWindow(rect);
+
+	//m_blur2RT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);
+	//m_blur2RT->SetDevice(device);
+	//m_blur2RT->SetWindow(rect);
+	//
+	////デュアルポストプロセスの作成
+	//m_dualPostProcess = std::make_unique<DirectX::DualPostProcess>(device);
+}
+
+void GameScene::CreateWindowSizeDependentResources()
+{
+	//std::this_thread::sleep_for(std::chrono::seconds{ 3 });
+	auto device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
+
 	//レンダーテクスチャの作成
 	m_offScreenRT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);//画像の保存形式の指定
 	m_offScreenRT->SetDevice(device);
@@ -397,10 +434,7 @@ void GameScene::CreateDeviceDependentResources()
 
 	//デュアルポストプロセスの作成
 	m_dualPostProcess = std::make_unique<DirectX::DualPostProcess>(device);
-}
 
-void GameScene::CreateWindowSizeDependentResources()
-{
 }
 
 void GameScene::OnDeviceLost()

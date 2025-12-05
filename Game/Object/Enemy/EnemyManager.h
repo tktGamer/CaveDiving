@@ -30,8 +30,6 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	// グラフィックスクラスのポインタ
-	Graphics* m_graphics;	
 
 	//敵リスト
 	std::list<std::unique_ptr<Character>> m_enemies;

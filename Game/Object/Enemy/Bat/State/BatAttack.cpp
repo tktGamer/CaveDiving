@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/12/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -18,6 +18,8 @@
  * @brief コンストラクタ
  *
  * @param[in] bat コウモリのポインタ
+ * @param[in] pRightWing コウモリ右羽のポインタ
+ * @param[in] pLeftWing  コウモリ左羽のポインタ
  */
 BatAttack::BatAttack(Bat* bat, Wing* pRightWing, Wing* pLeftWing)
 	:m_bat(bat)
@@ -58,7 +60,7 @@ void BatAttack::Initialize()
  */
 void BatAttack::PreUpdate()
 {
-	m_attackSound->SetVolume(1.0f);
+	m_attackSound->SetVolume(Sound::VOLUME_MAX);
 	m_attackSound->Play(false);
 	m_attackMotion->Initialize();
 
@@ -86,6 +88,7 @@ void BatAttack::Update(const float& elapsedTime)
 	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
 
 
+	//3Dオーディオ　　ーー未完ーー
 	DirectX::AudioEmitter emitter{};
 	emitter.SetPosition(m_bat->GetCurrentPosition());
 	emitter.SetOrientationFromQuaternion(m_bat->GetCurrentQuaternion());

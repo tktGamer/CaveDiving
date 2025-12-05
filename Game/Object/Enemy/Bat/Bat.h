@@ -32,7 +32,9 @@ class Bat :public Character
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//左羽の位置
 	static constexpr DirectX::SimpleMath::Vector3 LEFTWING_INIT_POS  = { -0.5f,0.0f,0.0f };
+	//右羽の位置
 	static constexpr DirectX::SimpleMath::Vector3 RIGHTWING_INIT_POS = {  0.5f,0.0f,0.0f };
 	static constexpr float RIGHT_WING_INIT_DEGREE = 180.0f;
 
@@ -49,7 +51,8 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
+	// グラフィックスクラスのポインタ
+	Graphics* m_graphics;	
 
 	// メッセージID
 	Message::MessageID m_messageID;

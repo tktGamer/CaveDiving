@@ -3,9 +3,9 @@
 struct LightStruct
 {
     float3 LightPosition; // ライト位置
-    float LightInvSqrRadius; // ライトが届く距離（2乗の逆数)
+    float  LightInvSqrRadius; // ライトが届く距離（2乗の逆数)
     float3 LightColor; // ライトカラー
-    float LightIntensity; // ライト強度
+    float  LightIntensity; // ライト強度
     float4 Attenuation; //減衰
 
 };

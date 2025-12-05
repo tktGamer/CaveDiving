@@ -24,7 +24,7 @@ class Sound
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
+	static constexpr float VOLUME_MAX = 1.0f;
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -33,6 +33,8 @@ private:
 	//サウンドインスタンス
 	std::unique_ptr<DirectX::SoundEffectInstance> m_soundSource;
 	DirectX::SoundEffect* m_pSoundEffect;
+
+
 
 	bool m_is3DAudio;
 	DirectX::AudioEmitter m_emitter;

@@ -12,6 +12,8 @@
 #include "pch.h"
 #include "Wing.h"
 #include"../Bat/Bat.h"
+#include"Game/Shader/Shader.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -112,22 +114,25 @@ void Wing::Draw()
 
 
 
-	// モデル描画（アウトライン専用）
-	GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
-		// カリングを FrontFace にして裏面を描画（アウトライン用）
-		context->RSSetState(states->CullCounterClockwise());
+	if (Messenger::GetInstance()->IsOutLineActive()) {
 
-		// ブレンド・デプスステート（深度は通常通り or 調整）
-		context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-		context->OMSetDepthStencilState(states->DepthDefault(), 0);
+		// モデル描画（アウトライン専用）
+		GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
+			// カリングを FrontFace にして裏面を描画（アウトライン用）
+			context->RSSetState(states->CullCounterClockwise());
 
-		// アウトラインシェーダを設定
-		Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
-		context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+			// ブレンド・デプスステート（深度は通常通り or 調整）
+			context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+			context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
-		});
+			// アウトラインシェーダを設定
+			Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
+			context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
 
-	Shader::GetInstance()->EndShader();
+			});
+
+		Shader::GetInstance()->EndShader();
+	}
 
 
 	//GetModel()->Draw(context, *states, world, view, proj);

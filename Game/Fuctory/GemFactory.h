@@ -1,7 +1,7 @@
 ﻿/**
  * @file   GemFactory.h
  *
- * @brief  UIの生成に関するヘッダファイル
+ * @brief  宝石の生成に関するヘッダファイル
  *
  * @author 制作者名
  *

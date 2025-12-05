@@ -22,10 +22,10 @@
   */
 class Buff
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
 public:
 
-
+// データメンバの宣言 -----------------------------------------------
 private:
 
 
@@ -41,9 +41,13 @@ private:
 
 	//バフの残り時間
 	const float* m_remainingTime;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	Buff(const float& time);
 	~Buff();
+	// 操作
+public:
 
 	void Initialize(const wchar_t* path, int width, int height);
 	void Update();

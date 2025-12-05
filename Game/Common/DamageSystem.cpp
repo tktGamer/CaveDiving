@@ -11,9 +11,10 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "DamageSystem.h"
-
+#include"Game/Object/Player/Player.h"
 // クラスの静的メンバ変数の初期化
 std::unique_ptr<DamageSystem> DamageSystem::s_damageSystem = nullptr;
+
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -39,6 +40,7 @@ DamageSystem* const DamageSystem::GetInstance()
  * @param[in] なし
  */
 DamageSystem::DamageSystem()
+	:m_totalDamage{}
 {
 
 }
@@ -73,6 +75,12 @@ int DamageSystem::DamageToCharacter(Character* attacker, Character* defender)
 
 	defender->TakeDamage(damage);
 
+	//攻撃者がプレイヤーならトータルダメージを加算
+	if (attacker->Cast<Player>()) 
+	{
+		m_totalDamage += damage;
+	}
+
 	return damage;
 }
 
@@ -91,5 +99,31 @@ int DamageSystem::DamageCalculation(const int attackPower, const int diffence)
 
 	//０より大きいならdamageを返す
 	return std::max(damage,0);
+}
+
+
+/**
+ * @brief プレイヤーが与えたトータルダメージ
+ *
+ * @param[in] なし
+ *
+ * @return プレイヤーが与えたトータルダメージ
+ */
+int DamageSystem::GetTotalDamage() const
+{
+	return m_totalDamage;
+}
+
+
+/**
+ * @brief プレイヤーが与えたトータルダメージのリセット
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void DamageSystem::ResetTotalDamage()
+{
+	m_totalDamage = 0;
 }
 

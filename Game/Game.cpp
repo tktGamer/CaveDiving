@@ -23,7 +23,7 @@ Game::Game() noexcept(false)
     , m_gemManager{}
     , m_audioEngine{}
     , m_graphics{}
-
+    ,m_isDrawDebugFont{false}
 {
     m_graphics = Graphics::GetInstance();
     m_deviceResources = m_graphics->GetDeviceResources();
@@ -110,6 +110,15 @@ void Game::Update(DX::StepTimer const& timer)
         }
     }
 
+#ifdef _DEBUG
+    //デバック時キーを押すとデバッグフォントを表示
+    if (m_keyboardTracker.IsKeyPressed(Keyboard::W)) 
+    {
+        m_isDrawDebugFont = !m_isDrawDebugFont;
+    }
+#endif // DEBUG
+
+
 }
 #pragma endregion
 
@@ -134,16 +143,24 @@ void Game::Render()
     //シーンの描画
     m_sceneManager->Render();
 
+#ifdef _DEBUG
+    //表示許可がでていたらデバッグフォントを表示する
+    if (m_isDrawDebugFont)
+    {
+        std::wostringstream str;
+        str << L"fps: " << m_timer.GetFramesPerSecond();
+        m_debugFont->AddString(str.str().c_str(), DirectX::SimpleMath::Vector2::Zero);
+        m_debugFont->Render(m_graphics->GetCommonStates());
+    }
+#endif // DEBUG
 
-    std::wostringstream str;
-    str << L"fps: " << m_timer.GetFramesPerSecond();
-    m_debugFont->AddString(str.str().c_str(), DirectX::SimpleMath::Vector2::Zero);
-    m_debugFont->Render(m_graphics->GetCommonStates());
 
     m_deviceResources->PIXEndEvent();
 
     // Show the new frame.
     m_deviceResources->Present();
+
+
 }
 
 // Helper method to clear the back buffers.
@@ -234,7 +251,7 @@ void Game::CreateDeviceDependentResources()
     // TODO: Initialize device dependent objects here (independent of window size).
     device;
     m_debugFont = std::make_unique<Ito::DebugFont>(device, context, L"Resources\\Font\\SegoeUI_18.spritefont");
-
+    
     //マネージャー生成
     m_resourceManager = ResourceManager::GetInstance();
     // ユーザーリソースの作成
@@ -265,6 +282,8 @@ void Game::CreateWindowSizeDependentResources()
         , 0.1f, 500.0f);
     m_graphics->SetProjectionMatrix(proj);
     m_graphics->SetScreenSize(rect.right, rect.bottom);
+
+    m_sceneManager->CreateWindowSizeDependentResources();
 }
 
 void Game::OnDeviceLost()

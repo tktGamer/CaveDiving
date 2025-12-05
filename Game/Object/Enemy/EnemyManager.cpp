@@ -24,7 +24,6 @@
  * @param[in] なし
  */
 EnemyManager::EnemyManager()
-	:m_graphics{Graphics::GetInstance()}
 {
 
 }
@@ -170,11 +169,19 @@ void EnemyManager::Spawn()
 }
 
 
+
+/**
+ * @brief ボスモンスター生成
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void EnemyManager::SpawnBoss()
 {
 	m_enemies.emplace_back(std::make_unique<Golem>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
 	m_enemies.back()->Initialize();
-	m_enemies.back()->SetPosition({ 0.0f, 1.0f, -8.0f });
+	m_enemies.back()->SetPosition({ 0.0f, 1.0f, -15.0f });
 	CollisionManager::GetInstance()->Register(m_enemies.back().get());
 	Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
 

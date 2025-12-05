@@ -17,18 +17,27 @@
 class GameData
 {
 public:
-	enum Stage
+	enum  Stage :int
 	{
+		NONE,
 		FIRST,
+		//SECOND,
+		//THIRD,
 		BOSS
 	};
 private:
+	//与えたトータルダメージ
+	int m_totalDamage;
+	//クリアタイム
+	float m_clearTime;
 	//ゲームをクリアしたか
 	bool m_isGameClear;
 	//プレイヤーのステージクリア時HP
 	int m_playerHP;
 	//次のステージ
 	Stage m_nextStage;
+	//ステージをクリアしたか
+	bool m_isStageClear;
 	//ステージで灯した明かり
 	bool m_isOnLights[10];
 public:
@@ -36,8 +45,11 @@ public:
 	// コンストラクタ
 	GameData()
 		:m_isGameClear{false}
+		,m_isStageClear{false}
 		,m_nextStage{Stage::FIRST}
 		,m_playerHP{}
+		,m_totalDamage{0}
+		,m_clearTime{0.0f}
 		,m_isOnLights{false}
 	{
 	}
@@ -58,10 +70,28 @@ public:
 			m_isOnLights[i] = false;
 		}
 	}
-
-	void SetNextStage(const Stage& nextStage) 
+	const bool IsStageClear() const  
 	{
-		m_nextStage = nextStage;
+		return m_isStageClear;
+	}
+
+	void SetIsStageClear(const bool& isStageClear) 
+	{
+		m_isStageClear = isStageClear;
+
+	}
+
+	void SetNextStage(const GameData::Stage& nextStage = GameData::Stage::NONE) 
+	{
+		if (nextStage == GameData::Stage::NONE) 
+		{
+			// 列挙型Stageをintにキャストしてインクリメントし、Stageに戻す
+			m_nextStage = static_cast<Stage>(static_cast<int>(m_nextStage) + 1);
+		}
+		else
+		{
+			m_nextStage = nextStage;
+		}
 	}
 
 

@@ -17,7 +17,7 @@
 #include"../Scene/GameScene.h"
 #include "../Scene/LoadScene.h"
 #include"../Scene/TitleScene.h"
-
+#include"../Common/DamageSystem.h"
 #include"../Fuctory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
@@ -72,16 +72,17 @@ void ResultScene::Initialize()
 	//ゲームクリア・ゲームオーバー文字
 	if (GetGameData()->IsGameClear()) 
 	{
-		m_gameover = UIFactory::CreateUserInterface(L"UI/gameclear.png", { 650.0f,150.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+		m_gameover = UIFactory::CreateUserInterface(L"UI/gameclear.png", { 650.0f,100.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 	}
 	else
 	{
-		m_gameover = UIFactory::CreateUserInterface(L"UI/gameover.png", { 650.0f,150.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+		m_gameover = UIFactory::CreateUserInterface(L"UI/gameover.png", { 650.0f,100.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 	}
 
 	m_backTexture = UIFactory::CreateUserInterface(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-
+	m_totalDamageUI = std::make_unique<TotalDamage>(DirectX::SimpleMath::Vector2{ 1100,220 });
+	m_totalDamageUI->Initialize(w, h,DamageSystem::GetInstance()->GetTotalDamage());
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
@@ -158,7 +159,7 @@ void ResultScene::Render()
 	spriteBatch->End();
 
 	m_gameover->Draw();
-
+	m_totalDamageUI->Render();
 	m_saveMessage->Draw();
 	m_menu->Render();
 

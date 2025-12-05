@@ -3,9 +3,9 @@
  *
  * @brief  つるはし（プレイヤーの武器）に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/12/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -17,7 +17,10 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] owner    武器の所有者
+ * @param[in] parent　親オブジェクトのポインタ
+ * @param[in] initialPosition　初期座標
+ * @param[in] initialAngle　　　初期角度
  */
 Pikel::Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}

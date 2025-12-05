@@ -36,6 +36,8 @@ private:
 	//強化の適用するか
 	bool m_isApplyPowerUp = false;
 
+	//アウトライン有無
+	bool m_outlineActive;
 //コンストラクタ・デストラクタ
 private:
 	// コピー・ムーブ禁止
@@ -56,7 +58,7 @@ public:
 	// オブジェクトの登録を解除する
 	void UnRegister(int objectID);
 	// メッセージを送信する
-	void Notify(int objectID, Message::MessageID);
+	void Notify(int objectID, Message::MessageID message);
 // 取得・設定
 public:
 	// オブジェクトを取得する
@@ -66,6 +68,9 @@ public:
 	// 経過時間を設定する
 	void SetElapsedTime(const float& elapsedTime) { m_elapsedTime = elapsedTime; }
 
+	//アウトラインのオン・オフを取得する
+	const bool& IsOutLineActive() const { return m_outlineActive; };
+	void SetOutLineActive(const bool& isActive) { m_outlineActive = isActive; };
 };
 
 #endif		// MESSENGER_DEFINED

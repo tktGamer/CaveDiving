@@ -1,11 +1,11 @@
 /**
  * @file   PartObject.cpp
  *
- * @brief  敵の体の一部に関するソースファイル
+ * @brief  オブジェクトを構成する体の一部に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/12/02
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -16,7 +16,7 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in]
+ * @param[in] root 所持するキャラクタークラス
  * @param[in] parent　親クラスのポインタ
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）

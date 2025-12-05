@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2025/11/27
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -115,36 +115,22 @@ void ItemManager::Finalize()
  */
 void ItemManager::GenerateItem()
 {
-	m_items.emplace_back(std::make_unique<Item>(Item::UpStatus::Attack, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
+	m_items.emplace_back(std::make_unique<StatusUpItem>(Item::EffectType::Attack, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
 	m_items.back()->Initialize();
 	m_items.back()->SetPosition({ -10.0f,2.0f,0.0f });
-	
-	m_items.emplace_back(std::make_unique<Item>(Item::UpStatus::Attack, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
+
+	m_items.emplace_back(std::make_unique<StatusUpItem>(Item::EffectType::Attack, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
 	m_items.back()->Initialize();
-	m_items.back()->SetPosition({  40.0f,2.0f,-20.0f });
-	
-	m_items.emplace_back(std::make_unique<Item>(Item::UpStatus::Diffece, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
+	m_items.back()->SetPosition({ 40.0f,2.0f,-20.0f });
+
+	m_items.emplace_back(std::make_unique<StatusUpItem>(Item::EffectType::Diffece, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
 	m_items.back()->Initialize();
 	m_items.back()->SetPosition({ -20.0f,2.0f,20.0f });
-	//m_itemss.emplace_back(GameObjectFactory::CreateBat());
-	//m_itemss.back()->SetPosition({ 0.0f, 1.0f, -8.0f });
-	//CollisionManager::GetInstance()->Register(m_itemss.back().get());
-	//Messenger::GetInstance()->Register(m_itemss.back()->GetObjectNumber(), m_itemss.back().get());
 
-	//m_itemss.emplace_back(GameObjectFactory::CreateBat());
-	//m_itemss.back()->SetPosition({ 6.0f,1.0f,33.0f });
-	//CollisionManager::GetInstance()->Register(m_itemss.back().get());
-	//Messenger::GetInstance()->Register(m_itemss.back()->GetObjectNumber(), m_itemss.back().get());
-	//m_itemss.emplace_back(std::make_unique<Bat>( nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
-	//m_itemss.back()->Initialize();
-	//m_itemss.back()->SetPosition({ 9.0f,1.0f,-33.0f });
-	//CollisionManager::GetInstance()->Register(m_itemss.back().get());
-	//Messenger::GetInstance()->Register(m_itemss.back()->GetObjectNumber(), m_itemss.back().get());
-	//m_itemss.emplace_back(std::make_unique<Bat>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::XMConvertToRadians(0.0f)));
-	//m_itemss.back()->Initialize();
-	//m_itemss.back()->SetPosition({ -1.0f,1.0f,-36.0f });
-	//CollisionManager::GetInstance()->Register(m_itemss.back().get());
-	//Messenger::GetInstance()->Register(m_itemss.back()->GetObjectNumber(), m_itemss.back().get());
+
+	m_items.emplace_back(std::make_unique<OutlineItem>(Item::EffectType::Outline, 10, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
+	m_items.back()->Initialize();
+	m_items.back()->SetPosition({ 0.0f,2.0f,30.0f });
 }
 
 

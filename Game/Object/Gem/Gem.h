@@ -72,7 +72,8 @@ public:
 	//‰Šú‰»
 	void Initialize();
 
-	virtual void ApplyEffect();
+	//“K—pğŒ
+	virtual bool IsApplicable();
 
 	void Finalize();
 //æ“¾Eİ’è

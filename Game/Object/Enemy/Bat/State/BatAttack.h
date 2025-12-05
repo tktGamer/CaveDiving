@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/12/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -26,8 +26,21 @@ class Sound;
   */
 class BatAttack : public IState
 {
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
+	// クラス定数の宣言 -------------------------------------------------
+public:
+
+private:
+	// コウモリのポインタ
+	Bat* m_bat;
+	// グラフィックス
+	Graphics* m_graphics;
+	//攻撃モーション
+	std::unique_ptr<Motion> m_attackMotion;
+
+	//攻撃音
+	std::unique_ptr<Sound> m_attackSound;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatAttack(Bat* bat, Wing* pRightWing, Wing* pLeftWing);
@@ -47,16 +60,6 @@ public:
 	void Finalize();
 
 
-	
-private:
-	// プレイヤー
-	Bat* m_bat;
-	// グラフィックス
-	Graphics* m_graphics;
-	//攻撃モーション
-	std::unique_ptr<Motion> m_attackMotion;
-
-	std::unique_ptr<Sound> m_attackSound;
 };
 
 #endif		// SOLDIER_IDLING_DEFINED

@@ -1,3 +1,14 @@
+/**
+ * @file   Messenger.cpp
+ *
+ * @brief  メッセンジャーに関するソースファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2025/11/25
+ */
+
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Message/Messenger.h"
 #include "Game/Object/GameObject.h"
@@ -13,6 +24,7 @@ std::unique_ptr<Messenger> Messenger::s_messenger = nullptr;
  */
 Messenger::Messenger()
 	:m_elapsedTime{0.0f}
+	,m_outlineActive{}
 {
 }
 

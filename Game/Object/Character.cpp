@@ -75,6 +75,7 @@ void Character::OnDamage(GameObject* other)
 
 	
 
+	//ダメージ数値描画をリクエストする
 	ParticleManager::GetInstance()->RequestDamageParticle(CollisionManager::GetInstance()->CheckContactPoint(this->GetShape(), other->GetShape()),{2,2,1},damage);
 	
 	//ダメージ状態へ遷移
@@ -115,11 +116,11 @@ void Character::TakeDamage(const int& damage)
  *
  * @return なし
  */
-void Character::DamageFlashUpdate()
+bool Character::DamageFlashUpdate()
 {
 	if (m_damageFlash == NO_DAMAGE_FLASH) 
 	{
-		return;
+		return false;
 	}
 
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
@@ -130,6 +131,8 @@ void Character::DamageFlashUpdate()
 	{
 		m_damageFlash = NO_DAMAGE_FLASH;
 	}
+
+	return true;
 }
 
 /**

@@ -155,6 +155,18 @@
     <Filter Include="Resources\Shaders\NumberShader\3D">
       <UniqueIdentifier>{38d00b96-c94f-446c-b0dd-de154f36176b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Object\Item\UniquItem">
+      <UniqueIdentifier>{4634e4fb-e04f-4023-a3cc-8891a8d64874}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Object\Gem\StatusUp">
+      <UniqueIdentifier>{6bad9aa8-c26e-41ab-a70f-7fd71abcc09f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader">
+      <UniqueIdentifier>{2e94ec20-38e6-480f-9755-1e370abc8d5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader\Model">
+      <UniqueIdentifier>{2cc7816a-007d-4073-b3c9-bf1c37099395}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -229,9 +241,6 @@
     </ClInclude>
     <ClInclude Include="Game\Object\Light.h">
       <Filter>Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Shader.h">
-      <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Collision\Shape.h">
       <Filter>Game\Common\Collision</Filter>
@@ -498,14 +507,11 @@
     <ClInclude Include="Game\Particle\ItemGet\ParticleItemGetControl.h">
       <Filter>Game\Particle\ItemGet</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Gem\Unique\UniquGem.h">
+    <ClInclude Include="Game\Object\Gem\Unique\UniqueGem.h">
       <Filter>Game\Object\Gem\Unique</Filter>
     </ClInclude>
     <ClInclude Include="Game\Fuctory\GemFactory.h">
       <Filter>Game\Factory</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Object\Gem\StatusUpGem.h">
-      <Filter>Game\Object\Gem</Filter>
     </ClInclude>
     <ClInclude Include="Game\Object\Gem\Unique\AllSpenningAttackGem.h">
       <Filter>Game\Object\Gem\Unique</Filter>
@@ -531,14 +537,32 @@
     <ClInclude Include="Game\Particle\Damage\ParticleNumber3D.h">
       <Filter>Game\Particle\Damage</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Gem\Unique\FullHPAttackUp.h">
-      <Filter>Game\Object\Gem\Unique</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Motion\PlayerMotion\PlayerAirSpenningMotion.h">
       <Filter>Game\Motion\PlayerMotion</Filter>
     </ClInclude>
     <ClInclude Include="Game\Motion\AttackMotion.h">
       <Filter>Game\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Item\UniquItem\OutlineItem.h">
+      <Filter>Game\Object\Item\UniquItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Item\StatusUpItem.h">
+      <Filter>Game\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Result\TotalDamage.h">
+      <Filter>Game\UI\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\StatusUp\StatusUpGem.h">
+      <Filter>Game\Object\Gem\StatusUp</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\StatusUp\FullHPStatusUpGem.h">
+      <Filter>Game\Object\Gem\StatusUp</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Shader.h">
+      <Filter>Game\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\ShaderManager.h">
+      <Filter>Game\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -597,9 +621,6 @@
     </ClCompile>
     <ClCompile Include="Game\Object\Light.cpp">
       <Filter>Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Shader.cpp">
-      <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Collision\Shape.cpp">
       <Filter>Game\Common\Collision</Filter>
@@ -856,14 +877,11 @@
     <ClCompile Include="Game\Particle\ItemGet\ParticleItemGetControl.cpp">
       <Filter>Game\Particle\ItemGet</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Gem\Unique\UniquGem.cpp">
+    <ClCompile Include="Game\Object\Gem\Unique\UniqueGem.cpp">
       <Filter>Game\Object\Gem\Unique</Filter>
     </ClCompile>
     <ClCompile Include="Game\Fuctory\GemFactory.cpp">
       <Filter>Game\Factory</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object\Gem\StatusUpGem.cpp">
-      <Filter>Game\Object\Gem</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object\Gem\Unique\AllSpenningAttackGem.cpp">
       <Filter>Game\Object\Gem\Unique</Filter>
@@ -889,14 +907,32 @@
     <ClCompile Include="Game\Particle\Damage\ParticleNumber3D.cpp">
       <Filter>Game\Particle\Damage</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Gem\Unique\FullHPAttackUp.cpp">
-      <Filter>Game\Object\Gem\Unique</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Motion\PlayerMotion\PlayerAirSpenningMotion.cpp">
       <Filter>Game\Motion\PlayerMotion</Filter>
     </ClCompile>
     <ClCompile Include="Game\Motion\AttackMotion.cpp">
       <Filter>Game\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Item\UniquItem\OutlineItem.cpp">
+      <Filter>Game\Object\Item\UniquItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Item\StatusUpItem.cpp">
+      <Filter>Game\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Result\TotalDamage.cpp">
+      <Filter>Game\UI\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\StatusUp\StatusUpGem.cpp">
+      <Filter>Game\Object\Gem\StatusUp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\StatusUp\FullHPStatusUpGem.cpp">
+      <Filter>Game\Object\Gem\StatusUp</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Shader.cpp">
+      <Filter>Game\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\ShaderManager.cpp">
+      <Filter>Game\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

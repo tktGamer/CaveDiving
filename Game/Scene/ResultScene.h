@@ -22,6 +22,7 @@
 #include"math.h"
 #include"Game/UI/Menu/Menu.h"
 
+#include"../UI/Result/TotalDamage.h"
 #include"Game/UI/GemSelect/GemSelect.h"
 #include"../UI/HoldGem/HoldGem.h"
 // クラスの宣言 ===============================================================
@@ -58,6 +59,8 @@ private:
 
 	//ゲームクリア　ゲームオーバーを表示するUI
 	std::unique_ptr<UserInterface> m_gameover;
+	//トータル与ダメージUI
+	std::unique_ptr<TotalDamage> m_totalDamageUI;
 
 	std::unique_ptr<UserInterface> m_saveMessage;
 	std::unique_ptr<Menu> m_menu;

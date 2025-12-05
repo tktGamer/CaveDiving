@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付  2025/12/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -21,10 +21,7 @@
  */
 BatIdling::BatIdling(Bat* bat)
 	:m_bat(bat)
-	,m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 }
 /**
  * @brief デストラクタ

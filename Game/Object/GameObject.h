@@ -3,9 +3,9 @@
  *
  * @brief  オブジェクトの基底クラスに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/12/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -16,7 +16,6 @@
 #include"Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
 #include"Game/Interface/IState.h"
-#include"Game/Shader.h"
 #include"Game/Common/Collision/Shape.h"
 #include"Game/Tag.h"
 // クラスの宣言 ===============================================================

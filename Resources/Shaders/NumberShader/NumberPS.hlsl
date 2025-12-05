@@ -6,17 +6,20 @@ SamplerState samLinear : register(s0);
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-	//	画像表示
-
+	
+    //表示する数字を求める
     float2 uv = input.tex;
     float w = 10.0f;
     float h = 1.0f;
     uv.x /= w;
     uv.y /= h;
-    uv.x += (1.0f / w) * (dammy % w);
-    //uv.y += (1.0f / h) * (int) (floor(time.x) / w);
+    uv.x += (1.0f / w) * (number % w);
+    uv.y += (1.0f / h) * (number / h);
     
     float4 output = tex.Sample(samLinear, uv);
-    output.r = lerp(0, 1, output.w);
+    
+    //ある色の部分の色を変える
+    float3 white = float3(1, 1, 1);
+    output = lerp(output, numberColor, all(output.xyz == white));
     return output;
 }

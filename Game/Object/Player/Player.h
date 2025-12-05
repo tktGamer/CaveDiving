@@ -59,7 +59,7 @@ public:
 
 	struct  ItemInfo
 	{
-		Item::UpStatus upStatus;
+		Item::EffectType effectType;
 		int increase;
 		float time;
 	};
@@ -171,6 +171,6 @@ private:
 	//宝石で強化された分のステータスを取得
 	int GemPlusStatus(const Gem::Type type);
 	//アイテムで強化された分のステータスを取得
-	int ItemBuff(const Item::UpStatus& upStatus);
+	int ItemBuff(const Item::EffectType& effectType);
 };
 

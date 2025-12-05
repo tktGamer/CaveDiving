@@ -150,6 +150,17 @@ void HoldGem::ChangeDrawGem()
                 m_gemUI[i]->SetTexture(L"Gem/amethyst.png");
 
             }
+            else if (pGems[i]->GetAbility().type == "アクアマリン") 
+            {
+                m_gemUI[i]->SetTexture(L"Gem/ aquamarine.png");
+
+            }
+            else if (pGems[i]->GetAbility().type == "モルガナイト") 
+            {
+                m_gemUI[i]->SetTexture(L"Gem/morganite.png");
+
+            }
+
             //switch (pGems[i]->GetAbility().type)
             //{
             //case "エメラルド":

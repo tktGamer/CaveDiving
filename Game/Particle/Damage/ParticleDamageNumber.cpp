@@ -13,7 +13,7 @@
 #include "pch.h"
 #include "ParticleDamageNumber.h"
 #include"Game/Message/Messenger.h"
-#include"Game/Shader.h"
+#include"Game/Shader/Shader.h"
 #include"Game/Common/ResourceManager.h"
 
 // ƒƒ“ƒoŠÖ”‚Ì’è‹` ===========================================================
@@ -221,6 +221,7 @@ void ParticleDamageNumber::Reset()
 {
 	ClearVertex();
 	ClearParticles();
+	ClearTimerAndPos();
 }
 
 /**

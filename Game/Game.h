@@ -11,7 +11,7 @@
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
 #include"Game/Object/Gem/GemManager.h"
-#include"Game/Shader.h"
+#include"Game/Shader/Shader.h"
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
 class Game final : public DX::IDeviceNotify
@@ -64,11 +64,19 @@ private:
 
     // Rendering loop timer.
     DX::StepTimer                           m_timer;
-
-    //オーディオ
-    std::unique_ptr<DirectX::AudioEngine> m_audioEngine;
+    
+    // デバッグ用変数---
+    
     //デバッグフォントへのポインタ
     std::unique_ptr<Ito::DebugFont> m_debugFont;
+    //デバッグフォントを表示するか
+    bool m_isDrawDebugFont;
+
+    //-----------
+     
+    
+    //オーディオ
+    std::unique_ptr<DirectX::AudioEngine> m_audioEngine;
     // キーボードステートトラッカー
     DirectX::Keyboard::KeyboardStateTracker m_keyboardTracker;
 

@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/12/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -26,8 +26,18 @@ class Bat;
   */
 class BatAttackPreparing : public IState
 {
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
+	// クラス定数の宣言 -------------------------------------------------
+public:
+
+private:
+	// コウモリのポインタ
+	Bat* m_bat;
+	// グラフィックス
+	Graphics* m_graphics;
+	//攻撃準備モーション
+	std::unique_ptr<Motion> m_attackPreparingMotion;
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatAttackPreparing(Bat* bat, Wing* pRightWing, Wing* pLeftWing);
@@ -48,13 +58,6 @@ public:
 
 
 	
-private:
-	// プレイヤー
-	Bat* m_bat;
-	// グラフィックス
-	Graphics* m_graphics;
-	//攻撃準備モーション
-	std::unique_ptr<Motion> m_attackPreparingMotion;
 
 };
 
