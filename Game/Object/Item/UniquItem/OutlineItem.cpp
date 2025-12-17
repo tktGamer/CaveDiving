@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "OutlineItem.h"
 #include"Game/Common/Collision/CollisionManager.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -81,9 +81,9 @@ void OutlineItem::Draw()
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
 	cbuff.color = GetColor();
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Item_Model), 0, NULL, &cbuff, 0, 0);
 
 
 
@@ -114,21 +114,21 @@ void OutlineItem::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Item_Model);
 
-			auto ps = shader->GetItemPS();
+			//auto ps = shader->GetItemPS();
 
-			auto constBuffer = shader->GetCBuffer(Shader::ShaderType::Model);
-			//	シェーダーにバッファを渡す
-			ID3D11Buffer* cb[1] = { constBuffer };
+			//auto constBuffer = shader->GetCBuffer(ShaderManager::ShaderType::Item_Model);
+			////	シェーダーにバッファを渡す
+			//ID3D11Buffer* cb[1] = { constBuffer };
 
-			context->PSSetConstantBuffers(0, 1, cb);
-			context->PSSetShader(ps, nullptr, 0);
+			//context->PSSetConstantBuffers(0, 1, cb);
+			//context->PSSetShader(ps, nullptr, 0);
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Item_Model));
 
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 
 	//m_box.AddDisplayCollision(&m_display);
 	//m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()

@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "ItemManager.h"
 #include"Game/Common/Collision/CollisionManager.h"
-#include"Game/Fuctory/GameObjectFactory.h"
+#include"Game/Factory/GameObjectFactory.h"
 #include"Game/Particle/ParticleManager.h"
  // ƒƒ“ƒoŠÖ”‚Ì’è‹` ===========================================================
 /**

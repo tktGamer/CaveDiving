@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "Game/Message/Messenger.h"
 #include "Game/Object/GameObject.h"
-
+#include"Game/Object/Light.h"
 // s_messenger‚ğ‰Šú‰»‚·‚é
 std::unique_ptr<Messenger> Messenger::s_messenger = nullptr;
 
@@ -127,4 +127,23 @@ GameObject* Messenger::GetObject(int objectID)
 		return it->second;
 	}
 	return nullptr;
+}
+
+
+
+void Messenger::RegisterLight(Light* light)
+{
+	m_lights.push_back(light);
+}
+
+void Messenger::UnRegisterLight()
+{
+	for (auto& light : m_lights)
+	{
+		if (light)
+		{
+			light->Finalize();
+		}
+	}
+	m_lights.clear();
 }

@@ -111,7 +111,7 @@ void GemSelectScene::Update(float elapsedTime)
  */
 void GemSelectScene::Render()
 {
-	m_backTexture->Draw();
+	m_backTexture->Render();
 	m_gemSelectManager->Render();
 }
 

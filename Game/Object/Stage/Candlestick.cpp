@@ -11,14 +11,14 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "CandleStick.h"
-
+#include"Game/Shader/ShaderManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
  * @param[in] なし
  */
-CandleStick::CandleStick(Shader::PointLight lightData, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+CandleStick::CandleStick(const ModelShader::PointLightCB& lightData, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{ Tag::ObjectType::Light,parent,initialPosition,initialAngle }
 	, m_graphics{ Graphics::GetInstance() }
 	, m_box{ GetPosition(),DirectX::SimpleMath::Vector3{1.3f,1.3f,1.3f} }
@@ -39,7 +39,7 @@ CandleStick::CandleStick(Shader::PointLight lightData, GameObject* parent, const
 
 	m_light->SetLightData(lightData);
 
-	Shader::GetInstance()->RegisterLight(m_light.get());
+	Messenger::GetInstance()->RegisterLight(m_light.get());
 
 }
 
@@ -117,9 +117,9 @@ void CandleStick::Draw()
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
 	cbuff.color = m_color;
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Rock_Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -151,23 +151,23 @@ void CandleStick::Draw()
 			context->RSSetState(states->CullClockwise());
 
 			//シェーダーの設定
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Rock_Model);
 
-			auto ps = shader->GetRockPS();
+			//auto ps = shader->GetRockPS();
 
-			auto constBuffer = shader->GetCBuffer(Shader::ShaderType::Model);
-			//	シェーダーにバッファを渡す
-			ID3D11Buffer* cb[1] = { constBuffer };
+			//auto constBuffer = shader->GetCBuffer(ShaderManager::ShaderType::Rock_Model);
+			////	シェーダーにバッファを渡す
+			//ID3D11Buffer* cb[1] = { constBuffer };
 
-			context->PSSetConstantBuffers(0, 1, cb);
-			context->PSSetShader(ps, nullptr, 0);
+			//context->PSSetConstantBuffers(0, 1, cb);
+			//context->PSSetShader(ps, nullptr, 0);
 
 
 			//頂点情報を設定
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Rock_Model));
 
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 
 	//m_box.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()

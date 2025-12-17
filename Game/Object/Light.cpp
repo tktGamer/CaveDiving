@@ -131,12 +131,12 @@ ID3D11Buffer* Light::GetLightBuffer() const
 	return m_lBuffer.Get();
 }
 
-Shader::PointLight Light::GetLightData()
+ModelShader::PointLightCB  Light::GetLightData()
 {
 	return m_pointLight;
 }
 
-void Light::SetLightData(const Shader::PointLight& lightData)
+void Light::SetLightData(const ModelShader::PointLightCB& lightData)
 {
 	m_pointLight = lightData;
 }

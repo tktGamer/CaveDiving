@@ -13,14 +13,14 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Interface/IUI.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
   * @brief ユーザーインターフェイス
   */
-class UserInterface
+class UserInterface : public IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -41,21 +41,6 @@ public:
 
 	};
 
-	//データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Vector2	windowSize;
-		float AlphaData;
-		float dammy;
-	};
-
-	enum  UIShader
-	{
-		Menu = 0,
-		Gauge,
-		Magazine,
-		Clock
-	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -111,7 +96,7 @@ public:
 
 	void Update();
 
-	void Draw();
+	void Render();
 
 	void Finalize();
 

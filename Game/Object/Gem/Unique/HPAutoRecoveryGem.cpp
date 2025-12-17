@@ -12,7 +12,8 @@
 #include "pch.h"
 #include "HPAutoRecoveryGem.h"
 #include"Game/Message/Messenger.h"
-#include"Game/Fuctory/GemFactory.h"
+#include"Game/Factory/GemFactory.h"
+#include"Game/Particle/ParticleManager.h"
 //ファクトリクラスへの登録
 REGISTER_GEM_CLASS("HPAutoRecoveryGem", HPAutoRecoveryGem);
 
@@ -61,24 +62,26 @@ void HPAutoRecoveryGem::Initialize()
 
 }
 
-int HPAutoRecoveryGem::RecoveryHP(int currentHP, const int& maxHP)
+/**
+ * @brief HP回復
+ *
+ * @param[in] なし
+ *
+ * @return 回復量
+ */
+int HPAutoRecoveryGem::RecoveryHP()
 {
 	m_recoveryIntervalTimer += Messenger::GetInstance()->GetElapsedTime();
 	//回復間隔に達していなかったら処理を飛ばす
 	if (m_recoveryIntervalTimer <= GetAbility().interval) 
 	{
-		return currentHP;
+		return 0;
 	}
 
-	//効果値に準拠してHPを回復
-	currentHP += GetAbility().value;
-	//最大ＨＰを超えてたら補正
-	if (currentHP > maxHP) 
-	{
-		currentHP = maxHP;
-	}
 	m_recoveryIntervalTimer = 0.0f;
-	return currentHP;
+
+	//回復量を返す
+	return GetAbility().value;
 }
 
 

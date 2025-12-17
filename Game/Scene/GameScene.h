@@ -49,7 +49,6 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	// システム関連
 	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
 	//衝突表示オブジェクト
 	std::unique_ptr<Ito::DisplayCollision> m_displayCollision;
@@ -72,7 +71,6 @@ private:
 	std::unique_ptr<DirectX::DualPostProcess> m_dualPostProcess;
 
 
-	// オブジェクト関連
 	std::unique_ptr<EnemyManager> m_enemyManager; //<敵管理オブジェクト
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
 	std::unique_ptr<Player> m_player;    ///< プレイヤーオブジェクト

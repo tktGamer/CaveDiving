@@ -123,10 +123,6 @@ void PlayerAirAttack::Update(const float& elapsedTime)
  */
 void PlayerAirAttack::PostUpdate()
 {
-	//元の手の位置に戻す
-	//m_pHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-50.0f)));
-	//m_pHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	//m_pHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
 	//ピッケルの当たり判定を無効にする
 	Messenger::GetInstance()->Notify(m_player->GetObjectNumber() + 3, Message::COLLISIONINVALID);
 
@@ -143,11 +139,11 @@ void PlayerAirAttack::PostUpdate()
  */
 void PlayerAirAttack::Render()
 {
-	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 
-	debugFont->AddString(L"AirAttack", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 
 #ifdef _DEBUG
+	auto debugFont = Graphics::GetInstance()->GetDebugFont();
+	debugFont->AddString(L"AirAttack", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 #endif // DEBUG
 
 }

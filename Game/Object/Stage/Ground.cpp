@@ -11,7 +11,7 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Ground.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 
 
 // メンバ関数の定義 ===========================================================
@@ -90,7 +90,7 @@ void Ground::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
  */
 void Ground::Draw()
 {
-	Shader* shader = Shader::GetInstance();	
+	ShaderManager* shader = ShaderManager::GetInstance();
 	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
@@ -98,17 +98,17 @@ void Ground::Draw()
 
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Ground::ConstBuffer cbuff;
+	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale()).Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-	cbuff.color.x = 0.0f;
+	cbuff.flash.x = 0.0f;
 
 	//world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
 	//GetModel()->Draw(context, *states, world, view, proj);
 	
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -139,11 +139,11 @@ void Ground::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 
 }
 

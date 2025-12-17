@@ -13,7 +13,7 @@
 #include "ParticleControl.h"
 
 #include"Game/Common/ResourceManager.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
 // メンバ関数の定義 ===========================================================
 /**
@@ -303,7 +303,7 @@ void ParticleControl::SetShaderState() const
 	cbuff.matWorld = DirectX::SimpleMath::Matrix::Identity.Transpose();
 	cbuff.Diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(Shader::GetInstance()->GetCBuffer(Shader::ShaderType::Particle), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(ShaderManager::GetInstance()->GetCBuffer(ShaderManager::ShaderType::Particle), 0, NULL, &cbuff, 0, 0);
 
 
 	//	画像用サンプラーの登録
@@ -326,7 +326,7 @@ void ParticleControl::SetShaderState() const
 	context->PSSetShaderResources(0, 1, GetTexture());
 
 	//	インプットレイアウトの登録
-	context->IASetInputLayout(Shader::GetInstance()->GetInputLayout(Shader::ShaderType::Particle));
+	context->IASetInputLayout(ShaderManager::GetInstance()->GetInputLayout(ShaderManager::ShaderType::Particle));
 
 }
 

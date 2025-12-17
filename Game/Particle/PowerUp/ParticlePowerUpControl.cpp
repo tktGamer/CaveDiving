@@ -13,7 +13,7 @@
 #include "ParticlePowerUpControl.h"
 
 #include"Game/Common/ResourceManager.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
 
 
@@ -82,7 +82,7 @@ void ParticlePowerUpControl::Update()
 void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
 {
 
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext1* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
@@ -144,15 +144,15 @@ void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target, 
 	}
 
 	//カメラの情報を渡す
-	ParticleControl::CameraBuffer cameraBuff;
+	ParticleShader::CameraCB cameraBuff;
 	cameraBuff.cameraPos = cameraPos;
 	cameraBuff.cameraUp = cameraUp;
-	SetCameraBuffer(cameraBuff);
+	shader->SetCameraCB(cameraBuff);
 	//通常の設定
 	SetShaderState();
 
 	//	シェーダをセットする
-	shader->StartShader(Shader::ShaderType::Particle, shader->GetCBuffer(Shader::ShaderType::Particle));
+	shader->StartShader(ShaderManager::ShaderType::Particle);
 	//	プリミティブバッチの描画処理
 	DrawBatch();
 	//	シェーダの登録を解除しておく

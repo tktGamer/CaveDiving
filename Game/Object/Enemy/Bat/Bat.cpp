@@ -12,9 +12,10 @@
 #include "pch.h"
 #include "Bat.h"
 #include "Game/Common/Collision/CollisionManager.h"
-#include"../CaveDiving/Game/Fuctory/GameObjectFactory.h"
+#include"../CaveDiving/Game/Factory/GameObjectFactory.h"
 #include"Game/Common/DamageSystem.h"
 #include"Game/Object/Weapon.h"
+#include"Game/Shader/ShaderManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -162,17 +163,17 @@ void Bat::Draw()
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
 	cbuff.color.x = GetDamageFlash();
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Model), 0, NULL, &cbuff, 0, 0);
 
 
-	Shader::OutlineConstBuffer outline;
+	OutlineShader::OutlineCB outline;
 	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	outline.matView = graphics->GetViewMatrix().Transpose();
 	outline.matProj = graphics->GetProjectionMatrix().Transpose();
 	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Outline), 0, NULL, &outline, 0, 0);
 
 
 	if (Messenger::GetInstance()->IsOutLineActive()) {
@@ -187,12 +188,12 @@ void Bat::Draw()
 		context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
 		// アウトラインシェーダを設定
-		Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
-		context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+		ShaderManager::GetInstance()->StartShader(ShaderManager::ShaderType::Outline);
+		context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Outline));
 
 		});
 
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 	}
 
 
@@ -223,12 +224,12 @@ void Bat::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 
 	//羽の描画
 	m_leftWing->Draw();

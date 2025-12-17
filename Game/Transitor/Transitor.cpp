@@ -13,7 +13,7 @@
 #include "Transitor.h"
 
 #include"Game/Common/ResourceManager.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
 // メンバ関数の定義 ===========================================================
 /**
@@ -68,7 +68,7 @@ void Transitor::Render()
 	ID3D11DeviceContext1* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = Graphics::GetInstance()->GetCommonStates();
 
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 
 	//	頂点情報(板ポリゴンの４頂点の座標情報）
 	DirectX::VertexPositionColorTexture vertex[4] =
@@ -89,7 +89,7 @@ void Transitor::Render()
 	cbuff.time = m_time;
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::ShaderType::Fade), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Fade), 0, NULL, &cbuff, 0, 0);
 
 	
 
@@ -111,11 +111,11 @@ void Transitor::Render()
 
 	
 
-	shader->StartShader(Shader::ShaderType::Fade, shader->GetCBuffer(Shader::ShaderType::Fade));
+	shader->StartShader(ShaderManager::ShaderType::Fade);
 
 
 	//	インプットレイアウトの登録
-	context->IASetInputLayout(shader->GetInputLayout(Shader::ShaderType::Fade));
+	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Fade));
 
 	//	板ポリゴンを描画
 	m_batch->Begin();

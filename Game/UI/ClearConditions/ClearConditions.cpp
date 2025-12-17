@@ -28,6 +28,9 @@ ClearConditions::ClearConditions(const DirectX::SimpleMath::Vector2& pos)
 {
 }
 
+/**
+ * @brief デストラクタ
+ */
 ClearConditions::~ClearConditions()
 {
 }
@@ -42,7 +45,7 @@ void ClearConditions::Initialize(int width, int height)
     m_enemyIcon = std::make_unique<UserInterface>();
     m_enemyIcon->Create(
         L"enemyIcon.png"
-        ,DirectX::SimpleMath::Vector2{ 500,100 }
+        ,DirectX::SimpleMath::Vector2{ m_position.x -100,150 }
         ,DirectX::SimpleMath::Vector2{ 0.05f,0.05f }
         ,UserInterface::ANCHOR::MIDDLE_CENTER);
     m_enemyIcon->SetWindowSize(width, height);
@@ -72,9 +75,10 @@ void ClearConditions::Update(const int& drawNumber)
 
 void ClearConditions::Render()
 {
-    DirectX::SimpleMath::Vector2 drawPos = m_restEnemy->Draw();
-    drawPos.x -= m_iconTexureWidth * m_enemyIcon->GetScale().x;
-    m_enemyIcon->SetPosition(drawPos);
-    m_enemyIcon->Draw();
+    m_restEnemy->Render();
+    //DirectX::SimpleMath::Vector2 drawPos = ;
+    //drawPos.x -= m_iconTexureWidth * m_enemyIcon->GetScale().x;
+    //m_enemyIcon->SetPosition(drawPos);
+    m_enemyIcon->Render();
 }
 

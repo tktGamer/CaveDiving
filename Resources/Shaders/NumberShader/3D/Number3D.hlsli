@@ -3,7 +3,6 @@ cbuffer ConstBuffer	: register(b0)
     matrix matWorld;
     matrix matView;
     matrix matProj;
-    float4 diffuse;
 };
 
 struct VS_INPUT

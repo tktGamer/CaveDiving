@@ -25,9 +25,21 @@ public:
 		//THIRD,
 		BOSS
 	};
+
+	//スコアに必要な情報
+	struct ScoreInfo
+	{
+		//プレイヤーの残りHP
+		int playerCurrentHp = 0;
+		//プレイヤーが与えた総ダメージ
+		int totalDamage = 0;
+		//かかった時間
+		float totalTime = 0;
+	};
+
 private:
-	//与えたトータルダメージ
-	int m_totalDamage;
+	//スコア計算に必要な情報
+	ScoreInfo m_scoreInfo;
 	//クリアタイム
 	float m_clearTime;
 	//ゲームをクリアしたか
@@ -48,9 +60,9 @@ public:
 		,m_isStageClear{false}
 		,m_nextStage{Stage::FIRST}
 		,m_playerHP{}
-		,m_totalDamage{0}
 		,m_clearTime{0.0f}
 		,m_isOnLights{false}
+		,m_scoreInfo{}
 	{
 	}
 
@@ -111,6 +123,29 @@ public:
 	bool* GetIsOnLights()
 	{
 		return m_isOnLights;
+	}
+
+	const ScoreInfo& GetScoreInfo() const
+	{
+		return m_scoreInfo;
+	}
+
+	void SetTotalDamage(const int& totalDamage) 
+	{
+		m_scoreInfo.totalDamage = totalDamage;
+	}
+	void SetPlayerCurrentHP(const int& currentHp) 
+	{
+		m_scoreInfo.playerCurrentHp = currentHp;
+	}
+	void SetTotalTime(const float& totalTime) 
+	{
+		m_scoreInfo.totalTime = totalTime;
+	}
+
+	void AddTime(const float& elapsedTime) 
+	{
+		m_scoreInfo.totalTime += elapsedTime;
 	}
 };
 

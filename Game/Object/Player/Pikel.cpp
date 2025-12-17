@@ -13,6 +13,7 @@
 #include "Pikel.h"
 #include"../CaveDiving/Game/Object/Player/Player.h"
 #include"Game/Common/Collision/CollisionManager.h"
+#include"Game/Shader/ShaderManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -97,7 +98,7 @@ void Pikel::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
  */
 void Pikel::Draw()
 {
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
@@ -114,7 +115,7 @@ void Pikel::Draw()
 	//GetModel()->Draw(context, *states, world, view, proj);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -145,12 +146,12 @@ void Pikel::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 	
 	//m_sphere.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()

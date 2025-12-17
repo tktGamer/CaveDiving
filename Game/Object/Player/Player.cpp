@@ -13,12 +13,12 @@
 #include "Player.h"
 
 #include "Game/Interface/IState.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 #include"Game/Common/Collision/Sphere.h"
 #include"Game/Common/Collision/CollisionManager.h"
 #include"../Gem/GemManager.h"
 #include"Game/Common/DamageSystem.h"
-#include"Game/Fuctory/GameObjectFactory.h"
+#include"Game/Factory/GameObjectFactory.h"
 #include"Game/Particle/ParticleManager.h"
 #include"Game/UI/Buff/BuffUIControl.h"
 #include"Game/Object/Gem/Unique/HPAutoRecoveryGem.h"
@@ -99,7 +99,7 @@ void Player::Initialize()
 
 	m_light = std::make_unique<Light>(this,GetPosition(),DirectX::SimpleMath::Quaternion::Identity);
 	m_light->LightOn();
-	Shader::GetInstance()->RegisterLight(m_light.get());
+	Messenger::GetInstance()->RegisterLight(m_light.get());
 
 	m_getItemSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(L"getitem.wav"));
 }
@@ -147,15 +147,26 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 	}
 
 
-	//ParticleManager::GetInstance()->RequestDamageParticle({0,3,0}, {1,1,1,1}, 103);
 
 
 	//HP自動回復の宝石をもっているか
 	std::vector<HPAutoRecoveryGem*> gems = GemManager::GetInstance()->IsHasGem<HPAutoRecoveryGem>();
 	for(HPAutoRecoveryGem* gem : gems)
-	{
+	{ 
+		int healValue = gem->RecoveryHP();
+		if (healValue == 0) 
+		{
+			continue;
+		}
+		int currentHp = GetCurrentHP() + healValue;
+		if (currentHp > GetMaxHP()) 
+		{
+			currentHp = GetMaxHP();
+		}
 		//回復したHPをセット
-		SetCurrentHP( gem->RecoveryHP(GetCurrentHP(), GetMaxHP()));
+		SetCurrentHP(currentHp);
+
+		ParticleManager::GetInstance()->RequestHPHealParticle(GetCurrentPosition());
 	}
 }
 
@@ -181,15 +192,15 @@ void Player::Draw()
 
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Player::ConstBuffer cbuff;
+	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
-	cbuff.color.x = GetDamageFlash();
+	cbuff.flash.x = GetDamageFlash();
 
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
 
 	Player::OutlineConstBuffer outline;
@@ -197,7 +208,7 @@ void Player::Draw()
 	outline.matView = graphics->GetViewMatrix().Transpose();
 	outline.matProj = graphics->GetProjectionMatrix().Transpose();
 	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Outline), 0, NULL, &outline, 0, 0);
 
 
 	//アウトラインアイテムを取得した状態か判断
@@ -215,13 +226,13 @@ void Player::Draw()
 		context->OMSetDepthStencilState(states->DepthDefault(), 0);
 		
 		// アウトラインシェーダを設定
-		Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
-		context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+		ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
+		context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
 
 	});
 	}
 
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 	
 	
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
@@ -254,13 +265,13 @@ void Player::Draw()
 			context->RSSetState(states->CullClockwise());
 
 			//シェーダーの設定
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
 
 			//頂点情報を設定
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 
 
 #ifdef _DEBUG

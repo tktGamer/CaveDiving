@@ -13,7 +13,7 @@
 #include "pch.h"
 #include "ParticleDamageNumber.h"
 #include"Game/Message/Messenger.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 #include"Game/Common/ResourceManager.h"
 
 // メンバ関数の定義 ===========================================================
@@ -92,7 +92,7 @@ void ParticleDamageNumber::Update()
  */
 void ParticleDamageNumber::Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
 {
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext1* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
@@ -157,10 +157,10 @@ void ParticleDamageNumber::Render(const DirectX::SimpleMath::Vector3& target, co
 	}
 
 	//カメラの情報を渡す
-	ParticleControl::CameraBuffer cameraBuff;
+	ParticleShader::CameraCB cameraBuff;
 	cameraBuff.cameraPos = cameraPos;
 	cameraBuff.cameraUp = cameraUp;
-	SetCameraBuffer(cameraBuff);
+	shader->SetCameraCB(cameraBuff);
 	//コンストバッファの要素が基底と異なるのでSetShaderStateは使わない
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ConstBuffer cbuff;
@@ -177,7 +177,7 @@ void ParticleDamageNumber::Render(const DirectX::SimpleMath::Vector3& target, co
 	cbuff.Diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::ShaderType::Number3D), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Number3D), 0, NULL, &cbuff, 0, 0);
 
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { states->LinearWrap() };
@@ -199,10 +199,10 @@ void ParticleDamageNumber::Render(const DirectX::SimpleMath::Vector3& target, co
 	context->PSSetShaderResources(0, 1, GetTexture());
 
 	//	インプットレイアウトの登録
-	context->IASetInputLayout(shader->GetInputLayout(Shader::ShaderType::Number3D));
+	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Number3D));
 
 	//	シェーダをセットする
-	shader->StartShader(Shader::ShaderType::Number3D, shader->GetCBuffer(Shader::ShaderType::Number3D));
+	shader->StartShader(ShaderManager::ShaderType::Number3D);
 	//	プリミティブバッチの描画処理
 	DrawBatch();
 	//	シェーダの登録を解除しておく

@@ -14,6 +14,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Object/GameObject.h"
 #include"Game/Common/Collision/Box.h"
+#include"Game/Shader/Model/ModelShader.h"
 #include"Game/Object/Light.h"
 // クラスの宣言 ===============================================================
 
@@ -54,7 +55,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	CandleStick(Shader::PointLight lightData,GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	CandleStick(const ModelShader::PointLightCB& lightData,GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~CandleStick();

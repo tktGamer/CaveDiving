@@ -17,10 +17,10 @@
 
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
-
+#include"Game/Shader/ShaderManager.h"
 #include"Game/Common/Collision/Sphere.h"
-#include"../Fuctory/UIFactory.h"
-#include"../Fuctory/GameObjectFactory.h"
+#include"../Factory/UIFactory.h"
+#include"../Factory/GameObjectFactory.h"
 #include"Game/Particle/ParticleManager.h"
 // ƒƒ“ƒoŠÖ”‚Ì’è‹` ===========================================================
 /**
@@ -117,6 +117,8 @@ void GameScene::Initialize()
 	//Š•óÎUI‚Ì¶¬
 	m_holdGem = UIFactory::CreateHoldGem();
 
+
+
 	m_clearConditionsUI = std::make_unique<ClearConditions>(DirectX::SimpleMath::Vector2{ 1240,150 });
 	m_clearConditionsUI->Initialize(w, h);
 	ParticleManager::GetInstance()->SetCamera(m_camera.get());
@@ -188,6 +190,7 @@ void GameScene::Update(float elapsedTime)
 
 	ParticleManager::GetInstance()->Update();
 
+	GetGameData()->AddTime(elapsedTime);
 }
 
 
@@ -358,6 +361,8 @@ void GameScene::Render()
  */
 void GameScene::Finalize()
 {
+	GetGameData()->SetPlayerCurrentHP(m_player->GetCurrentHP());
+
 	m_cM->AllRelease();
 	m_player->Finalize();
 	m_stage->Finalize();
@@ -367,7 +372,7 @@ void GameScene::Finalize()
 	m_gameBGM->Stop();
 	GameObject::ResetObjectNumber();
 
-	Shader::GetInstance()->UnRegisterLight();
+	Messenger::GetInstance()->UnRegisterLight();
 }
 
 void GameScene::CreateDeviceDependentResources()

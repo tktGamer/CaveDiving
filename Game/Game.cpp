@@ -263,7 +263,6 @@ void Game::CreateDeviceDependentResources()
 
 	m_resourceManager->SetAudioEngine(m_audioEngine.get());
 
-    Shader* shader = Shader::GetInstance();
 
 	m_graphics->SetDebugFont(m_debugFont.get());
 }

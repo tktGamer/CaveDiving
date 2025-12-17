@@ -22,9 +22,10 @@
 #include"math.h"
 #include"Game/UI/Menu/Menu.h"
 
-#include"../UI/Result/TotalDamage.h"
+#include"Game/UI/Result/Score/ScoreUIManager.h"
 #include"Game/UI/GemSelect/GemSelect.h"
 #include"../UI/HoldGem/HoldGem.h"
+#include"../UI/Result/SaveConfirm.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 class Sound;
@@ -59,11 +60,10 @@ private:
 
 	//ゲームクリア　ゲームオーバーを表示するUI
 	std::unique_ptr<UserInterface> m_gameover;
-	//トータル与ダメージUI
-	std::unique_ptr<TotalDamage> m_totalDamageUI;
+	//スコアUI
+	std::unique_ptr<ScoreUIManager> m_scoreUI;
 
-	std::unique_ptr<UserInterface> m_saveMessage;
-	std::unique_ptr<Menu> m_menu;
+	std::unique_ptr<SaveConfirm> m_saveUI;
 
 	std::unique_ptr<Sound> m_decideMenuSound;
 	std::unique_ptr<Sound> m_clearSound;

@@ -18,7 +18,7 @@
 
 // クラスの宣言 ===============================================================
 class GameObject;
-
+class Light;
 // クラスの定義 ===============================================================
 /**
   * @brief メッセンジャー
@@ -30,6 +30,9 @@ private:
 	static std::unique_ptr<Messenger> s_messenger;
 	// オブジェクトIDとオブジェクトマッピング
 	std::unordered_map<int, GameObject*> m_objects;
+	//ライト配列
+	std::vector<Light*> m_lights;
+
 	// 経過時間
 	float m_elapsedTime;
 
@@ -59,10 +62,18 @@ public:
 	void UnRegister(int objectID);
 	// メッセージを送信する
 	void Notify(int objectID, Message::MessageID message);
+
+	//ライト登録
+	void RegisterLight(Light* light);
+	//ライト解除
+	void UnRegisterLight();
+
 // 取得・設定
 public:
 	// オブジェクトを取得する
 	GameObject* GetObject(int objectID);
+	//　ライトの配列を取得する
+	const std::vector<Light*>& GetLights() const { return m_lights; };
 	// 経過時間を取得する
 	float GetElapsedTime() const { return m_elapsedTime; }
 	// 経過時間を設定する

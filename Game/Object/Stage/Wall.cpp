@@ -1,18 +1,18 @@
 /**
  * @file   Wall.cpp
  *
- * @brief  地面に関するソースファイル
+ * @brief  壁に関するソースファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/10/08
+ * @date   日付　2025/12/08
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Wall.h"
 #include"Game/Common/Collision/CollisionManager.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -93,7 +93,7 @@ void Wall::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dir
  */
 void Wall::Draw()
 {
-	Shader* shader = Shader::GetInstance();	
+	ShaderManager* shader = ShaderManager::GetInstance();
 	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
@@ -111,7 +111,7 @@ void Wall::Draw()
 	//GetModel()->Draw(context, *states, world, view, proj);
 	
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -142,11 +142,11 @@ void Wall::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 
 	//m_sphere.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()

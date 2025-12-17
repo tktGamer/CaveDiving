@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "UserInterface.h"
 #include"../Common/ResourceManager.h"
+#include"Game/Shader/ShaderManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -83,9 +84,9 @@ void UserInterface::Update()
  *
  * @return なし
  */
-void UserInterface::Draw()
+void UserInterface::Render()
 {
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 
 	ID3D11DeviceContext1* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
 	//	頂点情報
@@ -102,7 +103,7 @@ void UserInterface::Draw()
 	};
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ConstBuffer cbuff;
+	UIShader::UICB cbuff;
 	//	ウィンドウサイズ
 	cbuff.windowSize = DirectX::SimpleMath::Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight));
 	cbuff.AlphaData = m_renderRatio - m_renderRatioOffset; 
@@ -111,14 +112,9 @@ void UserInterface::Draw()
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	//context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
-	context->UpdateSubresource(shader->GetCBuffer(Shader::ShaderType::UI), 0, NULL, &cbuff, 0, 0);
-	shader->StartShader(Shader::ShaderType::UI, shader->GetCBuffer(Shader::ShaderType::UI));
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::UI), 0, NULL, &cbuff, 0, 0);
+	shader->StartShader(ShaderManager::ShaderType::UI);
 
-	//	シェーダーにバッファを渡す
-	//ID3D11Buffer* cb[1] = { m_CBuffer.Get() };
-	//context->VSSetConstantBuffers(0, 1, cb);
-	//context->GSSetConstantBuffers(0, 1, cb);
-	//context->PSSetConstantBuffers(0, 1, cb);
 
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
@@ -136,16 +132,12 @@ void UserInterface::Draw()
 	//	カリングは左周り
 	context->RSSetState(m_states->CullNone());
 
-	//	シェーダをセットする
-	//context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
-	//context->GSSetShader(m_geometryShader.Get(), nullptr, 0);
-	//context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 
 	//	ピクセルシェーダにテクスチャを登録する。
 	context->PSSetShaderResources(0, 1, m_texture);
 
 	//	インプットレイアウトの登録
-	context->IASetInputLayout(shader->GetInputLayout(Shader::UI));
+	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::UI));
 
 	//	板ポリゴンを描画
 	m_batch->Begin();
@@ -214,32 +206,91 @@ void UserInterface::SetWindowSize(const int& width, const int& height)
 
 }
 
+
+/**
+ * @brief 拡大率の設定
+ *
+ * @param[in] scale  拡大率
+ *
+ * @return なし
+ */
 void UserInterface::SetScale(DirectX::SimpleMath::Vector2 scale)
 {
 	m_scale = scale;
 }
+
+/**
+ * @brief 座標の設定
+ *
+ * @param[in] position 描画座標
+ *
+ * @return なし
+ */
 void UserInterface::SetPosition(DirectX::SimpleMath::Vector2 position)
 {
 	m_position = position;
 }
+
+
+/**
+ * @brief アンカーの設定
+ *
+ * @param[in] anchor　アンカー位置 
+ *
+ * @return なし
+ */
 void UserInterface::SetAnchor(ANCHOR anchor)
 {
 	m_anchor = anchor;
 }
+
+
+/**
+ * @brief 描画比率の設定
+ *
+ * @param[in] ratio　比率
+ *
+ * @return なし
+ */
 void UserInterface::SetRenderRatio(float ratio)
 {
 	m_renderRatio = ratio;
 }
+
+
+/**
+ * @brief 描画オフセットの設定
+ *
+ * @param[in] offset　オフセット
+ *
+ * @return なし
+ */
 void UserInterface::SetRenderRatioOffset(float offset)
 {
 	m_renderRatioOffset = offset;
 }
 
+
+/**
+ * @brief テクスチャの設定
+ *
+ * @param[in] path　テクスチャのパス
+ *
+ * @return なし
+ */
 void UserInterface::SetTexture(const wchar_t* path)
 {
 	m_texture = ResourceManager::GetInstance()->RequestTexture(path);
 }
 
+
+/**
+ * @brief テクスチャの設定
+ *
+ * @param[in] texture 　テクスチャのポインタ
+ *
+ * @return なし
+ */
 void UserInterface::SetTexture(ID3D11ShaderResourceView** texture)
 {
 	m_texture =texture;

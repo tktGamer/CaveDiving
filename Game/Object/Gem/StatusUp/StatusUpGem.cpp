@@ -11,7 +11,7 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "StatusUpGem.h"
-#include"Game/Fuctory/GemFactory.h"
+#include"Game/Factory/GemFactory.h"
 REGISTER_GEM_CLASS("StatusUpGem", StatusUpGem);
 // メンバ関数の定義 ===========================================================
 /**

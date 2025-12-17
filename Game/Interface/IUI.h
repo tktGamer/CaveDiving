@@ -55,4 +55,4 @@ private:
 
 };
 
-#endif	// IOBSERVER_DEFINED
+#endif	// \

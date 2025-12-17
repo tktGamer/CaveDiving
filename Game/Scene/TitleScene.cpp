@@ -17,7 +17,7 @@
 #include"../Scene/GameScene.h"
 #include "../Scene/LoadScene.h"
 
-#include"../Fuctory/UIFactory.h"
+#include"../Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -99,7 +99,8 @@ void TitleScene::Initialize()
 	//プレイヤーの所持している宝石を空にする
 	GemManager::GetInstance()->EmptyPlayerHoldGem();
 
-	
+	m_camera->Update(Messenger::GetInstance()->GetElapsedTime());
+
 }
 
 
@@ -123,7 +124,7 @@ void TitleScene::Update(float elapsedTime)
 			GemManager::GetInstance()->LoadPlayerHoldGem();
 		}
 		m_gameStartSound->Play(false);
-		GetGameData()->SetNextStage(GameData::Stage::FIRST);
+		GetGameData()->SetNextStage(GameData::Stage::BOSS);
 		GetGameData()->SetIsGameClear(false);
 		ChangeScene<GameScene,LoadScene>();
 	}
@@ -213,10 +214,10 @@ void TitleScene::Render()
 	
 	DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
 
-	m_loadCheckUI->Draw();
+	m_loadCheckUI->Render();
 	if (m_isLoadPlayerHoldGem) 
 	{
-		m_checkUI->Draw();
+		m_checkUI->Render();
 	}
 	spriteBatch->Begin();
 	spriteBatch->Draw(m_titleTexture, DirectX::SimpleMath::Vector2(400, 100));

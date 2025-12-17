@@ -21,6 +21,8 @@
 #include"../UI/GemSelect/GemSelect.h"
 #include"../UI/GemSelect/ChangeConfirm.h"
 #include"../UI/GemSelect/ChangeGem.h"
+#include"../UI/Number/NumberControl.h"
+#include"../UI/Number/CountUpNumber.h"
 // ファクトリクラスを定義する
 class UIFactory 
 {
@@ -67,7 +69,24 @@ public:
 	static std::unique_ptr<HoldGemInfoDraw> CreateHoldGemInfoDraw(
 		);
 
+	// 「数字UI」を生成する
+	static std::unique_ptr<NumberControl> CreateNumberUI(
+			const NumberControl::NumberTextureData& data
+		,   const DirectX::SimpleMath::Vector2& pos
+		,   const DirectX::SimpleMath::Vector2& scale
+		,   const DirectX::SimpleMath::Vector4& color
+		,   const int& initNumber = 0 
+		,   const int& minDigit   = 1
+		);
 
+	// 「数字が増加する機能をもつUI」を生成する
+	static std::unique_ptr<CountUpNumber> CreateCountUpNumberUI(
+			std::unique_ptr<NumberControl> numberUI
+		,	std::unique_ptr<UserInterface> numberInfoUI
+		,   const int& initNumber
+		,   const int& targetNumber   
+		,   const int& stepNumber
+		);
 };
 
 #endif		// UI_FACTORY_DEFINED

@@ -15,7 +15,7 @@
 #include"Game/Message/Messenger.h"
 #include"Game/UI/GemSelectUIManager.h"
 #include"Game/Common/Sound.h"
-#include"Game/Fuctory/UIFactory.h"
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -31,6 +31,9 @@ BuffUIControl::BuffUIControl(int width, int height)
 
 }
 
+/**
+ * @brief デストラクタ
+ */
 BuffUIControl::~BuffUIControl()
 {
 }

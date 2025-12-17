@@ -18,6 +18,7 @@
 #include"../Particle/MoveDust/ParticleMoveDustControl.h"
 #include"../Particle/ItemGet/ParticleItemGetControl.h"
 #include"../Particle/Damage/ParticleDamageControl.h"
+#include"../Particle/HPHeal/ParticleHPHealControl.h"
 // クラスの宣言 ===============================================================
 class Camera;
 // クラスの定義 ===============================================================
@@ -35,6 +36,7 @@ public:
 		MoveDust,
 		ItemGet,
 		Hit,
+		HPHeal,
 		Num
 	};
 // データメンバの宣言 -----------------------------------------------
@@ -55,6 +57,8 @@ private:
 	std::unique_ptr<ParticleItemGetControl> m_particleItemGetControl;
 	//ダメージパーティクルの管理クラス
 	std::unique_ptr<ParticleDamageControl> m_particleDamageControl;
+	//HP回復パーティクルの管理クラス
+	std::unique_ptr<ParticleHPHealControl> m_particleHPHealControl;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 private:
@@ -108,6 +112,10 @@ public:
 		const DirectX::SimpleMath::Vector3& pos,//パーティクルの発生位置
 		const DirectX::SimpleMath::Vector3& randomRange, 
 		int damage
+	);
+	//HP回復パーティクル生成
+	void RequestHPHealParticle(
+		const DirectX::SimpleMath::Vector3& pos//パーティクルの発生位置
 	);
 
 //　取得・設定

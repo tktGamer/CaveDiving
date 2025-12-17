@@ -3,9 +3,9 @@
  *
  * @brief  数字UIに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/12/16
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -34,7 +34,7 @@ NumberControl::NumberControl(const NumberTextureData& data, const DirectX::Simpl
 	m_numberSize.x  = textureWidth  / data.col;
 	m_numberSize.y  = textureHeight / data.raw;
 
-	m_numberUI=std::make_unique<Number>(data.texturePath,m_numberSize);
+	m_numberUI = std::make_unique<Number>(data.texturePath,m_numberSize);
 }
 
 
@@ -58,8 +58,6 @@ NumberControl::~NumberControl()
  */
 void NumberControl::Initialize()
 {
-	//m_position = DirectX::SimpleMath::Vector2{ 1000.0f,200.0f };
-	m_number = 490;
 }
 
 
@@ -85,7 +83,7 @@ void NumberControl::Update()
  *
  * @return 最上位桁の描画位置から数字一つ分ずらした位置
  */
-const DirectX::SimpleMath::Vector2 NumberControl::Draw()
+void NumberControl::Render()
 {
 	DirectX::SimpleMath::Vector2 pos = m_position;
 
@@ -107,7 +105,7 @@ const DirectX::SimpleMath::Vector2 NumberControl::Draw()
 
 	}
 
-	return pos;
+	//return pos;
 }
 
 
@@ -124,25 +122,55 @@ void NumberControl::Finalize()
 
 }
 
+/**
+ * @brief 数字を設定
+ *
+ * @param[in] num  数字
+ *
+ * @return なし
+ */
 void NumberControl::SetNumber(const int& num)
 {
 	m_number = num;
 }
 
+/**
+ * @brief 拡大率の設定
+ *
+ * @param[in] scale　拡大率
+ *
+ * @return なし
+ */
 void NumberControl::SetScale(const DirectX::SimpleMath::Vector2& scale)
 {
 	m_scale = scale;
 }
 
+
+/**
+ * @brief 最低表示桁数の設定
+ *
+ * @param[in] digit　表示する桁数
+ *
+ * @return なし
+ */
 void NumberControl::SetDrawMinDigit(const int& digit)
 {
 	m_drawDigit = digit;
 }
 
+
+/**
+ * @brief 桁数の確認
+ *
+ * @param[in] num　確認する数字
+ *
+ * @return　桁数
+ */
 int NumberControl::CheckDigit(const int& num)
 {
 	//０なら一桁
-	if (num == 0)
+	if (num == TKTLib::INT_ZERO)
 	{
 		return 1;
 	}

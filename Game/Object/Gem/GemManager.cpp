@@ -13,7 +13,7 @@
 #include "GemManager.h"
 #include<fstream>
 #include<sstream>
-#include"Game/Fuctory/GemFactory.h"
+#include"Game/Factory/GemFactory.h"
 
 // クラスの静的メンバ変数の初期化
 std::unique_ptr<GemManager> GemManager::s_gemManager = nullptr;

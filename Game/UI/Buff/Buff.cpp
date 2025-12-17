@@ -29,6 +29,9 @@ Buff::Buff(const float& time)
 {
 }
 
+/**
+ * @brief デストラクタ
+ */
 Buff::~Buff()
 {
 }
@@ -65,7 +68,7 @@ void Buff::Update()
 void Buff::Render()
 {
     //m_frame->Draw();
-    m_upType->Draw();
+    m_upType->Render();
 }
 
 /**

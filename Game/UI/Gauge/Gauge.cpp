@@ -61,8 +61,8 @@ void Gauge::Update()
 
 void Gauge::Render()
 {
-    m_frame->Draw();
-    m_gauge->Draw();
+    m_frame->Render();
+    m_gauge->Render();
 }
 
 /**

@@ -13,7 +13,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Object/GameObject.h"
-#include"Game/Shader/ShaderManager.h"
+#include"Game/Shader/Model/ModelShader.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -32,7 +32,7 @@ private:
 	// メッセージID
 	Message::MessageID m_messageID;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_lBuffer;
-	ShaderManager::PointLight m_pointLight;
+	ModelShader::PointLightCB  m_pointLight;
 	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 	bool m_isOn; //ライトのオンオフ状態
 	
@@ -73,9 +73,9 @@ public:
 	bool IsOn()const;
 	ID3D11Buffer* GetLightBuffer() const;
 
-	ShaderManager::PointLight GetLightData();
+	ModelShader::PointLightCB GetLightData();
 
-	void SetLightData(const ShaderManager::PointLight& lightData);
+	void SetLightData(const ModelShader::PointLightCB& lightData);
 
 	void SetLightColor(const DirectX::SimpleMath::Vector3& color);
 //　内部操作

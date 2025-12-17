@@ -3,9 +3,9 @@
  *
  * @brief  宝石選択のUI群の管理に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/12/16
  */
 
 // ヘッダファイルの読み込み ===================================================
@@ -14,7 +14,7 @@
 
 #include "Game/Common/ResourceManager.h"
 
-#include"Game/Fuctory/UIFactory.h"
+#include"Game/Factory/UIFactory.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -93,6 +93,7 @@ void GemSelectUIManager::Update()
 	}
 
 	
+	//UI更新
 	if (!m_uiStack.empty()) 
 	{
 		m_uiStack.back()->Update();

@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "AllSpenningAttackGem.h"
 #include"Game/Message/Messenger.h"
-#include"Game/Fuctory/GemFactory.h"
+#include"Game/Factory/GemFactory.h"
 //ファクトリクラスへの登録
 REGISTER_GEM_CLASS("AllSpenningAttackGem", AllSpenningAttackGem);
 

@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "Wing.h"
 #include"../Bat/Bat.h"
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -89,7 +89,7 @@ void Wing::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dir
  */
 void Wing::Draw()
 {
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
@@ -105,12 +105,12 @@ void Wing::Draw()
 	cbuff.color.x = GetRootCharacter()->GetDamageFlash();
 
 
-	Shader::OutlineConstBuffer outline;
+	OutlineShader::OutlineCB outline;
 	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	outline.matView = graphics->GetViewMatrix().Transpose();
 	outline.matProj = graphics->GetProjectionMatrix().Transpose();
 	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Outline), 0, NULL, &outline, 0, 0);
 
 
 
@@ -126,19 +126,19 @@ void Wing::Draw()
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
 			// アウトラインシェーダを設定
-			Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
 
 			});
 
-		Shader::GetInstance()->EndShader();
+		ShaderManager::GetInstance()->EndShader();
 	}
 
 
 	//GetModel()->Draw(context, *states, world, view, proj);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -167,12 +167,12 @@ void Wing::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 
 }
 

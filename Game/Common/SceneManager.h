@@ -336,9 +336,9 @@ void SceneManager<T>::Update(float elapsedTime)
 		m_loadingScreen->Update(elapsedTime);
 		return;
 	}
-	m_transitor->Update();
+	;
 	// シーンの更新
- 	if (!m_scene.empty() )
+ 	if (!m_scene.empty() &&m_transitor->Update())
 	{
 		m_scene.back()->Update(elapsedTime);
 	}

@@ -18,7 +18,7 @@
 #include "../Scene/LoadScene.h"
 #include"../Scene/TitleScene.h"
 #include"../Common/DamageSystem.h"
-#include"../Fuctory/UIFactory.h"
+#include"../Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -55,19 +55,22 @@ ResultScene::~ResultScene()
  */
 void ResultScene::Initialize()
 {
+	GetGameData()->SetTotalDamage(DamageSystem::GetInstance()->GetTotalDamage());
 
 	m_decideMenuSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("decidemenu.wav"));
 	m_clearSound	  = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("gameclear.wav"));
 	m_clearSound->Play(false);
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
-	m_saveMessage =UIFactory::CreateUserInterface(L"UI/savemessage.png", { 650.0f,400.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+	//m_saveMessage =UIFactory::CreateUserInterface(L"UI/savemessage.png", { 650.0f,400.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 
-	m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
-	m_menu->Add(L"UI/yesfont.png", { 350.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-	m_menu->Add(L"UI/nofont.png", { 950.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+	//m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
+	//m_menu->Add(L"UI/yesfont.png", { 350.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+	//m_menu->Add(L"UI/nofont.png", { 950.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 
+	m_saveUI = std::make_unique<SaveConfirm>(w, h);
+	m_saveUI->Initialize();
 
 	//ゲームクリア・ゲームオーバー文字
 	if (GetGameData()->IsGameClear()) 
@@ -81,8 +84,10 @@ void ResultScene::Initialize()
 	}
 
 	m_backTexture = UIFactory::CreateUserInterface(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-	m_totalDamageUI = std::make_unique<TotalDamage>(DirectX::SimpleMath::Vector2{ 1100,220 });
-	m_totalDamageUI->Initialize(w, h,DamageSystem::GetInstance()->GetTotalDamage());
+	
+	m_scoreUI = std::make_unique<ScoreUIManager>(GetGameData()->GetScoreInfo());
+	m_scoreUI->Initialize();
+
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
@@ -101,30 +106,22 @@ void ResultScene::Initialize()
 void ResultScene::Update(float elapsedTime)
 {
 	
-	auto tracker = Graphics::GetInstance()->GetKeyboardTracker();
-
-	m_menu->Update();
-
-	if (tracker->pressed.Space)
+	//選択したならシーン遷移
+	if (m_saveUI->IsDecide()) 
 	{
-		int menuIndex = m_menu->GetMenuIndex();
-		m_decideMenuSound->Play(false);
-		switch (menuIndex)
-		{
-			//「はい」の場合
-		case 0:
-			//所持している宝石を保存する
-			GemManager::GetInstance()->SavePlayerHoldGem();
-			ChangeScene<TitleScene>();
-			break;
-			//「いいえ」の場合
-		case 1:
-			//表示を消す
-			ChangeScene<TitleScene>();
-
-			break;
-		}
+		ChangeScene<TitleScene>();
 	}
+
+	//スコア計算の処理が終わっていなかったら
+	if (m_scoreUI->GetState() != ScoreUIManager::State::END) 
+	{
+		m_scoreUI->Update();
+	}
+	else
+	{
+		m_saveUI->Update();
+	}
+
 }
 
 
@@ -138,31 +135,27 @@ void ResultScene::Update(float elapsedTime)
  */
 void ResultScene::Render()
 {
-	Graphics* graphics = Graphics::GetInstance();
-	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix proj = graphics->GetProjectionMatrix();
+	//Graphics* graphics = Graphics::GetInstance();
+	//ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	//DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
+	//DirectX::SimpleMath::Matrix proj = graphics->GetProjectionMatrix();
 
-	//auto view=m_camera->GetView();
-	//m_testPlayer.Draw(*context, *states, view, proj);
-	DirectX::SimpleMath::Matrix world;
+	////auto view=m_camera->GetView();
+	////m_testPlayer.Draw(*context, *states, view, proj);
+	//DirectX::SimpleMath::Matrix world;
 
-	DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
-	m_backTexture->Draw();
+	//DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
+	m_backTexture->Render();
 
+	m_scoreUI->Render();
 
-	spriteBatch->Begin();
-	//spriteBatch->Draw(m_titleTexture, DirectX::SimpleMath::Vector2(400, 100));
-	//spriteBatch->Draw(m_pressSpaceTexture, DirectX::SimpleMath::Vector2(400, 550));
+	//スコア計算の処理が終わっていたらセーブ確認UIを表示
+	if (m_scoreUI->GetState() == ScoreUIManager::State::END)
+	{
+		m_saveUI->Render();
+	}
 
-	
-	spriteBatch->End();
-
-	m_gameover->Draw();
-	m_totalDamageUI->Render();
-	m_saveMessage->Draw();
-	m_menu->Render();
-
+	//m_gameover->Render();
 }
 
 
@@ -185,6 +178,11 @@ void ResultScene::CreateDeviceDependentResources()
 
 void ResultScene::CreateWindowSizeDependentResources()
 {
+	int width = 0, height = 0;
+
+	Graphics::GetInstance()->GetScreenSize(width, height);
+
+	m_backTexture->SetWindowSize(width, height);
 }
 
 void ResultScene::OnDeviceLost()

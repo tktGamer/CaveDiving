@@ -167,6 +167,30 @@
     <Filter Include="Game\Shader\Model">
       <UniqueIdentifier>{2cc7816a-007d-4073-b3c9-bf1c37099395}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Shader\Number">
+      <UniqueIdentifier>{9abb87e9-f7bb-46bb-9673-b6e0ec370bd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader\Fade">
+      <UniqueIdentifier>{5ecc7788-1994-426b-a189-4c38eda343c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader\Outline">
+      <UniqueIdentifier>{d80b2dc2-2913-415d-b96f-2967f68a1b54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader\Particle">
+      <UniqueIdentifier>{9981e99a-e495-46ab-9084-0ac3b0cff4e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader\UI">
+      <UniqueIdentifier>{b760bed2-91cc-4b0d-8f18-a72c46ecc34a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Particle\HPHeal">
+      <UniqueIdentifier>{55f410ba-f72e-4338-824d-d44708024e49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\Result\Score">
+      <UniqueIdentifier>{420645d4-8f6f-4033-b580-f421c8e2c0bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\Number">
+      <UniqueIdentifier>{82634e36-ce89-4ef3-9fd7-cd65b8b322d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -300,9 +324,6 @@
     <ClInclude Include="Game\UI\UserInterface.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Fuctory\GameObjectFactory.h">
-      <Filter>Game\Factory</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Object\Character.h">
       <Filter>Game\Object</Filter>
     </ClInclude>
@@ -398,9 +419,6 @@
     </ClInclude>
     <ClInclude Include="Game\UI\HoldGem\HoldGemInfoDraw.h">
       <Filter>Game\UI\HoldGem</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Fuctory\UIFactory.h">
-      <Filter>Game\Factory</Filter>
     </ClInclude>
     <ClInclude Include="Game\Object\Enemy\Golem\Golem.h">
       <Filter>Game\Object\Enemy\Golem</Filter>
@@ -510,9 +528,6 @@
     <ClInclude Include="Game\Object\Gem\Unique\UniqueGem.h">
       <Filter>Game\Object\Gem\Unique</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Fuctory\GemFactory.h">
-      <Filter>Game\Factory</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Object\Gem\Unique\AllSpenningAttackGem.h">
       <Filter>Game\Object\Gem\Unique</Filter>
     </ClInclude>
@@ -521,12 +536,6 @@
     </ClInclude>
     <ClInclude Include="Game\UI\ClearConditions\ClearConditions.h">
       <Filter>Game\UI\ClearConditions</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\UI\Number.h">
-      <Filter>Game\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\UI\NumberControl.h">
-      <Filter>Game\UI</Filter>
     </ClInclude>
     <ClInclude Include="Game\Particle\Damage\ParticleDamageNumber.h">
       <Filter>Game\Particle\Damage</Filter>
@@ -549,9 +558,6 @@
     <ClInclude Include="Game\Object\Item\StatusUpItem.h">
       <Filter>Game\Object\Item</Filter>
     </ClInclude>
-    <ClInclude Include="Game\UI\Result\TotalDamage.h">
-      <Filter>Game\UI\Result</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Object\Gem\StatusUp\StatusUpGem.h">
       <Filter>Game\Object\Gem\StatusUp</Filter>
     </ClInclude>
@@ -563,6 +569,66 @@
     </ClInclude>
     <ClInclude Include="Game\Shader\ShaderManager.h">
       <Filter>Game\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Model\ModelShader.h">
+      <Filter>Game\Shader\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Fade\FadeShader.h">
+      <Filter>Game\Shader\Fade</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\UI\UIShader.h">
+      <Filter>Game\Shader\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Particle\ParticleShader.h">
+      <Filter>Game\Shader\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Outline\OutlineShader.h">
+      <Filter>Game\Shader\Outline</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Number\Number2DShader.h">
+      <Filter>Game\Shader\Number</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Number\Number3DShader.h">
+      <Filter>Game\Shader\Number</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\HPHeal\ParticleHPHealControl.h">
+      <Filter>Game\Particle\HPHeal</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\HPHeal\ParticleHPHeal.h">
+      <Filter>Game\Particle\HPHeal</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Result\Score\TotalDamage.h">
+      <Filter>Game\UI\Result\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Result\Score\ScoreUIManager.h">
+      <Filter>Game\UI\Result\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Result\Score\PlayerCurrentHP.h">
+      <Filter>Game\UI\Result\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Result\Score\TotalTime.h">
+      <Filter>Game\UI\Result\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Number\Number.h">
+      <Filter>Game\UI\Number</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Number\NumberControl.h">
+      <Filter>Game\UI\Number</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Number\CountUpNumber.h">
+      <Filter>Game\UI\Number</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Factory\GameObjectFactory.h">
+      <Filter>Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Factory\GemFactory.h">
+      <Filter>Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Factory\UIFactory.h">
+      <Filter>Game\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Result\Score\Score.h">
+      <Filter>Game\UI\Result\Score</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -676,9 +742,6 @@
     <ClCompile Include="Game\UI\UserInterface.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Fuctory\GameObjectFactory.cpp">
-      <Filter>Game\Factory</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Object\Character.cpp">
       <Filter>Game\Object</Filter>
     </ClCompile>
@@ -768,9 +831,6 @@
     </ClCompile>
     <ClCompile Include="Game\UI\HoldGem\HoldGemInfoDraw.cpp">
       <Filter>Game\UI\HoldGem</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Fuctory\UIFactory.cpp">
-      <Filter>Game\Factory</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object\Enemy\Golem\Golem.cpp">
       <Filter>Game\Object\Enemy\Golem</Filter>
@@ -880,9 +940,6 @@
     <ClCompile Include="Game\Object\Gem\Unique\UniqueGem.cpp">
       <Filter>Game\Object\Gem\Unique</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Fuctory\GemFactory.cpp">
-      <Filter>Game\Factory</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Object\Gem\Unique\AllSpenningAttackGem.cpp">
       <Filter>Game\Object\Gem\Unique</Filter>
     </ClCompile>
@@ -891,12 +948,6 @@
     </ClCompile>
     <ClCompile Include="Game\UI\ClearConditions\ClearConditions.cpp">
       <Filter>Game\UI\ClearConditions</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\UI\Number.cpp">
-      <Filter>Game\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\UI\NumberControl.cpp">
-      <Filter>Game\UI</Filter>
     </ClCompile>
     <ClCompile Include="Game\Particle\Damage\ParticleDamageNumber.cpp">
       <Filter>Game\Particle\Damage</Filter>
@@ -919,9 +970,6 @@
     <ClCompile Include="Game\Object\Item\StatusUpItem.cpp">
       <Filter>Game\Object\Item</Filter>
     </ClCompile>
-    <ClCompile Include="Game\UI\Result\TotalDamage.cpp">
-      <Filter>Game\UI\Result</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Object\Gem\StatusUp\StatusUpGem.cpp">
       <Filter>Game\Object\Gem\StatusUp</Filter>
     </ClCompile>
@@ -933,6 +981,66 @@
     </ClCompile>
     <ClCompile Include="Game\Shader\ShaderManager.cpp">
       <Filter>Game\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Model\ModelShader.cpp">
+      <Filter>Game\Shader\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Fade\FadeShader.cpp">
+      <Filter>Game\Shader\Fade</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\UI\UIShader.cpp">
+      <Filter>Game\Shader\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Particle\ParticleShader.cpp">
+      <Filter>Game\Shader\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Outline\OutlineShader.cpp">
+      <Filter>Game\Shader\Outline</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Number\Number2DShader.cpp">
+      <Filter>Game\Shader\Number</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Number\Number3DShader.cpp">
+      <Filter>Game\Shader\Number</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\HPHeal\ParticleHPHealControl.cpp">
+      <Filter>Game\Particle\HPHeal</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\HPHeal\ParticleHPHeal.cpp">
+      <Filter>Game\Particle\HPHeal</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Result\Score\TotalDamage.cpp">
+      <Filter>Game\UI\Result\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Result\Score\ScoreUIManager.cpp">
+      <Filter>Game\UI\Result\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Result\Score\PlayerCurrentHP.cpp">
+      <Filter>Game\UI\Result\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Result\Score\TotalTime.cpp">
+      <Filter>Game\UI\Result\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Number\Number.cpp">
+      <Filter>Game\UI\Number</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Number\NumberControl.cpp">
+      <Filter>Game\UI\Number</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Number\CountUpNumber.cpp">
+      <Filter>Game\UI\Number</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Factory\GameObjectFactory.cpp">
+      <Filter>Game\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Factory\GemFactory.cpp">
+      <Filter>Game\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Factory\UIFactory.cpp">
+      <Filter>Game\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Result\Score\Score.cpp">
+      <Filter>Game\UI\Result\Score</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

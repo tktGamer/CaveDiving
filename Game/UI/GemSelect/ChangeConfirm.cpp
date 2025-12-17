@@ -15,7 +15,7 @@
 #include"Game/Message/Messenger.h"
 #include"Game/UI/GemSelectUIManager.h"
 #include"Game/Common/Sound.h"
-#include"Game/Fuctory/UIFactory.h"
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -36,6 +36,9 @@ ChangeConfirm::ChangeConfirm(int width, int height, GemSelectUIManager* pUIManag
 
 }
 
+/**
+ * @brief デストラクタ
+ */
 ChangeConfirm::~ChangeConfirm()
 {
 }
@@ -85,7 +88,7 @@ void ChangeConfirm::Update()
 
 void ChangeConfirm::Render()
 {
-    m_changeMessage->Draw();
+    m_changeMessage->Render();
     m_menu->Render();
 }
 

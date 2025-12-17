@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/10/31
+ * @date   日付　2025/12/10
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -50,6 +50,7 @@ ParticleManager::ParticleManager()
 	m_particleMoveDustControl = std::make_unique<ParticleMoveDustControl>("grounddust.png");
 	m_particleItemGetControl  = std::make_unique<ParticleItemGetControl>("itemget.png");
 	m_particleDamageControl = std::make_unique<ParticleDamageControl>("number.png");
+	m_particleHPHealControl = std::make_unique<ParticleHPHealControl>("hpheal.png");
 }
 
 /**
@@ -75,6 +76,7 @@ void ParticleManager::Update()
 	m_particlePowerUpControl->Update();
 	m_particleItemGetControl->Update();
 	m_particleDamageControl->Update();
+	m_particleHPHealControl->Update();
 }
 
 
@@ -97,6 +99,7 @@ void ParticleManager::Render()
 	m_particleMoveDustControl->Render(target, eye, up);
 	m_particleItemGetControl->Render(target, eye, up);
 	m_particleDamageControl->Render(target, eye, up);
+	m_particleHPHealControl->Render(target, eye, up);
 }
 
 /**
@@ -113,6 +116,7 @@ void ParticleManager::Reset()
 	m_particleMoveDustControl->Reset();
 	m_particleItemGetControl->Reset();
 	m_particleDamageControl->Reset();
+	m_particleHPHealControl->Reset();
 }
 
 
@@ -184,6 +188,19 @@ void ParticleManager::RequestItemGetParticle(const DirectX::SimpleMath::Vector3&
 void ParticleManager::RequestDamageParticle(const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& randomRange,int damage)
 {
 	m_particleDamageControl->RequestParticleDamage(pos, randomRange, damage);
+}
+
+
+/**
+ * @brief HP回復パーティクル生成要求
+ *
+ * @param[in]  pos 生成位置
+ *
+ * @return なし
+ */
+void ParticleManager::RequestHPHealParticle(const DirectX::SimpleMath::Vector3& pos)
+{
+	m_particleHPHealControl->RequestParticleHPHeal(pos);
 }
 
 

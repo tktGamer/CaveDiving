@@ -13,7 +13,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
-#include"../UI/UserInterface.h"
+#include"Game/UI/UserInterface.h"
 
 // クラスの宣言 ===============================================================
 

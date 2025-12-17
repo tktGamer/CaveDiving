@@ -16,7 +16,7 @@
 #include"Game/Object/Gem/Gem.h"
 #include"Game/UI/GemSelectUIManager.h"
 #include"../HoldGem/HoldGem.h"
-#include"Game/Fuctory/UIFactory.h"
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -36,6 +36,9 @@ ChangeGem::ChangeGem(int width, int height, Gem* pReplacementGem, GemSelectUIMan
 {
 }
 
+/**
+ * @brief デストラクタ
+ */
 ChangeGem::~ChangeGem()
 {
 }
@@ -115,8 +118,8 @@ void ChangeGem::Render()
     //所持している宝石の中の入れ替え候補を表示
     m_holdGemInfo->Render();
     //矢印画像
-    m_arrow->Draw();
+    m_arrow->Render();
     //入れ替え先の宝石を表示
-    m_replacementGemUI->Draw();
+    m_replacementGemUI->Render();
 }
 

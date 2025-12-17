@@ -58,12 +58,12 @@ void HoldGem::Update()
 
 void HoldGem::Render()
 {
-    m_base->Draw();
+    m_base->Render();
      
     for (int i = 0; i < 3; i++)
     {
          //  実際に表示したいアイテム画像を表示
-         m_gemUI[i]->Draw();
+         m_gemUI[i]->Render();
     }
 }
 

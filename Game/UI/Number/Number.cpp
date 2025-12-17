@@ -12,6 +12,8 @@
 #include "pch.h"
 #include "Number.h"
 #include"Game/Common/ResourceManager.h"
+#include"Game/Shader/ShaderManager.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -86,7 +88,7 @@ void Number::Update()
  */
 void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, const DirectX::SimpleMath::Vector2& scale, const DirectX::SimpleMath::Vector4& color)
 {
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 
 	ID3D11DeviceContext1* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
 	//	頂点情報
@@ -106,7 +108,7 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Shader::NumberConstBuffer cbuff;
+	Number2DShader::Number2DCB cbuff;
 	//	ウィンドウサイズ
 	cbuff.windowSize = DirectX::SimpleMath::Vector2(static_cast<float>(w), static_cast<float>(h));
 	cbuff.AlphaData = m_renderRatio - m_renderRatioOffset;
@@ -115,8 +117,8 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	//context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
-	context->UpdateSubresource(shader->GetCBuffer(Shader::ShaderType::Number2D), 0, NULL, &cbuff, 0, 0);
-	shader->StartShader(Shader::ShaderType::Number2D, shader->GetCBuffer(Shader::ShaderType::Number2D));
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Number2D), 0, NULL, &cbuff, 0, 0);
+	shader->StartShader(ShaderManager::ShaderType::Number2D);
 
 
 	//	画像用サンプラーの登録
@@ -140,7 +142,7 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 	context->PSSetShaderResources(0, 1, m_pNumberTexture);
 
 	//	インプットレイアウトの登録
-	context->IASetInputLayout(shader->GetInputLayout(Shader::Number2D));
+	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Number2D));
 
 	//	板ポリゴンを描画
 	m_batch->Begin();

@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "FullHPStatusUpGem.h"
 #include"Game/Message/Messenger.h"
-#include"Game/Fuctory/GemFactory.h"
+#include"Game/Factory/GemFactory.h"
 //ファクトリクラスへの登録
 REGISTER_GEM_CLASS("FullHPStatusUpGem", FullHPStatusUpGem);
 

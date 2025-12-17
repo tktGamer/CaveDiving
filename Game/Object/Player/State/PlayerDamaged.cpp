@@ -91,21 +91,6 @@ void PlayerDamaged::Update(const float& elapsedTime)
 		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
 	}
 
-	////ˆÚ“®ƒL[‚ª‰Ÿ‚³‚ê‚½‚çˆÚ“®ó‘Ô‚Ö‘JˆÚ
-	//if (key->GetLastState().Left || key->GetLastState().Right || key->GetLastState().Up || key->GetLastState().Down)
-	//{
-	//	Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::MOVING);
-	//}
-	////ƒWƒƒƒ“ƒvƒL[‚ª‰Ÿ‚³‚ê‚½‚çƒWƒƒƒ“ƒvó‘Ô‚Ö‘JˆÚ
-	//if (key->pressed.Space) 
-	//{
-	//	Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
-	//}
-	////UŒ‚ƒL[‚ª‰Ÿ‚³‚ê‚½‚çUŒ‚ó‘Ô‚Ö‘JˆÚ
-	//if (key->pressed.Z) 
-	//{
-	//	Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::GROUNDATTACK);
-	//}
 	
 	//‰ñ”ðƒL[‚ª‰Ÿ‚³‚ê‚½‚ç‰ñ”ðó‘Ô‚Ö‘JˆÚ
 	if (key->pressed.X) 
@@ -139,10 +124,10 @@ void PlayerDamaged::PostUpdate()
 void PlayerDamaged::Render()
 {
 
+#ifdef _DEBUG
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 	
 	debugFont->AddString(L"Damaged", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
-#ifdef _DEBUG
 #endif // DEBUG
 
 }

@@ -37,6 +37,9 @@ GemSelect::GemSelect(int width, int height, GemSelectUIManager* pUIManager)
 
 }
 
+/**
+ * @brief デストラクタ
+ */
 GemSelect::~GemSelect()
 {
 
@@ -142,12 +145,12 @@ void GemSelect::Render()
        for (int i = 0; i < m_base.size(); i++)
         {
             //  アイテム用ウィンドウ背景を表示
-            m_base[i]->Draw();
+            m_base[i]->Render();
         }
        for (int i = 0; i < m_userInterface.size(); i++)
         {
             //  実際に表示したいアイテム画像を表示
-            m_userInterface[i]->Draw();
+            m_userInterface[i]->Render();
         }
 }
 

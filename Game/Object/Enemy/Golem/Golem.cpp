@@ -12,9 +12,10 @@
 #include "pch.h"
 #include "Golem.h"
 #include "Game/Common/Collision/CollisionManager.h"
-#include"Game/Fuctory/GameObjectFactory.h"
+#include"Game/Factory/GameObjectFactory.h"
 #include"Game/Common/DamageSystem.h"
 #include"Game/Object/Weapon.h"
+#include"Game/Shader/ShaderManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -165,22 +166,22 @@ void Golem::Draw()
 
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Golem::ConstBuffer cbuff;
+	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
-	cbuff.color.x = GetDamageFlash();
+	cbuff.flash.x = GetDamageFlash();
 
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
-	Shader::OutlineConstBuffer outline;
+	OutlineShader::OutlineCB outline;
 	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	outline.matView = graphics->GetViewMatrix().Transpose();
 	outline.matProj = graphics->GetProjectionMatrix().Transpose();
 	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(Shader::Outline), 0, NULL, &outline, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Outline), 0, NULL, &outline, 0, 0);
 
 
 
@@ -196,12 +197,12 @@ void Golem::Draw()
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
 			// アウトラインシェーダを設定
-			Shader::GetInstance()->StartShader(Shader::Outline, shader->GetCBuffer(Shader::Outline));
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Outline));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
 
 			});
 
-		Shader::GetInstance()->EndShader();
+		ShaderManager::GetInstance()->EndShader();
 	}
 
 
@@ -235,12 +236,12 @@ void Golem::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
 
-			context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	Shader::GetInstance()->EndShader();
+	ShaderManager::GetInstance()->EndShader();
 
 	m_rightHand->Draw();
 	m_leftHand->Draw();

@@ -12,17 +12,17 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include "../UserInterface.h"
-#include"../NumberControl.h"
+#include"Game/UI/Number/CountUpNumber.h"
+#include "Game/UI/UserInterface.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
   * @brief トータルダメージUI
   */
-class TotalDamage
+class TotalDamage :public IUI
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
 public:
 
 
@@ -37,17 +37,23 @@ private:
 	//アイコンテクスチャの幅
 	int m_iconTexureWidth;
 
-	int m_windowWidth, m_windowHeight;
 
+	//現在の値
+	int m_currentNumber;
+	//目標値
+	int m_targetNumber;
+	//1fあたりの増加量
+	int m_stepNumber;
 //コンテキスト・デストラクタ
 public:
-	TotalDamage(const DirectX::SimpleMath::Vector2& pos);
+	TotalDamage(const DirectX::SimpleMath::Vector2& pos,const int& targetNumber,const int& stepNumber);
 	~TotalDamage();
 
 //操作
 public:
-	void Initialize(int width, int height, int totalDamage);
-	void Update(const int& drawNumber );
+	void Initialize();
+	void Update();
 	void Render();
-
+//取得・設定
+public:
 };

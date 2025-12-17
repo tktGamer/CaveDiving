@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/11/25
+ * @date   日付　2025/12/17
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -22,7 +22,8 @@
  *
  * @return 宝石選択UIクラス
  */
-std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(const wchar_t* path, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
+std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(
+	const wchar_t* path, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
 {
 	//スクリーンサイズ取得
 	int w, h;
@@ -183,3 +184,54 @@ std::unique_ptr<HoldGemInfoDraw> UIFactory::CreateHoldGemInfoDraw()
 
 	return std::move(holdGemInfo);
 }
+
+/**
+ * @brief 「数字UI」の生成
+ *
+ * @param[in] data        数字画像情報
+ * @param[in] pos  　　　 描画座標
+ * @param[in] scale       拡大率
+ * @param[in] color    　 色
+ * @param[in] initNumber　初期数字
+ * @param[in] minDigit    最小表示桁数
+ *
+ * @return 数字UIクラス
+ */
+std::unique_ptr<NumberControl> UIFactory::CreateNumberUI(
+	const NumberControl::NumberTextureData& data, const DirectX::SimpleMath::Vector2& pos,
+	const DirectX::SimpleMath::Vector2& scale, const DirectX::SimpleMath::Vector4& color,
+	const int& initNumber, const int& minDigit)
+{
+	//「数字UI」の生成
+	std::unique_ptr<NumberControl> numberControl = std::make_unique<NumberControl>(data, pos, color);
+	numberControl->Initialize();
+	numberControl->SetScale(scale);
+	//初期数字
+	numberControl->SetNumber(initNumber);
+	//最小表示桁数
+	numberControl->SetDrawMinDigit(minDigit);
+	return std::move(numberControl);
+}
+
+/**
+ * @brief 「数字UI」の生成
+ *
+ * @param[in] data        数字画像情報
+ * @param[in] pos  　　　 描画座標
+ * @param[in] scale       拡大率
+ * @param[in] color    　 色
+ * @param[in] initNumber　初期数字
+ * @param[in] minDigit    最小表示桁数
+ *
+ * @return 数字UIクラス
+ */
+std::unique_ptr<CountUpNumber> UIFactory::CreateCountUpNumberUI(std::unique_ptr<NumberControl> numberUI, std::unique_ptr<UserInterface> numberInfoUI
+	, const int& initNumber , const int& targetNumber, const int& stepNumber)
+{
+	std::unique_ptr<CountUpNumber> numberControl = std::make_unique<CountUpNumber>(initNumber, targetNumber, stepNumber);
+	numberControl->Initialize();
+	numberControl->CreateNumberUI(std::move(numberUI));
+	numberControl->CreateInfoTextureUI(std::move(numberInfoUI));
+	return std::move(numberControl);
+}
+

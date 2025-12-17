@@ -30,6 +30,10 @@ Menu::Menu(int width, int height, DirectX::SoundEffect* cursolSound)
     m_userInterface.clear();
 }
 
+
+/**
+ * @brief デストラクタ
+ */
 Menu::~Menu()
 {
 }
@@ -98,9 +102,9 @@ void Menu::Render()
        for (int i = 0; i < m_userInterface.size(); i++)
         {
             //  アイテム用ウィンドウ背景を表示
-            m_base[i]->Draw();
+            m_base[i]->Render();
             //  実際に表示したいアイテム画像を表示
-            m_userInterface[i]->Draw();
+            m_userInterface[i]->Render();
         }
 }
 

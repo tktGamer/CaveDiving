@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "Stage.h"
 #include"Game/Common/Collision/CollisionManager.h"
+#include"Game/Shader/ShaderManager.h"
 #include<fstream>
 #include<sstream>
 
@@ -215,7 +216,7 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 		ifs.ignore(); //ƒJƒ“ƒ}‚ð“Ç‚Ý”ò‚Î‚·
 		
 
-		Shader::PointLight lightdata;
+		ModelShader::PointLightCB lightdata;
 		lightdata.LightColor = color;
 		lightdata.LightIntensity = intensity;
 

@@ -44,7 +44,7 @@ public:
 public:
 	void Initialize();
 
-	int RecoveryHP(int currentHP,const int& maxHP);
+	int RecoveryHP();
 
 	void Finalize();
 //æ“¾Eİ’è

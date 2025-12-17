@@ -33,6 +33,9 @@ HoldGemInfoDraw::HoldGemInfoDraw(int width, int height)
 
 }
 
+/**
+ * @brief デストラクタ
+ */
 HoldGemInfoDraw::~HoldGemInfoDraw()
 {
 }
@@ -96,9 +99,9 @@ void HoldGemInfoDraw::Render()
 {
     m_holdGem->Render();
     //表示している宝石を選ぶカーソル
-    m_cursol->Draw();
+    m_cursol->Render();
     //選ばれている宝石を表示
-    m_candidateGemUI->Draw();
+    m_candidateGemUI->Render();
 }
 
 void HoldGemInfoDraw::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, UserInterface::ANCHOR anchor)

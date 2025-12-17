@@ -7,6 +7,11 @@
 
 namespace TKTLib
 {
+	//‰Šú‰»‚É‚Â‚©‚¤ŒÅ’è’l
+	static constexpr int INT_ZERO = 0;
+	static constexpr int INT_ONE  = 1;
+	static constexpr float FLOAT_ZERO = 0.0f;
+	static constexpr float FLOAT_ONE  = 1.0f;
 
 	/**
 	 * @brief worlds—ñ‚ğæ“¾‚·‚é

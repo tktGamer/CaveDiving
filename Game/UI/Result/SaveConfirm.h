@@ -38,7 +38,8 @@ private:
 
 	int m_windowWidth, m_windowHeight;
 
-
+	//決定したか
+	bool m_isDecide;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -46,13 +47,13 @@ public:
 	~SaveConfirm();
 	// 操作
 public:
-	void Initialize() ;
-	void Update() override;
-	void Render() override;
+	void Initialize();
+	void Update();
+	void Render();
 
 //　取得・設定
 public:
-
+	bool IsDecide() const;
 
 //　内部操作
 private:

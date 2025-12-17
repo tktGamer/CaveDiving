@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "ParticleItemGetControl.h"
 
-#include"Game/Shader/Shader.h"
+#include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
 
 
@@ -79,7 +79,7 @@ void ParticleItemGetControl::Update()
  */
 void ParticleItemGetControl::Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
 {
-	Shader* shader = Shader::GetInstance();
+	ShaderManager* shader = ShaderManager::GetInstance();
 
 	//	頂点情報の作成
 	CreateVertex(target, cameraPos);
@@ -91,15 +91,15 @@ void ParticleItemGetControl::Render(const DirectX::SimpleMath::Vector3& target, 
 	}
 
 	//カメラの情報を渡す
-	ParticleControl::CameraBuffer cameraBuff;
+	ParticleShader::CameraCB cameraBuff;
 	cameraBuff.cameraPos = cameraPos;
 	cameraBuff.cameraUp = cameraUp;
-	SetCameraBuffer(cameraBuff);
+	shader->SetCameraCB(cameraBuff);
 	//通常の設定
 	SetShaderState();
 
 	//	シェーダをセットする
-	shader->StartShader(Shader::ShaderType::Particle, shader->GetCBuffer(Shader::ShaderType::Particle));
+	shader->StartShader(ShaderManager::ShaderType::Particle);
 	//	プリミティブバッチの描画処理
 	DrawBatch();
 	//	シェーダの登録を解除しておく
