@@ -18,6 +18,7 @@
 #include "../Scene/LoadScene.h"
 
 #include"../Factory/UIFactory.h"
+#include"../Factory/GameObjectFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -27,7 +28,7 @@
 TitleScene::TitleScene()
 	: m_pResourceManager{}
 	, m_caveModelParams{}
-	, m_demoPlayerModelParams{}
+	, m_demoPlayer{}
 	, m_angle{}
 	, m_length{}
 	,m_isLoadPlayerHoldGem{false}
@@ -66,20 +67,25 @@ void TitleScene::Initialize()
 
 	m_titleTexture = *m_pResourceManager->RequestTexture("title.png");
 	m_pressSpaceTexture = *m_pResourceManager->RequestTexture("pressspace.png");
+
+	//m_demoPlayer = GameObjectFactory::CreatePlayer(nullptr);
+	//m_demoPlayer->SetPosition({ 0.0f,2.0f,7.0f });
+	//m_demoPlayer->SetScale({ 0.5f,0.5f,0.5f });
+	//m_demoPlayer->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_demoPlayerModelParams.SetModelParams(m_pResourceManager->RequestModel("player.sdkmesh"));
 	DirectX::SimpleMath::Vector3 position = DirectX::SimpleMath::Vector3{ 0.0f,1.5f,6.5f };
 	DirectX::SimpleMath::Vector3 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
 	DirectX::SimpleMath::Vector3 scale = DirectX::SimpleMath::Vector3(0.5f, 0.5f, 0.5f);
 	m_demoPlayerModelParams.SetModelParams(position, rotation, scale);
 	m_caveModelParams.SetModelParams(m_pResourceManager->RequestModel("cave.sdkmesh"));
-	position = DirectX::SimpleMath::Vector3::Zero;
-	rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
-	scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+	 position = DirectX::SimpleMath::Vector3::Zero;
+	 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+	 scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 	m_caveModelParams.SetModelParams(position, rotation, scale);
 
 	m_length = 25.0f;
-	m_angle = 0.0f;
-	m_camera->Initialize({ 0,11.0f,10.0f });
+	m_angle = 20.0f;
+	m_camera->Initialize({ 0,17.0f,10.0f });
 	m_camera->SetTartet(m_caveModelParams.GetPosition(), m_caveModelParams.GetQuaternion());
 
 	m_skyModel = ResourceManager::GetInstance()->RequestModel("skydome.sdkmesh");
@@ -99,8 +105,17 @@ void TitleScene::Initialize()
 	//プレイヤーの所持している宝石を空にする
 	GemManager::GetInstance()->EmptyPlayerHoldGem();
 
-	m_camera->Update(Messenger::GetInstance()->GetElapsedTime());
+	PreUpdate();
+}
 
+void TitleScene::PreUpdate()
+{
+	float radian =DirectX::XMConvertToRadians(m_angle);
+
+	m_camera->SetEyePos(DirectX::SimpleMath::Vector3{ m_length * std::cos(radian), 17.0f, m_length * std::sin(radian) });
+	m_angle += 10.0f * Messenger::GetInstance()->GetElapsedTime();
+
+	m_camera->Update(Messenger::GetInstance()->GetElapsedTime());
 }
 
 
@@ -124,7 +139,7 @@ void TitleScene::Update(float elapsedTime)
 			GemManager::GetInstance()->LoadPlayerHoldGem();
 		}
 		m_gameStartSound->Play(false);
-		GetGameData()->SetNextStage(GameData::Stage::BOSS);
+		GetGameData()->SetNextStage(GameData::Stage::FIRST);
 		GetGameData()->SetIsGameClear(false);
 		ChangeScene<GameScene,LoadScene>();
 	}
@@ -136,8 +151,6 @@ void TitleScene::Update(float elapsedTime)
 		m_gemLoadSound->Play(false);
 	}
 
-	/*m_camera->SetEyePosX(m_length * std::cos(r));
-	m_camera->SetEyePosZ(m_length * std::sin(r));*/
 	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ m_length * std::cos(r), 17.0f, m_length * std::sin(r) });
 	m_angle += 10.0f*elapsedTime;
 	if (m_angle >= 360.0f)
@@ -161,16 +174,19 @@ void TitleScene::Update(float elapsedTime)
  */
 void TitleScene::Render()
 {
+	Graphics::GetInstance()->SetViewMatrix(m_camera->GetView());
+
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
+	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix proj = graphics->GetProjectionMatrix();
 
-	auto view=m_camera->GetView();
 	//m_testPlayer.Draw(*context, *states, view, proj);
 	DirectX::SimpleMath::Matrix world;
 	m_demoPlayerModelParams.GetModel()->Draw(context, *states, m_demoPlayerModelParams.GetWorldMatrix(), view, proj);
 	m_caveModelParams.GetModel()->Draw(context, *states, m_caveModelParams.GetWorldMatrix(), view, proj);
+	//m_demoPlayer->Draw();
 
 	DirectX::SimpleMath::Vector3 cameraPos = m_camera->GetEyePos();
 	DirectX::SimpleMath::Matrix trans = DirectX::SimpleMath::Matrix::CreateTranslation(cameraPos);

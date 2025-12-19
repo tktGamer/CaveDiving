@@ -48,9 +48,9 @@ public:
 		int minDigit;
 	};
 
+//メンバ変数
 private:
 
-	ScoreUIManager* m_pScoreUIManager;
 
 	//アイコンテクスチャの幅
 	int m_iconTexureWidth;
@@ -61,7 +61,7 @@ private:
 
 //コンテキスト・デストラクタ
 public:
-	Score(ScoreUIManager* pManager, const UIInfo& score, const UIInfo& referenceData = UIInfo{});
+	Score(const UIInfo& score, const UIInfo& referenceData = UIInfo{});
 	~Score();
 
 //操作

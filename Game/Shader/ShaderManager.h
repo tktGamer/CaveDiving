@@ -122,6 +122,8 @@ public:
 		Outline,
 	};
 
+	//std::unordered_map<ShaderType, Shader>  shader;
+
 // データメンバの宣言 -----------------------------------------------
 private:
 	// Shaderクラスのインスタンスへのユニークポインタ「シングルトン化する」

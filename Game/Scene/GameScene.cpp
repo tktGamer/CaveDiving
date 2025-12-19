@@ -72,17 +72,18 @@ void GameScene::Initialize()
 	m_gameBGM->Play(true);
 
 
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
+	int width, height;
+	Graphics::GetInstance()->GetScreenSize(width, height);
 
 	//バフUI管理クラスの生成
-	m_buffUI = std::make_unique<BuffUIControl>(w, h);
+	m_buffUI = std::make_unique<BuffUIControl>(width, height);
 	m_buffUI->Initialize();
 
 
 	//オブジェクトの生成--
 	//プレイヤーの生成
-	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f });
+	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), nullptr);
+	m_player->SetPosition({ 0.0f,1.55f,0.0f });
 	m_cM->Register(m_player.get());
 
 	//ステージの生成
@@ -106,7 +107,7 @@ void GameScene::Initialize()
 	m_camera->Initialize({ 0,1.0f,25.0f });
 	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
 	m_camera->SetTartet(m_player->GetCurrentPosition(), m_player->GetQuaternion(), m_player->GetVelocity());
-
+	m_camera->SetEyePos(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
 	//アイテム管理クラスの生成
 	m_itemManager = std::make_unique<ItemManager>();
 	m_itemManager->Initialize();
@@ -120,12 +121,41 @@ void GameScene::Initialize()
 
 
 	m_clearConditionsUI = std::make_unique<ClearConditions>(DirectX::SimpleMath::Vector2{ 1240,150 });
-	m_clearConditionsUI->Initialize(w, h);
+	m_clearConditionsUI->Initialize(width, height);
 	ParticleManager::GetInstance()->SetCamera(m_camera.get());
 	Sound::SetListenerObject(m_player.get());
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
+
+	PreUpdate();
+}
+
+void GameScene::PreUpdate()
+{
+	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
+
+	//UIの更新
+	m_hpGauge->Update();
+	m_holdGem->Update();
+	m_buffUI->Update();
+
+
+	//オブジェクトの更新--
+	m_player->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+	m_stage->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+
+	m_enemyManager->Update();
+	m_camera->Update(elapsedTime);
+
+	//HPゲージの更新
+	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
+
+	m_itemManager->Update();
+
+	//衝突判定
+	m_cM->CollisionCheck();
+
 }
 
 

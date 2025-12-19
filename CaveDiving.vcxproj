@@ -314,11 +314,8 @@
     <ClInclude Include="Game\UI\Number\Number.h" />
     <ClInclude Include="Game\UI\Number\NumberControl.h" />
     <ClInclude Include="Game\UI\Result\SaveConfirm.h" />
-    <ClInclude Include="Game\UI\Result\Score\PlayerCurrentHP.h" />
     <ClInclude Include="Game\UI\Result\Score\Score.h" />
     <ClInclude Include="Game\UI\Result\Score\ScoreUIManager.h" />
-    <ClInclude Include="Game\UI\Result\Score\TotalDamage.h" />
-    <ClInclude Include="Game\UI\Result\Score\TotalTime.h" />
     <ClInclude Include="Game\UI\UserInterface.h" />
     <ClInclude Include="Game\GameData.h" />
     <ClInclude Include="pch.h" />
@@ -456,11 +453,8 @@
     <ClCompile Include="Game\UI\Number\Number.cpp" />
     <ClCompile Include="Game\UI\Number\NumberControl.cpp" />
     <ClCompile Include="Game\UI\Result\SaveConfirm.cpp" />
-    <ClCompile Include="Game\UI\Result\Score\PlayerCurrentHP.cpp" />
     <ClCompile Include="Game\UI\Result\Score\Score.cpp" />
     <ClCompile Include="Game\UI\Result\Score\ScoreUIManager.cpp" />
-    <ClCompile Include="Game\UI\Result\Score\TotalDamage.cpp" />
-    <ClCompile Include="Game\UI\Result\Score\TotalTime.cpp" />
     <ClCompile Include="Game\UI\UserInterface.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">

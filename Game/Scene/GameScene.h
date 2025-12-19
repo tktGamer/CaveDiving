@@ -99,6 +99,9 @@ public:
 	// 初期化処理
 	void Initialize() override;
 
+	//更新前準備
+	void PreUpdate() override;
+
 	// 更新処理
 	void Update(float elapsedTime) override;
 

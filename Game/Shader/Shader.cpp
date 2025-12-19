@@ -110,17 +110,18 @@ void Shader::EndShader(const std::function<void()>& customState)
  */
 void Shader::CreateShader(const wchar_t* vsPath, const wchar_t* psPath, const wchar_t* gsPath)
 {
+	auto device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
 	// シェーダーのバイナリデータを読み込む
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	BinaryFile VSData = resourceManager->RequestBinaryFile(vsPath);
 	BinaryFile PSData = resourceManager->RequestBinaryFile(psPath);
 	BinaryFile GSData = resourceManager->RequestBinaryFile(gsPath);
 	// シェーダーを作成する
-	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateVertexShader(
+	device->CreateVertexShader(
 		VSData.GetData(), VSData.GetSize(), nullptr, m_vertexShader.ReleaseAndGetAddressOf());
-	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreatePixelShader(
+	device->CreatePixelShader(
 		PSData.GetData(), PSData.GetSize(), nullptr, m_pixelShader.ReleaseAndGetAddressOf());
-	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateGeometryShader(
+	device->CreateGeometryShader(
 		GSData.GetData(), GSData.GetSize(), nullptr, m_geometryShader.ReleaseAndGetAddressOf());
 
 }

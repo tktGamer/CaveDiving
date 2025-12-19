@@ -19,10 +19,6 @@
 #include"Game/GameData.h"
 
 #include"Game/Interface/IUI.h"
-
-#include"Game/UI/Result/Score/TotalDamage.h"
-#include"Game/UI/Result/Score/PlayerCurrentHP.h"
-#include"Game/UI/Result/Score/TotalTime.h"
 #include"Game/UI/Result/Score/Score.h"
 
 // ƒNƒ‰ƒX‚ÌéŒ¾ ===============================================================

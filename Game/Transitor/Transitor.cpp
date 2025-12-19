@@ -58,12 +58,6 @@ bool Transitor::Update()
 
 void Transitor::Render() 
 {
-	//ƒgƒ‰ƒ“ƒWƒVƒ‡ƒ“‚ªŠ®—¹‚µ‚Ä‚¢‚½‚ç”ò‚Î‚·
-	if (m_time > 1.5f) 
-	{
-		return;
-	}
-
 
 	ID3D11DeviceContext1* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = Graphics::GetInstance()->GetCommonStates();

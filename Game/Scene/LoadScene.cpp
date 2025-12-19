@@ -62,6 +62,20 @@ void LoadScene::Initialize()
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
+
+	PreUpdate();
+}
+
+
+/**
+ * @brief –‘OXVˆ—
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
+void LoadScene::PreUpdate()
+{
 }
 
 

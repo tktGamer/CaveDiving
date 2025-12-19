@@ -91,7 +91,11 @@ void ResultScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
+	PreUpdate();
+}
 
+void ResultScene::PreUpdate()
+{
 }
 
 

@@ -21,7 +21,7 @@
  * @param[in] score  スコアUIのデータ
  * @param[in] referenceData  情報UIのデータ
  */
-Score::Score(ScoreUIManager* pManager, const UIInfo& score, const UIInfo& referenceData)
+Score::Score(const UIInfo& score, const UIInfo& referenceData)
     :m_referenceUI{}
     ,m_scoreUI{}
 {
@@ -40,10 +40,25 @@ Score::~Score()
 {
 }
 
+
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Score::Initialize()
 {
 }
 
+/**
+ * @brief 更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Score::Update()
 {
     m_scoreUI->Update();
@@ -53,6 +68,13 @@ void Score::Update()
     }
 }
 
+/**
+ * @brief 描画処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Score::Render()
 {
     m_scoreUI->Render();
@@ -62,6 +84,13 @@ void Score::Render()
     }
 }
 
+/**
+ * @brief 更新演出スキップ
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Score::SkipDirection()
 {
     m_scoreUI->SetCurrentNumber(m_scoreUI->GetTargetNumber());
@@ -71,6 +100,15 @@ void Score::SkipDirection()
     }
 }
 
+
+/**
+ * @brief 数字の増加が終了したか
+ *
+ * @param[in] なし
+ *
+ * @return true   終了
+ *         false　未了
+ */
 bool Score::IsFinish() 
 {
 
@@ -88,6 +126,13 @@ bool Score::IsFinish()
     return true;
 }
 
+/**
+ * @brief UIを生成
+ *
+ * @param[in] 生成に必要な情報
+ *
+ * @return 生成したUI
+ */
 std::unique_ptr<CountUpNumber> Score::CreateUI(const UIInfo& info)
 {
     //数字UIを生成する

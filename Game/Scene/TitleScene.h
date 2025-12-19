@@ -22,6 +22,7 @@
 #include"math.h"
 #include"Game/UI/UserInterface.h"
 #include"Game/Transitor/Transitor.h"
+#include"Game/Object/Player/Player.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 class Sound;
@@ -54,7 +55,8 @@ private:
 	ID3D11ShaderResourceView* m_pressSpaceTexture;	///< PRESS SPACE画像
 
 	TKTLib::ModelParams m_caveModelParams;    ///< 洞窟モデルパラメータ
-	TKTLib::ModelParams m_demoPlayerModelParams;    ///< プレイヤーモデルパラメータ
+	TKTLib::ModelParams m_demoPlayerModelParams;    
+	std::unique_ptr<Player> m_demoPlayer;
 
 	DirectX::Model* m_skyModel;
 	
@@ -81,6 +83,10 @@ public:
 public:
 	// 初期化処理
 	void Initialize() override;
+
+	//更新前準備
+	void PreUpdate() override;
+
 
 	// 更新処理
 	void Update(float elapsedTime) override;

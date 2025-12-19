@@ -68,8 +68,13 @@ void GemSelectScene::Initialize()
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
+	PreUpdate();
 
+}
 
+void GemSelectScene::PreUpdate()
+{
+	m_gemSelectManager->Update();
 }
 
 
@@ -83,7 +88,6 @@ void GemSelectScene::Initialize()
  */
 void GemSelectScene::Update(float elapsedTime)
 {
-	//auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 	
 	//宝石の選択が終わったらゲームシーンへ
 	if (m_gemSelectManager->IsFinishSelect())

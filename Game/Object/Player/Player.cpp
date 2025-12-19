@@ -136,7 +136,7 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 	UpdateGotItems();
 
 	//現在位置の更新
-	m_currentPosition = currentPosition + GetPosition();
+	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
 	//現在角度の更新
 	m_currentAngle =  m_motionAngle * GetQuaternion() *  currentAngle ;
 	
@@ -213,23 +213,24 @@ void Player::Draw()
 
 	//アウトラインアイテムを取得した状態か判断
 
-	if (Messenger::GetInstance()->IsOutLineActive()) {
-
-	// モデル描画（アウトライン専用）
-	GetModel()->Draw(context, *states, world, view, proj, false, [&]() 
+	if (Messenger::GetInstance()->IsOutLineActive())
 	{
-		// カリングを FrontFace にして裏面を描画（アウトライン用）
-		context->RSSetState(states->CullCounterClockwise());
 
-		// ブレンド・デプスステート（深度は通常通り or 調整）
-		context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-		context->OMSetDepthStencilState(states->DepthDefault(), 0);
-		
-		// アウトラインシェーダを設定
-		ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
-		context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
+		// モデル描画（アウトライン専用）
+		GetModel()->Draw(context, *states, world, view, proj, false, [&]()
+			{
+				// カリングを FrontFace にして裏面を描画（アウトライン用）
+				context->RSSetState(states->CullCounterClockwise());
 
-	});
+				// ブレンド・デプスステート（深度は通常通り or 調整）
+				context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
+				context->OMSetDepthStencilState(states->DepthDefault(), 0);
+
+				// アウトラインシェーダを設定
+				ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
+				context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
+
+			});
 	}
 
 	ShaderManager::GetInstance()->EndShader();

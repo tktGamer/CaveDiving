@@ -73,7 +73,7 @@ void ScoreUIManager::Initialize()
 	 score.minDigit = 7;
 
 
-	m_scoreUI = std::make_unique<Score>(this, score);
+	m_scoreUI = std::make_unique<Score>(score);
 
 	//情報UIデータ
 	Score::UIInfo referenceUI;
@@ -99,7 +99,7 @@ void ScoreUIManager::Initialize()
 	scoreUI.stepNumber = HP_STEP_SECOND*HP_PER_POINT;
 	scoreUI.minDigit = 5;
 
-	m_hpScoreUI = std::make_unique<Score>(this, scoreUI, referenceUI);
+	m_hpScoreUI = std::make_unique<Score>(scoreUI, referenceUI);
 	m_hpScoreUI->Initialize();
 
 	//情報UIデータ
@@ -124,7 +124,7 @@ void ScoreUIManager::Initialize()
 	scoreUI.stepNumber			= 300;
 	scoreUI.minDigit			= 5;
 
-	m_totalDamageScoreUI = std::make_unique<Score>(this, scoreUI);
+	m_totalDamageScoreUI = std::make_unique<Score>(scoreUI);
 	m_totalDamageScoreUI->Initialize();
 
 	//情報UIデータ
@@ -149,7 +149,7 @@ void ScoreUIManager::Initialize()
 	scoreUI.stepNumber			= 100*TIME_PER_POINT;
 	scoreUI.minDigit			= 5;
 
-	m_timeScoreUI = std::make_unique<Score>(this, scoreUI, referenceUI);
+	m_timeScoreUI = std::make_unique<Score>(scoreUI, referenceUI);
 	m_timeScoreUI->Initialize();
 
 	SetNextUpdateUI();

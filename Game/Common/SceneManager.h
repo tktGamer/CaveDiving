@@ -37,6 +37,10 @@ public:
 	// 初期化
 	virtual void Initialize() = 0;
 
+	//更新前準備
+	virtual void PreUpdate() = 0;
+
+
 	// 更新
 	virtual void Update(float elapsedTime) = 0;
 
@@ -148,6 +152,7 @@ public:
 			m_loadingThread.join();
 		}*/
 	};
+
 
 	// 更新
 	void Update(float elapsedTime);
