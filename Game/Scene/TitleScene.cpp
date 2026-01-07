@@ -72,6 +72,7 @@ void TitleScene::Initialize()
 	//m_demoPlayer->SetPosition({ 0.0f,2.0f,7.0f });
 	//m_demoPlayer->SetScale({ 0.5f,0.5f,0.5f });
 	//m_demoPlayer->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+
 	m_demoPlayerModelParams.SetModelParams(m_pResourceManager->RequestModel("player.sdkmesh"));
 	DirectX::SimpleMath::Vector3 position = DirectX::SimpleMath::Vector3{ 0.0f,1.5f,6.5f };
 	DirectX::SimpleMath::Vector3 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
@@ -83,7 +84,7 @@ void TitleScene::Initialize()
 	 scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 	m_caveModelParams.SetModelParams(position, rotation, scale);
 
-	m_length = 25.0f;
+	m_length = 20.0f;
 	m_angle = 20.0f;
 	m_camera->Initialize({ 0,17.0f,10.0f });
 	m_camera->SetTartet(m_caveModelParams.GetPosition(), m_caveModelParams.GetQuaternion());
@@ -99,11 +100,8 @@ void TitleScene::Initialize()
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
-	m_light.SetWindowSize(w, h);
-	m_light.Create(L"illustkun-04373-flashlight.png", { 1050.0f,500.0f }, { 0.9f,0.9f }, UserInterface::MIDDLE_CENTER);
-
-	//プレイヤーの所持している宝石を空にする
-	GemManager::GetInstance()->EmptyPlayerHoldGem();
+	//プレイヤーのデータを初期化
+	GetGameData()->SetPlayerData(GameData::PlayerData{});
 
 	PreUpdate();
 }
@@ -112,7 +110,7 @@ void TitleScene::PreUpdate()
 {
 	float radian =DirectX::XMConvertToRadians(m_angle);
 
-	m_camera->SetEyePos(DirectX::SimpleMath::Vector3{ m_length * std::cos(radian), 17.0f, m_length * std::sin(radian) });
+	m_camera->SetEyePos(DirectX::SimpleMath::Vector3{ m_length * std::cos(radian), 15.0f, m_length * std::sin(radian) });
 	m_angle += 10.0f * Messenger::GetInstance()->GetElapsedTime();
 
 	m_camera->Update(Messenger::GetInstance()->GetElapsedTime());
@@ -134,10 +132,19 @@ void TitleScene::Update(float elapsedTime)
 	
 	if (traker->pressed.Space)
 	{
+		GameData* gameData = GetGameData();
+		GameData::PlayerData playerData;
 		if (m_isLoadPlayerHoldGem) 
 		{
-			GemManager::GetInstance()->LoadPlayerHoldGem();
+			//保存されたプレイヤーの所持宝石のIDを入手
+			GemManager::GetInstance()->LoadHoldGem(ResourcePath::DATA::HOLDER_GEM::PLAYER_GEM,playerData.gemID);
 		}
+		//HP設定
+		playerData.currentHP = Player::PLAYER_BASE_HP;
+		playerData.maxHP = Player::PLAYER_BASE_HP;
+		//プレイヤーの情報を設定
+		gameData->SetPlayerData(playerData);
+		//スタート音再生
 		m_gameStartSound->Play(false);
 		GetGameData()->SetNextStage(GameData::Stage::FIRST);
 		GetGameData()->SetIsGameClear(false);
@@ -226,7 +233,6 @@ void TitleScene::Render()
 
 	//m_groundModel->Draw(context, *states, world, view, proj);
 	
-	//m_light.Draw();
 	
 	DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
 

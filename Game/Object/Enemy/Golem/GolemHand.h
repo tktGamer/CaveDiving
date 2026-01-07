@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/11/19
+ * @date   日付  2026/01/04
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,17 +24,19 @@
 class GolemHand : public EnemyPart
 {
 // クラス定数の宣言 -------------------------------------------------
+private:
+	//球の当たり判定サイズ
+	static constexpr float GOLEM_HAND_SPHERE_SIZE = 2.5f;
+	//ゴーレムのアウトラインの太さ
+	static constexpr  float GOLEM_HAND_OUTLINE_THICKNESS = 0.04f;
 public:
 
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
 	//球状当たり判定
 	Sphere m_sphere;
-
-	Ito::DisplayCollision m_display;
 
 	//持っている武器
 	std::unique_ptr<Weapon> m_weapon;
@@ -44,7 +46,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	GolemHand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	GolemHand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~GolemHand();
@@ -52,13 +54,14 @@ public:
 
 // 操作
 public:
+	//初期化
 	void Initialize() override;
-
+	//更新
 	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-
+	//描画
 	void Draw() override;
-
+	//終了
 	void Finalize();
 
 	// メッセージを取得する

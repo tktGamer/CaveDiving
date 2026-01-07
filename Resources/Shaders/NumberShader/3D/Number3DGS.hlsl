@@ -53,8 +53,9 @@ void main(
         
 		//	C++からもらっているTex情報はUV座標ではないため、
 		//	実際に使用可能な画像のUV情報をここで算出する
-        element.Tex.x = offset_array[i].x + 0.5f;
+        element.Tex.x =  offset_array[i].x + 0.5f;
         element.Tex.y = -offset_array[i].y + 0.5f;
+        //一番手前に描画
         element.Pos.z = 0.0f;
 		//	次のシェーダへ情報を渡すため、頂点情報を追加する
         output.Append(element);

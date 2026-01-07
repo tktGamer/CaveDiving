@@ -5,27 +5,27 @@
  *
  * @author 制作者名  福地貴翔
  *　
- * @date   日付　2025/09/05
+ * @date   日付　2025/12/30
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "PlayerFirstAttackMotion.h"
+#include"Game/Object/Player/Hand.h"
 
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] pRightHand　右手のポインタ
+ * @param[in] pLeftHand　 左手のポインタ
  */
-PlayerFirstAttackMotion::PlayerFirstAttackMotion( Hand* pRightHand, Hand* pLeftHand)
-	: AttackMotion{0.9f}
+PlayerFirstAttackMotion::PlayerFirstAttackMotion(Hand* pRightHand, Hand* pLeftHand)
+	: AttackMotion{ FIRST_ATTACK_MOTION_MODIFIER }
 	, m_pRightHand{ pRightHand }
-	, m_pLeftHand{pLeftHand}
-	, m_isNextAttack{ false }
-	, m_inputTime{1.0f}
+	, m_pLeftHand{ pLeftHand }
 {
-	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("pikelswing.wav"));
+	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::PLAYER_SWING));
 }
 
 
@@ -50,9 +50,12 @@ PlayerFirstAttackMotion::~PlayerFirstAttackMotion()
 void PlayerFirstAttackMotion::Initialize()
 {
 	//真横に向ける
-	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
+	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, RIGHT_HAND_Z_ANGLE));
 
 	m_sound->Play(false);
+
+	SetMotionLerp(0.0f);
+
 }
 
 
@@ -70,25 +73,25 @@ bool PlayerFirstAttackMotion::Update()
 	float motionLerp = GetMotionLerp();
 
 	//今回の角度を計算
-	float rightHandAngle = TKTLib::Lerp(0.0f,170.0f,motionLerp);
-	float leftHandAngle  = TKTLib::Lerp(0.0f, 30.0f, motionLerp);
+	float rightHandAngle = TKTLib::Lerp(RIGHT_HAND_START_MOTION_Y_ANGLE,RIGHT_HAND_END_MOTION_Y_ANGLE,motionLerp);
+	float leftHandAngle  = TKTLib::Lerp(LEFT_HAND_START_MOTION_Y_ANGLE, LEFT_HAND_END_MOTION_Y_ANGLE, motionLerp);
 
 	DirectX::SimpleMath::Quaternion rightHandMotionAngle
-		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(rightHandAngle));
+		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, rightHandAngle);
 
 	DirectX::SimpleMath::Quaternion leftHandMotionAngle
-		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(leftHandAngle));
+		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,leftHandAngle);
 
 
-	motionLerp += 5.0f * Messenger::GetInstance()->GetElapsedTime();
+	motionLerp += FIRST_ATTACK_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
 
 	m_pRightHand->SetMotionAngle(rightHandMotionAngle);
 	m_pLeftHand->SetMotionAngle(leftHandMotionAngle);
 
 
-	SetMotionLerp(std::min(motionLerp,1.0f));
+	SetMotionLerp(std::min(motionLerp,Motion::MOTION_FINISH));
 
-	if (GetMotionLerp() >= 1.0f)
+	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
 		return true;
 	}
@@ -109,7 +112,5 @@ bool PlayerFirstAttackMotion::Update()
  */
 void PlayerFirstAttackMotion::Reset()
 {
-	m_isNextAttack = false;
-	SetMotionLerp(0.0f);
 }
 

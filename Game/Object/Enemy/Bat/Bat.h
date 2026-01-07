@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  * 
- * @date   日付  2025/09/04
+ * @date   日付  2026/01/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -22,37 +22,44 @@
 #include"../Bat/State/BatChasing.h"
 #include"../Bat/State/BatAttackPreparing.h"
 #include"../Bat/State/BatDamaged.h"
+#include"Game/Shader/Outline/OutlineRenderer.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Bat
+  * @brief コウモリの敵
   */
 class Bat :public Character
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//初期体力
+	static constexpr int BAT_BASE_HP = 40;
+	//初期攻撃力
+	static constexpr int BAT_BASE_ATTACK = 30;
+	//初期防御力
+	static constexpr int BAT_BASE_DIFFENCE = 8;
+	//球の当たり判定サイズ
+	static constexpr float BAT_SPHERE_SIZE = 2.0f;
+
 	//左羽の位置
 	static constexpr DirectX::SimpleMath::Vector3 LEFTWING_INIT_POS  = { -0.5f,0.0f,0.0f };
 	//右羽の位置
 	static constexpr DirectX::SimpleMath::Vector3 RIGHTWING_INIT_POS = {  0.5f,0.0f,0.0f };
-	static constexpr float RIGHT_WING_INIT_DEGREE = 180.0f;
-
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4 color;
-
-	};
+	static constexpr float RIGHT_WING_INIT_ANGLE = DirectX::XMConvertToRadians(180.0f);
 
 
+	//接触時のダメージ割りあい
+	static constexpr float CONTACT_DAMAGE_MODIFIRE = 0.1f;
+
+	//感知範囲
+	static constexpr  float CHASE_RANGE = 15.0f;
+
+	//コウモリのアウトラインの太さ
+	static constexpr  float BAT_OUTLINE_THICKNESS = 0.04f;
+	
 // データメンバの宣言 -----------------------------------------------
 private:
-	// グラフィックスクラスのポインタ
-	Graphics* m_graphics;	
 
 	// メッセージID
 	Message::MessageID m_messageID;
@@ -60,7 +67,6 @@ private:
 	//当たり判定
 	Sphere m_sphere;
 
-	DirectX::SimpleMath::Vector3 m_velocity; // 速度 
 
 	//状態
 	std::unique_ptr<IState> m_pCurrentState; // 現在の状態
@@ -75,7 +81,7 @@ private:
 	std::unique_ptr<Wing> m_leftWing;//左翼
 
 	//経過時間
-	float m_frameCount=0;
+	float m_frameCount = 0;
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
 
@@ -83,7 +89,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Bat(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Bat();
@@ -111,12 +117,12 @@ public:
 	//経過時間リセット
 	void ResetFrameCount();
 
-	DirectX::SimpleMath::Quaternion GetMotionAngle();
-	void SetMotionAngle(DirectX::SimpleMath::Quaternion angle);
+	//モーション用角度取得
+	const DirectX::SimpleMath::Quaternion& GetMotionAngle() const;
+	//モーション用角度設定
+	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
 
 
-	DirectX::SimpleMath::Vector3 GetVelocity();
-	void SetVelocity(DirectX::SimpleMath::Vector3 v);
 //　内部操作
 private:
 

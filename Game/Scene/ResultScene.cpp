@@ -62,14 +62,8 @@ void ResultScene::Initialize()
 	m_clearSound->Play(false);
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
-	//m_saveMessage =UIFactory::CreateUserInterface(L"UI/savemessage.png", { 650.0f,400.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
-
-	//m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
-	//m_menu->Add(L"UI/yesfont.png", { 350.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-	//m_menu->Add(L"UI/nofont.png", { 950.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-
-	m_saveUI = std::make_unique<SaveConfirm>(w, h);
+	m_saveUI = std::make_unique<SaveConfirm>(w, h,GetGameData()->GetPlayerData().gemID);
 	m_saveUI->Initialize();
 
 	//ゲームクリア・ゲームオーバー文字
@@ -109,7 +103,8 @@ void ResultScene::PreUpdate()
  */
 void ResultScene::Update(float elapsedTime)
 {
-	
+	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
+
 	//選択したならシーン遷移
 	if (m_saveUI->IsDecide()) 
 	{
@@ -120,6 +115,8 @@ void ResultScene::Update(float elapsedTime)
 	if (m_scoreUI->GetState() != ScoreUIManager::State::END) 
 	{
 		m_scoreUI->Update();
+
+		
 	}
 	else
 	{
@@ -139,16 +136,6 @@ void ResultScene::Update(float elapsedTime)
  */
 void ResultScene::Render()
 {
-	//Graphics* graphics = Graphics::GetInstance();
-	//ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
-	//DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
-	//DirectX::SimpleMath::Matrix proj = graphics->GetProjectionMatrix();
-
-	////auto view=m_camera->GetView();
-	////m_testPlayer.Draw(*context, *states, view, proj);
-	//DirectX::SimpleMath::Matrix world;
-
-	//DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
 	m_backTexture->Render();
 
 	m_scoreUI->Render();

@@ -255,10 +255,10 @@ void Game::CreateDeviceDependentResources()
     //マネージャー生成
     m_resourceManager = ResourceManager::GetInstance();
     // ユーザーリソースの作成
-    if (!m_userResources) m_userResources = std::make_unique<GameData>();
+    if (!m_gameData) m_gameData = std::make_unique<GameData>();
 
     // シーンマネージャーの作成
-    if (!m_sceneManager) m_sceneManager = std::make_unique<SceneManager<GameData>>(m_userResources.get());
+    if (!m_sceneManager) m_sceneManager = std::make_unique<SceneManager<GameData>>(m_gameData.get());
 
 
 	m_resourceManager->SetAudioEngine(m_audioEngine.get());

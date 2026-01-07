@@ -1,11 +1,11 @@
 /**
  * @file   TitleScene.h
  *
- * @brief  ロゴシーンに関するヘッダファイル
+ * @brief  タイトルシーンに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/08
  */
 
 // 多重インクルードの防止 =====================================================
@@ -51,6 +51,12 @@ private:
 	bool m_isLoadPlayerHoldGem;
 	// オブジェクト関連
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
+
+	//タイトル画像
+	std::unique_ptr<UserInterface> m_title;
+	//PRESS SPACE画像
+	std::unique_ptr<UserInterface> m_pressSpace;
+
 	ID3D11ShaderResourceView* m_titleTexture;	///< タイトル画像
 	ID3D11ShaderResourceView* m_pressSpaceTexture;	///< PRESS SPACE画像
 

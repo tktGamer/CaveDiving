@@ -13,6 +13,7 @@
 #include"HoldGemInfoDraw.h"
 #include"../CaveDiving/Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,7 +21,7 @@
  * @param[in] width
  * @param[in] height
  */
-HoldGemInfoDraw::HoldGemInfoDraw(int width, int height)
+HoldGemInfoDraw::HoldGemInfoDraw(int width, int height, const std::vector<int>& gemID)
     : m_menuIndex(0)
     , m_windowHeight(height)
     , m_windowWidth(width)
@@ -28,7 +29,7 @@ HoldGemInfoDraw::HoldGemInfoDraw(int width, int height)
     , m_position{ 80,680 }
     , m_scale{ 1.0f,1.0f }
     , m_gemTexturePath{}
-    ,m_pGems{}
+    ,m_gemID{gemID}
 {
 
 }
@@ -45,10 +46,11 @@ void HoldGemInfoDraw::Initialize()
 
     m_gemTexturePath = L"minigem.png";
 
-    m_holdGem = std::make_unique<HoldGem>(m_windowWidth, m_windowHeight);
+    m_holdGem = UIFactory::CreateHoldGem(m_gemID);
     m_holdGem->ChangePositon({ 650.0f,450.0f });
     m_holdGem->ChangeScale({ 2.0f, 2.0f });
     m_holdGem->Initialize();
+    m_holdGem->ChangeDrawGem(m_gemID);
 
     m_cursol = std::make_unique<UserInterface>();
     m_cursol->SetWindowSize(m_windowWidth, m_windowHeight);
@@ -56,7 +58,7 @@ void HoldGemInfoDraw::Initialize()
 
     m_candidateGemUI = std::make_unique<UserInterface>();
     m_candidateGemUI->SetWindowSize(m_windowWidth, m_windowHeight);
-    m_candidateGemUI->Create(GemManager::GetInstance()->GetPlayerHoldGem()[m_menuIndex]->GetImagePath().panel, {350.0f,200.0f}, {1.0f,1.0f}, UserInterface::MIDDLE_CENTER);
+    m_candidateGemUI->Create(GemManager::GetInstance()->GetIDNumberedGem(m_gemID[m_menuIndex])->GetImagePath().panel, {350.0f,200.0f}, {1.0f,1.0f}, UserInterface::MIDDLE_CENTER);
 
 }
 
@@ -88,7 +90,7 @@ void HoldGemInfoDraw::Update()
         m_menuIndex %= GemManager::PLAYER_HOLD_GEM_NUM;
     }
 
-    m_candidateGemUI->SetTexture(GemManager::GetInstance()->GetPlayerHoldGem()[m_menuIndex]->GetImagePath().panel);
+    m_candidateGemUI->SetTexture(GemManager::GetInstance()->GetIDNumberedGem(m_gemID[m_menuIndex])->GetImagePath().panel);
 
     m_cursol->SetPosition({ 650.0f + HoldGem::GEM_POS_X[m_menuIndex]*2.0f ,450.0f });
     float scale=abs(std::sin(time)) + 1.0f;
@@ -136,6 +138,11 @@ void HoldGemInfoDraw::ChangeScale(const DirectX::SimpleMath::Vector2& scale)
 {
     m_scale = scale;
 
+}
+
+int HoldGemInfoDraw::GetMunuIndex()
+{
+    return m_menuIndex;
 }
 
 

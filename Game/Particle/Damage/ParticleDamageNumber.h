@@ -43,7 +43,7 @@ public:
 	//	関数
 	//	コンストラクタ（初期設定）
 	ParticleDamageNumber(
-		const std::string& texturePsth,
+		const wchar_t* texturePsth,
 		const DirectX::SimpleMath::Vector3& pos,
 		const int& number);
 	//	デストラクタ

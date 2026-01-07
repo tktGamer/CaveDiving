@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/11/15
+ * @date   日付　2026/01/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,9 +24,15 @@ class GameObject;
   */
 class GolemChasing : public IState
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
+private:
+	//追跡速度
+	static constexpr  float CHASE_SPPED = 0.5f;
+	//攻撃範囲
+	static constexpr  float ATTACK_RANGE = 6.5f;
+
 public:
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
 	// ゴーレム
 	Golem* m_golem;
@@ -52,9 +58,11 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-//内部処理
+//　取得・設定
+public:
+
+//　内部操作
 private:
-	//二点のラジアン角を求める
-	const float CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target);
+
 };
-#endif		// BAT_IDLING_DEFINED
+#endif		// GOLEM_CHASING_DEFINED

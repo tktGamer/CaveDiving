@@ -23,6 +23,7 @@
 #include"../UI/GemSelect/ChangeGem.h"
 #include"../UI/Number/NumberControl.h"
 #include"../UI/Number/CountUpNumber.h"
+
 // ファクトリクラスを定義する
 class UIFactory 
 {
@@ -48,7 +49,8 @@ public:
 
 	// 「宝石選択UI」を生成する
 	static std::unique_ptr<GemSelect> CreateGemSelect(
-		  GemSelectUIManager* pGemSelectUIManager
+		  GemSelectUIManager* pGemSelectUIManager,
+		const std::vector<int>& gemID
 		);
 
 	// 「入れ替え確認UI」を生成する
@@ -58,15 +60,18 @@ public:
 
 	// 「宝石入れ替えUI」を生成する
 	static std::unique_ptr<ChangeGem> CreateChangeGem(
-		  GemSelectUIManager* pGemSelectUIManager
+		  GemSelectUIManager* pGemSelectUIManager,
+		const std::vector<int>& gemID
 		);
 
 	// 「所持している宝石を表示するUI」を生成する
 	static std::unique_ptr<HoldGem> CreateHoldGem(
+		const std::vector<int>& gemID
 		);
 
 	// 「所持している宝石の内1つの情報を表示するUI」を生成する
 	static std::unique_ptr<HoldGemInfoDraw> CreateHoldGemInfoDraw(
+		const std::vector<int>& gemID
 		);
 
 	// 「数字UI」を生成する

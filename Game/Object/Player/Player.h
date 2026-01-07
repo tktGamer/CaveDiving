@@ -12,9 +12,9 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Object/GameObject.h"
+#include"Game/GameData.h"
 #include"Game/Object/Character.h"
-#include "Game/Object/Gem/Gem.h"
+#include"Game/Object/Player/HolderGem.h"
 #include "Game/Object/Light.h"
 #include"../Player/State/PlayerIdling.h"
 #include"../Player/State/PlayerMoving.h"
@@ -38,24 +38,13 @@ class Player : public Character
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4 color;
-	};
 
-	//データ受け渡し用コンスタントバッファ(送信側)
-	struct OutlineConstBuffer
-	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-		float outlineThickness;
-		DirectX::SimpleMath::Vector3 dummy;
-	};
+	//初期HP
+	static constexpr int PLAYER_BASE_HP = 100;
+	//初期攻撃力
+	static constexpr int PLAYER_BASE_ATTACK = 20;
+	//初期防御力
+	static constexpr int PLAYER_BASE_DIFFENCE = 7;
 
 	struct  ItemInfo
 	{
@@ -63,6 +52,16 @@ public:
 		int increase;
 		float time;
 	};
+
+	//右手の角度
+	static constexpr float RIGHT_HAND_Z_ANGLE = DirectX::XMConvertToRadians(-50.0f);
+
+	//右手のオブジェクト番号 プレイヤーの番号を基準に
+	static constexpr int RIGHT_HAND_OBJ_NUMBER = 1;
+	//左手のオブジェクト番号 プレイヤーの番号を基準に
+	static constexpr int LEFT_HAND_OBJ_NUMBER = 2;
+	//ピッケルのオブジェクト番号 プレイヤーの番号を基準に
+	static constexpr int PIKEL_OBJ_NUMBER = 3;
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -98,6 +97,8 @@ private:
 	//ジャンプできる残り回数
 	int m_remainingJumpCount;
 
+	//ダメージを無効化できる回数
+	int m_invincibleCount = 1;
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
 
@@ -108,11 +109,16 @@ private:
 
 	//バフを表示するクラスのポインタ
 	BuffUIControl* m_pBuffUIControl;
+
+	//プレイヤーの持つジェム
+	std::unique_ptr<HolderGem> m_holderGem;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Player(BuffUIControl* pBuffUIControl, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Player(BuffUIControl* pBuffUIControl,const GameData::PlayerData& data,const GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Player();
@@ -134,6 +140,8 @@ public:
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
 
+
+	int TakeDamage(const Character* attacker) override;
 //　取得・設定
 public:
 	
@@ -141,9 +149,9 @@ public:
 	void SetVelocity(const DirectX::SimpleMath::Vector3& v);
 
 	// 体力の取得
-	const int GetMaxHP() override;
+	const int GetMaxHP() const override;
 	// 攻撃力の取得
-	const int GetAttackPower() override;
+	const int GetAttackPower() const override;
 	// 防御力の取得
 	const int GetDiffence() override;
 
@@ -160,6 +168,8 @@ public:
 	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
 	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
 
+	const HolderGem& GetHolderGem();
+
 
 //　内部操作
 private:
@@ -169,8 +179,10 @@ private:
 	//方向転換
 	void ChangeDirection();
 	//宝石で強化された分のステータスを取得
-	int GemPlusStatus(const Gem::Type type);
+	int GemPlusStatus(const Gem::Type type) const;
 	//アイテムで強化された分のステータスを取得
-	int ItemBuff(const Item::EffectType& effectType);
+	int ItemBuff(const Item::EffectType& effectType) const;
+
+
 };
 

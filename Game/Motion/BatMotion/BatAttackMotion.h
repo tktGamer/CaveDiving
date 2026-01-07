@@ -5,26 +5,37 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/05
+ * @date   日付　2025/12/25
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"../Motion.h"
-#include"Game/Object/Enemy/Bat/Bat.h"
+#include"../AttackMotion.h"
 // クラスの宣言 ===============================================================
-
+class Bat;
+class Wing;
 // クラスの定義 ===============================================================
 /**
   * @brief コウモリの攻撃のモーション
   */
-class BatAttackMotion : public Motion
+class BatAttackMotion : public AttackMotion
 {
 // クラス定数の宣言 -------------------------------------------------
-public:
+private:
+	//モーションの攻撃力補正値
+	static constexpr float BAT_ATTACK_MOTION_MODIFIER = 1.0f;
+	//コウモリの姿勢
+	static constexpr float BAT_ATTACK_MOTION_INIT_ANGLE = DirectX::XMConvertToRadians(-20.0f);
+	//右羽の姿勢
+	static constexpr float RIGHT_WING_ATTACK_MOTION_INIT_ANGLE = DirectX::XMConvertToRadians(-15.0f);;
+	//左羽の姿勢
+	static constexpr float LEFT_WING_ATTACK_MOTION_INIT_ANGLE = DirectX::XMConvertToRadians(15.0f);;
 
+	//突進速度
+	static constexpr float BAT_ATTACK_SPEED = 15.0f;
+public:
 
 // データメンバの宣言 -----------------------------------------------
 private:

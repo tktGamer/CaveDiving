@@ -23,12 +23,13 @@
  * @param[in] width  スクリーン幅
  * @param[in] height スクリーン高さ
  */
-SaveConfirm::SaveConfirm(int width, int height)
+SaveConfirm::SaveConfirm(int width, int height, const std::vector<int>& gemID)
     :  m_windowHeight(height)
     , m_windowWidth(width)
     , m_saveMessage{}
     ,m_menu{}
     ,m_isDecide{false}
+    ,m_gemID{gemID}
 {
 }
 
@@ -84,7 +85,7 @@ void SaveConfirm::Update()
             //「はい」の場合
         case Command::Yes:
             //所持宝石を保存
-            GemManager::GetInstance()->SavePlayerHoldGem();
+            GemManager::GetInstance()->SaveHoldGem(ResourcePath::DATA::HOLDER_GEM::PLAYER_GEM,m_gemID);
 
             break;
         //「いいえ」の場合

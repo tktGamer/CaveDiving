@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/11/15
+ * @date   日付  2026/01/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -57,7 +57,7 @@ void GolemIdling::PreUpdate()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -65,10 +65,9 @@ void GolemIdling::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
-	//Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MOVING);
 
 	//一定時間経過したら移動状態へ遷移
-	if (m_golem->GetFrameCount() > 2.0f) 
+	if (m_golem->GetFrameCount() > CHANGE_MOVING_TIME) 
 	{
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MOVING);
 	}
@@ -82,7 +81,7 @@ void GolemIdling::Update(const float& elapsedTime)
 		DirectX::SimpleMath::Vector3 playerPos = pPlayer->GetCurrentPosition();
 		float distance = DirectX::SimpleMath::Vector3::Distance(playerPos , m_golem->GetCurrentPosition());
 		//範囲内なら遷移
-		if (distance < 15.0f)
+		if (distance < Golem::CHASE_RANGE)
 		{
 			Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::CHASING);
 		}
@@ -100,6 +99,7 @@ void GolemIdling::Update(const float& elapsedTime)
  */
 void GolemIdling::PostUpdate()
 {
+	//経過時間リセット
 	m_golem->ResetFrameCount();
 }
 

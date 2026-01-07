@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/09/03
+ * @date   日付 2026/01/02
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -51,9 +51,9 @@ void BatMoving::Initialize()
  */
 void BatMoving::PreUpdate()
 {
-	//８方向から進む方向を決める
-	float directionX = TKTLib::GetRand(-1.0f,1.0f);
-	float directionZ = TKTLib::GetRand(-1.0f,1.0f);
+	//進む方向を決める
+	float directionX = TKTLib::GetRand(Character::MOVE::LEFT.x,Character::MOVE::RIGHT.x);
+	float directionZ = TKTLib::GetRand(Character::MOVE::FRONT.z,Character::MOVE::BACK.z);
 
 	DirectX::SimpleMath::Vector3 direction = { directionX,0.0f,directionZ };
 
@@ -67,10 +67,9 @@ void BatMoving::PreUpdate()
 
 	m_bat->SetQuaternion(rotate);
 
-	//m_bat->SetVelocity(direction);
 
 	//向いている方向に進む
-	m_bat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 5.0f * Messenger::GetInstance()->GetElapsedTime(), m_bat->GetQuaternion()));
+	m_bat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * MOVING_SPEED * Messenger::GetInstance()->GetElapsedTime(), m_bat->GetQuaternion()));
 
 }
 
@@ -89,7 +88,7 @@ void BatMoving::Update(const float& elapsedTime)
 	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
 
 	//一定時間経ったら待機状態へ遷移
-	if (m_bat->GetFrameCount() >= 2.0f) 
+	if (m_bat->GetFrameCount() >= CHANGE_IDLING_TIME) 
 	{
 		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::IDLING);
 

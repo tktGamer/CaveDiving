@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/12/03
+ * @date   日付  2026/01/02
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -51,13 +51,14 @@ void BatIdling::Initialize()
  */
 void BatIdling::PreUpdate()
 {
+	//速度をなくす
 	m_bat->SetVelocity(DirectX::SimpleMath::Vector3::Zero);
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -65,10 +66,9 @@ void BatIdling::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
-	//Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::MOVING);
 
 	//一定時間経過したら移動状態へ遷移
-	if (m_bat->GetFrameCount() > 5.0f) 
+	if (m_bat->GetFrameCount() > CHANGE_MOVING_TIME) 
 	{
 		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::MOVING);
 	}
@@ -82,20 +82,11 @@ void BatIdling::Update(const float& elapsedTime)
 		DirectX::SimpleMath::Vector3 playerPos = pPlayer->GetCurrentPosition();
 		float distance = DirectX::SimpleMath::Vector3::Distance(playerPos , m_bat->GetCurrentPosition());
 		//範囲内なら遷移
-		if (distance < 15.0f)
+		if (distance < Bat::CHASE_RANGE)
 		{
 			Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::CHASING);
 		}
 	}
-
-
-	//DirectX::SimpleMath::Vector3 v = m_bat->GetVelocity();
-	//
-	//v.y += -0.8f * elapsedTime;
-
-	//m_bat->SetVelocity(v);
-
-	//m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
 
 }
 

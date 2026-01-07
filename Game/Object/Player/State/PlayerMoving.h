@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/
+ * @date   日付  2026/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -13,7 +13,6 @@
 #ifndef PLAYER_MOVING_DEFINED
 #define PLAYER_MOVING_DEFINED
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
 
 // クラスの宣言 ===============================================================
 class Player;
@@ -31,12 +30,12 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	// プレイヤー
-	Player* m_player;
+	Player* m_pPlayer;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	PlayerMoving(Player* soldier);
+	PlayerMoving(Player* pPlayer);
 	// デストラクタ
 	~PlayerMoving();
 
@@ -55,6 +54,11 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 };
-#endif		// PLAYER_IDLING_DEFINED
+#endif		// PLAYER_MOVING_DEFINED

@@ -39,7 +39,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 
-	ParticlePowerUpControl(const std::string& texturePath);
+	ParticlePowerUpControl(const wchar_t* texturePath);
 	~ParticlePowerUpControl();
 	// 操作
 public:

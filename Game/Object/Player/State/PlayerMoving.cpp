@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -19,8 +19,8 @@
  *
  * @param[in] player プレイヤーのポインタ
  */
-PlayerMoving::PlayerMoving(Player* player)
-	: m_player(player)
+PlayerMoving::PlayerMoving(Player* pPlayer)
+	: m_pPlayer(pPlayer)
 {
 }
 /**
@@ -69,43 +69,43 @@ void PlayerMoving::Update(const float& elapsedTime)
 	//攻撃キーを押されたら地上攻撃状態へ遷移
 	if (key->IsKeyPressed(DirectX::Keyboard::Z)) 
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::GROUNDATTACK);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::GROUNDATTACK);
 	}
 	//ジャンプキーを押されたらジャンプ状態へ遷移
 	if (key->pressed.Space)
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::JUMPING);
 	}
 	//回避キーを押されたら回避状態へ遷移
 	if (key->pressed.X)
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
-	DirectX::SimpleMath::Vector3 velocity = m_player->GetVelocity();
+	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 
 	//移動
 	if (key->GetLastState().Up) 
 	{
-		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * elapsedTime, m_player->GetQuaternion());
+		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * elapsedTime, m_pPlayer->GetQuaternion());
 	}
 	if (key->GetLastState().Down)
 	{
-		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::BACK * elapsedTime, m_player->GetQuaternion());
+		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::BACK * elapsedTime, m_pPlayer->GetQuaternion());
 	}
 	if (key->GetLastState().Left)
 	{
-		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::LEFT * elapsedTime, m_player->GetQuaternion());
+		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::LEFT * elapsedTime, m_pPlayer->GetQuaternion());
 	}
 	if (key->GetLastState().Right)
 	{
-		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::RIGHT *elapsedTime, m_player->GetQuaternion());
+		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::RIGHT *elapsedTime, m_pPlayer->GetQuaternion());
 	}
 
 
 	if(velocity.Length()<=0.001f)
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::IDLING);
 	}
 
 	//摩擦
@@ -115,9 +115,9 @@ void PlayerMoving::Update(const float& elapsedTime)
 	velocity.y += -0.8f * elapsedTime;
 
 	//速度を設定
-	m_player->SetVelocity(velocity);
+	m_pPlayer->SetVelocity(velocity);
 
-	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
+	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity());
 
 
 

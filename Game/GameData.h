@@ -10,21 +10,29 @@
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-
-
-
+#include<unordered_map>
+#include<string>
+#include<vector>
+#include"Game/ResourcePath.h"
 // 各シーンに渡す共通リソースを記述してください
 class GameData
 {
+// クラス定数の宣言 -------------------------------------------------
 public:
 	enum  Stage :int
 	{
-		NONE,
+		NONE = -1,
 		FIRST,
-		//SECOND,
-		//THIRD,
-		BOSS
+		SECOND,
+		THIRD,
+		FORTH,
+		BOSS,
+
+		NUM,//合計ステージ数
 	};
+	//ステージに対応した敵生成データを保持する配列
+	using EnemyData = std::unordered_map<GameData::Stage, std::string>;
+
 
 	//スコアに必要な情報
 	struct ScoreInfo
@@ -37,6 +45,31 @@ public:
 		float totalTime = 0;
 	};
 
+	//プレイヤーのデータ
+	struct PlayerData 
+	{
+		//ステージクリア時のHP
+		int currentHP = 0;
+		//ステージクリア時の最大HP
+		int maxHP = 0;
+		//所持宝石　空欄の値で初期化
+		std::vector<int> gemID = std::vector<int>(3, -1);
+
+		bool IsBlankSlot() 
+		{
+			for (int i = 0; i < gemID.size(); i++) 
+			{
+				if (gemID[i] == -1) 
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+	};
+
+// データメンバの宣言 -----------------------------------------------
 private:
 	//スコア計算に必要な情報
 	ScoreInfo m_scoreInfo;
@@ -44,14 +77,16 @@ private:
 	float m_clearTime;
 	//ゲームをクリアしたか
 	bool m_isGameClear;
-	//プレイヤーのステージクリア時HP
-	int m_playerHP;
 	//次のステージ
 	Stage m_nextStage;
 	//ステージをクリアしたか
 	bool m_isStageClear;
+	//プレイヤーのデータ
+	PlayerData m_playerData;
 	//ステージで灯した明かり
 	bool m_isOnLights[10];
+	//敵生成データ
+	EnemyData m_enemyData;
 public:
 
 	// コンストラクタ
@@ -59,11 +94,16 @@ public:
 		:m_isGameClear{false}
 		,m_isStageClear{false}
 		,m_nextStage{Stage::FIRST}
-		,m_playerHP{}
 		,m_clearTime{0.0f}
 		,m_isOnLights{false}
 		,m_scoreInfo{}
 	{
+		//ステージに対応したデータを配列に入れる
+		m_enemyData.insert(std::make_pair(GameData::Stage::FIRST, ResourcePath::DATA::ENEMY_SPAWN::FIRST));
+		m_enemyData.insert(std::make_pair(GameData::Stage::SECOND, ResourcePath::DATA::ENEMY_SPAWN::SECOND));
+		m_enemyData.insert(std::make_pair(GameData::Stage::THIRD, ResourcePath::DATA::ENEMY_SPAWN::THIRD));
+		m_enemyData.insert(std::make_pair(GameData::Stage::FORTH, ResourcePath::DATA::ENEMY_SPAWN::FORTH));
+		m_enemyData.insert(std::make_pair(GameData::Stage::BOSS, ResourcePath::DATA::ENEMY_SPAWN::BOSS));
 	}
 
 
@@ -106,7 +146,17 @@ public:
 		}
 	}
 
+	const PlayerData& GetPlayerData() const
+	{
+		return m_playerData;
+	}
 
+	void SetPlayerData(const PlayerData& data) 
+	{
+		m_playerData.currentHP = data.currentHP;
+		m_playerData.maxHP = data.maxHP;
+		m_playerData.gemID = data.gemID;
+	}
 	const Stage GetNextStage() const
 	{
 		return m_nextStage;
@@ -146,6 +196,11 @@ public:
 	void AddTime(const float& elapsedTime) 
 	{
 		m_scoreInfo.totalTime += elapsedTime;
+	}
+
+	const std::string& GetEnemySpawnDataPath() 
+	{
+		return m_enemyData[m_nextStage];
 	}
 };
 

@@ -15,7 +15,7 @@
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/Shader.h"
 #include"Game/Message/Messenger.h"
-
+#include"Game/ResourcePath.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -23,7 +23,7 @@
  *
  * @param[in] texturePath テクスチャハンドル
  */
-ParticleDamageControl::ParticleDamageControl(const std::string& texturePath)
+ParticleDamageControl::ParticleDamageControl(const wchar_t* texturePath)
 {
 	//m_texture = ResourceManager::GetInstance()->RequestTexture(texturePath);
 
@@ -47,48 +47,12 @@ ParticleDamageControl::~ParticleDamageControl()
  */
 void ParticleDamageControl::Update()
 {
-	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
-	//	0.1秒ごとに1つパーティクルを生成
-	//m_timer += elapsedTime;
-	//for (std::vector<TimerAndPos>::iterator ite = m_timerAndPos.begin(); ite != m_timerAndPos.end(); )
-	//{
-	//	//	タイマーの更新
-	//	ite->timer += elapsedTime;
-	//	if (ite->timer >= 0.1f)
-	//	{
-	//		
-	//		//	タイマーと位置のリストから、生成したパーティクルの情報を削除する
-	//		ite = m_timerAndPos.erase(ite);
-	//	}
-	//	else
-	//	{
-	//		//	まだ0.2秒経過していないので、次のタイマーへ
-	//		ite++;
-	//	}
-	//}
-
-
-	////	timerを渡してm_effectの更新処理を行う
-	//for (std::list<ParticleDamage>::iterator ite = m_particleDamage.begin(); ite != m_particleDamage.end(); ite++)
-	//{
-	//	//	更新結果の戻り値（true / false）をチェック
-	//	if (!(ite)->Update())
-	//	{
-	//		//	falseが返ってきたら、消す
-	//		ite = m_particleDamage.erase(ite);
-
-	//		if (ite == m_particleDamage.end())
-	//		{
-	//			//	最後のオブジェクトを消したので、ループ終了
-	//			break;
-	//		}
-	//	}
-	//}
+	//ダメージ数字パーティクルの更新
 	for (std::unique_ptr<ParticleDamageNumber>& damageNumber : m_particleDamage)
 	{
 		damageNumber->Update();
 	}
-
+	//削除フラグが立っているパーティクルの削除
 	m_particleDamage.remove_if([&](std::unique_ptr<ParticleDamageNumber>& particle) {return particle->IsDelete(); });
 }
 
@@ -139,12 +103,12 @@ void ParticleDamageControl::RequestParticleDamage(const DirectX::SimpleMath::Vec
 	//描画位置のずれをランダムに出す
 	float offsetX = TKTLib::GetRand(-absRange.x, absRange.x);
 	float offsetY = TKTLib::GetRand(-absRange.y, absRange.y);
-	float offsetZ = TKTLib::GetRand(-absRange.z, absRange.z);
+	float offsetZ = static_cast<float>(TKTLib::GetRand(-absRange.z, absRange.z));
 
 
 	m_particleDamage.emplace_back(
 		std::make_unique< ParticleDamageNumber>(
-			"number.png",
+			ResourcePath::TEXTURE::PARTICLE::NUMBER,
 			pos +DirectX::SimpleMath::Vector3{offsetX,offsetY,offsetZ},
 			damage
 		)

@@ -23,14 +23,11 @@
  */
 BatAttack::BatAttack(Bat* bat, Wing* pRightWing, Wing* pLeftWing)
 	:m_bat(bat)
-	,m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
 
 	m_attackMotion = std::make_unique<BatAttackMotion>(bat,pRightWing,pLeftWing);
 
-	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("batattack.wav"),true);
+	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::BAT_ATTACK),true);
 }
 /**
  * @brief デストラクタ
@@ -64,26 +61,32 @@ void BatAttack::PreUpdate()
 	m_attackSound->Play(false);
 	m_attackMotion->Initialize();
 
-
+	m_bat->SetMotionAttackRate(m_attackMotion->GetAttackPowerModifier());
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime フレーム間時間
  *
  * @return なし
  */
 void BatAttack::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-	DirectX::SimpleMath::Vector3 v = m_bat->GetVelocity();
+	DirectX::SimpleMath::Vector3 velocity = m_bat->GetVelocity();
 
 
-	v.y += -0.05f * elapsedTime;
+	velocity.y += FALL_SPEED * elapsedTime;
 
+	//モーションが終了したら
+	if (m_attackMotion->Update()) 
+	{
+		//待機状態にする
+		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::MessageID::IDLING);
+	}
 
-	m_bat->SetVelocity(v);
+	m_bat->SetVelocity(velocity);
 
 	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
 
@@ -107,6 +110,8 @@ void BatAttack::PostUpdate()
 {
 	m_attackSound->Stop();
 	m_attackMotion->Reset();
+	m_bat->SetMotionAttackRate(Bat::CONTACT_DAMAGE_MODIFIRE);
+
 }
 
 /**

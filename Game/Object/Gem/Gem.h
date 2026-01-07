@@ -5,15 +5,15 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/08/27
+ * @date   日付  2025/01/04
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-#include <string>
 
 // ヘッダファイルの読み込み ===================================================
-
+#include <string>
+#include<memory>
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -59,9 +59,8 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	// 宝石の種類と効果値を指定して初期化
-	Gem(int id,std::string type, Type powerUp,int value);
-	Gem(GemAbility ability,GemImagePath image);
+	Gem(const GemAbility& ability, const GemImagePath& image);
+	Gem(const Gem& other) = default;
 
 	// デストラクタ
 	virtual ~Gem();
@@ -69,18 +68,12 @@ public:
 
 //操作
 public:
-	//初期化
-	void Initialize();
-
-	//適用条件
-	virtual bool IsApplicable();
-
-	void Finalize();
+	virtual std::unique_ptr<Gem> Clone() const = 0;
 //取得・設定
 public:
 	//宝石情報の取得
-	GemAbility GetAbility() const;
-	GemImagePath GetImagePath() const;
+	const GemAbility& GetAbility() const;
+	const GemImagePath& GetImagePath() const;
 //内部操作
 private:
 

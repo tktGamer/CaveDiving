@@ -36,7 +36,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 
-	ParticleItemGetControl(const std::string& texturePath);
+	ParticleItemGetControl(const wchar_t* texturePath);
 	~ParticleItemGetControl();
 // 操作
 public:

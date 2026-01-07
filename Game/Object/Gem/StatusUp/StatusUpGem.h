@@ -1,16 +1,15 @@
 /**
  * @file   StatusUpGem.h
  *
- * @brief  宝石に関するヘッダファイル
+ * @brief  ステータスが上がる宝石に関するヘッダファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/08/27
+ * @date   日付  2025/01/04
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
-#include <string>
 
 // ヘッダファイルの読み込み ===================================================
 #include"../Gem.h"
@@ -18,7 +17,7 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief 宝石
+  * @brief ステータスが上がる宝石
   */
 class StatusUpGem : public Gem
 {
@@ -27,12 +26,15 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	// 宝石の種類と効果値を指定して初期化
-	StatusUpGem(Gem::GemAbility ability,Gem::GemImagePath image);
+	StatusUpGem(const Gem::GemAbility& ability, const Gem::GemImagePath& image);
+
+	StatusUpGem(const StatusUpGem& other) = default;
 
 	// デストラクタ
 	~StatusUpGem();
@@ -40,9 +42,13 @@ public:
 
 //操作
 public:
+	//多態コピー
+	std::unique_ptr<Gem> Clone()const override;
+
+	//初期化
 	void Initialize();
 
-
+	//終了
 	void Finalize();
 //取得・設定
 public:

@@ -54,10 +54,12 @@ private:
 	//入れ替え候補の宝石UI
 	std::unique_ptr<UserInterface> m_candidateGemUI;
 
+	const std::vector<int> m_gemID;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	HoldGemInfoDraw(int width, int height);
+	HoldGemInfoDraw(int width, int height, const std::vector<int>& gemID);
 	~HoldGemInfoDraw();
 	// 操作
 public:
@@ -75,7 +77,7 @@ public:
 //　取得・設定
 public:
 
-
+	int GetMunuIndex();
 //　内部操作
 private:
 };

@@ -75,8 +75,10 @@ public:
 
 	void Finalize();
 	//‰Ÿ‚µo‚µˆ—
-	DirectX::SimpleMath::Vector3 PushOut(Box* box, Sphere* sphere, DirectX::SimpleMath::Vector3 moveDir);
-	DirectX::SimpleMath::Vector3 PushOut(Box* box, Box* box2);
+	DirectX::SimpleMath::Vector3 PushOut(Shape* shape1, Shape* shape2);
+	DirectX::SimpleMath::Vector3 SphereToSpherePushOut(Sphere* sphereA, Sphere* sphereB);
+	DirectX::SimpleMath::Vector3 BoxToSpherePushOut(Box* box, Sphere* sphere);
+	DirectX::SimpleMath::Vector3 BoxToBoxPushOut(Box* box, Box* box2);
 
 	//‹…“à‚Ö‚Ì‰Ÿ‚µ–ß‚µ
 	DirectX::SimpleMath::Vector3 PushBack(Sphere* sphereA, Sphere* sphereB);
@@ -88,7 +90,9 @@ public:
 
 //@“à•”‘€ì
 private:
+	//ÚG“_
 	DirectX::SimpleMath::Vector3 ContactPointSphereToSphere(Sphere* shapeA, Sphere* shapeB);
+	DirectX::SimpleMath::Vector3 ContactPointSphereToBox(Sphere* shapeA, Box* shapeB);
 
 };
 

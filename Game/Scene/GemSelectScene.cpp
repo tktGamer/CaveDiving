@@ -58,7 +58,7 @@ void GemSelectScene::Initialize()
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
-	m_gemSelectManager = std::make_unique<GemSelectUIManager>();
+	m_gemSelectManager = std::make_unique<GemSelectUIManager>(GetGameData()->GetPlayerData().gemID);
 	m_gemSelectManager->Initialize();
 
 	m_backTexture = std::make_unique<UserInterface>();
@@ -92,6 +92,14 @@ void GemSelectScene::Update(float elapsedTime)
 	//宝石の選択が終わったらゲームシーンへ
 	if (m_gemSelectManager->IsFinishSelect())
 	{
+		if (m_gemSelectManager->GetSlot() != -1) 
+		{
+
+		GameData::PlayerData playerData = GetGameData()->GetPlayerData();
+		playerData.gemID[m_gemSelectManager->GetSlot()] =
+		m_gemSelectManager->GetHoldGem()->GetAbility().id;
+		GetGameData()->SetPlayerData(playerData);
+		}
 		if (GetGameData()->IsGameClear()) 
 		{
 			ChangeScene<ResultScene>();

@@ -37,7 +37,7 @@ private:
 public:
 	// コンストラクタ
 	Weapon(Character* owner,
-		Tag::ObjectType type, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+		Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Weapon();

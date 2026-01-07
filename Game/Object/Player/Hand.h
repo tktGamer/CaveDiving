@@ -28,9 +28,7 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
-	DirectX::SimpleMath::Matrix m_world;
 
 	//持っている武器
 	std::unique_ptr<Weapon> m_weapon;
@@ -40,7 +38,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Hand(Character* root,GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Hand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Hand();

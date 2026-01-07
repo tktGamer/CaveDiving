@@ -23,7 +23,7 @@
  *
  * @param[in] texturePath テクスチャハンドル
  */
-ParticleHPHealControl::ParticleHPHealControl(const std::string& texturePath)
+ParticleHPHealControl::ParticleHPHealControl(const wchar_t* texturePath)
 	:ParticleControl{ texturePath }
 	, m_centerPos{ nullptr }
 {
@@ -87,7 +87,6 @@ void ParticleHPHealControl::Render(const DirectX::SimpleMath::Vector3& target, c
 	ID3D11DeviceContext1* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
-	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 
 	//	頂点情報の作成
 	CreateVertex(target, cameraPos,

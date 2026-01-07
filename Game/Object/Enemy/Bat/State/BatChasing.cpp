@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  22025/12/03
+ * @date   日付  2025/12/31
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -57,7 +57,7 @@ void BatChasing::PreUpdate()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -65,46 +65,10 @@ void BatChasing::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
-	DirectX::SimpleMath::Vector3 v = m_bat->GetVelocity();
 
+	Movement();
 
-
-	//自分からプレイヤーの角度を求める
-	float radian = CaluculateRadian(m_bat->GetCurrentPosition(), m_pPlayer->GetCurrentPosition());
-	//目標の角度
-	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,radian);
-
-	//現在の角度と目標の角度の差分
-	DirectX::SimpleMath::Quaternion diff = rotate - m_bat->GetQuaternion() ;
-	
-
-	v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{ 0.0f,0.0f,-0.65f * elapsedTime }, rotate);
-
-	//プレイヤーが範囲外にでて一定時間経ったら待機状態へ遷移
-	float distance = DirectX::SimpleMath::Vector3::Distance(m_pPlayer->GetCurrentPosition(),m_bat->GetCurrentPosition());
-	//範囲外なら遷移
-	if (distance > 15.0f)
-	{
-		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::IDLING);
-	}
-	//攻撃範囲に入っていたら攻撃準備状態へ遷移
-	if (distance < 4.5f) 
-	{
-		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::ATTACKPREPARING);
-
-	}
-
-	//摩擦
-	v *= 0.95f;
-	//重力
-	v.y += -0.8f * elapsedTime;
-
-	m_bat->SetVelocity(v);
-
-	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
-
-	// 姿勢に回転を加える
-	m_bat->SetQuaternion(rotate);
+	CheckStateTransition();
 }
 
 /**
@@ -144,23 +108,70 @@ void BatChasing::Finalize()
 {
 }
 
+
 /**
- * @brief 二点のラジアン角を求める
+ * @brief 移動処理
  *
- * @param[in] eye    自分
- * @param[in] target 相手
+ * @param[in] なし
  *
- * @return ラジアン角
+ * @return なし
  */
-const float BatChasing::CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target)
+void BatChasing::Movement()
 {
 
-	//自分から相手の方向
-	DirectX::SimpleMath::Vector3 direction = eye - target;
-	direction.Normalize();
+	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 
-	// X-Z 平面上での角度を計算
-	float angle = std::atan2(direction.x, direction.z);
+	DirectX::SimpleMath::Vector3 velocity = m_bat->GetVelocity();
 
-	return angle;
+	//自分からプレイヤーの角度を求める
+	float radian = TKTLib::CaluculateRadian(m_bat->GetCurrentPosition(), m_pPlayer->GetCurrentPosition());
+	//目標の角度
+	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, radian);
+
+	//現在の角度と目標の角度の差分
+	//DirectX::SimpleMath::Quaternion diff = rotate - m_bat->GetQuaternion();
+
+	//目標に向かう
+	DirectX::SimpleMath::Vector3 chaseSpeed = Character::MOVE::FRONT * CHASE_SPPED * elapsedTime;
+	velocity += DirectX::SimpleMath::Vector3::Transform(chaseSpeed, rotate);
+
+
+	//摩擦
+	velocity *= World::GROUND_FRICTION;
+	//重力
+	velocity.y += World::GRAVITY * elapsedTime;
+	//速度を設定
+	m_bat->SetVelocity(velocity);
+
+	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
+
+	// 姿勢に回転を加える
+	m_bat->SetQuaternion(rotate);
+}
+
+
+/**
+ * @brief 状態遷移判定
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void BatChasing::CheckStateTransition()
+{
+
+	//プレイヤーが範囲外にでて一定時間経ったら待機状態へ遷移
+	float distance = DirectX::SimpleMath::Vector3::Distance(m_pPlayer->GetCurrentPosition(), m_bat->GetCurrentPosition());
+	//範囲外なら遷移
+	if (distance > Bat::CHASE_RANGE)
+	{
+		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::IDLING);
+		return;
+	}
+	//攻撃範囲に入っていたら攻撃準備状態へ遷移
+	if (distance < ATTACK_RANGE)
+	{
+		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::ATTACKPREPARING);
+		return;
+	}
 }

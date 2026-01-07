@@ -1,11 +1,11 @@
 /**
  * @file   GolemPunchPreparingMotion.cpp
  *
- * @brief  コウモリの攻撃準備のモーションに関するソースファイル
+ * @brief  ゴーレムのパンチ攻撃の準備のモーションに関するソースファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/05
+ * @date   日付　2025/12/28
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -17,12 +17,13 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] pRightGolemHand　右羽のポインタ
- * @param[in] pLeftGolemHand　 左羽のポインタ
+ * @param[in] pGilem　ゴーレムのポインタ
+ * @param[in] pRightGolemHand　右手のポインタ
+ * @param[in] pLeftGolemHand　 左手のポインタ
  */
 GolemPunchPreparingMotion::GolemPunchPreparingMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
 	: m_pGolem{pGolem}
-	,m_pRightGolemHand{ pRightGolemHand }
+	, m_pRightGolemHand{ pRightGolemHand }
 	, m_pLeftGolemHand{ pLeftGolemHand }
 {
 
@@ -49,13 +50,16 @@ GolemPunchPreparingMotion::~GolemPunchPreparingMotion()
  */
 void GolemPunchPreparingMotion::Initialize()
 {
-	//手の向きを変える
-	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(90.0f)));
+	//手の向きを変える 正面に向ける
+	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, PUNCH_HAND_ANGLE));
 
 	
 	//スタート位置とゴール位置
 	m_startPosition = m_pRightGolemHand->GetPosition();
-	m_goalPosition = m_pRightGolemHand->GetPosition() + DirectX::SimpleMath::Vector3{ 0.0f,1.0f,6.0f };
+	m_goalPosition  = m_startPosition + HAND_GOAL_POS;
+
+	SetMotionLerp(0.0f);
+
 }
 
 
@@ -80,12 +84,12 @@ bool GolemPunchPreparingMotion::Update()
 	m_pRightGolemHand->SetPosition(currentPos);
 
 	
-	motionLerp += 1.0f* Messenger::GetInstance()->GetElapsedTime();
+	motionLerp += Messenger::GetInstance()->GetElapsedTime();
 
-	SetMotionLerp(std::min(motionLerp, 1.0f));
+	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
 
 	//モーションが終了したら
-	if (GetMotionLerp() >= 1.0f)
+	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
 		return true;
 	}
@@ -109,16 +113,5 @@ bool GolemPunchPreparingMotion::Update()
  */
 void GolemPunchPreparingMotion::Reset()
 {
-	//それぞれのオブジェクトを元の位置・角度に戻す
-	//m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(0.0f)));
-	//m_pRightGolemHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	////m_pRightGolemHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
-
-	//m_pLeftGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	//m_pLeftGolemHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	////m_pLeftGolemHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
-
-
-	SetMotionLerp(0.0f);
 }
 

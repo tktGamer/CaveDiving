@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付 2025/12/31
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,13 +24,14 @@ class MotionType
 {
 
 public:
+	//プレイヤーの地上攻撃
 	enum PlayerGroundAttack : int
 	{
 		COMBO1=0,	// コンボ1
 		COMBO2,		// コンボ2
 		COMBO3,		// コンボ3
 	};
-
+	//プレイヤーの空中攻撃
 	enum PlayerAirAttack : int 
 	{
 		JUMP

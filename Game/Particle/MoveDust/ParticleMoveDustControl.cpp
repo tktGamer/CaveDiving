@@ -22,7 +22,7 @@
  *
  * @param[in] texturePath テクスチャハンドル
  */
-ParticleMoveDustControl::ParticleMoveDustControl(const std::string& texturePath)
+ParticleMoveDustControl::ParticleMoveDustControl(const wchar_t* texturePath)
 	:ParticleControl{ texturePath }
 {
 }

@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/11/15
+ * @date   日付　2026/01/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -57,7 +57,9 @@ void GolemAttackPreparing::Initialize()
  */
 void GolemAttackPreparing::PreUpdate()
 {
+	//モーション決定
 	DecideMotion();
+	//モーション初期化
 	m_attackPreparingMotion->Initialize();
 
 }
@@ -65,7 +67,7 @@ void GolemAttackPreparing::PreUpdate()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -76,12 +78,10 @@ void GolemAttackPreparing::Update(const float& elapsedTime)
 	GameObject* pPlayer = Messenger::GetInstance()->GetObject(0);
 
 	//自分からプレイヤーの角度を求める
-	float radian = CaluculateRadian(m_golem->GetCurrentPosition(), pPlayer->GetCurrentPosition());
+	float radian = TKTLib::CaluculateRadian(m_golem->GetCurrentPosition(), pPlayer->GetCurrentPosition());
 	//目標の角度
 	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, radian);
 
-	//現在の角度と目標の角度の差分
-	//DirectX::SimpleMath::Quaternion diff = rotate - m_golem->GetQuaternion();
 
 	m_golem->SetQuaternion(rotate);
 
@@ -104,6 +104,7 @@ void GolemAttackPreparing::Update(const float& elapsedTime)
 void GolemAttackPreparing::PostUpdate()
 {
 	m_attackPreparingMotion->Reset();
+	//経過時間リセット
 	m_golem->ResetFrameCount();
 
 }
@@ -132,27 +133,6 @@ void GolemAttackPreparing::Render()
  */
 void GolemAttackPreparing::Finalize()
 {
-}
-
-/**
- * @brief 二点のラジアン角を求める
- *
- * @param[in] eye    自分
- * @param[in] target 相手
- *
- * @return ラジアン角
- */
-const float GolemAttackPreparing::CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target)
-{
-
-	//自分から相手の方向
-	DirectX::SimpleMath::Vector3 direction = eye - target;
-	direction.Normalize();
-
-	// X-Z 平面上での角度を計算
-	float angle = std::atan2(direction.x, direction.z);
-
-	return angle;
 }
 
 /**

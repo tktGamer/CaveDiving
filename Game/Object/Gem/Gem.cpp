@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/10/27
+ * @date   日付  2025/01/04
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -16,20 +16,15 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] type  宝石の種類
- * @param[in] powerUp 宝石の強化項目
- * @param[in] value 宝石の効果値
+ * @param[in] ability  宝石の詳細
+ * @param[in] image 　 選択時の画像
  */
-Gem::Gem(int id ,std::string type,Type powerUp, int value)
-	:m_ability{id,type , powerUp, value}
+Gem::Gem(const GemAbility& ability, const GemImagePath& image)
+	:m_ability{ability}
+	,m_gemImage{image}
 {
 }
 
-Gem::Gem(GemAbility ability, GemImagePath image)
-	:m_ability{ ability }
-	, m_gemImage{ image }
-{
-}
 
 
 
@@ -45,54 +40,13 @@ Gem::~Gem()
 
 
 /**
- * @brief 初期化処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Gem::Initialize()
-{
-
-}
-
-
-
-
-
-/**
- * @brief 初期化処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-bool Gem::IsApplicable()
-{
-	return true;
-}
-
-/**
- * @brief 終了処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Gem::Finalize()
-{
-
-}
-
-
-/**
  * @brief 宝石の性能を取得
  *
  * @param[in] なし
  *
  * @return 宝石の性能
  */
-Gem::GemAbility Gem::GetAbility() const
+const Gem::GemAbility& Gem::GetAbility() const
 {
 	return m_ability;
 }
@@ -104,7 +58,7 @@ Gem::GemAbility Gem::GetAbility() const
  *
  * @return 宝石の画像パス
  */
-Gem::GemImagePath Gem::GetImagePath() const
+const Gem::GemImagePath& Gem::GetImagePath() const
 {
 	return m_gemImage;
 }

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/12/03
+ * @date   日付  2025/01/04
  */
 
  // 多重インクルードの防止 =====================================================
@@ -32,8 +32,9 @@ private:
 public:
 	// コンストラクタ
 	// 宝石の種類と効果値を指定して初期化
-	FullHPStatusUpGem(int id, std::string type, Type powerUp, int value);
-	FullHPStatusUpGem(GemAbility ability, GemImagePath image);
+	FullHPStatusUpGem(const GemAbility& ability,const GemImagePath& image);
+
+	FullHPStatusUpGem(const FullHPStatusUpGem& other) = default;
 
 	// デストラクタ
 	~FullHPStatusUpGem();
@@ -41,10 +42,14 @@ public:
 
 //操作
 public:
+	//多態コピー
+	std::unique_ptr<Gem> Clone()const override;
+
+	//初期化
 	void Initialize();
-
-	const bool& IsApplicable(const int& currentHP,const int& maxHP) const ;
-
+	//効果を適用するか
+	const bool& IsApplicable(const int& currentHP, const int& maxHP) const;
+	//終了
 	void Finalize();
 //取得・設定
 public:

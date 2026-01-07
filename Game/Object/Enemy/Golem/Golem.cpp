@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/11/15
+ * @date   日付　2026/01/05
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -24,21 +24,22 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Golem::Golem(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:m_graphics{Graphics::GetInstance()}
-	, Character(GOLEM_HP,70,20,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
-	, m_sphere{ GetPosition(), 4.0f } // 初期位置とサイズを設定
+Golem::Golem(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+	:Character(GOLEM_BASE_HP,GOLEM_BASE_ATTACK,GOLEM_BASE_DIFFENCE,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
+	, m_box{ GetPosition(), {2.5f,3.5f,2.5f} } // 初期位置とサイズを設定
 	,m_frameCount{}
 	,m_messageID{}
 	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 	,m_attackMessage{Message::AttackMesssage::NONE}
 {
-	SetTexture(ResourceManager::GetInstance()->RequestTexture("golem.png"));
-
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"golem.sdkmesh"));
-
-	SetShape(&m_sphere);
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	//テクスチャ設定
+	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::GOLEM));
+	//モデル設定
+	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::GOLEM));
+	///当たり判定設定
+	SetShape(&m_box);
 
 
 
@@ -51,6 +52,7 @@ Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
  */
 Golem::~Golem()
 {
+	//当たり判定管理クラスの登録を解除
 	CollisionManager::GetInstance()->UnRegister(m_rightHand.get());
 	CollisionManager::GetInstance()->UnRegister(m_leftHand.get());
 }
@@ -67,18 +69,20 @@ Golem::~Golem()
 void Golem::Initialize()
 {
 
-
+	//初期位置
 	SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -8.0f));
-	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	SetScale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
+	//初期角度
+	SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
+	//初期大きさ
+	SetScale(DirectX::SimpleMath::Vector3::One);
 
-	m_currentPosition = m_initialPosition  + GetPosition();
-	m_currentAngle = m_initialAngle * GetQuaternion() ;
-
-	m_rightHand = std::make_unique<GolemHand>(this,this, DirectX::SimpleMath::Vector3{ 4.5f ,2.0f,0.0f}, DirectX::SimpleMath::Quaternion::Identity);
-	m_leftHand = std::make_unique<GolemHand>(this,this, DirectX::SimpleMath::Vector3{ -4.5f ,2.0f,0.0f},
-		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,DirectX::XMConvertToRadians(180.0f)));
-
+	SetCurrentPosition(GetInitialPosition() + GetPosition());
+	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion());
+	//手の生成
+	m_rightHand = GameObjectFactory::CreateGolemHand(this,this,RIGHTHAND_INIT_POS);
+	m_leftHand = GameObjectFactory::CreateGolemHand(this, this, LEFTHAND_INIT_POS,
+		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, LEFT_HAND_INIT_ANGLE));
+	//当たり判定管理クラスに登録
 	CollisionManager::GetInstance()->Register(m_rightHand.get());
 	CollisionManager::GetInstance()->Register(m_leftHand.get());
 
@@ -89,7 +93,7 @@ void Golem::Initialize()
 	m_attackState  = std::make_unique<GolemAttack>(this, m_rightHand.get(), m_leftHand.get());
 	m_attackPreaparing = std::make_unique<GolemAttackPreparing>(this,m_rightHand.get(), m_leftHand.get());
 	//m_damagedState = std::make_unique<GolemDamaged>(this);
-
+	//初期状態をセット
 	SetState(m_idlingState.get());
 }
 
@@ -121,16 +125,17 @@ void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 		SetInvincible(false);
 
 	}
-
-	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
-	m_currentAngle =m_initialAngle * m_motionAngle* GetQuaternion() * currentAngle;
+	//位置の更新
+	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	//角度の更新
+	SetCurrentAngle(GetInitialQuaternion() * m_motionAngle * GetQuaternion() * currentAngle);
 	
 	//当たり判定更新
-	m_sphere.SetCenter(m_currentPosition);
+	m_box.SetCenter(GetCurrentPosition());
 
 	//子クラス更新
-	m_rightHand->Update(m_currentPosition, m_currentAngle);
-	m_leftHand->Update(m_currentPosition, m_currentAngle);
+	m_rightHand->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	m_leftHand->Update(GetCurrentPosition(), GetCurrentQuaternion());
 	//時間経過
 	m_frameCount += elapsedTime;
 
@@ -163,48 +168,26 @@ void Golem::Draw()
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
-
-	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ModelShader::ModelCB cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	cbuff.matView = graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
-	cbuff.flash.x = GetDamageFlash();
-
 	ShaderManager* shader = ShaderManager::GetInstance();
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
-	OutlineShader::OutlineCB outline;
-	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	outline.matView = graphics->GetViewMatrix().Transpose();
-	outline.matProj = graphics->GetProjectionMatrix().Transpose();
-	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Outline), 0, NULL, &outline, 0, 0);
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
 
 
-
-	if (Messenger::GetInstance()->IsOutLineActive()) {
-
-		// モデル描画（アウトライン専用）
-		GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
-			// カリングを FrontFace にして裏面を描画（アウトライン用）
-			context->RSSetState(states->CullCounterClockwise());
-
-			// ブレンド・デプスステート（深度は通常通り or 調整）
-			context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
-			// アウトラインシェーダを設定
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
-			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
-
-			});
-
-		ShaderManager::GetInstance()->EndShader();
+	//アウトライン描画
+	if (Messenger::GetInstance()->IsOutLineActive()) 
+	{
+		OutlineRenderer::Draw(*GetModel(), world, GOLEM_OUTLINE_THICKNESS);
 	}
 
+	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	ModelShader::ModelCB cbuff;
+	cbuff.matWorld = world.Transpose();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
+	cbuff.flash.x = GetDamageFlash();
+
+	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
@@ -236,19 +219,20 @@ void Golem::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
+			shader->StartShader(ShaderManager::Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	ShaderManager::GetInstance()->EndShader();
+	shader->EndShader();
 
+	//手の描画
 	m_rightHand->Draw();
 	m_leftHand->Draw();
 
-	//m_sphere.AddDisplayCollision(&m_display);
-	//m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
-	//	, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
+	//m_box.AddDisplayCollision(&m_display);
+	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
+		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
 }
 
@@ -316,15 +300,27 @@ void Golem::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Player:
 		{
 			// プレイヤーとの衝突処理
-			// ここでは何もしないが、必要に応じて実装
 			break;
 		}
+		case Tag::ObjectType::Enemy:
+		{
+			//敵同士の衝突処理　押し出し
+			//SetPosition(CollisionManager::GetInstance()->PushOut( &m_box, dynamic_cast<Sphere*>(other->GetShape())));
+
+		}
+		break;
 		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
-			//速度をリセット
-			m_velocity.y = 0.0f;
+			//SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
+			DirectX::SimpleMath::Vector3 newPosition = CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()),&m_box);
+			SetPosition(newPosition);
+			//m_box.SetCenter(GetCurrentPosition());
+
+			//Yの速度をリセット
+			DirectX::SimpleMath::Vector3 velocity = GetVelocity();
+			velocity.y = 0.0f;
+			SetVelocity(velocity);
 
 
 			break;
@@ -368,33 +364,52 @@ void Golem::ResetFrameCount()
 	m_frameCount = 0.0f;
 }
 
-DirectX::SimpleMath::Vector3 Golem::GetVelocity()
-{
-	return m_velocity;
-}
 
-void Golem::SetVelocity(DirectX::SimpleMath::Vector3 v)
-{
-	m_velocity = v;
-}
-
+/**
+ * @brief 攻撃メッセージの取得
+ *
+ * @param[in] なし
+ *
+ * @return 攻撃メッセージ
+ */
 const Message::AttackMesssage Golem::GetAttackMessage() const
 {
 	return m_attackMessage;
 }
 
+/**
+ * @brief 攻撃メッセージの設定
+ *
+ * @param[in] message  攻撃メッセージ
+ *
+ * @return なし
+ */
 void Golem::SetAttackMessage(const Message::AttackMesssage& message)
 {
 	m_attackMessage = message;
 }
 
 
-DirectX::SimpleMath::Quaternion Golem::GetMotionAngle() const
+/**
+ * @brief モーション用角度の取得
+ *
+ * @param[in] なし
+ *
+ * @return モーション用角度
+ */
+const DirectX::SimpleMath::Quaternion& Golem::GetMotionAngle() const
 {
 	return m_motionAngle;
 }
 
-void Golem::SetMotionAngle(DirectX::SimpleMath::Quaternion angle)
+/**
+ * @brief モーション用角度の設定
+ *
+ * @param[in] angle  モーション用角度
+ *
+ * @return なし
+ */
+void Golem::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 {
 	m_motionAngle = angle;
 }

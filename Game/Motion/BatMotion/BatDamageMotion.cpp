@@ -5,24 +5,25 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/05
+ * @date   日付　2025/12/25
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "BatDamageMotion.h"
 #include"Game/Common/Sound.h"
+#include"Game/Object/Enemy/Bat/Bat.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] pRightWing　右羽のポインタ
- * @param[in] pLeftWing　 左羽のポインタ
+ * @param[in] pBat コウモリのポインタ
  */
 BatDamageMotion::BatDamageMotion(Bat* pBat)
 	: m_pBat{pBat}
 {
-	m_wingSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("wing.wav"));
+	m_wingSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::BAT_WING));
 }
 
 
@@ -48,8 +49,10 @@ void BatDamageMotion::Initialize()
 {
 	DirectX::SimpleMath::Quaternion angle = m_pBat->GetQuaternion();
 	//少し斜めに向ける
-	angle *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(5.0f));
+	angle *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DIAGONAL_ANGLE);
 	m_pBat->SetQuaternion(angle);
+
+	SetMotionLerp(0.0f);
 
 }
 
@@ -71,12 +74,9 @@ bool BatDamageMotion::Update()
 
 	DirectX::SimpleMath::Quaternion angle = m_pBat->GetQuaternion();
 	//Y軸回転させる
-	angle *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(360.0f * Messenger::GetInstance()->GetElapsedTime()));
-	//float angle = TKTLib::Lerp(-20.0f, 20.0f, motionLerp);
-	//DirectX::SimpleMath::Quaternion rightWingMotionAngle
-	//	= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(angle));
-	//DirectX::SimpleMath::Quaternion leftWingMotionAngle
-	//	= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-angle));
+	angle *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(
+		DirectX::SimpleMath::Vector3::UnitY,
+		BAT_DAMAGE_REACTION_ROTATE_SPEED * Messenger::GetInstance()->GetElapsedTime());
 
 	m_pBat->SetQuaternion(angle);
 
@@ -85,7 +85,7 @@ bool BatDamageMotion::Update()
 
 	SetMotionLerp(std::min(motionLerp, 1.0f));
 
-	if (GetMotionLerp() >= 1.0f)
+	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
 		m_wingSound->Play(false);
 		
@@ -112,17 +112,5 @@ bool BatDamageMotion::Update()
  */
 void BatDamageMotion::Reset()
 {
-	//それぞれのオブジェクトを元の位置・角度に戻す
-	//m_pBat->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(0.0f)));
-	//m_pRightWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	//m_pRightWing->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
-
-	//m_pLeftWing->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	//m_pLeftWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	//m_pLeftWing->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
-
-	//m_numLoop = 0;
-
-	SetMotionLerp(0.0f);
 }
 

@@ -4,6 +4,7 @@
 #include<random>
 #include <codecvt>
 #include"TKTLib/ModelParams.h"
+#include <SimpleMath.h>
 
 namespace TKTLib
 {
@@ -13,8 +14,51 @@ namespace TKTLib
 	static constexpr float FLOAT_ZERO = 0.0f;
 	static constexpr float FLOAT_ONE  = 1.0f;
 
+
 	/**
-	 * @brief world行列を取得する
+	* @brief Vector3のそれぞれの要素にfloatをかける
+	*
+	* @param[in] v   Vector3変数
+	* @param[in] s 　float変数
+	*
+	* @return ラジアン角
+	*/
+	inline DirectX::SimpleMath::Vector3
+		operator*(const DirectX::SimpleMath::Vector3& v, float s)
+	{
+		return DirectX::SimpleMath::Vector3(v.x * s, v.y * s, v.z * s);
+	}
+
+	inline DirectX::SimpleMath::Vector3
+		operator*(float s, const DirectX::SimpleMath::Vector3& v)
+	{
+		return DirectX::SimpleMath::Vector3(v.x * s, v.y * s, v.z * s);
+	}
+
+	/**
+	* @brief 二点のラジアン角を求める
+	*
+	* @param[in] eye    自分
+	* @param[in] target 相手
+	*
+	* @return ラジアン角
+	*/
+	inline const float CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target)
+	{
+
+		//自分から相手の方向
+		DirectX::SimpleMath::Vector3 direction = eye - target;
+		direction.Normalize();
+
+		// X-Z 平面上での角度を計算
+		float angle = std::atan2(direction.x, direction.z);
+
+		return angle;
+	}
+
+
+	/**
+	* @brief world行列を取得する
 	*
 	*  @param[in] pos  座標
 	*  @param[in] rot　オイラー角

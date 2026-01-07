@@ -22,7 +22,7 @@
  *
  * @param[in] texturePath テクスチャハンドル
  */
-ParticleItemGetControl::ParticleItemGetControl(const std::string& texturePath)
+ParticleItemGetControl::ParticleItemGetControl(const wchar_t* texturePath)
 	:ParticleControl{ texturePath }
 {
 

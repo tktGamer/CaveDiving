@@ -41,6 +41,11 @@ public:
 		static constexpr DirectX::SimpleMath::Vector3 LEFT_BACK   = { -1.0f,0.0f, 1.0f };
 		//右後ろ
 		static constexpr DirectX::SimpleMath::Vector3 RIGHT_BACK  = { 1.0f,0.0f, 1.0f };
+		//上
+		static constexpr DirectX::SimpleMath::Vector3 UP    = { 0.0f,1.0f, 0.0f };
+		//下
+		static constexpr DirectX::SimpleMath::Vector3 DOWN  = { 0.0f,-1.0f, 0.0f };
+
 
 	};
 
@@ -58,6 +63,12 @@ private:
 	//防御力
 	int m_diffence;
 
+	//モーションによる攻撃力補正
+	float m_motionAttackRate = 0.0f;
+
+	// 速度 
+	DirectX::SimpleMath::Vector3 m_velocity; 
+
 	//ダメージフラッシュ ダメージを受けたとき1.0をセット
 	float m_damageFlash;
 
@@ -71,7 +82,7 @@ private:
 public:
 	// コンストラクタ
 	Character(int hp,int attack, int diffence,
-		Tag::ObjectType type, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+		Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	virtual ~Character();
@@ -83,28 +94,39 @@ public:
 	virtual void OnDamage(GameObject* other);
 
 	//ダメージを受ける
-	void TakeDamage(const int& damage);
+	virtual int TakeDamage(const Character* attacker);
 
 	//ダメージフラッシュ更新
 	bool DamageFlashUpdate();
 //　取得・設定
 public:
-	//現在の体力の取得
-	const int& GetCurrentHP() const;
 	//現在の体力の設定
 	virtual void SetCurrentHP(const int& hp);
+	//現在の体力の取得
+	const int& GetCurrentHP() const;
 	// 体力の設定
 	void SetMaxHP(const int& hp);
 	// 体力の取得
-	virtual const int GetMaxHP();
+	virtual const int GetMaxHP() const ;
 	// 攻撃力の設定
 	void SetAttackPower(const int& attack);
 	// 攻撃力の取得
-	virtual const int GetAttackPower();
+	virtual const int GetAttackPower() const;
 	// 防御力の設定
 	void SetDiffence(const int& diffence);
 	// 防御力の取得
 	virtual const int GetDiffence();
+
+	//モーションによる攻撃力補正の設定
+	void SetMotionAttackRate(const float& rate);
+	//モーションによる攻撃力補正の取得
+	const float& GetMotionAttackRate() const;
+
+	//速度の取得
+	DirectX::SimpleMath::Vector3 GetVelocity() const;
+	//速度の設定
+	void SetVelocity(const DirectX::SimpleMath::Vector3& velocity);
+
 
 	//生きているか
 	bool IsAlive() const;

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025//11//26
+ * @date   日付　2025/01/06
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,6 +24,7 @@ class Item : public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//アイテム効果の種類
 	enum EffectType 
 	{
 		Attack,
@@ -31,31 +32,26 @@ public:
 		Speed,
 		Outline
 	};
-
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
+	//アイテムの情報
+	struct ItemInfo 
 	{
-		DirectX::SimpleMath::Matrix	 matWorld;
-		DirectX::SimpleMath::Matrix	 matView;
-		DirectX::SimpleMath::Matrix	 matProj;
-		DirectX::SimpleMath::Vector4 color;
+		EffectType type;
+		int increase;
+		int time;
 	};
+	static constexpr DirectX::SimpleMath::Vector3 BDX_COLLISION_SIZE = { 1.0f,2.0f,1.0f };
 
 // データメンバの宣言 -----------------------------------------------
 private:
 	Ito::DisplayCollision m_display;
+
 	//球状当たり判定
 	Box m_box;
-
-	//上昇するステータス
-	EffectType m_effectType;
-	//効果量
-	int m_increase;
-	//効果時間
-	float m_time;
+	//アイテムの情報
+	ItemInfo m_itemInfomation;
 
 	//ゲットされたか
-	bool m_isGet;
+	bool m_isGet = false;
 	//アイテムをゲットしたオブジェクトの位置
 	const DirectX::SimpleMath::Vector3* m_gotObjectPos;
 	//アイテムの色
@@ -64,8 +60,8 @@ private:
 	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Item(EffectType effectType, int increase,
-		GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Item(const ItemInfo& itemInfo,
+		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	virtual ~Item();
@@ -96,19 +92,22 @@ public:
 	int GetIncrease() const;
 	//効果時間
 	float GetTime() const;
-
+	//取得されたか
 	bool IsGet() const;
-
+	//取得状態のセット
 	void SetIsGet(const bool& isGet);
-
+	//オブジェクトが取られた位置
 	void SetItemGetObjectPos(const DirectX::SimpleMath::Vector3& pos);
-
+	//オブジェクトが取られた位置の取得
 	const DirectX::SimpleMath::Vector3& GetItemGetObjectPos();
-
+	//色の取得
 	const DirectX::SimpleMath::Vector4& GetColor();
 //　内部操作
 private:
 	//アイテムの色を決める
 	void DecideColor();
+protected:
+	//アイテムがゲットされたときの追加処理
+	virtual void OnItemGetExtra(const GameObject* other) {};
 };
 

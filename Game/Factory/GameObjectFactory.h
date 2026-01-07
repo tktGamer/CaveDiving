@@ -22,8 +22,10 @@
 #include"../Object/Enemy/Golem/Golem.h"
 #include"../Object/Enemy/Golem/GolemHand.h"
 #include"../Object/Stage/Stage.h"
+#include"Game/GameData.h"
 // クラスの宣言 ===============================================================
 class BuffUIControl;
+
 // クラスの定義 ===============================================================
 /**
   * @brief ゲームオブジェクトの生成
@@ -34,7 +36,8 @@ public:
 	// 「プレイヤー」を生成する
 	static std::unique_ptr<Player> CreatePlayer(
 		BuffUIControl* pBuffUIControl,
-		GameObject* parent = nullptr,
+		const GameData::PlayerData& data,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
 	);

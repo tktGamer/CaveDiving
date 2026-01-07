@@ -1,11 +1,11 @@
 /**
  * @file   GolemPunchPreparingMotion.h
  *
- * @brief  コウモリの攻撃準備のモーションに関するヘッダファイル
+ * @brief  ゴーレムのパンチ攻撃準備のモーションに関するヘッダファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/30
+ * @date   日付　2025/12/26
  */
 
  // 多重インクルードの防止 =====================================================
@@ -18,15 +18,19 @@
 class Golem;
 // クラスの定義 ===============================================================
 /**
-  * @brief コウモリの攻撃準備のモーション
+  * @brief ゴーレムのパンチ攻撃の準備のモーション
   */
 class GolemPunchPreparingMotion : public Motion
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
+private:
+	//拳をひく位置
+	static constexpr DirectX::SimpleMath::Vector3 HAND_GOAL_POS = { 0.0f,1.0f,6.0f };
+	//拳を正面に向ける
+	static constexpr float PUNCH_HAND_ANGLE = DirectX::XMConvertToRadians(90.0f);
 public:
 
-
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
 	//ゴーレム本体のポインタ
 	Golem* m_pGolem;
@@ -35,6 +39,7 @@ private:
 	//左手のポインタ
 	GolemHand* m_pLeftGolemHand;
 
+	//パンチのスタート位置
 	DirectX::SimpleMath::Vector3 m_startPosition;
 	DirectX::SimpleMath::Vector3 m_goalPosition;
 
@@ -44,22 +49,23 @@ public:
 	// コンストラクタ
 	GolemPunchPreparingMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
 
-		// デストラクタ
-		~GolemPunchPreparingMotion();
+	// デストラクタ
+	~GolemPunchPreparingMotion();
 
 
 // 操作
 public:
+	//初期化
 	void Initialize();
-
+	//更新
 	bool Update();
 
-
+	//リセット
 	void Reset();
 
 //　取得・設定
 public:
-	void SetIsNextAttack(bool isNext);
+
 //　内部操作
 private:
 

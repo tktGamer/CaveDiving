@@ -10,12 +10,13 @@
  *
  * @return プレイヤークラス
  */
-std::unique_ptr<Player> GameObjectFactory::CreatePlayer(BuffUIControl* pBuffUIControl, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+std::unique_ptr<Player> GameObjectFactory::CreatePlayer(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「プレイヤー」を宣言する
 	std::unique_ptr<Player> player;
 	//Playerクラスのインスタンスを生成する
-	player = std::make_unique<Player>(pBuffUIControl,parent, initialPosition, initialAngle);
+	player = std::make_unique<Player>(pBuffUIControl,data, parent, initialPosition, initialAngle);
 	//初期化する
 	player->Initialize();
 

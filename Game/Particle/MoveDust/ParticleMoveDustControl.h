@@ -31,31 +31,12 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 
-
-	//std::vector<TimerAndPos> m_timerAndPos; //	パーティクルの発生位置とタイマー
-
-
-	////	プリミティブバッチ
-	//std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-	////	コモンステート
-	//std::unique_ptr<DirectX::CommonStates> m_states;
-	//// テクスチャハンドル
-	//ID3D11ShaderResourceView** m_texture;
-	////	！New！
-	////	頂点情報のリスト
-	//std::vector<DirectX::VertexPositionColorTexture> m_vertices;
-
-
-
-	//std::list<ParticleMoveDust> m_particleMoveDust;
-
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 
-	ParticleMoveDustControl(const std::string& texturePath);
+	ParticleMoveDustControl(const wchar_t* texturePath);
 	~ParticleMoveDustControl();
 	// 操作
 public:

@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/07
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -17,10 +17,10 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] player プレイヤーのポインタ
+ * @param[in] pPlayer プレイヤーのポインタ
  */
-PlayerJumping::PlayerJumping(Player* player)
-	: m_player(player)
+PlayerJumping::PlayerJumping(Player* pPlayer)
+	: m_pPlayer(pPlayer)
 {
 }
 /**
@@ -51,10 +51,10 @@ void PlayerJumping::Initialize()
  */
 void PlayerJumping::PreUpdate()
 {
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 	//ジャンプの速度を設定
-	v.y = 0.5f;
-	m_player->SetVelocity(v);
+	velocity.y = JUMP_POWER;
+	m_pPlayer->SetVelocity(velocity);
 
 }
 
@@ -70,44 +70,47 @@ void PlayerJumping::Update(const float& elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
 	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
-
-
+	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
+	//移動キーの方向に進む
+	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Zero;
 	if (key->GetLastState().Up)
 	{
-		v -= DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f) * elapsedTime, m_player->GetQuaternion());
+		direction = Character::MOVE::FRONT;
 	}
 	if (key->GetLastState().Down)
 	{
-		v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f) * elapsedTime, m_player->GetQuaternion());
+		direction = Character::MOVE::BACK;
 
 	}
 	if (key->GetLastState().Left)
 	{
-		v -= DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f) * elapsedTime, m_player->GetQuaternion());
+		direction = Character::MOVE::LEFT;
 
 	}
 	if (key->GetLastState().Right)
 	{
-		v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f) * elapsedTime, m_player->GetQuaternion());
-
+		direction = Character::MOVE::RIGHT;
 	}
+	//角度を考慮して速度に加算
+	velocity += DirectX::SimpleMath::Vector3::Transform(direction * elapsedTime, m_pPlayer->GetQuaternion());
+
+	//空中攻撃
 	if (key->IsKeyPressed(DirectX::Keyboard::Z))
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AIRATTACK);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AIRATTACK);
 	}
 
-
-	if (v.Length() <= 0.001f)
+	//移動量が無くなったとみなし待機状態へ
+	if (velocity.Length() <= MIN_LENGTH)
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::IDLING);
 	}
-	v *= 0.96f;
-	v.y += -0.89f * elapsedTime;
 
-	m_player->SetVelocity(v);
+	velocity.y += World::GRAVITY * elapsedTime;
 
-	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
+	m_pPlayer->SetVelocity(velocity);
+
+	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity());
 
 }
 
@@ -131,11 +134,11 @@ void PlayerJumping::PostUpdate()
  */
 void PlayerJumping::Render()
 {
+#ifdef _DEBUG
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 
 	debugFont->AddString(L"Jumping", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 
-#ifdef _DEBUG
 #endif // DEBUG
 
 }

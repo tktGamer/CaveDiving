@@ -5,24 +5,23 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/10/27
+ * @date   日付  2025/01/04
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "StatusUpGem.h"
 #include"Game/Factory/GemFactory.h"
+//ファクトリクラスへの登録
 REGISTER_GEM_CLASS("StatusUpGem", StatusUpGem);
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] type  宝石の種類
- * @param[in] powerUp 宝石の強化項目
- * @param[in] value 宝石の効果値
+ * @param[in] ability  宝石の詳細
+ * @param[in] image 　 選択時の画像
  */
-
-StatusUpGem::StatusUpGem(Gem::GemAbility ability, Gem::GemImagePath image)
+StatusUpGem::StatusUpGem(const Gem::GemAbility& ability,const Gem::GemImagePath& image)
 	:Gem{ability,image}
 {
 }
@@ -39,6 +38,11 @@ StatusUpGem::~StatusUpGem()
 }
 
 
+
+std::unique_ptr<Gem> StatusUpGem::Clone() const
+{
+	return std::make_unique<StatusUpGem>(*this);
+}
 
 /**
  * @brief 初期化処理

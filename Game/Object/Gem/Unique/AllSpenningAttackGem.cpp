@@ -1,11 +1,11 @@
 /**
  * @file   AllSpenningAttackGem.cpp
  *
- * @brief  宝石に関するソースファイル
+ * @brief  攻撃を回転攻撃にする宝石に関するソースファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/10/27
+ * @date   日付  2025/01/04
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -20,16 +20,10 @@ REGISTER_GEM_CLASS("AllSpenningAttackGem", AllSpenningAttackGem);
 /**
  * @brief コンストラクタ
  *
- * @param[in] type  宝石の種類
- * @param[in] powerUp 宝石の強化項目
- * @param[in] value 宝石の効果値
+ * @param[in] ability  宝石の詳細
+ * @param[in] image 　 選択時の画像
  */
-AllSpenningAttackGem::AllSpenningAttackGem(int id, std::string type, Type powerUp, int value)
-	:Gem{ id,type,powerUp,value }
-{
-}
-
-AllSpenningAttackGem::AllSpenningAttackGem(GemAbility ability, GemImagePath image)
+AllSpenningAttackGem::AllSpenningAttackGem(const GemAbility& ability, const GemImagePath& image)
 	:Gem{ ability,image }
 {
 }
@@ -47,6 +41,11 @@ AllSpenningAttackGem ::~AllSpenningAttackGem()
 
 
 
+std::unique_ptr<Gem> AllSpenningAttackGem::Clone() const
+{
+	return std::make_unique<AllSpenningAttackGem>(*this);
+}
+
 /**
  * @brief 初期化処理
  *
@@ -58,12 +57,6 @@ void AllSpenningAttackGem::Initialize()
 {
 
 }
-
-void AllSpenningAttackGem::UniqueEffect()
-{
-}
-
-
 
 
 /**

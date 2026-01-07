@@ -22,13 +22,14 @@
  *
  * @param[in] Ç»Çµ
  */
-GemSelectUIManager::GemSelectUIManager()
+GemSelectUIManager::GemSelectUIManager(const std::vector<int>& gemID)
 	:m_isClearUI{}
 	,m_isPopUI{}
 	,m_isPushUI{}
 	,m_pushUI{1}
 	,m_isDrawOnlyCurrentUI{false}
 	,m_isFinishSelect{false}
+	,m_gemID{gemID}
 {
 
 }
@@ -56,8 +57,8 @@ void GemSelectUIManager::Initialize()
 {
 
 	//èâä˙èÛë‘ÇÃUIí«â¡
-	m_uiStack.emplace_back(std::move(UIFactory::CreateHoldGem()));
-	m_uiStack.emplace_back(std::move(UIFactory::CreateGemSelect(this)));
+	m_uiStack.emplace_back(std::move(UIFactory::CreateHoldGem(m_gemID)));
+	m_uiStack.emplace_back(std::move(UIFactory::CreateGemSelect(this,m_gemID)));
 
 }
 
@@ -209,9 +210,25 @@ bool GemSelectUIManager::IsFinishSelect() const
  *
  * @return Ç»Çµ
  */
-void GemSelectUIManager::SelectFinishNotice()
+void GemSelectUIManager::SelectFinishNotice(int slotNum)
 {
 	m_isFinishSelect = true;
+	m_slot = slotNum;
+}
+
+void GemSelectUIManager::SetHoldGem(const Gem* pGem)
+{
+	m_pReplacementGem = pGem;
+}
+
+const Gem* GemSelectUIManager::GetHoldGem()
+{
+	return m_pReplacementGem;
+}
+
+int GemSelectUIManager::GetSlot()
+{
+	return m_slot;
 }
 
 
@@ -232,13 +249,13 @@ void GemSelectUIManager::PushUI()
 	switch (m_pushUI[0])
 	{
 	case UI::GEMSELECT:
-		ui = UIFactory::CreateGemSelect(this);
+		ui = UIFactory::CreateGemSelect(this,m_gemID);
 		break;
 	case UI::CHANGECOFIRM:
 		ui = UIFactory::CreateChangeConfirm(this);
 		break;
 	case UI::CHANGEGEM:
-		ui = UIFactory::CreateChangeGem(this); 
+		ui = UIFactory::CreateChangeGem(this,m_gemID); 
 		break;
 	}
 

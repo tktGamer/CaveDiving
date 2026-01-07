@@ -46,16 +46,17 @@ private:
 
 	DirectX::Keyboard::KeyboardStateTracker m_tracker;
 
-	Gem* m_pGems[3];
+	const Gem* m_pGems[3];
 
 	//効果音
 	std::unique_ptr<Sound> m_cursorSound;
 	std::unique_ptr<Sound> m_decideSound;
 
+	const std::vector<int> m_gemID;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	GemSelect(int width, int height, GemSelectUIManager* pUIManager);
+	GemSelect(int width, int height,const std::vector<int>& gemID, GemSelectUIManager* pUIManager);
 	~GemSelect();
 	// 操作
 public:

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/12/03
+ * @date   日付  2025/01/04
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -23,7 +23,7 @@ REGISTER_GEM_CLASS("FullHPStatusUpGem", FullHPStatusUpGem);
  * @param[in] ability  宝石の詳細
  * @param[in] image 　 選択時の画像
  */
-FullHPStatusUpGem::FullHPStatusUpGem(GemAbility ability, GemImagePath image)
+FullHPStatusUpGem::FullHPStatusUpGem(const GemAbility& ability,const GemImagePath& image)
 	:StatusUpGem{ ability,image }
 {
 }
@@ -41,6 +41,11 @@ FullHPStatusUpGem ::~FullHPStatusUpGem()
 
 
 
+std::unique_ptr<Gem> FullHPStatusUpGem::Clone() const
+{
+	return std::make_unique<FullHPStatusUpGem>(*this);
+}
+
 /**
  * @brief 初期化処理
  *
@@ -57,10 +62,11 @@ void FullHPStatusUpGem::Initialize()
 /**
  * @brief 効果を適用するか判断
  *
- * @param[in] currentHP
- * @param[in] maxHP
+ * @param[in] currentHP　現在HP
+ * @param[in] maxHP      最大HP
  *
- * @return なし
+ * @return true   適用する
+ * @return false  適用しない
  */
 const bool& FullHPStatusUpGem::IsApplicable(const int& currentHP, const int& maxHP) const
 {

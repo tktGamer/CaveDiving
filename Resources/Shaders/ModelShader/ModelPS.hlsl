@@ -61,15 +61,17 @@ float SmoothDistanceAttenuation
 float GetDistanceAttenuation
 (
     float3 unnormalizedLightVector, // ライト位置とピクセル位置の差分
-    float invSqrAttRadius, // ライトが届く距離の2乗の逆数
-    float4 Attenuation
+    float4 Attenuation //距離減衰パラメータ
 )
 {
+    //ライトからピクセルまでの距離
     float len = length(unnormalizedLightVector);
+    //距離減衰計算
     len = Attenuation.x + Attenuation.y * len + Attenuation.z * len * len;
+    
+    //最小距離補正
     float attenuation = 1.0f / (max(len, MIN_DIST * MIN_DIST));
     
-   // attenuation *= SmoothDistanceAttenuation(len, invSqrAttRadius);
     
     return attenuation;
 }
@@ -80,45 +82,27 @@ float4 main(PS_IN input) : SV_TARGET
     //元の画像の色
     float4 output = tex.Sample(samLinear, input.Tex);
     //return output;
-    
-    ////ライトからの距離を考慮した色
-    //float3 tem = output.xyz * LightColor * LightIntensity * att;
-    
     //すべてのライトからの距離を考慮した色
     float3 temTotal=0;
     for (int i = 0; i < onLightCount; i++)
     {
+        //ライトからの距離減衰
         float intensity = GetDistanceAttenuation
         (
         lights[i].LightPosition - input.Posw.xyz,
-        lights[i].LightInvSqrRadius,
         lights[i].Attenuation
         );
         
-        ////法線を正規化する
-        //float3 worldNormal = normalize(input.Norw);
-    
-        //float lightDirection = distance(lights[i].LightPosition, input.Posw.xyz);
-        //////光の強さを内積で求める
-        //float3 dotL = dot(-lightDirection, worldNormal);
-    
-        ////表面(+の範囲)の場合は１、裏面(-の範囲)の場合は０ 
-        //float3 zeroL = step( 0.0f, dotL);
-        ////裏面のときは黒になる
-        //float3 diffuse = zeroL * dotL;
 
         //ライトからの距離を考慮した色
         float3 tem = output.xyz * lights[i].LightColor * lights[i].LightIntensity * ToonStep(intensity);
-        //tem = diffuse;
         temTotal += tem;
     }
     
     //元の色より明るくしないようにする
     output.xyz = min(temTotal, output.xyz);
-   // output.rgb = saturate(temTotal);
-    output.a = 1.0f;
     //透明度は固定
-    //output.w = 1.0f;
+    output.w = 1.0f;
     
     return lerp( output,float4(1,1,1,1), color.x);
     

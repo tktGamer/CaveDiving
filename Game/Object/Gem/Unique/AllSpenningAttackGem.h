@@ -1,11 +1,11 @@
 /**
  * @file   AllSpenningAttackGem.h
  *
- * @brief  宝石に関するヘッダファイル
+ * @brief  攻撃を回転攻撃にする宝石に関するヘッダファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/08/27
+ * @date   日付  2025/01/04
  */
 
  // 多重インクルードの防止 =====================================================
@@ -17,23 +17,23 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief 宝石
+  * @brief 攻撃を回転攻撃にする宝石
   */
 class AllSpenningAttackGem:public Gem
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
 public:
 
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
 	
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	// 宝石の種類と効果値を指定して初期化
-	AllSpenningAttackGem(int id, std::string type, Type powerUp, int value);
-	AllSpenningAttackGem(GemAbility ability, GemImagePath image);
+	AllSpenningAttackGem(const GemAbility& ability, const GemImagePath& image);
+
+	AllSpenningAttackGem(const AllSpenningAttackGem& other) = default;
 
 	// デストラクタ
 	~AllSpenningAttackGem();
@@ -41,10 +41,13 @@ public:
 
 //操作
 public:
+	//多態コピー
+	std::unique_ptr<Gem> Clone()const override;
+
+	//初期化
 	void Initialize();
 
-	void UniqueEffect();
-
+	//終了
 	void Finalize();
 //取得・設定
 public:

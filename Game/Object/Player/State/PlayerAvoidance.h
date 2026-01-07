@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/
+ * @date   日付  2026/01/07
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,26 +24,28 @@ class Player;
   */
 class PlayerAvoidance : public IState
 {
-	// クラス定数の宣言 -------------------------------------------------
-public:
+// クラス定数の宣言 -------------------------------------------------
+private:
 	//回避スピード
 	static constexpr float DODGE_SPEED = 1.0f;
+	//回避時間
+	static constexpr float DOOGE_TIME = 0.05f;
+public:
 
-	// データメンバの宣言 -----------------------------------------------
+// データメンバの宣言 -----------------------------------------------
 private:
-	// プレイヤー
-	Player* m_player;
+	// プレイヤーのポインタ
+	Player* m_pPlayer;
 
 	//回避方向
 	DirectX::SimpleMath::Vector3 m_dodgeDirection;
 	//回避時間
 	float m_dodgeTime = 0;
-	//最大回避時間
-	float m_maxDodgeDuration;
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
-	PlayerAvoidance(Player* soldier);
+	//コンストラクタ
+	PlayerAvoidance(Player* pPlayer);
 	// デストラクタ
 	~PlayerAvoidance();
 // 操作
@@ -60,6 +62,11 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 };
-#endif		// PLAYER_IDLING_DEFINED
+#endif		// PLAYER_AVOID_DEFINED

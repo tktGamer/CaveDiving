@@ -52,7 +52,7 @@ public:
 	void SetEyePosZ(float posZ);
 	void SetTartet(const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Quaternion& rotate,const DirectX::SimpleMath::Vector3& targetVelocity = DirectX::SimpleMath::Vector3::Zero);
 	void SetDistance(DirectX::SimpleMath::Vector3 distance);
-	DirectX::SimpleMath::Vector3 GetEyePos() { return m_eyePos; }
+	const DirectX::SimpleMath::Vector3& GetEyePos() const { return m_eyePos; }
 	DirectX::SimpleMath::Matrix GetView();
 
 	DirectX::SimpleMath::Vector3 GetTargetPos() const { return *m_targetPos; }

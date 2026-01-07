@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/12/31
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -18,14 +18,14 @@
  * @brief コンストラクタ
  *
  * @param[in] bat コウモリのポインタ
+ * @param[in] pRightWing コウモリ右羽のポインタ
+ * @param[in] pLeftWing  コウモリ左羽のポインタ
+
  */
 BatAttackPreparing::BatAttackPreparing(Bat* bat, Wing* pRightWing, Wing* pLeftWing)
 	:m_bat(bat)
-	, m_graphics{}
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
-
+	//モーションを生成
 	m_attackPreparingMotion = std::make_unique<BatAttackPreparingMotion>(pRightWing,pLeftWing);
 
 }
@@ -78,7 +78,9 @@ void BatAttackPreparing::Update(const float& elapsedTime)
 		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::MessageID::GROUNDATTACK);
 	}
 	//斜め上後方
-	DirectX::SimpleMath::Vector3 flyVelocity = DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{ 0.0f,1.0f,1.0f }*elapsedTime,m_bat->GetCurrentQuaternion());
+	DirectX::SimpleMath::Vector3 flyDirection = Character::MOVE::BACK + Character::MOVE::UP;
+	//向いている方向を考慮
+	DirectX::SimpleMath::Vector3 flyVelocity = DirectX::SimpleMath::Vector3::Transform(flyDirection,m_bat->GetCurrentQuaternion()) * elapsedTime;
 
 	
 

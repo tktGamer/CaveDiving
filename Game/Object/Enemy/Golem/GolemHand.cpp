@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　2025/09/13
+ * @date   日付　2026/01/05
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -18,21 +18,25 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] root　　		   このクラスを一部とするクラスの最上位の親
+ * @param[in] parent　		   親クラスのポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　   初期角度
  */
-GolemHand::GolemHand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:m_graphics{Graphics::GetInstance()}
-	, EnemyPart(root,parent,initialPosition,initialAngle)
+GolemHand::GolemHand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+	:EnemyPart(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
-	,m_sphere{initialPosition,2.5f}
-	,m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
-Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
-
+	,m_sphere{initialPosition,GOLEM_HAND_SPHERE_SIZE}
 {
-	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"golemhand.png"));
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"golemhand.sdkmesh"));
-	Messenger::GetInstance()->Register(GetObjectNumber(), this);
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
 
+	//テクスチャ設定
+	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::GOLEM_HAND));
+	//モデル設定
+	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::GOLEM_HAND));
+	//メッセンジャーに登録
+	Messenger::GetInstance()->Register(GetObjectNumber(), this);
+	//当たり判定セット
 	SetShape(&m_sphere);
 }
 
@@ -57,17 +61,6 @@ GolemHand::~GolemHand()
  */
 void GolemHand::Initialize()
 {
-	
-	//m_weapon = GameObjectFactory::CreatePikle(m_parent->Cast<Character>(), this, DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f), DirectX::SimpleMath::Quaternion::Identity);
-
-	//DirectX::SimpleMath::Quaternion q = 
-	//	//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
-	//	//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
-	//	 DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f));
-	//SetQuaternion(q);
-
-
-
 }
 
 
@@ -76,22 +69,24 @@ void GolemHand::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] currentPosition
- * @param[in] currentAngle
+ * @param[in] currentPosition　親の位置
+ * @param[in] currentAngle　　 親の角度
  *
  * @return なし
  */
 void GolemHand::Update( const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-
-	m_currentAngle =m_initialAngle * GetQuaternion()   * m_motionAngle * currentAngle;
-	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition+ GetPosition(), m_motionAngle * currentAngle)+ currentPosition ;
+	//位置の更新
+	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition() + GetPosition(), m_motionAngle * currentAngle) + currentPosition);
+	//角度の更新
+	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion() * m_motionAngle * currentAngle);
 	
-
+	//当たり判定の更新
 	m_sphere.SetCenter(GetCurrentPosition());
 
+	//武器をもっていたら更新
 	if(m_weapon)
-	m_weapon->Update(m_currentPosition, m_currentAngle);
+	m_weapon->Update(GetCurrentPosition(), GetCurrentQuaternion());
 }
 
 
@@ -113,44 +108,21 @@ void GolemHand::Draw()
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
+	//ワールド行列を計算
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Golem::ConstBuffer cbuff;
-	cbuff.matWorld = world.Transpose();
-	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-	cbuff.color.x = GetRootCharacter()->GetDamageFlash();
-
-	//GetModel()->Draw(context, *states, world, view, proj);
-	OutlineShader::OutlineCB outline;
-	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	outline.matView = graphics->GetViewMatrix().Transpose();
-	outline.matProj = graphics->GetProjectionMatrix().Transpose();
-	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Outline), 0, NULL, &outline, 0, 0);
 
 
-
-	if (Messenger::GetInstance()->IsOutLineActive()) {
-
-		// モデル描画（アウトライン専用）
-		GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
-			// カリングを FrontFace にして裏面を描画（アウトライン用）
-			context->RSSetState(states->CullCounterClockwise());
-
-			// ブレンド・デプスステート（深度は通常通り or 調整）
-			context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
-			// アウトラインシェーダを設定
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
-			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
-
-			});
-
-		ShaderManager::GetInstance()->EndShader();
+	if (Messenger::GetInstance()->IsOutLineActive()) 
+	{
+		OutlineRenderer::Draw(*GetModel(), world, GOLEM_HAND_OUTLINE_THICKNESS);
 	}
 
+	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	ModelShader::ModelCB cbuff;
+	cbuff.matWorld = world.Transpose();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
+	cbuff.flash.x = GetRootCharacter()->GetDamageFlash();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
@@ -183,12 +155,13 @@ void GolemHand::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
+			shader->StartShader(ShaderManager::Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	ShaderManager::GetInstance()->EndShader();
+	shader->EndShader();
+
 	if (m_weapon)
 	m_weapon->Draw();
 
@@ -221,6 +194,7 @@ void GolemHand::Finalize()
  */
 void GolemHand::OnMessegeAccepted(Message::MessageID messageID)
 {
+	messageID;
 }
 
 /**
@@ -232,6 +206,11 @@ void GolemHand::OnMessegeAccepted(Message::MessageID messageID)
  */
 void GolemHand::CollisionResponce(GameObject* other)
 {
+	switch (other->GetObjectType())
+	{
+	default:
+		break;
+	}
 }
 
 

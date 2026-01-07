@@ -56,7 +56,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 
-	ParticleVanishControl(const std::string& texturePath);
+	ParticleVanishControl(const wchar_t* texturePath);
 	~ParticleVanishControl();
 // 操作
 public:

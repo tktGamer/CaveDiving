@@ -45,10 +45,12 @@ private:
 
 	//決定したか
 	bool m_isDecide;
+
+	const std::vector<int>& m_gemID;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	SaveConfirm(int width, int height);
+	SaveConfirm(int width, int height, const std::vector<int>& gemID);
 	~SaveConfirm();
 	// 操作
 public:

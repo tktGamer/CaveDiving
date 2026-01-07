@@ -16,6 +16,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"RenderTexture.h"
+#include<unordered_map>
 #include"../Common/SceneManager.h"
 #include"../GameData.h"
 #include"../Common/Sound.h"
@@ -29,8 +30,8 @@
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 #include"../Object/Enemy/EnemyManager.h"
-
 #include"../Object/Item/ItemManager.h"
+#include"../Shader/Bloom.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
 
@@ -46,7 +47,6 @@ class GameScene : public Scene<GameData>
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-
 // データメンバの宣言 -----------------------------------------------
 private:
 	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
@@ -58,6 +58,7 @@ private:
 
 	std::unique_ptr<DX::RenderTexture> m_renderTexture;
 
+	std::unique_ptr<Bloom> m_bloomEffect;
 	//レンダーテクスチャ （シーン全体）
 	std::unique_ptr<DX::RenderTexture> m_offScreenRT;
 
@@ -82,7 +83,6 @@ private:
 	std::unique_ptr<ClearConditions> m_clearConditionsUI;
 
 	std::unique_ptr<ItemManager> m_itemManager;
-
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -128,4 +128,6 @@ public:
 private:
 	//ステージのライト状況を保存
 	void SaveLight();
+	//敵の生成
+	void SpawnEnemy();
 };

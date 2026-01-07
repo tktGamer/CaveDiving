@@ -24,7 +24,7 @@
  * @param[in] pos			 •`‰æ‚·‚éŠî€À•W
  * @param[in] number		 •`‰æ‚·‚é”—ñ
  */
-ParticleDamageNumber::ParticleDamageNumber(const std::string& texturePsth, const DirectX::SimpleMath::Vector3& pos,const int& number)
+ParticleDamageNumber::ParticleDamageNumber(const wchar_t* texturePsth, const DirectX::SimpleMath::Vector3& pos,const int& number)
 	:ParticleControl{texturePsth}
 	,m_basePosition{pos}
 {

@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　2025/09/04
+ * @date   日付　2025/12/31
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -19,7 +19,6 @@
  * @param[in] なし
  */
 Motion::Motion()
-	:m_motionLerp{0.0f}
 {
 
 }
@@ -68,7 +67,7 @@ float Motion::GetMotionLerp() const
 /**
  * @brief モーション補間値の設定
  *
- * @param[in] モーション補間値
+ * @param[in] motionLerp モーション補間値
  *
  * @return なし
  */

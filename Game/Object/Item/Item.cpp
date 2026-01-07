@@ -5,41 +5,44 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/01/06
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Item.h"
 #include"Game/Common/Collision/CollisionManager.h"
+#include"Game/Shader/ShaderManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] 
+ * @param[in] itemInfo  アイテムの情報
  * @param[in] type　オブジェクトの種類
  * @param[in] parent　親クラスのポインタ
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Item::Item(EffectType effectType, int increase, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Item::Item(const ItemInfo& itemInfo, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{ Tag::ObjectType::Item,parent,initialPosition,initialAngle }
-	, m_effectType{ effectType }
-	, m_increase{ increase }
-	, m_time{ 10.0f }
-	, m_box{ initialPosition,{1.0f,2.0f,1.0f} }
+	,m_itemInfomation{itemInfo}
+	, m_box{ initialPosition,BDX_COLLISION_SIZE }
 	, m_isGet{ false }
 	, m_color{ DirectX::Colors::White }
 	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 
 {
-	SetModel(ResourceManager::GetInstance()->RequestModel("item.sdkmesh"));
-	SetTexture(ResourceManager::GetInstance()->RequestTexture("item.png"));
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	//モデル設定
+	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::ITEM));
+	//テクスチャ設定
+	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::ITEM));
+	//当たり判定設定
 	SetShape(&m_box);
-
+	//当たり判定管理クラスに登録
 	CollisionManager::GetInstance()->Register(this);
-
+	//色を決める
 	DecideColor();
 }
 
@@ -65,10 +68,13 @@ Item::~Item()
  */
 void Item::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	//m_currentPosition = currentPosition + GetPosition();
-	//m_currentAngle = GetQuaternion() * currentAngle;
+	//位置の更新
+	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	//角度の更新
+	SetCurrentAngle(GetQuaternion() * currentAngle * GetInitialQuaternion());
 
-	//m_box.SetCenter(GetCurrentPosition());
+	//当たり判定更新
+	UpdateCollision(GetCurrentPosition());
 
 }
 
@@ -82,71 +88,59 @@ void Item::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dir
  */
 void Item::Draw()
 {
-	//Graphics* graphics = Graphics::GetInstance();
-	//ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
-	//DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
-	//DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
-	//DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
+	Graphics* graphics = Graphics::GetInstance();
+	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
+	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
+	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
+	ShaderManager* shader = ShaderManager::GetInstance();
 
-	//DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
-	////	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	//Item::ConstBuffer cbuff;
-	//cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	//cbuff.matView = graphics->GetViewMatrix().Transpose();
-	//cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
-	//cbuff.color = m_color;
-	//Shader* shader = Shader::GetInstance();
-	////	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	//context->UpdateSubresource(shader->GetCBuffer(Shader::Model), 0, NULL, &cbuff, 0, 0);
-
-
-
-	//GetModel()->Draw(context, *states, world, view, proj, false, [&]()
-	//	{
-	//		//	モデル表示をするための自作シェーダに関連する設定を行う
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	ModelShader::ItemCB cbuff;
+	cbuff.matWorld = world.Transpose();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
+	cbuff.color = GetColor();
+	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Item_Model), 0, NULL, &cbuff, 0, 0);
 
 
-	//		//	画像用サンプラーの登録
-	//		ID3D11SamplerState* sampler[1] = { states->PointWrap() };
-	//		context->PSSetSamplers(0, 1, sampler);
+	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
+		{
+			//	モデル表示をするための自作シェーダに関連する設定を行う
+			//	画像用サンプラーの登録
+			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
+			context->PSSetSamplers(0, 1, sampler);
 
-	//		if (GetTexture() != nullptr)
-	//		{
-	//			//	読み込んだ画像をピクセルシェーダに伝える
-	//			//	自作VSはt0を使っているため、
-	//			//	t0がメインで使われていると勝手に想定。
-	//			context->PSSetShaderResources(0, 1, GetTexture());
-	//		}
+			if (GetTexture() != nullptr)
+			{
+				//	読み込んだ画像をピクセルシェーダに伝える
+				//	自作VSはt0を使っているため、
+				//	t0がメインで使われていると勝手に想定。
+				context->PSSetShaderResources(0, 1, GetTexture());
+			}
 
-	//		//	半透明描画指定
-	//		ID3D11BlendState* blendstate = states->NonPremultiplied();
+			//	半透明描画指定
+			ID3D11BlendState* blendstate = states->NonPremultiplied();
 
-	//		//	透明判定処理
-	//		context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+			//	透明判定処理
+			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
-	//		//	深度バッファに書き込み参照する
-	//		context->OMSetDepthStencilState(states->DepthDefault(), 0);
+			//	深度バッファに書き込み参照する
+			context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
-	//		//	カリングはなし
-	//		context->RSSetState(states->CullClockwise());
+			//	カリングはなし
+			context->RSSetState(states->CullClockwise());
 
-	//		Shader::GetInstance()->StartShader(Shader::Model, shader->GetCBuffer(Shader::Model));
+			shader->StartShader(ShaderManager::Item_Model);
 
-	//		auto ps = shader->GetItemPS();
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Item_Model));
 
-	//		auto constBuffer = shader->GetCBuffer(Shader::ShaderType::Model);
-	//		//	シェーダーにバッファを渡す
-	//		ID3D11Buffer* cb[1] = { constBuffer };
+		});
+	shader->EndShader();
 
-	//		context->PSSetConstantBuffers(0, 1, cb);
-	//		context->PSSetShader(ps, nullptr, 0);
-
-	//		context->IASetInputLayout(shader->GetInputLayout(Shader::Model));
-
-	//	});
-	//Shader::GetInstance()->EndShader();
-
-	////m_box.AddDisplayCollision(&m_display);
+	//m_box.AddDisplayCollision(&m_display);
 	//m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
 	//	, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 
@@ -177,26 +171,26 @@ void Item::OnMessegeAccepted(Message::MessageID messageID)
  */
 void Item::CollisionResponce(GameObject* other)
 {
-	//switch (other->GetObjectType())
-	//{
-	//case Tag::ObjectType::Enemy:
-	//{
-	//}
-	//case Tag::ObjectType::EnemyPart:
-	//{
-	//}
-	//break;
-	//case Tag::ObjectType::Ground:
-	//{
-	//}
-	//case Tag::ObjectType::Player: 
-	//{
-	//	m_isGet = true;
-	//	SetItemGetObjectPos(other->GetCurrentPosition());
-	//}
-	//default:
-	//	break;
-	//}
+	switch (other->GetObjectType())
+	{
+	case Tag::ObjectType::Enemy:
+	{
+	}
+	break;
+	case Tag::ObjectType::Player:
+	{
+		
+		//取得された
+		SetIsGet(true);
+		//取得したオブジェクトの座標をセット
+		SetItemGetObjectPos(other->GetCurrentPosition());
+		//派生クラスの追加処理
+		OnItemGetExtra(other);
+	}
+	break;
+	default:
+		break;
+	}
 }
 
 void Item::UpdateCollision(const DirectX::SimpleMath::Vector3& center)
@@ -214,7 +208,7 @@ void Item::UpdateCollision(const DirectX::SimpleMath::Vector3& center)
  */
 Item::EffectType Item::GetEffectType() const
 {
-	return m_effectType;
+	return m_itemInfomation.type;
 }
 
 /**
@@ -226,12 +220,12 @@ Item::EffectType Item::GetEffectType() const
  */
 int Item::GetIncrease() const
 {
-	return m_increase;
+	return m_itemInfomation.increase;
 }
 
 float Item::GetTime() const
 {
-	return m_time;
+	return m_itemInfomation.time;
 }
 
 bool Item::IsGet() const
@@ -261,7 +255,7 @@ const DirectX::SimpleMath::Vector4& Item::GetColor()
 
 void Item::DecideColor()
 {
-	switch (m_effectType)
+	switch (m_itemInfomation.type)
 	{
 	case Item::Attack:
 		m_color = DirectX::Colors::Red;

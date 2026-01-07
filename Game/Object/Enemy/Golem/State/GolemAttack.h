@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/11/15
+ * @date   日付　2026/01/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -18,10 +18,10 @@
 
 #include"Game/Motion/GolemMotion/GolemPunchMotion.h"
 #include"Game/Motion/GolemMotion/GolemSlammedDownMotion.h"
-#include"Game/Object/Enemy/Golem/GolemHand.h"
 
 // クラスの宣言 ===============================================================
 class Golem;
+class GolemHand;
 
 // クラスの定義 ===============================================================
 /**
@@ -33,13 +33,14 @@ class GolemAttack : public IState
 public:
 // データメンバの宣言 -----------------------------------------------
 private:
-	// ゴーレム
+	// ゴーレムのポインタ
 	Golem* m_golem;
+	//手のポインタ
 	GolemHand* m_pRightHand;
 	GolemHand* m_pLeftHand;
 
 	//攻撃モーション
-	std::unique_ptr<Motion> m_attackMotion;
+	std::unique_ptr<AttackMotion> m_attackMotion;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -61,6 +62,10 @@ public:
 	// 後処理を行う
 	void Finalize();
 
+//　取得・設定
+public:
+
+//　内部操作
 private:
 	//攻撃方法を決める
 	void DecideMotion();
@@ -68,4 +73,4 @@ private:
 
 };
 
-#endif		// SOLDIER_IDLING_DEFINED
+#endif		// GOLEM_ATTACK_DEFINED

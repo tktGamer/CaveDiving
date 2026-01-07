@@ -45,7 +45,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 
-	ParticleDamageControl(const std::string& texturePath);
+	ParticleDamageControl(const wchar_t* texturePath);
 	~ParticleDamageControl();
 	// 操作
 public:

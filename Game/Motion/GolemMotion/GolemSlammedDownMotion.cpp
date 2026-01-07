@@ -1,11 +1,11 @@
 /**
  * @file   GolemSlammedDownMotion.cpp
  *
- * @brief  の攻撃のモーションに関するソースファイル
+ * @brief  叩きつけの攻撃のモーションに関するソースファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/05
+ * @date   日付　2025/12/28
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -19,12 +19,12 @@
  * @param[in] pGolem のポインタ
  */
 GolemSlammedDownMotion::GolemSlammedDownMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
-	: m_pGolem{ pGolem }
+	: AttackMotion{ GOLEM_SLAMMED_DOWN_MOTION_MODIFIER }
+	, m_pGolem{ pGolem }
 	, m_pRightGolemHand{ pRightGolemHand }
 	, m_pLeftGolemHand{ pLeftGolemHand }
-	,m_coolTime{0.0f}
 {
-	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("golemslamM.wav"),true);
+	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GOLEM_SLAMMED_DOWN),true);
 
 }
 
@@ -51,14 +51,13 @@ void GolemSlammedDownMotion::Initialize()
 {
 
 	//スタート位置とゴール位置
-	m_rightHandStartPosition = m_pRightGolemHand->GetPosition();
-	m_rightHandGoalPosition = m_pRightGolemHand->GetPosition() + DirectX::SimpleMath::Vector3{ 0.0f,-8.5f,0.0f };
-	m_leftHandStartPosition = m_pLeftGolemHand->GetPosition();
-	m_leftHandGoalPosition = m_pLeftGolemHand->GetPosition() + DirectX::SimpleMath::Vector3{ 0.0f,-8.5f,0.0f };
+	m_handStartPosition = m_pRightGolemHand->GetPosition();
+	m_handGoalPosition  = m_handStartPosition + SLAMMED_DOWN_MOVE;
 
-	m_coolTime = 0.0f;
+	m_coolTime = TKTLib::FLOAT_ZERO;
 
-	
+	SetMotionLerp(TKTLib::FLOAT_ZERO);
+
 }
 
 
@@ -77,32 +76,29 @@ bool GolemSlammedDownMotion::Update()
 
 
 	//現在位置を求める
-	DirectX::SimpleMath::Vector3 currentPos = DirectX::SimpleMath::Vector3::Lerp(m_rightHandStartPosition, m_rightHandGoalPosition, motionLerp);
+	DirectX::SimpleMath::Vector3 currentPos = DirectX::SimpleMath::Vector3::Lerp(m_handStartPosition, m_handGoalPosition, motionLerp);
 	m_pRightGolemHand->SetPosition(currentPos);
-
-	currentPos = DirectX::SimpleMath::Vector3::Lerp(m_leftHandStartPosition, m_leftHandGoalPosition, motionLerp);
 	m_pLeftGolemHand->SetPosition(currentPos);
 
 
-	motionLerp += 2.0f * Messenger::GetInstance()->GetElapsedTime();
+	motionLerp += SLAMMED_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
 
-	SetMotionLerp(std::min(motionLerp, 1.0f));
+	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
 
 	//モーションが終了したら
-	if (GetMotionLerp() >= 1.0f)
+	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
 		m_attackSound->OncePlay(false);
 		m_coolTime += Messenger::GetInstance()->GetElapsedTime();
-		if (m_coolTime > 0.5f) 
+		if (m_coolTime > COOL_TIME) 
 		{
 			return true;
 		}
 	}
 
+
 	DirectX::AudioEmitter emitter{};
 	emitter.SetPosition(m_pGolem->GetCurrentPosition());
-
-
 	m_attackSound->Update(emitter);
 
 	return false;
@@ -125,11 +121,10 @@ void GolemSlammedDownMotion::Reset()
 	//それぞれのオブジェクトを元の位置・角度に戻す
 	m_pGolem->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	m_pRightGolemHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f ,0.0f,0.0f });
+	m_pRightGolemHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
 	m_pLeftGolemHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-	m_pLeftGolemHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f ,0.0f,0.0f });
+	m_pLeftGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
+	m_pLeftGolemHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
 
-
-	SetMotionLerp(0.0f);
 }
 

@@ -58,7 +58,7 @@ public:
 	static DamageSystem* const GetInstance();
 
 	//ダメージ処理
-	int DamageToCharacter(Character* attacker,Character* defender);
+	int DamageToCharacter(const Character* attacker,Character* defender);
 
 	//ダメージ計算
 	int DamageCalculation(const int attackPower, const int diffence);

@@ -14,10 +14,6 @@
 #include "Game/Common/ResourceManager.h"
 // クラス定数の定義 ===========================================================
 
-
-
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -34,12 +30,6 @@ Shader::Shader()
 Shader::~Shader()
 {
 }
-
-
-
-
-
-
 
 /**
  * @brief シェーダーの開始
@@ -110,13 +100,13 @@ void Shader::EndShader(const std::function<void()>& customState)
  */
 void Shader::CreateShader(const wchar_t* vsPath, const wchar_t* psPath, const wchar_t* gsPath)
 {
-	auto device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
 	// シェーダーのバイナリデータを読み込む
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	BinaryFile VSData = resourceManager->RequestBinaryFile(vsPath);
 	BinaryFile PSData = resourceManager->RequestBinaryFile(psPath);
 	BinaryFile GSData = resourceManager->RequestBinaryFile(gsPath);
 	// シェーダーを作成する
+	auto device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
 	device->CreateVertexShader(
 		VSData.GetData(), VSData.GetSize(), nullptr, m_vertexShader.ReleaseAndGetAddressOf());
 	device->CreatePixelShader(

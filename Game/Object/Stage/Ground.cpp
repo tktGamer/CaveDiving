@@ -54,9 +54,9 @@ Ground::~Ground()
 void Ground::Initialize()
 {
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"block.sdkmesh"));
-	SetPosition(DirectX::SimpleMath::Vector3(0.0f, -1.5f, 0.0f));
+	SetPosition(INITIAL_GROUND_POS);
 	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	SetScale(DirectX::SimpleMath::Vector3(70.0f, 1.0f, 70.0f));
+	SetScale(INITIAL_GROUND_SCALE);
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("block.png"));
 	
 	SetShape(&m_box);
@@ -70,7 +70,8 @@ void Ground::Initialize()
 /**
  * @brief XVˆ—
  *
- * @param[in] ‚È‚µ
+ * @param[in] currentPosition  
+ * @param[in] currentAngle     
  *
  * @return ‚È‚µ
  */

@@ -66,17 +66,17 @@ DamageSystem::~DamageSystem()
  *
  * @return ダメージ量
  */
-int DamageSystem::DamageToCharacter(Character* attacker, Character* defender)
+int DamageSystem::DamageToCharacter(const Character* attacker, Character* defender)
 {
-	int attackerPower = attacker->GetAttackPower();
+	int attackerPower = attacker->GetAttackPower() * attacker->GetMotionAttackRate();
 	int defenderDiffence = defender->GetDiffence();
 	
 	int damage = DamageCalculation(attackerPower, defenderDiffence);
 
-	defender->TakeDamage(damage);
+	//defender->TakeDamage(damage);
 
 	//攻撃者がプレイヤーならトータルダメージを加算
-	if (attacker->Cast<Player>()) 
+	if (attacker->GetObjectType() == Tag::Player) 
 	{
 		m_totalDamage += damage;
 	}

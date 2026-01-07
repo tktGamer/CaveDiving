@@ -35,7 +35,7 @@ private:
 public:
 	// コンストラクタ
 	PartObject(Character* root,
-		 GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	virtual ~PartObject();

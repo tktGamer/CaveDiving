@@ -5,12 +5,13 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/05
+ * @date   日付　2025/12/25
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "BatAttackMotion.h"
+#include"Game/Object/Enemy/Bat/Bat.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -21,7 +22,8 @@
  * @param[in] pLeftWing コウモリの左羽ポインタ
  */
 BatAttackMotion::BatAttackMotion(Bat* pBat, Wing* pRightWing, Wing* pLeftWing)
-	: m_pBat{pBat}
+	: AttackMotion{BAT_ATTACK_MOTION_MODIFIER}
+	, m_pBat{pBat}
 	, m_pRightWing{pRightWing}
 	, m_pLeftWing{pLeftWing}
 {
@@ -50,11 +52,19 @@ BatAttackMotion::~BatAttackMotion()
 void BatAttackMotion::Initialize()
 {
 	//攻撃の姿勢にする
-	m_pBat->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(-20.0f)));
-	m_pRightWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(-15.0f)));
-	m_pLeftWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(15.0f)));
+	m_pBat->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(
+		DirectX::SimpleMath::Vector3::UnitX, BAT_ATTACK_MOTION_INIT_ANGLE));
+	m_pRightWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(
+		DirectX::SimpleMath::Vector3::UnitY, RIGHT_WING_ATTACK_MOTION_INIT_ANGLE));
+	m_pLeftWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(
+		DirectX::SimpleMath::Vector3::UnitY, LEFT_WING_ATTACK_MOTION_INIT_ANGLE));
 
-	m_pBat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 15.0f * Messenger::GetInstance()->GetElapsedTime(), m_pBat->GetCurrentQuaternion()));
+
+	//突進させる
+	DirectX::SimpleMath::Vector3 speed = Character::MOVE::FRONT * BAT_ATTACK_SPEED * Messenger::GetInstance()->GetElapsedTime();
+	m_pBat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(speed, m_pBat->GetCurrentQuaternion()));
+
+	SetMotionLerp(TKTLib::FLOAT_ZERO);
 
 }
 
@@ -70,25 +80,18 @@ void BatAttackMotion::Initialize()
  */
 bool BatAttackMotion::Update()
 {
-	//float motionLerp = GetMotionLerp();
+	float motionLerp = GetMotionLerp();
 
 
-	////羽のモーションの角度を求める
-	//float angle = TKTLib::Lerp(0.0f, -110.0f, motionLerp);
-	//DirectX::SimpleMath::Quaternion handMotionAngle 
-	//	= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(angle));
+	//時間経過
+	motionLerp += Messenger::GetInstance()->GetElapsedTime();
 
-	// m_pBat->SetMotionAngle(handMotionAngle);
-
-
-	//motionLerp += 3.0f * Messenger::GetInstance()->GetElapsedTime();
-
-	//SetMotionLerp(std::min(motionLerp, 1.0f));
-
-	//if (GetMotionLerp() >= 1.0f)
-	//{
-	//	return true;
-	//}
+	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
+	//モーションが完了したら
+	if (GetMotionLerp() >= Motion::MOTION_FINISH)
+	{
+		return true;
+	}
 
 	return false;
 	
@@ -113,6 +116,4 @@ void BatAttackMotion::Reset()
 	m_pLeftWing->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 
 
-	SetMotionLerp(0.0f);
 }
-

@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付 2025/08/27
+ * @date   日付 2025/01/05
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -13,7 +13,7 @@
 #include "Wing.h"
 #include"../Bat/Bat.h"
 #include"Game/Shader/ShaderManager.h"
-
+#include"Game/Shader/Outline/OutlineRenderer.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -22,7 +22,7 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Wing::Wing(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Wing::Wing(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:EnemyPart(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
 {
@@ -71,9 +71,10 @@ void Wing::Initialize()
  */
 void Wing::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-
-	m_currentAngle =m_initialAngle * GetQuaternion() * m_motionAngle * currentAngle;
-	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition, m_motionAngle* currentAngle)+ currentPosition + GetPosition();
+	//位置の更新
+	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition(), m_motionAngle * currentAngle) + currentPosition + GetPosition());
+	//角度の更新
+	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion() * m_motionAngle * currentAngle);
 	
 }
 
@@ -96,42 +97,20 @@ void Wing::Draw()
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(m_currentPosition,m_currentAngle, GetScale());
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Bat::ConstBuffer cbuff;
+	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
-	cbuff.matView = Graphics::GetInstance()->GetViewMatrix().Transpose();
-	cbuff.matProj = Graphics::GetInstance()->GetProjectionMatrix().Transpose();
-	cbuff.color.x = GetRootCharacter()->GetDamageFlash();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
+	cbuff.flash.x = GetRootCharacter()->GetDamageFlash();
 
 
-	OutlineShader::OutlineCB outline;
-	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	outline.matView = graphics->GetViewMatrix().Transpose();
-	outline.matProj = graphics->GetProjectionMatrix().Transpose();
-	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Outline), 0, NULL, &outline, 0, 0);
 
 
 
 	if (Messenger::GetInstance()->IsOutLineActive()) {
-
-		// モデル描画（アウトライン専用）
-		GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
-			// カリングを FrontFace にして裏面を描画（アウトライン用）
-			context->RSSetState(states->CullCounterClockwise());
-
-			// ブレンド・デプスステート（深度は通常通り or 調整）
-			context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
-			// アウトラインシェーダを設定
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
-			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
-
-			});
-
-		ShaderManager::GetInstance()->EndShader();
+		OutlineRenderer::Draw(*GetModel(), world, BAT_WING_OUTLINE_THICKNESS);
 	}
 
 
@@ -167,12 +146,12 @@ void Wing::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
+			shader->StartShader(ShaderManager::Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	ShaderManager::GetInstance()->EndShader();
+	shader->EndShader();
 
 }
 
@@ -199,6 +178,33 @@ void Wing::Finalize()
  */
 void Wing::OnMessegeAccepted(Message::MessageID messageID)
 {
+	switch (messageID)
+	{
+	case Message::COLLISIONVALID:
+		break;
+	case Message::COLLISIONINVALID:
+		break;
+	case Message::IDLING:
+		break;
+	case Message::MOVING:
+		break;
+	case Message::GROUNDATTACK:
+		break;
+	case Message::AIRATTACK:
+		break;
+	case Message::AVOIDANCE:
+		break;
+	case Message::DAMAGED:
+		break;
+	case Message::JUMPING:
+		break;
+	case Message::CHASING:
+		break;
+	case Message::ATTACKPREPARING:
+		break;
+	default:
+		break;
+	}
 }
 
 /**
@@ -213,12 +219,12 @@ void Wing::CollisionResponce(GameObject* other)
 }
 
 
-DirectX::SimpleMath::Quaternion Wing::GetMotionAngle()
+DirectX::SimpleMath::Quaternion Wing::GetMotionAngle() const
 {
 	return m_motionAngle;
 }
 
-void Wing::SetMotionAngle(DirectX::SimpleMath::Quaternion angle)
+void Wing::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 {
 	m_motionAngle = angle;
 }

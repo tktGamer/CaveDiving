@@ -48,7 +48,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 
-	ParticleHPHealControl(const std::string& texturePath);
+	ParticleHPHealControl(const wchar_t* texturePath);
 	~ParticleHPHealControl();
 // 操作
 public:

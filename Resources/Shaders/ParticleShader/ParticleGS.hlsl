@@ -106,8 +106,9 @@ void main(
         element.Pos = mul(float4(worldPos, 1.0f), matView);
         element.Pos = mul(element.Pos, matProj);
 
-        // UV座標を算出（[-0.5, 0.5] → [0, 1]）
-        element.Tex.xy = offset + 0.5f;
+        // UV座標を算出
+        element.Tex.x = offset.x + 0.5f;
+        element.Tex.y = -offset.y + 0.5f;
 
         // カラーなどはそのまま
         element.Color = input[0].Color;

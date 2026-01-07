@@ -45,14 +45,14 @@ private:
 	int m_windowWidth, m_windowHeight;
 
 
-	Gem* m_pGems[3];
 
 	DirectX::SimpleMath::Vector2 m_position;
 	DirectX::SimpleMath::Vector2 m_scale;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	HoldGem(int width, int height);
+	HoldGem(int width, int height, const std::vector<int>& gemID);
 	~HoldGem();
 	// 操作
 public:
@@ -64,14 +64,15 @@ public:
 		, DirectX::SimpleMath::Vector2 position
 		, DirectX::SimpleMath::Vector2 scale
 		, UserInterface::ANCHOR anchor);
-
-	void ChangePositon(const DirectX::SimpleMath::Vector2& pos);
-	void ChangeScale(const DirectX::SimpleMath::Vector2& scale);
+	//表示する宝石を変更
+	void ChangeDrawGem(const std::vector<int>& gemID);
+	void ChangeDrawGem(const std::vector<Gem*>& gems);
 //　取得・設定
 public:
+	void ChangePositon(const DirectX::SimpleMath::Vector2& pos);
+	void ChangeScale(const DirectX::SimpleMath::Vector2& scale);
 
 
 //　内部操作
 private:
-	void ChangeDrawGem();
 };

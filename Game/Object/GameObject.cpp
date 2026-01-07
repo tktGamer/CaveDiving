@@ -29,7 +29,7 @@ void GameObject::ResetObjectNumber() { s_objectNumber = 0; }
  * @param[in]  modelParams モデルパラメータ
  * 
  */
-GameObject::GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: m_objectType{ objectType }
 	, m_graphics{ Graphics::GetInstance() }
 	, m_objectNumber{CountUpNumber()}
@@ -125,17 +125,12 @@ Tag::ObjectType GameObject::GetObjectType() const
 }
 
 /**
- * @brief グラフィックスクラスのポインタを取得する
+ * @brief オブジェクトの番号を取得する
  *
  * @param[in] なし
  *
- * @return グラフィックスクラスのポインタ
+ * @return オブジェクトの番号
  */
-Graphics* GameObject::GetGraphics() const
-{
-	return m_graphics;
-}
-
 const int GameObject::GetObjectNumber()
 {
 	return m_objectNumber;

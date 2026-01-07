@@ -70,11 +70,17 @@ private:
 
 	//UIのスタック
 	std::vector<std::unique_ptr<IUI>> m_uiStack;
+
+	const std::vector<int> m_gemID;
+	//入れ替え予定の宝石
+	const Gem* m_pReplacementGem;
+	//入れ替えるスロット番号
+	int m_slot = 0;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	GemSelectUIManager();
+	GemSelectUIManager(const std::vector<int>& gemID);
 
 	// デストラクタ
 	~GemSelectUIManager();
@@ -111,7 +117,13 @@ public:
 	bool IsFinishSelect() const;
 
 	//宝石選択終了通知
-	void SelectFinishNotice();
+	void SelectFinishNotice(int slotNum);
+
+	void SetHoldGem(const Gem* pGem);
+
+	const Gem* GetHoldGem();
+
+	int GetSlot();
 // 内部実装
 private:
 	void PopUI();

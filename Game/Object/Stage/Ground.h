@@ -25,15 +25,10 @@ class Ground :public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4 color;
-
-	};
+	//地面の初期位置
+	static constexpr DirectX::SimpleMath::Vector3 INITIAL_GROUND_POS = { 0.0f, -1.5f, 0.0f };
+	//地面の初期サイズ
+	static constexpr DirectX::SimpleMath::Vector3 INITIAL_GROUND_SCALE = { 70.0f, 1.0f, 70.0f };
 
 
 // データメンバの宣言 -----------------------------------------------

@@ -1,11 +1,11 @@
 /**
  * @file   UniqueGem.cpp
  *
- * @brief  宝石に関するソースファイル
+ * @brief  特殊効果宝石の基底に関するソースファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/10/24
+ * @date   日付  2025/01/04
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -16,12 +16,12 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] type  宝石の種類
- * @param[in] value 宝石の効果値
- * @param[in] discription 宝石の効果説明
+ * @param[in] ability  宝石の詳細
+ * @param[in] image 　 選択時の画像
  */
-UniqueGem::UniqueGem(UniqueType uniqeuType, GemAbility ability, GemImagePath image)
+UniqueGem::UniqueGem(const UniqueType& uniqeuType, const GemAbility& ability, const GemImagePath& image)
 	:Gem{ ability,image }
+	, m_type{ uniqeuType }
 {
 }
 
@@ -37,6 +37,11 @@ UniqueGem::~UniqueGem()
 }
 
 
+
+std::unique_ptr<Gem> UniqueGem::Clone() const
+{
+	return std::make_unique<UniqueGem>(*this);
+}
 
 /**
  * @brief 初期化処理

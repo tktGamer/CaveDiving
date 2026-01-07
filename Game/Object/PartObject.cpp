@@ -21,7 +21,7 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-PartObject::PartObject(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+PartObject::PartObject(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{ Tag::ObjectPart,parent,initialPosition,initialAngle }
 	, m_parentCharacter{ root }
 {

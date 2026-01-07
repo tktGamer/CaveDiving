@@ -27,7 +27,7 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Character::Character(int hp, int attack, int diffence, Tag::ObjectType type, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Character::Character(int hp, int attack, int diffence, Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{type,parent,initialPosition,initialAngle}
 	,m_hp{hp}
 	,m_currentHp{hp}
@@ -50,7 +50,7 @@ Character::~Character()
 
 
 /**
- * @brief ダメージを受けたときの処理
+ * @brief 攻撃を受けたときの処理
  *
  * @param[in] other 攻撃してきたオブジェクト
  *
@@ -71,9 +71,8 @@ void Character::OnDamage(GameObject* other)
 
 
 	// ダメージを受ける
-	int damage = DamageSystem::GetInstance()->DamageToCharacter(other->Cast<Character>(), this);
+	int damage = TakeDamage(other->Cast<Character>());
 
-	
 
 	//ダメージ数値描画をリクエストする
 	ParticleManager::GetInstance()->RequestDamageParticle(CollisionManager::GetInstance()->CheckContactPoint(this->GetShape(), other->GetShape()),{2,2,1},damage);
@@ -93,11 +92,13 @@ void Character::OnDamage(GameObject* other)
  *
  * @return なし
  */
-void Character::TakeDamage(const int& damage)
+int Character::TakeDamage(const Character* attacker)
 {
+	int damage = DamageSystem::GetInstance()->DamageToCharacter(attacker, this);
+
 	if (damage < 0) 
 	{
-		return;
+		return 0;
 	}
 
 	m_currentHp -= damage;
@@ -106,6 +107,8 @@ void Character::TakeDamage(const int& damage)
 	{
 		m_currentHp = 0;
 	}
+
+	return damage;
 }
 
 
@@ -180,7 +183,7 @@ void Character::SetMaxHP(const int& hp)
  *
  * @return 最大HP
  */
-const int Character::GetMaxHP()
+const int Character::GetMaxHP() const
 {
 	return m_hp;
 }
@@ -204,7 +207,7 @@ void Character::SetAttackPower(const int& attack)
  *
  * @return 攻撃力
  */
-const int Character::GetAttackPower()
+const int Character::GetAttackPower() const
 {
 	return m_attackPower;
 }
@@ -232,6 +235,41 @@ const int Character::GetDiffence()
 {
 	return m_diffence;
 }
+
+/**
+ * @brief モーションによる攻撃力補正の取得
+ *
+ * @param[in] なし
+ *
+ * @return モーションによる攻撃力補正
+ */
+void Character::SetMotionAttackRate(const float& rate)
+{
+	m_motionAttackRate = rate;
+}
+
+/**
+ * @brief モーションによる攻撃力補正の取得
+ *
+ * @param[in] なし
+ *
+ * @return モーションによる攻撃力補正
+ */
+const float& Character::GetMotionAttackRate() const
+{
+	return m_motionAttackRate;
+}
+
+DirectX::SimpleMath::Vector3 Character::GetVelocity() const
+{
+	return m_velocity;
+}
+
+void Character::SetVelocity(const DirectX::SimpleMath::Vector3& velocity)
+{
+	m_velocity = velocity;
+}
+
 
 /**
  * @brief 死んでいるか

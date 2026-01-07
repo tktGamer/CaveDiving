@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/10/17
+ * @date   日付　2026/01/05
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -24,23 +24,24 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Bat::Bat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:m_graphics{Graphics::GetInstance()}
-	, Character(40,30,5,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
-	, m_sphere{ GetPosition(), 2.0f } // 初期位置とサイズを設定
-	,m_frameCount{}
-	,m_messageID{}
+Bat::Bat(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+	: Character(BAT_BASE_HP,BAT_BASE_ATTACK,BAT_BASE_DIFFENCE
+				,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
+	, m_sphere{ GetPosition(), BAT_SPHERE_SIZE } // 初期位置とサイズを設定
+	, m_messageID{}
 {
-	SetTexture(ResourceManager::GetInstance()->RequestTexture("bat.png"));
-
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"bat.sdkmesh"));
-
+	//テクスチャ設定
+	SetTexture(ResourceManager::GetInstance()->RequestTexture(ResourcePath::TEXTURE::BAT));
+	//モデル設定
+	SetModel(ResourceManager::GetInstance()->RequestModel(ResourcePath::MODEL::BAT));
+	//当たり判定設定
 	SetShape(&m_sphere);
 
 	//羽オブジェクトの生成
 	m_leftWing = GameObjectFactory::CreateBatWing(this, this,LEFTWING_INIT_POS);
+	//モデルの初期が左羽の向きなので反対向きにする
 	m_rightWing = GameObjectFactory::CreateBatWing(this, this,RIGHTWING_INIT_POS
-	,DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(RIGHT_WING_INIT_DEGREE)));
+	,DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,RIGHT_WING_INIT_ANGLE));
 
 
 
@@ -78,13 +79,14 @@ void Bat::Initialize()
 	//初期状態設定
 	SetState(m_idlingState.get());
 
+	//角度設定
+	SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
+	//大きさ設定
+	SetScale(DirectX::SimpleMath::Vector3::One);
 
-	//SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -8.0f));
-	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	SetScale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f));
-
-	m_currentPosition = m_initialPosition  + GetPosition();
-	m_currentAngle = m_initialAngle * GetQuaternion() ;
+	//現在位置・角度設定
+	SetCurrentPosition(GetInitialPosition() + GetPosition());
+	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion());
 
 }
 
@@ -112,13 +114,16 @@ void Bat::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dire
 	//現在の状態を更新
 	GetState()->Update(elapsedTime);
 
+	//ダメージ演出更新
 	DamageFlashUpdate();
 
-	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
-	m_currentAngle =m_initialAngle * m_motionAngle* GetQuaternion() * currentAngle;
+	//位置の更新
+	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	//角度の更新
+	SetCurrentAngle(GetInitialQuaternion() * m_motionAngle * GetQuaternion() * currentAngle);
 	
 	//当たり判定更新
-	m_sphere.SetCenter(m_currentPosition);
+	m_sphere.SetCenter(GetCurrentPosition());
 
 	//子クラス更新
 	m_leftWing->Update(GetCurrentPosition(), GetCurrentQuaternion());
@@ -147,60 +152,34 @@ void Bat::Draw()
 	}
 
 
-	//現在の状態を描画
-	//GetState()->Render();
-
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
-
-	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Bat::ConstBuffer cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	cbuff.matView = graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
-	cbuff.color.x = GetDamageFlash();
 	ShaderManager* shader = ShaderManager::GetInstance();
+
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+
+	//アウトラインの描画
+	if (Messenger::GetInstance()->IsOutLineActive()) 
+	{
+		OutlineRenderer::Draw(*GetModel(), world, BAT_OUTLINE_THICKNESS);
+	}
+
+	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	ModelShader::ModelCB cbuff;
+	cbuff.matWorld = world.Transpose();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
+	cbuff.flash.x = GetDamageFlash();
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Model), 0, NULL, &cbuff, 0, 0);
 
-
-	OutlineShader::OutlineCB outline;
-	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	outline.matView = graphics->GetViewMatrix().Transpose();
-	outline.matProj = graphics->GetProjectionMatrix().Transpose();
-	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Outline), 0, NULL, &outline, 0, 0);
-
-
-	if (Messenger::GetInstance()->IsOutLineActive()) {
-
-	// モデル描画（アウトライン専用）
-	GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
-		// カリングを FrontFace にして裏面を描画（アウトライン用）
-		context->RSSetState(states->CullCounterClockwise());
-
-		// ブレンド・デプスステート（深度は通常通り or 調整）
-		context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-		context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
-		// アウトラインシェーダを設定
-		ShaderManager::GetInstance()->StartShader(ShaderManager::ShaderType::Outline);
-		context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Outline));
-
-		});
-
-	ShaderManager::GetInstance()->EndShader();
-	}
-
-
+	//モデル描画
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
-
 
 			//	画像用サンプラーの登録
 			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
@@ -224,12 +203,14 @@ void Bat::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
-
+			//シェーダーセット
+			shader->StartShader(ShaderManager::Model);
+			//インプットレイアウトセット
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	ShaderManager::GetInstance()->EndShader();
+	//シェーダー終了
+	shader->EndShader();
 
 	//羽の描画
 	m_leftWing->Draw();
@@ -300,15 +281,22 @@ void Bat::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Player:
 		{
 			// プレイヤーとの衝突処理
-			// ここでは何もしないが、必要に応じて実装
+		}
+		break;
+		case Tag::Enemy:
+		{
+			//敵同士の衝突処理　押し出し
+			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 		}
 		break;
 		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
-			//速度をリセット
-			m_velocity.y = 0.0f;
+			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
+			//Yの速度をリセット
+			DirectX::SimpleMath::Vector3 velocity = GetVelocity();
+			velocity.y = 0.0f;
+			SetVelocity(velocity);
 
 			//攻撃状態なら
 			if (GetState() == m_attackState.get()) 
@@ -320,6 +308,7 @@ void Bat::CollisionResponce(GameObject* other)
 		break;
 		case Tag::ObjectType::Wall: 
 		{
+			//壁に内包されているか
 			if (m_sphere.Contains(other->GetShape()))
 			{
 				break;
@@ -328,15 +317,13 @@ void Bat::CollisionResponce(GameObject* other)
 
 			//ステージ壁との衝突応答　押し出し
 			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere, dynamic_cast<Sphere*>(other->GetShape())));
-
+			
 			m_sphere.SetCenter(GetPosition());
 
-			//速度をリセット
-			//m_velocity.y = 0.0f;
-			//ResetJumpCount();
 
 		}
 		break;
+		//武器と
 		case Tag::ObjectType::Weapon:
 		{
 			Weapon* weapon = other->Cast<Weapon>();
@@ -348,7 +335,7 @@ void Bat::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Light:
 		{
 			//ライトオブジェクトとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
+			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 
 		}
 	default:
@@ -383,23 +370,29 @@ void Bat::ResetFrameCount()
 	m_frameCount = 0.0f;
 }
 
-DirectX::SimpleMath::Vector3 Bat::GetVelocity()
-{
-	return m_velocity;
-}
-
-void Bat::SetVelocity(DirectX::SimpleMath::Vector3 v)
-{
-	m_velocity = v;
-}
 
 
-DirectX::SimpleMath::Quaternion Bat::GetMotionAngle()
+/**
+ * @brief モーション用角度の取得
+ *
+ * @param[in] なし
+ *
+ * @return モーション用角度
+ */
+const DirectX::SimpleMath::Quaternion& Bat::GetMotionAngle() const
 {
 	return m_motionAngle;
 }
 
-void Bat::SetMotionAngle(DirectX::SimpleMath::Quaternion angle)
+
+/**
+ * @brief モーション用角度の設定
+ *
+ * @param[in] angle  モーション用角度
+ *
+ * @return  なし
+ */
+void Bat::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 {
 	m_motionAngle = angle;
 }

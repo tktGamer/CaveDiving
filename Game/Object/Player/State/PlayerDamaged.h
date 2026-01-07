@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/
+ * @date   日付  2026/01/07
  */
 
  // 多重インクルードの防止 =====================================================
@@ -13,7 +13,6 @@
 #ifndef PLAYER_DAMAGED_DEFINED
 #define PLAYER_DAMAGED_DEFINED
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
 // クラスの宣言 ===============================================================
 class Player;
 
@@ -24,20 +23,24 @@ class Player;
 class PlayerDamaged : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
-public:
+private:
+	//ノックバックの力
+	static constexpr float KNOCKBACK_POWER = 25.0f;
+	//ノックバックの時間
+	static constexpr float KNOCKBACK_TIME = 0.5f;
 
 
 // データメンバの宣言 -----------------------------------------------
 private:
 	// プレイヤー
-	Player* m_player;
+	Player* m_pPlayer;
 	
 	//ノックバック時間
-	float m_knockbackTime;
+	float m_knockbackTime = 0.0f;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	PlayerDamaged(Player* soldier);
+	PlayerDamaged(Player* pPlayer);
 	// デストラクタ
 	~PlayerDamaged();
 // 操作
@@ -54,7 +57,12 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 };
 
-#endif		// PLAYER_IDLING_DEFINED
+#endif		// PLAYER_DAMAGED_DEFINED

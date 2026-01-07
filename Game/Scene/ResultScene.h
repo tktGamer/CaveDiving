@@ -3,9 +3,9 @@
  *
  * @brief  リザルトシーンに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/08
  */
 
 // 多重インクルードの防止 =====================================================
@@ -47,7 +47,8 @@ public:
 private:
 	// システム関連
 	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
-
+	//セーブ確認UI
+	bool m_isSaveUIActive = false;
 	// オブジェクト関連
 	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
 

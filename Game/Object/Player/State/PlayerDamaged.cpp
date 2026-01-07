@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/05
+ * @date   日付  2026/01/07
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -19,9 +19,8 @@
  *
  * @param[in] player プレイヤーのポインタ
  */
-PlayerDamaged::PlayerDamaged(Player* player)
-	:m_player{player}
-	,m_knockbackTime{}
+PlayerDamaged::PlayerDamaged(Player* pPlayer)
+	:m_pPlayer{pPlayer}
 {
 }
 /**
@@ -53,15 +52,17 @@ void PlayerDamaged::Initialize()
 void PlayerDamaged::PreUpdate()
 {
 
+	m_knockbackTime = 0.0f;
+
 	//当たった攻撃の方向を考慮してノックバック
-	m_player->SetVelocity(m_player->GetDamageDirection());
-	m_player->SetDamageFlash();
+	m_pPlayer->SetVelocity(m_pPlayer->GetDamageDirection());
+	m_pPlayer->SetDamageFlash();
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -71,31 +72,28 @@ void PlayerDamaged::Update(const float& elapsedTime)
 	// キーボードステートを取得する
 	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
 	m_knockbackTime += elapsedTime;
-	
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
-
-	//重力
-	v.y += -0.8f * elapsedTime;
-
-	m_player->SetVelocity(v);
-
-	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity()* 25.0f*elapsedTime);
-
-
-	if (m_knockbackTime <= 0.5f) 
+	//ノックバックが終わったか
+	if (m_knockbackTime > KNOCKBACK_TIME)
 	{
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::IDLING);
 		return;
 	}
-	else 
-	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
-	}
+
+	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
+
+	//重力
+	velocity.y += World::GRAVITY * elapsedTime;
+
+	m_pPlayer->SetVelocity(velocity);
+	//ノックバックさせる
+	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity()* KNOCKBACK_POWER*elapsedTime);
+
 
 	
 	//回避キーが押されたら回避状態へ遷移
 	if (key->pressed.X) 
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
 
@@ -110,8 +108,7 @@ void PlayerDamaged::Update(const float& elapsedTime)
  */
 void PlayerDamaged::PostUpdate()
 {
-	m_knockbackTime = 0.0f;
-	m_player->SetInvincible(false);
+	m_pPlayer->SetInvincible(false);
 }
 
 /**

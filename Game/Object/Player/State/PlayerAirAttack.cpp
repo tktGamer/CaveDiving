@@ -5,13 +5,14 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/11/19
+ * @date   日付  2026/01/07
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerAirAttack.h"
 #include "Game/Object/Player/Player.h"
+#include"Game/Object/Player/Hand.h"
 #include"Game/Motion/PlayerMotion/PlayerAirSpenningMotion.h"
 #include"Game/Object/Gem/GemManager.h"
 #include"Game/Object/Gem/Unique/AllSpenningAttackGem.h"
@@ -21,18 +22,21 @@
  * @brief コンストラクタ
  *
  * @param[in] player プレイヤーのポインタ
+ * @param[in] pRightHand 右手のポインタ
+ * @param[in] pLeftHand 左手のポインタ
  */
-PlayerAirAttack::PlayerAirAttack(Player* player, Hand* pRightHand, Hand* pLeftHand)
-	:m_player(player)
+PlayerAirAttack::PlayerAirAttack(Player* pPlayer, Hand* pRightHand, Hand* pLeftHand)
+	:m_pPlayer(pPlayer)
 {
-	std::vector<AllSpenningAttackGem*> gems = GemManager::GetInstance()->IsHasGem<AllSpenningAttackGem>();
-	if (gems.size() >= 2) 
+	std::vector<AllSpenningAttackGem*> gems = m_pPlayer->GetHolderGem().IsHasGem<AllSpenningAttackGem>();
+	//所持宝石によって攻撃モーションを変化
+	if (gems.size() >= SPIN_ATTACK_GEM_NUM) 
 	{
-		m_airAttack = std::make_unique<PlayerAirSpenningMotion>(player, pRightHand, pLeftHand);
+		m_airAttack = std::make_unique<PlayerAirSpenningMotion>(pPlayer, pRightHand, pLeftHand);
 	}
 	else
 	{
-		m_airAttack = std::make_unique<PlayerSlamAttackMotion>(player,pRightHand,pLeftHand);
+		m_airAttack = std::make_unique<PlayerSlamAttackMotion>(pPlayer,pRightHand,pLeftHand);
 
 	}
 }
@@ -64,20 +68,20 @@ void PlayerAirAttack::Initialize()
  */
 void PlayerAirAttack::PreUpdate()
 {
-	
-	m_currentAttack = MotionType::PlayerAirAttack::JUMP;
-
+	//モーション初期化
 	m_airAttack->Initialize();
+	//モーションによる攻撃力補正をセット
+	m_pPlayer->SetMotionAttackRate(m_airAttack.get()->GetAttackPowerModifier());
 
 	//ピッケルの当たり判定を有効にする
-	Messenger::GetInstance()->Notify(m_player->GetObjectNumber() + 3, Message::COLLISIONVALID);
+	Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber() + Player::PIKEL_OBJ_NUMBER, Message::COLLISIONVALID);
 
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -94,23 +98,23 @@ void PlayerAirAttack::Update(const float& elapsedTime)
 	}
 
 
-	m_player->SetVelocity(m_player->GetVelocity()*0.8f);
+	m_pPlayer->SetVelocity(m_pPlayer->GetVelocity()*0.8f);
 
 
 	//回避キーが押されたら
 	if (key->pressed.X)
 	{
 		//回避状態へ遷移
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 
-	v.y += -3.0f * elapsedTime;
-	m_player->SetVelocity(v);
+	velocity.y += World::GRAVITY*3 * elapsedTime;
+	m_pPlayer->SetVelocity(velocity);
 
 
-	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
+	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity());
 
 }
 
@@ -124,7 +128,7 @@ void PlayerAirAttack::Update(const float& elapsedTime)
 void PlayerAirAttack::PostUpdate()
 {
 	//ピッケルの当たり判定を無効にする
-	Messenger::GetInstance()->Notify(m_player->GetObjectNumber() + 3, Message::COLLISIONINVALID);
+	Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber() + Player::PIKEL_OBJ_NUMBER, Message::COLLISIONINVALID);
 
 	m_airAttack->Reset();
 

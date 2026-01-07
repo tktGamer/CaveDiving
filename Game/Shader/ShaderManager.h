@@ -12,7 +12,9 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
+#include<unordered_map>
 #include"../Shader/Model/ModelShader.h"
+#include"../Shader/Model/WallShader.h"
 #include"../Shader/UI/UIShader.h"
 #include"../Shader/Fade/FadeShader.h"
 #include"../Shader/Number/Number2DShader.h"
@@ -31,89 +33,13 @@ class ShaderManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	////	データ受け渡し用コンスタントバッファ(送信側)
-	//struct ConstBuffer
-	//{
-	//	DirectX::SimpleMath::Matrix		matWorld;
-	//	DirectX::SimpleMath::Matrix		matView;
-	//	DirectX::SimpleMath::Matrix		matProj;
-	//	DirectX::SimpleMath::Vector4	Light;
-
-	//};
-
-	////	データ受け渡し用コンスタントバッファ(送信側)
-	//struct PointLight
-	//{
-	//	DirectX::SimpleMath::Vector3 LightPosition;      // ライト位置
-	//	float LightInvSqrRadius;  // ライトの届く距離
-	//	DirectX::SimpleMath::Vector3 LightColor;         // ライトカラー
-	//	float LightIntensity = 1.0f;    // ライト強度
-	//	DirectX::SimpleMath::Vector4	Attenuation;
-
-	//};
-
-	//struct LightBuffer 
-	//{
-	//	PointLight pointLights[8];
-	//	int onLightCount;
-	//	DirectX::SimpleMath::Vector3 dammy;
-
-	//};
-
-
-	////データ受け渡し用コンスタントバッファ(送信側)
-	//struct UIConstBuffer
-	//{
-	//	DirectX::SimpleMath::Vector2	windowSize;
-	//	float AlphaData;
-	//	float dammy;
-	//};
-
-	////データ受け渡し用コンスタントバッファ(送信側)
-	//struct NumberConstBuffer
-	//{
-	//	DirectX::SimpleMath::Vector2	windowSize;
-	//	float AlphaData=0;
-	//	float dammy=0;
-	//	DirectX::SimpleMath::Vector4 numberColor;
-	//};
-
-	////データ受け渡し用コンスタントバッファ(送信側)
-	//struct ParticleConstBuffer
-	//{
-	//	DirectX::SimpleMath::Matrix		matWorld;
-	//	DirectX::SimpleMath::Matrix		matView;
-	//	DirectX::SimpleMath::Matrix		matProj;
-	//	DirectX::SimpleMath::Vector4	Light;
-
-	//};
-	////データ受け渡し用コンスタントバッファ(送信側)
-	//struct FadeConstBuffer
-	//{
-	//	DirectX::SimpleMath::Matrix		matWorld;
-	//	DirectX::SimpleMath::Matrix		matView;
-	//	DirectX::SimpleMath::Matrix		matProj;
-	//	float mode;
-	//	float time;
-	//	DirectX::SimpleMath::Vector2 dummy;
-
-	//};
-	////データ受け渡し用コンスタントバッファ(送信側)
-	//struct OutlineConstBuffer
-	//{
-	//	DirectX::SimpleMath::Matrix		matWorld;
-	//	DirectX::SimpleMath::Matrix		matView;
-	//	DirectX::SimpleMath::Matrix		matProj;
-	//	float outlineThickness;
-	//	DirectX::SimpleMath::Vector3 dummy;
-	//};
-
 
 	enum ShaderType 
 	{
 		Model, //モデルシェーダー
 		Item_Model,
 		Rock_Model,
+		Wall_Model,
 		UI,   //UIシェーダー
 		Number2D,
 		Number3D,
@@ -122,13 +48,13 @@ public:
 		Outline,
 	};
 
-	//std::unordered_map<ShaderType, Shader>  shader;
 
 // データメンバの宣言 -----------------------------------------------
 private:
 	// Shaderクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<ShaderManager> s_shader;
 
+	std::unordered_map<ShaderType, Shader*>  m_shaderMap;
 
 	//モデル用シェーダー
 	std::unique_ptr<ModelShader> m_modelShader;
@@ -136,6 +62,11 @@ private:
 	std::unique_ptr<ModelShader> m_itemShader;
 	//岩用シェーダー
 	std::unique_ptr<ModelShader> m_rockShader;
+
+	//カメラとプレイヤーの位置情報バッファ
+	WallShader::CameraToPlayerCB m_cameraToPlayerCB;
+	//壁用シェーダー
+	std::unique_ptr<WallShader> m_wallShader;
 
 	//UI用シェーダー
 	std::unique_ptr<UIShader> m_uiShader;
@@ -156,111 +87,11 @@ private:
 	//アウトライン用シェーダー
 	std::unique_ptr<OutlineShader> m_outlineShader;
 
-	////モデルシェーダーに関する変数-----------------------------------
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_modelCBuffer;
-	//// 入力レイアウト
-	//Microsoft::WRL::ComPtr<ID3D11InputLayout> m_modelInputLayout;
-	////	頂点シェーダ
-	//Microsoft::WRL::ComPtr<ID3D11VertexShader> m_modelVS;
-	////	ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_modelPS;
-	////ジオメトリシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_modelGS;
-
-	////アイテム用ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_itemPS;
-	////モデルシェーダーに関する変数-----------------------------------
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_rockCBuffer;
-	//// 入力レイアウト
-	//Microsoft::WRL::ComPtr<ID3D11InputLayout> m_rockInputLayout;
-	////	頂点シェーダ
-	//Microsoft::WRL::ComPtr<ID3D11VertexShader> m_rockVS;
-	////	ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_rockPS;
-	////ジオメトリシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_rockGS;
-
-	////UIシェーダーに関する変数---------------------------------------
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_UICBuffer;
-	//// 入力レイアウト
-	//Microsoft::WRL::ComPtr<ID3D11InputLayout> m_UIInputLayout;
-	////	頂点シェーダ
-	//Microsoft::WRL::ComPtr<ID3D11VertexShader> m_UIVS;
-	////	ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_UIPS;
-	////ジオメトリシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_UIGS;
-
-	////Numberシェーダーに関する変数---------------------------------------
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_numberCBuffer;
-	//// 入力レイアウト
-	//Microsoft::WRL::ComPtr<ID3D11InputLayout> m_numberInputLayout;
-	////	頂点シェーダ
-	//Microsoft::WRL::ComPtr<ID3D11VertexShader> m_numberVS;
-	////	ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_numberPS;
-	////ジオメトリシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_numberGS;
-
-	////Numberシェーダーに関する変数---------------------------------------
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_number3DCBuffer;
-	//// 入力レイアウト
-	//Microsoft::WRL::ComPtr<ID3D11InputLayout> m_number3DInputLayout;
-	////	頂点シェーダ
-	//Microsoft::WRL::ComPtr<ID3D11VertexShader> m_number3DVS;
-	////	ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_number3DPS;
-	////ジオメトリシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_number3DGS;
-
-	////Particleシェーダーに関する変数---------------------------------------
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_ParticleCBuffer;
-	//// 入力レイアウト
-	//Microsoft::WRL::ComPtr<ID3D11InputLayout> m_ParticleInputLayout;
-	////	頂点シェーダ
-	//Microsoft::WRL::ComPtr<ID3D11VertexShader> m_ParticleVS;
-	////	ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ParticlePS;
-	////ジオメトリシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_ParticleGS;
-
-	////Fadeシェーダーに関する変数---------------------------------------
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_fadeCBuffer;
-	//// 入力レイアウト
-	//Microsoft::WRL::ComPtr<ID3D11InputLayout> m_fadeInputLayout;
-	////	頂点シェーダ
-	//Microsoft::WRL::ComPtr<ID3D11VertexShader> m_fadeVS;
-	////	ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_fadePS;
-	////ジオメトリシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_fadeGS;
-
-	////Outlineシェーダーに関する変数---------------------------------------
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_outlineCBuffer;
-	//// 入力レイアウト
-	//Microsoft::WRL::ComPtr<ID3D11InputLayout> m_outlineInputLayout;
-	////	頂点シェーダ
-	//Microsoft::WRL::ComPtr<ID3D11VertexShader> m_outlineVS;
-	////	ピクセルシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11PixelShader> m_outlinePS;
-	////ジオメトリシェーダ
-	//Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_outlineGS;
-
-	////ライト配列
-	//std::vector<Light*> m_lights;
-
-	//Microsoft::WRL::ComPtr<ID3D11Buffer>	m_lBuffer;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	//	頂点情報関数
-	//static const std::vector<D3D11_INPUT_ELEMENT_DESC> MODEL_INPUT_LAYOUT;
-	//static const std::vector<D3D11_INPUT_ELEMENT_DESC> UI_INPUT_LAYOUT;
-	//static const std::vector<D3D11_INPUT_ELEMENT_DESC> PARTICLE_INPUT_LAYOUT;
-	//static const std::vector<D3D11_INPUT_ELEMENT_DESC> FADE_INPUT_LAYOUT;
-	//static const std::vector<D3D11_INPUT_ELEMENT_DESC> OUTLINE_INPUT_LAYOUT;
-	//static const std::vector<D3D11_INPUT_ELEMENT_DESC> NUMBER_INPUT_LAYOUT;
+	
 	// コンストラクタ
 	ShaderManager();
 	// インスタンスをコピーすることを禁止する
@@ -296,24 +127,16 @@ public:
 public:
 	static  ShaderManager* const GetInstance();
 
+	//カメラとプレイヤーの位置情報バッファ設定
+	void SetCameraToPlayerCB(const WallShader::CameraToPlayerCB& cameraToPlayerCB);
+	//カメラ情報バッファ設定
 	void SetCameraCB(const ParticleShader::CameraCB& cameraCB);
 
 	//インプットレイアウトの取得
 	ID3D11InputLayout* GetInputLayout(ShaderType type);
 	//コンスタントバッファの取得
 	ID3D11Buffer* GetCBuffer(ShaderType type);
-	////シェーダーの取得
-	////モデルの頂点シェーダ
-	//ID3D11VertexShader*   GetModelVS();
-	//ID3D11PixelShader*    GetModelPS();
-	//ID3D11GeometryShader* GetModelGS();
-
-	//ID3D11PixelShader*    GetItemPS();
-	//ID3D11PixelShader*    GetRockPS();
-	////ライト登録
-	//void RegisterLight(Light* light);
-	////ライト解除
-	//void UnRegisterLight();
+	
 
 //　内部操作
 private:
@@ -338,6 +161,7 @@ private:
 	void SetModelShader();
 	void SetItemShader();
 	void SetRockShader();
+	void SetWallShader();
 	//UIシェーダー設定
 	void SetUIShader();
 	//Particleシェーダー設定

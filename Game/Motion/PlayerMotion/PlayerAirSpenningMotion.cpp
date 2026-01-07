@@ -1,16 +1,18 @@
 /**
  * @file   PlayerAirSpenningMotion.cpp
  *
- * @brief  プレイヤーの叩きつけ攻撃のモーションに関するソースファイル
+ * @brief  プレイヤーの空中回転攻撃のモーションに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2025/12/30
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "PlayerAirSpenningMotion.h"
+#include"Game/Object/Player/Hand.h"
+#include"Game/Object/Player/Player.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -21,11 +23,12 @@
  * @param[in] pLeftHand　 左手のポインタ
  */
 PlayerAirSpenningMotion::PlayerAirSpenningMotion(Player* pPlayer, Hand* pRightHand, Hand* pLeftHand)
-	: m_pPlayer{ pPlayer }
+	: AttackMotion{ AIR_SPIN_MOTION_MODIFIER }
+	, m_pPlayer{ pPlayer }
 	, m_pRightHand{ pRightHand }
 	, m_pLeftHand{ pLeftHand }
 {
-
+	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::PLAYER_SPIN));
 }
 
 
@@ -50,11 +53,14 @@ PlayerAirSpenningMotion::~PlayerAirSpenningMotion()
 void PlayerAirSpenningMotion::Initialize()
 {
 	//つるはしを縦向きにさせる
-	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(0.0f)));
+	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 
 	//頭の上に移動させる
-	m_pRightHand->SetPosition(DirectX::SimpleMath::Vector3{ -1.5f,2.0f,0.0f });
-	m_pLeftHand->SetPosition(DirectX::SimpleMath::Vector3{ 1.45f,2.0f,0.0f });
+	m_pRightHand->SetPosition(RIGHT_HAND_POS);
+	m_pLeftHand->SetPosition(LEFT_HAND_POS);
+
+	SetMotionLerp(0.0f);
+	m_sound->Play(false);
 }
 
 
@@ -73,23 +79,24 @@ bool PlayerAirSpenningMotion::Update()
 
 
 	//手のモーションの角度を求める
-	float angle = TKTLib::Lerp(0.0f, -110.0f, motionLerp);
+	float angle = TKTLib::Lerp(HAND_START_MOTION_X_ANGLE, HAND_END_MOTION_X_ANGLE, motionLerp);
 	DirectX::SimpleMath::Quaternion handMotionAngle
-		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(angle));
+		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, angle);
 
 	m_pRightHand->SetMotionAngle(handMotionAngle);
 	m_pLeftHand->SetMotionAngle(handMotionAngle);
 
 	//プレイヤーのモーションの角度を求める
 	m_pPlayer->SetMotionAngle(
-		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, DirectX::XMConvertToRadians(TKTLib::Lerp(0.0f, -360.0f, motionLerp)))
+		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, 
+			TKTLib::Lerp(PLAYER_START_MOTION_X_ANGLE, PLAYER_END_MOTION_X_ANGLE, motionLerp))
 	);
 
-	motionLerp += 5.0f * Messenger::GetInstance()->GetElapsedTime();
+	motionLerp += AIR_SPIN_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
 
-	SetMotionLerp(std::min(motionLerp, 1.0f));
+	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
 
-	if (GetMotionLerp() >= 1.0f)
+	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
 		return true;
 	}
@@ -112,16 +119,15 @@ bool PlayerAirSpenningMotion::Update()
 void PlayerAirSpenningMotion::Reset()
 {
 	//それぞれのオブジェクトを元の位置・角度に戻す
-	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-50.0f)));
-	m_pRightHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	m_pRightHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
+	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, Player::RIGHT_HAND_Z_ANGLE));
+	m_pRightHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
+	m_pRightHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
 
 	m_pLeftHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	m_pLeftHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	m_pLeftHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f, 0.0f, 0.0f });
+	m_pLeftHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
+	m_pLeftHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
 
 	m_pPlayer->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 
-	SetMotionLerp(0.0f);
 }
 

@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付   2025/12/03
+ * @date   日付   2025/01/04
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -25,8 +25,8 @@ std::unique_ptr<GemManager> GemManager::s_gemManager = nullptr;
  * @param[in] なし
  */
 GemManager::GemManager()
-	:m_playerKeepGem{nullptr}
-	,m_pReplacementGem{nullptr}
+	:m_gemList{}
+	
 {
 
 }
@@ -98,7 +98,7 @@ void GemManager::Finalize()
  *
  * @return 宝石のポインタ
  */
-Gem* GemManager::RandomSelection()
+const Gem* GemManager::RandomSelection()
 {
 	if (m_gemList.empty()) 
 	{
@@ -113,55 +113,43 @@ Gem* GemManager::RandomSelection()
 	return m_gemList[randomIndex].get();
 }
 
-
-/**
- * @brief プレイヤーの所持している宝石を保存
- *
- * @param[in] なし
- *
- * @return true  成功
- * @return false  失敗
- */
-bool GemManager::SavePlayerHoldGem()
+bool GemManager::SaveHoldGem(const std::string& savePath, const std::vector<int>& gemID)
 {
 	//書き込み用ファイルストリーム作成
-	std::ofstream outFile("Resources/Data/SavePlayerHoldGems.txt");
-
-	for (int i = 0; i < 3; i++)
-	{
-		//空だったら
-		if (m_playerKeepGem[i] == nullptr)
-		{
-			outFile << -1 << std::endl; // 空データを書き込み
-			continue;
-		}
-
-		outFile << m_playerKeepGem[i]->GetAbility().id << std::endl; // データを書き込み
-
-	}
-
-	outFile.close();
-	return true;
-}
-
-/**
- * @brief プレイヤーの所持している宝石を読み込み
- *
- * @param[in] なし
- *
- * @return true  成功
- * @return false  失敗
- */
-bool GemManager::LoadPlayerHoldGem()
-{
-	//読み込み用ファイルストリーム作成
-	std::ifstream infile("Resources/Data/SavePlayerHoldGems.txt");
-	if (!infile) 
+	std::ofstream outFile(savePath);
+	if (!outFile)
 	{
 		//ファイルが開けなかったため失敗
 		return false;
 	}
 
+	for (int i = 0; i < gemID.size(); i++)
+	{
+
+		// データを書き込み
+		outFile << gemID[i] << std::endl; 
+	
+	}
+	//ファイルを閉じる
+	outFile.close();
+
+	//成功
+	return true;
+}
+
+bool GemManager::LoadHoldGem(const std::string& loadPath, std::vector<int>& gemID)
+{
+	//宝石をID配列を初期化
+	gemID.clear();
+
+	//読み込み用ファイルストリーム作成
+	std::ifstream infile(loadPath);
+	if (!infile) 
+	{
+		//ファイルが開けなかったため失敗
+		return false;
+	}
+	
 	std::string line;
 	while (std::getline(infile, line)) 
 	{
@@ -176,38 +164,15 @@ bool GemManager::LoadPlayerHoldGem()
 			//データをうまく読み込めなかったら次
 			continue;
 		}
-
+	
 		//idと同じ番号の宝石を取得
-		Gem* gem = GetIDNumberedGem(id);
-		if (gem == nullptr) 
-		{
-			//id番の宝石がなかったら次
-			continue;
-		}
-
-		//空いているスロットにセット
-		SetHoldGem(gem);
+		gemID.push_back(id);
+	
 	}
-
+	
 	infile.close();
-
+	
 	return true;
-}
-
-
-/**
- * @brief 所持宝石を空にする
- *
- * @param[in] なし
- *
- * @return なし
- */
-void GemManager::EmptyPlayerHoldGem()
-{
-	for (int i = 0; i < 3; i++) 
-	{
-		m_playerKeepGem[i] = nullptr;
-	}
 }
 
 /**
@@ -242,7 +207,7 @@ Gem::Type GemManager::DecisinType(const std::string& type)
  *
  * @return gem id番の宝石ポインタ
  */
-Gem* GemManager::GetIDNumberedGem(const int& id)
+const Gem* GemManager::GetIDNumberedGem(const int& id)
 {
 	//リストを順番に調べる
 	for (std::unique_ptr<Gem>& gem : m_gemList) 
@@ -259,78 +224,6 @@ Gem* GemManager::GetIDNumberedGem(const int& id)
 }
 
 /**
- * @brief スロットが空いているか
- *
- * @param[in] なし
- *
- * @return true  空いている
- * @return fakse 空いていない
- */
-bool GemManager::IsBlankSlot() const
-{
-	//スロットを確認
-	for (int i = 0; i < 3; i++)
-	{
-		//空だったら
-		if (m_playerKeepGem[i] == nullptr)
-		{
-			return true;
-		}
-
-	}
-
-	return false;
-}
-
-/**
- * @brief プレイヤーに適用する宝石の取得
- *
- * @param[in] なし
- *
- * @return プレイヤーに適応する宝石
- */
-const Gem* const* GemManager::GetPlayerHoldGem() const 
-{
-	return m_playerKeepGem;
-}
-
-/**
- * @brief スロットに宝石を適用する
- *
- * @param[in] pGem
- *
- * @return プレイヤーに適応する宝石
- */
-void GemManager::SetHoldGem(Gem* pGem,int index)
-{
-	for(int i=0; i<3; i++) 
-	{
-		if (m_playerKeepGem[i] == nullptr) 
-		{
-			m_playerKeepGem[i] = pGem;
-			return;
-		}
-		
-	}
-
-	//デフォルト引数でないなら指定要素に代入
-	if (index != -1) 
-	{
-		m_playerKeepGem[index] = pGem;
-	}
-}
-
-void GemManager::SetReplacementGem(Gem* pGem)
-{
-	m_pReplacementGem = pGem;
-}
-
-Gem* GemManager::GetReplacementGem()
-{
-	return m_pReplacementGem;
-}
-
-/**
  * @brief 宝石データの読み込み
  *
  * @param[in] なし
@@ -339,63 +232,6 @@ Gem* GemManager::GetReplacementGem()
  */
 void GemManager::LoadGemData()
 {
-	////パスの生成
-	//std::string path = "Resources/Data/GemData.csv";
-	////ファイルのオープン
-	//std::ifstream ifs{ path };
-	//if (!ifs.is_open())
-	//{
-	//	//読み込み失敗
-	//	return;
-	//}
-
-	//ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-
-	//while (true)
-	//{
-	//	GemData gemData;
-	//	std::string line;
-
-	//	ifs >> gemData.id; //ID
-	//	ifs.ignore(); //カンマを読み飛ばす
-	//	if (gemData.id <= 0)
-	//	{
-	//		//IDが不正な場合は読み飛ばす
-	//		ifs.close();
-	//		//m_playerKeepGem[0] = m_gemList[0].get();
-	//		//m_playerKeepGem[1] = m_gemList[1].get();
-	//		//m_playerKeepGem[2] = m_gemList[2].get();
-
-	//		return;
-	//	}
-	//	//宝石の種類を読み込む
-	//	std::getline(ifs, line, ',');
-	//	gemData.type = line;
-	//	//強化項目を読み込む
-	//	std::getline(ifs, line, ',');
-	//	gemData.item = line;
-	//	//効果を読み込む
-	//	ifs >> gemData.effect;
-	//	ifs.ignore();
-
-	//	//説明文を読み込む
-	//	std::getline(ifs, gemData.description, ','); 
-	//	//画像パスを読み込む
-	//	std::getline(ifs, gemData.gem, '\n'); 
-
-	//	Gem::GemAbility ability = { gemData.id,gemData.type,DecisinType(gemData.item),gemData.effect};
-	//	const wchar_t* gemPath = TKTLib::StringToWchar(gemData.gem);
-	//	Gem::GemImagePath imagePath = { gemPath};
-	//	//宝石データを作成
-	//	m_gemList.emplace_back(std::make_unique<Gem>(ability,imagePath));
-	//}
-	//ifs.close();
-
-	//return;
-
-
-
 	// パスの生成
 	std::string path = "Resources/Data/GemData.csv";
 

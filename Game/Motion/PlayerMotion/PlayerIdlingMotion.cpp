@@ -5,23 +5,25 @@
  *
  * @author 制作者名  福地貴翔
  *　
- * @date   日付　2025/09/05
+ * @date   日付　2025/12/31
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "PlayerIdlingMotion.h"
+#include"Game/Object/Player/Hand.h"
 
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ *
+ * @param[in] pRightHand　右手のポインタ
+ * @param[in] pLeftHand　 左手のポインタ
  */
-PlayerIdlingMotion::PlayerIdlingMotion( Hand* pRightHand, Hand* pLeftHand)
+PlayerIdlingMotion::PlayerIdlingMotion(Hand* pRightHand, Hand* pLeftHand)
 	: m_pRightHand{ pRightHand }
 	, m_pLeftHand{pLeftHand}
-	, m_operate{1}
 {
 
 }
@@ -47,10 +49,7 @@ PlayerIdlingMotion::~PlayerIdlingMotion()
  */
 void PlayerIdlingMotion::Initialize()
 {
-	//真横に向ける
-	//m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f)));
-
-	SetMotionLerp(0.5f);
+	SetMotionLerp(0.0f);
 }
 
 
@@ -70,30 +69,26 @@ bool PlayerIdlingMotion::Update()
 	//今回の角度を計算
 
 	//手を上下に動かす Y軸変化
-	float rightHandY = TKTLib::Lerp(-0.06f, 0.1f, motionLerp);
-	float leftHandY  = TKTLib::Lerp(-0.06f, 0.1f, motionLerp);
-
-	//DirectX::SimpleMath::Quaternion rightHandMotionAngle
-	//	= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(rightHandAngle));
-
-	//DirectX::SimpleMath::Quaternion leftHandMotionAngle
-	//	= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(leftHandAngle));
+	float handPosY = TKTLib::Lerp(MOTION_Y_POS_MIN, MOTION_Y_POS_MAX, motionLerp);
 
 
-	motionLerp += m_operate * Messenger::GetInstance()->GetElapsedTime();
 
+	//
 	DirectX::SimpleMath::Vector3 pos = m_pRightHand->GetPosition();
-	pos.y = rightHandY;
+	pos.y = handPosY;
 	m_pRightHand->SetPosition(pos);
 	pos = m_pLeftHand->GetPosition();
-	pos.y = leftHandY;
+	pos.y = handPosY;
 	m_pLeftHand->SetPosition(pos);
 
+	//モーション進行
+	motionLerp += m_operate * Messenger::GetInstance()->GetElapsedTime();
 
-	SetMotionLerp(std::min(motionLerp,1.0f));
+	SetMotionLerp(std::min(motionLerp,Motion::MOTION_FINISH));
 
-	if (std::abs(GetMotionLerp()) >= 1.0f)
+	if (std::abs(GetMotionLerp()) >= Motion::MOTION_FINISH)
 	{
+		//進行方向を逆にする
 		m_operate *= -1;
 		return true;
 	}
@@ -114,13 +109,5 @@ bool PlayerIdlingMotion::Update()
  */
 void PlayerIdlingMotion::Reset()
 {
-	DirectX::SimpleMath::Vector3 pos = m_pRightHand->GetPosition();
-	pos.y = 0.0f;
-	m_pRightHand->SetPosition(pos);
-	pos = m_pLeftHand->GetPosition();
-	pos.y = 0.0f;
-	m_pLeftHand->SetPosition(pos);
-
-	SetMotionLerp(0.0f);
 }
 

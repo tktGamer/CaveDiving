@@ -191,6 +191,9 @@
     <Filter Include="Game\UI\Number">
       <UniqueIdentifier>{82634e36-ce89-4ef3-9fd7-cd65b8b322d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Particle\Shield">
+      <UniqueIdentifier>{10cb17f5-fb2c-46dd-af65-6f2cafdbb14e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -555,9 +558,6 @@
     <ClInclude Include="Game\Object\Item\UniquItem\OutlineItem.h">
       <Filter>Game\Object\Item\UniquItem</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Item\StatusUpItem.h">
-      <Filter>Game\Object\Item</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Object\Gem\StatusUp\StatusUpGem.h">
       <Filter>Game\Object\Gem\StatusUp</Filter>
     </ClInclude>
@@ -620,6 +620,33 @@
     </ClInclude>
     <ClInclude Include="Game\UI\Result\Score\Score.h">
       <Filter>Game\UI\Result\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Model\WallShader.h">
+      <Filter>Game\Shader\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ResourcePath.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Bloom.h">
+      <Filter>Game\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Gem\Unique\GenerateShieldGem.h">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\Shield\ParticleShield.h">
+      <Filter>Game\Particle\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Particle\Shield\ParticleShieldControl.h">
+      <Filter>Game\Particle\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\World.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Outline\OutlineRenderer.h">
+      <Filter>Game\Shader\Outline</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Player\HolderGem.h">
+      <Filter>Game\Object\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -958,9 +985,6 @@
     <ClCompile Include="Game\Object\Item\UniquItem\OutlineItem.cpp">
       <Filter>Game\Object\Item\UniquItem</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Item\StatusUpItem.cpp">
-      <Filter>Game\Object\Item</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Object\Gem\StatusUp\StatusUpGem.cpp">
       <Filter>Game\Object\Gem\StatusUp</Filter>
     </ClCompile>
@@ -1023,6 +1047,27 @@
     </ClCompile>
     <ClCompile Include="Game\UI\Result\Score\Score.cpp">
       <Filter>Game\UI\Result\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Model\WallShader.cpp">
+      <Filter>Game\Shader\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Bloom.cpp">
+      <Filter>Game\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Gem\Unique\GenerateShieldGem.cpp">
+      <Filter>Game\Object\Gem\Unique</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\Shield\ParticleShield.cpp">
+      <Filter>Game\Particle\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Particle\Shield\ParticleShieldControl.cpp">
+      <Filter>Game\Particle\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Outline\OutlineRenderer.cpp">
+      <Filter>Game\Shader\Outline</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Player\HolderGem.cpp">
+      <Filter>Game\Object\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1144,6 +1189,9 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\NumberShader\3D\Number3DVS.hlsl">
       <Filter>Resources\Shaders\NumberShader\3D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ModelShader\WallPS.hlsl">
+      <Filter>Resources\Shaders\ModelShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

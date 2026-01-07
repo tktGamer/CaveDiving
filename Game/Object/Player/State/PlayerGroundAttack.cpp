@@ -12,6 +12,8 @@
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerGroundAttack.h"
 #include "Game/Object/Player/Player.h"
+#include"Game/Object/Player/Hand.h"
+
 #include"Game//Object//Gem/GemManager.h"
 #include"Game/Object/Gem/Unique/AllSpenningAttackGem.h"
 
@@ -21,17 +23,16 @@
  *
  * @param[in] player プレイヤーのポインタ
  */
-PlayerGroundAttack::PlayerGroundAttack(Player* player, Hand* pRightHand, Hand* pLeftHand)
-	:m_player(player)
+PlayerGroundAttack::PlayerGroundAttack(Player* pPlayer, Hand* pRightHand, Hand* pLeftHand)
+	:m_pPlayer(pPlayer)
 	,m_pRightHand{pRightHand}
 	,m_pLeftHand{pLeftHand}
-	,m_inputTime{0.0f}
 	,m_isNextAttack{false}
 {
 
 	//m_groundCombo.emplace_back(std::make_unique<PlayerSlamAttack>(m_pHand));
 
-	std::vector<AllSpenningAttackGem*> gems = GemManager::GetInstance()->IsHasGem<AllSpenningAttackGem>();
+	std::vector<AllSpenningAttackGem*> gems =  m_pPlayer->GetHolderGem().IsHasGem<AllSpenningAttackGem>();
 
 	if (!gems.empty()) 
 	{
@@ -83,16 +84,18 @@ void PlayerGroundAttack::PreUpdate()
 	m_currentAttack = MotionType::PlayerGroundAttack::COMBO1;
 
 	//ピッケルの当たり判定を有効にする
-	Messenger::GetInstance()->Notify(m_player->GetObjectNumber() + 3, Message::COLLISIONVALID);
+	Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber() + Player::PIKEL_OBJ_NUMBER, Message::COLLISIONVALID);
 
 	//先頭の要素を初期化
 	m_groundCombo.begin()->get()->Initialize();
+	//モーションによる攻撃力補正をセット
+	m_pPlayer->SetMotionAttackRate(m_groundCombo.begin()->get()->GetAttackPowerModifier());
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -128,20 +131,27 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
 		if (m_currentAttack < m_groundCombo.size()) 
 		{
 			m_groundCombo[m_currentAttack]->Initialize();
+			//モーションによる攻撃力補正をセット
+			m_pPlayer->SetMotionAttackRate(m_groundCombo[m_currentAttack]->GetAttackPowerModifier());
 
 		}
 	}
 
 	//一連の攻撃を終わった　入力時間が過ぎたら
-	if (m_currentAttack >= m_groundCombo.size()|| m_inputTime >= 0.3f)
+	if (m_currentAttack >= m_groundCombo.size()|| m_inputTime >= INPUT_TIME)
 	{
 		//待機状態へ遷移
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::IDLING);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::IDLING);
 	}
 
 
+	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 
-	m_player->SetVelocity(m_player->GetVelocity()*0.8f);
+	velocity *= World::GROUND_FRICTION;
+	//重力
+	velocity.y += World::GRAVITY * elapsedTime;
+
+	m_pPlayer->SetVelocity(velocity);
 
 
 
@@ -149,12 +159,12 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
 	if (key->pressed.X)
 	{
 		//回避状態へ遷移
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
 	
-
-	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
+	//移動
+	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity());
 
 }
 
@@ -167,19 +177,13 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
  */
 void PlayerGroundAttack::PostUpdate()
 {
-	//元の手の位置に戻す
-	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-50.0f)));
-	m_pRightHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-
-	m_pLeftHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	m_pLeftHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 	
 
 	//ピッケルの当たり判定を無効にする
-	Messenger::GetInstance()->Notify(m_player->GetObjectNumber() + 3, Message::COLLISIONINVALID);
+	Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber() + Player::PIKEL_OBJ_NUMBER, Message::COLLISIONINVALID);
 
-
-	for (std::unique_ptr<Motion>& groundMotion : m_groundCombo) 
+	//モーションをリセット
+	for (std::unique_ptr<AttackMotion>& groundMotion : m_groundCombo)
 	{
 		groundMotion->Reset();
 	}
@@ -194,11 +198,10 @@ void PlayerGroundAttack::PostUpdate()
  */
 void PlayerGroundAttack::Render()
 {
+#ifdef _DEBUG
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
-
 	debugFont->AddString(L"GroundAttack", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 
-#ifdef _DEBUG
 #endif // DEBUG
 
 }

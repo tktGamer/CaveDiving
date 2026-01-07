@@ -1,30 +1,34 @@
 /**
  * @file   GolemPunchMotion.cpp
  *
- * @brief  の攻撃のモーションに関するソースファイル
+ * @brief  ゴーレムの攻撃のモーションに関するソースファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/05
+ * @date   日付　2025/12/26
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GolemPunchMotion.h"
+#include"Game/Object/Enemy/Golem/Golem.h"
+#include"Game/Object/Enemy/Golem/GolemHand.h"
 
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] pGolem のポインタ
+ * @param[in] pGolem ゴーレムのポインタ
+ * @param[in] pRightGolemHand 右手のポインタ
+ * @param[in] pLeftGolemHand  左手のポインタ
  */
 GolemPunchMotion::GolemPunchMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
-	: m_pGolem{ pGolem }
+	: AttackMotion{GOLEM_PUNCH_MOTION_MODIFIER}
+	, m_pGolem{ pGolem }
 	, m_pRightGolemHand{ pRightGolemHand }
 	, m_pLeftGolemHand{ pLeftGolemHand }
-	,m_coolTime{0.0f}
 {
-	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("golempunch.wav"));
+	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GOLEM_PUNCH));
 }
 
 
@@ -50,7 +54,9 @@ void GolemPunchMotion::Initialize()
 {
 	//スタート位置とゴール位置
 	m_startPosition = m_pRightGolemHand->GetPosition();
-	m_goalPosition = m_pRightGolemHand->GetPosition() + DirectX::SimpleMath::Vector3{ -2.0f,-1.5f,-13.0f };
+	m_goalPosition  = m_startPosition + PUNCH_MOVE;
+
+	SetMotionLerp(0.0f);
 
 	m_attackSound->Play(false);
 }
@@ -75,15 +81,16 @@ bool GolemPunchMotion::Update()
 	m_pRightGolemHand->SetPosition(currentPos);
 
 
-	motionLerp += 2.0f * Messenger::GetInstance()->GetElapsedTime();
+	motionLerp +=  PUNCH_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
 
-	SetMotionLerp(std::min(motionLerp, 1.0f));
+	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
 
 	//モーションが終了したら
-	if (GetMotionLerp() >= 1.0f)
+	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
+		//隙の時間
 		m_coolTime += Messenger::GetInstance()->GetElapsedTime();
-		if (m_coolTime > 0.5f)
+		if (m_coolTime > COOL_TIME)
 		{
 			return true;
 		}
@@ -110,11 +117,9 @@ void GolemPunchMotion::Reset()
 {
 	//それぞれのオブジェクトを元の位置・角度に戻す
 	m_pGolem->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
+	m_pRightGolemHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
+	//前に向けていたのを下に向ける
 	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	m_pRightGolemHand->SetPosition(DirectX::SimpleMath::Vector3{ 0.0f ,0.0f,0.0f });
-	m_pLeftGolemHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-
-
-	SetMotionLerp(0.0f);
+	m_pLeftGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 }
 

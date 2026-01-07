@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2026/01/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -14,7 +14,6 @@
 #define GOLEM_IDLING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
 // クラスの宣言 ===============================================================
 class Golem;
 
@@ -25,7 +24,11 @@ class Golem;
 class GolemIdling : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+private:
+	//遷移までの時間
+	static constexpr float CHANGE_MOVING_TIME = 1.0f;
 public:
+
 // データメンバの宣言 -----------------------------------------------
 private:
 	// ゴーレム
@@ -49,7 +52,12 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 };
 
-#endif		// SOLDIER_IDLING_DEFINED
+#endif		// GOLEM_IDLING_DEFINED

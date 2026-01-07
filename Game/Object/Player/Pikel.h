@@ -30,14 +30,13 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
+	// グラフィックスクラスのポインタ
+	Graphics* m_graphics;	
 
 	// メッセージID
 	Message::MessageID m_messageID;
 
 
-
-	DirectX::SimpleMath::Matrix m_world;
 
 	Ito::DisplayCollision m_display;
 	//当たり判定
@@ -47,7 +46,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Pikel(Character* owner,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Pikel();
@@ -55,13 +54,14 @@ public:
 
 // 操作
 public:
+	//
 	void Initialize();
-
+	//
 	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-
+	//
 	void Draw() override;
-
+	//
 	void Finalize();
 
 	// メッセージを取得する

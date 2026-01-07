@@ -5,15 +5,13 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2026/01/04
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
-#include"../Character.h"
 #include"../Enemy/Bat/Bat.h"
 #include"../Enemy/Golem/Golem.h"
 // クラスの宣言 ===============================================================
@@ -55,13 +53,12 @@ public:
 	void Finalize();
 
 	//敵生成
-	void Spawn();
+	void Spawn(const std::string& spawnData);
 
-	void SpawnBoss();
 //　取得・設定
 public:
 	//敵を取得
-	std::list<std::unique_ptr<Character>>& GetEnemies() { return m_enemies; }
+	const std::list<std::unique_ptr<Character>>& GetEnemies() { return m_enemies; }
 //　内部操作
 private:
 	//敵を消去

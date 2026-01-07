@@ -23,7 +23,7 @@
  * @param[in] initialPosition　初期座標
  * @param[in] initialAngle　　　初期角度
  */
-Pikel::Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Pikel::Pikel(Character* owner, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:m_graphics{Graphics::GetInstance()}
 	, Weapon(owner,Tag::ObjectType::Weapon,parent,initialPosition,initialAngle)
 	, m_messageID{}
@@ -35,6 +35,7 @@ Pikel::Pikel(Character* owner, GameObject* parent, const DirectX::SimpleMath::Ve
 	SetModel(ResourceManager::GetInstance()->RequestModel(L"pikel.sdkmesh"));
 
 	m_sphere.SetEnabled(false);
+	SetShape(&m_sphere);
 
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
@@ -73,17 +74,20 @@ void Pikel::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] currentPosition 親の座標
+ * @param[in] currentAngle    親の角度
  *
  * @return なし
  */
 void Pikel::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	m_currentAngle = GetQuaternion() * currentAngle;
-	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
-
-	m_sphere.SetCenter(m_currentPosition +DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f,1.0f,0.0f),m_currentAngle));
-	SetShape(&m_sphere);
+	//位置の更新
+	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	//角度の更新
+	SetCurrentAngle(GetQuaternion() * currentAngle * GetInitialQuaternion());
+	//当たり判定の更新
+	//位置を調整する
+	m_sphere.SetCenter(GetCurrentPosition() + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f), GetCurrentQuaternion()));
 }
 
 
@@ -105,9 +109,9 @@ void Pikel::Draw()
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(m_currentPosition,m_currentAngle, GetScale());
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Player::ConstBuffer cbuff;
+	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();

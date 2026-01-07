@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/12/03
+ * @date   日付　2025/12/31
  */
 
  // 多重インクルードの防止 =====================================================
@@ -14,7 +14,6 @@
 #define BAT_ATTACK_PREPARING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
 
 #include"Game/Motion/BatMotion/BatAttackPreparingMotion.h"
 // クラスの宣言 ===============================================================
@@ -26,14 +25,16 @@ class Bat;
   */
 class BatAttackPreparing : public IState
 {
-	// クラス定数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
+private:
+
 public:
 
+// データメンバの宣言 -----------------------------------------------
 private:
 	// コウモリのポインタ
 	Bat* m_bat;
-	// グラフィックス
-	Graphics* m_graphics;
+
 	//攻撃準備モーション
 	std::unique_ptr<Motion> m_attackPreparingMotion;
 // メンバ関数の宣言 -------------------------------------------------
@@ -57,8 +58,13 @@ public:
 	void Finalize();
 
 
-	
+//　取得・設定
+public:
+
+//　内部操作
+private:
+
 
 };
 
-#endif		// SOLDIER_IDLING_DEFINED
+#endif		// BAT_ATTACK_PREPARING_DEFINED

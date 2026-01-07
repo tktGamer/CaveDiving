@@ -23,23 +23,27 @@
 #include"Game/UI/Buff/BuffUIControl.h"
 #include"Game/Object/Gem/Unique/HPAutoRecoveryGem.h"
 #include"Game/Object/Gem/StatusUp/FullHPStatusUpGem.h"
+#include"Game/Object/Gem/Unique/GenerateShieldGem.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
  * @param[in] modelParms モデルパラメータ
  */
-Player::Player(BuffUIControl* pBuffUIControl, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: Character(100,20,7,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_velocity{ 0.0f, 0.0f, 0.0f }
 	, m_initialeDirection{ 0.0f, 0.0f, -1.0f }
-	, m_sphere{ GetPosition(), 2.0f }
+	, m_sphere{ GetPosition(), 1.1f }
 	,m_remainingJumpCount{1}
 	,m_motionAngle{}
 	,m_pBuffUIControl{pBuffUIControl}
 {
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
+
+	m_holderGem = std::make_unique<HolderGem>(data.gemID);
+
 }
 
 
@@ -64,8 +68,13 @@ Player::~Player()
 void Player::Initialize()
 {
 	//手の生成
-	std::unique_ptr<Hand> handR = GameObjectFactory::CreateHand(this, this, DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
-	std::unique_ptr<Hand> handL = GameObjectFactory::CreateHand(this, this, DirectX::SimpleMath::Vector3{-1.5f,0.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity);
+	std::unique_ptr<Hand> handR = GameObjectFactory::CreateHand(this, this, 
+		DirectX::SimpleMath::Vector3{ 1.5f,0.0f,0.0f },
+		DirectX::SimpleMath::Quaternion::Identity);
+	handR->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, RIGHT_HAND_Z_ANGLE));
+	std::unique_ptr<Hand> handL = GameObjectFactory::CreateHand(this, this,
+		DirectX::SimpleMath::Vector3{-1.5f,0.0f,0.0f },
+		DirectX::SimpleMath::Quaternion::Identity);
 
 	handR->HaveWeapon(GameObjectFactory::CreatePikle(this, handR.get()));
 
@@ -102,6 +111,8 @@ void Player::Initialize()
 	Messenger::GetInstance()->RegisterLight(m_light.get());
 
 	m_getItemSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(L"getitem.wav"));
+
+
 }
 
 
@@ -109,7 +120,6 @@ void Player::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime     フレーム間時間
  * @param[in] currentPosition 親の座標
  * @param[in] currentAngle    親の角度
  *
@@ -124,41 +134,45 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 
 	//状態の更新
 	GetState()->Update(elapsedTime);
-	//当たり判定の更新
-	m_sphere.SetCenter(currentPosition + GetPosition());
 
 
-	DamageFlashUpdate();
-
-	m_light->Update(currentPosition + GetPosition(), currentAngle * GetQuaternion());
-
-	//取得アイテムの更新
-	UpdateGotItems();
 
 	//現在位置の更新
-	m_currentPosition = m_initialPosition + currentPosition + GetPosition();
+	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
 	//現在角度の更新
-	m_currentAngle =  m_motionAngle * GetQuaternion() *  currentAngle ;
+	SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle * GetInitialQuaternion());
 	
 	//パーツの更新
 	for (std::unique_ptr<GameObject>& part : m_bodyParts)
 	{
-		part->Update(m_currentPosition,m_currentAngle);
+		part->Update(GetCurrentPosition(), GetCurrentQuaternion());
 	}
 
 
+	m_light->Update(GetCurrentPosition(), GetCurrentQuaternion());
 
+	//当たり判定の更新
+	m_sphere.SetCenter(GetCurrentPosition());
+
+	//取得アイテムの更新
+	UpdateGotItems();
+	//ダメージ演出
+	DamageFlashUpdate();
 
 	//HP自動回復の宝石をもっているか
-	std::vector<HPAutoRecoveryGem*> gems = GemManager::GetInstance()->IsHasGem<HPAutoRecoveryGem>();
+	std::vector<HPAutoRecoveryGem*> gems = GetHolderGem().IsHasGem<HPAutoRecoveryGem>();
 	for(HPAutoRecoveryGem* gem : gems)
 	{ 
+		//回復値を取得
 		int healValue = gem->RecoveryHP();
-		if (healValue == 0) 
+		if (healValue == TKTLib::INT_ZERO) 
 		{
 			continue;
 		}
+
+		//HPを回復
 		int currentHp = GetCurrentHP() + healValue;
+		//HPの最大値を超えていたら修正
 		if (currentHp > GetMaxHP()) 
 		{
 			currentHp = GetMaxHP();
@@ -166,8 +180,22 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 		//回復したHPをセット
 		SetCurrentHP(currentHp);
 
+		//回復パーティクル生成
 		ParticleManager::GetInstance()->RequestHPHealParticle(GetCurrentPosition());
 	}
+
+	//盾生成の宝石をもっているか
+	std::vector<GenerateShieldGem*> shieldGems = GetHolderGem().IsHasGem<GenerateShieldGem>();
+
+	for (GenerateShieldGem* shieldGem : shieldGems)
+	{
+		//盾を生成
+		m_invincibleCount += shieldGem->GenerateShield();
+		//
+		ParticleManager::GetInstance()->RequestShieldParticle(GetCurrentPosition());
+
+	}
+
 }
 
 
@@ -190,12 +218,12 @@ void Player::Draw()
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
-	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ModelShader::ModelCB cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	cbuff.matView = graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
+	cbuff.matWorld = world.Transpose();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
 	cbuff.flash.x = GetDamageFlash();
 
 	ShaderManager* shader = ShaderManager::GetInstance();
@@ -203,7 +231,7 @@ void Player::Draw()
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
 
-	Player::OutlineConstBuffer outline;
+	OutlineShader::OutlineCB outline;
 	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	outline.matView = graphics->GetViewMatrix().Transpose();
 	outline.matProj = graphics->GetProjectionMatrix().Transpose();
@@ -281,7 +309,7 @@ void Player::Draw()
 	
 	//Y軸
 	debugFont->AddString(L"AngleY::", DirectX::SimpleMath::Vector2(0.0f, 50.0f));
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_currentAngle.y)), DirectX::SimpleMath::Vector2(100.0f, 50.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentQuaternion().y)), DirectX::SimpleMath::Vector2(100.0f, 50.0f));
 	//現在の体力
 	debugFont->AddString(L"NowHP::", DirectX::SimpleMath::Vector2(0.0f, 100.0f));
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentHP())), DirectX::SimpleMath::Vector2(100.0f, 100.0f));
@@ -301,6 +329,9 @@ void Player::Draw()
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().y)), DirectX::SimpleMath::Vector2(25.0f, 330.0f));
 	debugFont->AddString(L"Z::", DirectX::SimpleMath::Vector2(0.0f, 360.0f));
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().z)), DirectX::SimpleMath::Vector2(25.0f, 360.0f));
+	//ダメージ無効化回数
+	debugFont->AddString(L"InvisibleCount", DirectX::SimpleMath::Vector2(0.0f, 390.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_invincibleCount)), DirectX::SimpleMath::Vector2(180.0f, 390.0f));
 #endif // DEBUG
 
 	//パーツの描画
@@ -383,7 +414,7 @@ void Player::CollisionResponce(GameObject* other)
 				break;
 			}
 
-			DirectX::SimpleMath::Vector3 contactPos = CollisionManager::GetInstance()->CheckContactPoint(dynamic_cast<Sphere*>(GetShape()), dynamic_cast<Sphere*>(other->GetShape()));
+			//DirectX::SimpleMath::Vector3 contactPos = CollisionManager::GetInstance()->CheckContactPoint(dynamic_cast<Sphere*>(GetShape()), dynamic_cast<Sphere*>(other->GetShape()));
 			//ダメージ
 			OnDamage(other);
 
@@ -408,7 +439,7 @@ void Player::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere,GetVelocity()));
+			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 
 			//速度をリセット
 			m_velocity.y = 0.0f;
@@ -439,8 +470,8 @@ void Player::CollisionResponce(GameObject* other)
 
 
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere,dynamic_cast<Sphere*>( other->GetShape())));
-
+			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere ,dynamic_cast<Sphere*>(other->GetShape())));
+			
 			m_sphere.SetCenter(GetPosition());
 
 			//速度をリセット
@@ -476,7 +507,7 @@ void Player::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Light: 
 		{
 			//ライトオブジェクトとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
+			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 			
 			ResetJumpCount();
 
@@ -487,6 +518,18 @@ void Player::CollisionResponce(GameObject* other)
 	}
 }
 
+int Player::TakeDamage(const Character* attacker)
+{	
+	//ダメージを無効化できる回数があるなら無効化
+	if (m_invincibleCount > 0)
+	{
+		//回数減少
+		m_invincibleCount--;
+		return 0;
+	}
+
+	return Character::TakeDamage(attacker);
+}
 
 
 DirectX::SimpleMath::Vector3 Player::GetVelocity()
@@ -506,7 +549,7 @@ void Player::SetVelocity(const DirectX::SimpleMath::Vector3& v)
  *
  * @return 最大HP
  */
-const int Player::GetMaxHP()
+const int Player::GetMaxHP() const
 {
 	return  GemPlusStatus(Gem::Type::HP)+/*ItemBuff(Item::EffectType::HP) +*/ Character::GetMaxHP();
 }
@@ -518,7 +561,7 @@ const int Player::GetMaxHP()
  *
  * @return 攻撃力
  */
-const int Player::GetAttackPower()
+const int Player::GetAttackPower() const
 {
 	return GemPlusStatus(Gem::Type::STR) + ItemBuff(Item::EffectType::Attack) + Character::GetAttackPower();
 }
@@ -572,6 +615,11 @@ DirectX::SimpleMath::Quaternion Player::GetMotionAngle() const
 void Player::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 {
 	m_motionAngle = angle;
+}
+
+const HolderGem& Player::GetHolderGem()
+{
+	return *m_holderGem.get();
 }
 
 
@@ -666,15 +714,15 @@ void Player::ChangeDirection()
  *
  * @return 強化量
  */
-int Player::GemPlusStatus(const Gem::Type type)
+int Player::GemPlusStatus(const Gem::Type type) const
 {
 	//プレイヤーの持つ宝石を管理クラスから取得
-	const Gem* const* holdGems = GemManager::GetInstance()->GetPlayerHoldGem();
+	auto& holdGems = m_holderGem->GetGems();
 	//強化値の合計
 	int total = 0;
 
 	//所持できる数だけ処理する（３回）
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < holdGems.size(); i++)
 	{
 		//空なら飛ばす
 		if (!holdGems[i])
@@ -686,7 +734,7 @@ int Player::GemPlusStatus(const Gem::Type type)
 		if (holdGems[i]->GetAbility().powerUp == type)
 		{
 			//HPが満タンのときに効果を適用する宝石か
-			if (const FullHPStatusUpGem* gem = dynamic_cast<const FullHPStatusUpGem*>(holdGems[i])) 
+			if (const FullHPStatusUpGem* gem = dynamic_cast<const FullHPStatusUpGem*>(holdGems[i].get())) 
 			{
 				//効果を適用していいか判断
 				if (gem->IsApplicable(GetCurrentHP(), GetMaxHP())) 
@@ -714,7 +762,7 @@ int Player::GemPlusStatus(const Gem::Type type)
  *
  * @return 強化量
  */
-int Player::ItemBuff(const Item::EffectType& upStatus)
+int Player::ItemBuff(const Item::EffectType& upStatus) const
 {
 	int total = 0;
 

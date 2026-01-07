@@ -22,7 +22,7 @@
  * @param[in] initialPosition 初期位置
  * @param[in] initialAngle    初期角度
  */
-Wall::Wall(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Wall::Wall(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: GameObject(Tag::ObjectType::Wall,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_graphics{ Graphics::GetInstance() }
@@ -73,7 +73,8 @@ void Wall::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] currentPosition　親の現在位置
+ * @param[in] currentAngle 　  親の現在角度
  *
  * @return なし
  */
@@ -106,12 +107,9 @@ void Wall::Draw()
 	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
 	cbuff.color.x = 0.0f;
-
-	//world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
-	//GetModel()->Draw(context, *states, world, view, proj);
 	
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Wall_Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -137,14 +135,14 @@ void Wall::Draw()
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 
 			//	深度バッファに書き込み参照する
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
+			context->OMSetDepthStencilState(states->DepthNone(), 0);
 
 			//	カリングはなし
-			context->RSSetState(states->CullClockwise());
+			context->RSSetState(states->CullNone());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
+			ShaderManager::GetInstance()->StartShader(ShaderManager::Wall_Model);
 
-			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Wall_Model));
 		});
 	ShaderManager::GetInstance()->EndShader();
 

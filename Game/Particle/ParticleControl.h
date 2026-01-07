@@ -80,7 +80,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 
-	ParticleControl(const std::string& texturePath);
+	ParticleControl(const wchar_t* texturePath);
 
 	virtual ~ParticleControl();
 // 操作

@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/11/15
+ * @date   日付　2026/01/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -14,7 +14,6 @@
 #define GOLEM_ATTACK_PREPARING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
 
 #include"Game/Motion/GolemMotion/GolemPunchPreparingMotion.h"
 #include"Game/Motion/GolemMotion/GolemSlammedDownPreparingMotion.h"
@@ -33,7 +32,9 @@ public:
 private:
 	// ゴーレム
 	Golem* m_golem;
+	//右手のポインタ
 	GolemHand* m_pRightHand;
+	//左手のポインタ
 	GolemHand* m_pLeftHand;
 	//攻撃準備モーション
 	std::unique_ptr<Motion> m_attackPreparingMotion;
@@ -58,12 +59,15 @@ public:
 	// 後処理を行う
 	void Finalize();
 
-	//二点のラジアン角を求める
-	const float CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target);
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 	//攻撃方法を決める
 	void DecideMotion();
 
 };
 
-#endif		// SOLDIER_IDLING_DEFINED
+#endif		// GOLEM_ATTACK_PREPARING_DEFINED

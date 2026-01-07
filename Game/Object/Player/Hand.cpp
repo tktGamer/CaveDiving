@@ -21,9 +21,8 @@
  *
  * @param[in] なし
  */
-Hand::Hand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:m_graphics{Graphics::GetInstance()}
-	, PartObject(root,parent,initialPosition,initialAngle)
+Hand::Hand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+	: PartObject(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
 {
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"hand.png"));
@@ -53,17 +52,6 @@ Hand::~Hand()
  */
 void Hand::Initialize()
 {
-	
-	//m_weapon = GameObjectFactory::CreatePikle(m_parent->Cast<Character>(), this, DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f), DirectX::SimpleMath::Quaternion::Identity);
-
-	//DirectX::SimpleMath::Quaternion q = 
-	//	//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
-	//	//* DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(45.0f))
-	//	 DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, DirectX::XMConvertToRadians(-90.0f));
-	//SetQuaternion(q);
-
-
-
 }
 
 
@@ -72,17 +60,22 @@ void Hand::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] currentPosition 親の座標
+ * @param[in] currentAngle    親の角度
  *
  * @return なし
  */
 void Hand::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	m_currentAngle = GetQuaternion()   * m_motionAngle* currentAngle;
-	m_currentPosition =DirectX::SimpleMath::Vector3::Transform(m_initialPosition+ GetPosition(), m_motionAngle* currentAngle)+ currentPosition ;
+	//現在位置の更新
+	//プレイヤーの周囲のトランスフォームさせ、親の位置分移動
+	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition() + GetPosition(), m_motionAngle * currentAngle)+ currentPosition );
+	//現在角度の更新
+	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle * GetInitialQuaternion());
 	
+	//武器を持っていたら更新
 	if(m_weapon)
-	m_weapon->Update(m_currentPosition, m_currentAngle);
+	m_weapon->Update(GetCurrentPosition(), GetCurrentQuaternion());
 }
 
 
@@ -106,11 +99,12 @@ void Hand::Draw()
 
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Player::ConstBuffer cbuff;
+	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
-	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-	cbuff.color.x = GetRootCharacter()->GetDamageFlash();
+	cbuff.matView = graphics->GetViewMatrix().Transpose();
+	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
+	cbuff.flash.x = GetRootCharacter()->GetDamageFlash();
+
 	OutlineShader::OutlineCB outline;
 	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
 	outline.matView = graphics->GetViewMatrix().Transpose();

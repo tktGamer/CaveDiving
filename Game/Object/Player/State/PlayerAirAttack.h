@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/10/22
+ * @date   日付 2025/01/07
  */
 
  // 多重インクルードの防止 =====================================================
@@ -13,12 +13,10 @@
 #ifndef PLAYER_AIR_ATTACK_DEFINED
 #define PLAYER_AIR_ATTACK_DEFINED
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
-#include"Game/Object/Player/Hand.h"
 #include"Game/Motion/PlayerMotion/PlayerSlamAttackMotion.h"
 // クラスの宣言 ===============================================================
 class Player;
-
+class Hand;
 // クラスの定義 ===============================================================
 /**
   * @brief 攻撃状態
@@ -26,21 +24,16 @@ class Player;
 class PlayerAirAttack : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+private:
+	//攻撃を変化させるために必要な宝石
+	static constexpr int SPIN_ATTACK_GEM_NUM = 2;
 public:
-
 // データメンバの宣言 -----------------------------------------------
 private:
 	// プレイヤー
-	Player* m_player;
-
-	//モーションさせる手
-	Hand* m_pHand;
-
-
-	//現在の攻撃
-	int m_currentAttack;
+	Player* m_pPlayer;
 	//空中での攻撃
-	std::unique_ptr<Motion> m_airAttack;
+	std::unique_ptr<AttackMotion> m_airAttack;
 
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -68,7 +61,12 @@ public:
 	void Finalize();
 
 
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 };
 
-#endif		// PLAYER_IDLING_DEFINED
+#endif		// PLAYER_AIR_ATTACK_DEFINED

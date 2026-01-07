@@ -1,11 +1,11 @@
 /**
  * @file   PlayerGroundAttack.h
  *
- * @brief  プレイヤーの攻撃状態に関するヘッダファイル
+ * @brief  プレイヤーの地上攻撃状態に関するヘッダファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/
+ * @date   日付  2026/01/07
  */
 
  // 多重インクルードの防止 =====================================================
@@ -13,27 +13,28 @@
 #ifndef PLAYER_GOURND_ATTACK_DEFINED
 #define PLAYER_GROUND_ATTACK_DEFINED
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
-#include"Game/Object/Player/Hand.h"
 #include"Game/Motion/PlayerMotion/PlayerFirstAttackMotion.h"
 #include"Game/Motion/PlayerMotion/PlayerSecondAttackMotion.h"
 #include"Game/Motion/PlayerMotion/PlayerThirdAttackMotion.h"
 // クラスの宣言 ===============================================================
 class Player;
-
+class Hand;
 // クラスの定義 ===============================================================
 /**
-  * @brief 攻撃状態
+  * @brief 地上攻撃状態
   */
 class PlayerGroundAttack : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+private:
+	//入力受付時間
+	static constexpr float INPUT_TIME = 0.3f;
 public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
 	// プレイヤー
-	Player* m_player;
+	Player* m_pPlayer;
 	//右手のポインタ
 	Hand* m_pRightHand;  
 	//左手のポインタ
@@ -41,11 +42,11 @@ private:
 
 
 	//現在の攻撃
-	int m_currentAttack;
+	int m_currentAttack = 0;
 	//地上での攻撃
-	std::vector<std::unique_ptr<Motion>> m_groundCombo;
+	std::vector<std::unique_ptr<AttackMotion>> m_groundCombo;
 	//コンボ攻撃入力待機時間
-	float m_inputTime;
+	float m_inputTime = 0.0f;
 	//次の攻撃をするかどうか
 	bool m_isNextAttack; 
 
@@ -53,7 +54,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerGroundAttack(Player* player,Hand* pRightHand, Hand* pLeftHand);
+	PlayerGroundAttack(Player* pPlayer,Hand* pRightHand, Hand* pLeftHand);
 	// デストラクタ
 	~PlayerGroundAttack();
 
@@ -73,8 +74,13 @@ public:
 	// 後処理を行う
 	void Finalize();
 
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 
 };
 
-#endif		// PLAYER_IDLING_DEFINED
+#endif		// PLAYER_GOURND_ATTACK_DEFINED

@@ -17,18 +17,15 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] player プレイヤーのポインタ
+ * @param[in] pPlayer プレイヤーのポインタ
  */
-PlayerIdling::PlayerIdling(Player* player)
-	:m_player(player)
-	,m_graphics{}
+PlayerIdling::PlayerIdling(Player* pPlayer)
+	:m_pPlayer(pPlayer)
 {
-	// グラフィックスを取得する
-	m_graphics = Graphics::GetInstance();
-
+	//モーションを生成
 	m_idlingMotion = std::make_unique<PlayerIdlingMotion>
-		(dynamic_cast<Hand*>( Messenger::GetInstance()->GetObject(player->GetObjectNumber()+1))
-		,dynamic_cast<Hand*>( Messenger::GetInstance()->GetObject(player->GetObjectNumber() + 2)));
+		(dynamic_cast<Hand*>( Messenger::GetInstance()->GetObject(m_pPlayer->GetObjectNumber() + Player::RIGHT_HAND_OBJ_NUMBER)),
+		 dynamic_cast<Hand*>( Messenger::GetInstance()->GetObject(m_pPlayer->GetObjectNumber() + Player::LEFT_HAND_OBJ_NUMBER)));
 }
 /**
  * @brief デストラクタ
@@ -58,17 +55,16 @@ void PlayerIdling::Initialize()
  */
 void PlayerIdling::PreUpdate()
 {
-	DirectX::SimpleMath::Vector3 velocity = m_player->GetVelocity();
-
-	m_player->SetVelocity(DirectX::SimpleMath::Vector3::Zero);
-
+	//速度を初期化
+	m_pPlayer->SetVelocity(DirectX::SimpleMath::Vector3::Zero);
+	//モーションを初期化
 	m_idlingMotion->Initialize();
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -76,39 +72,40 @@ void PlayerIdling::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// キーボードステートを取得する
-	DirectX::Keyboard::KeyboardStateTracker* key = m_graphics->GetKeyboardTracker();
-	
+	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
+	//モーションを更新
 	m_idlingMotion->Update();
 
 	//移動キーが押されたら移動状態へ遷移
 	if (key->GetLastState().Left || key->GetLastState().Right || key->GetLastState().Up || key->GetLastState().Down)
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::MOVING);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::MOVING);
 	}
 	//ジャンプキーが押されたらジャンプ状態へ遷移
 	if (key->pressed.Space) 
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::JUMPING);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::JUMPING);
 	}
 	//攻撃キーが押されたら攻撃状態へ遷移
 	if (key->pressed.Z) 
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::GROUNDATTACK);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::GROUNDATTACK);
 	}
 	//回避キーが押されたら回避状態へ遷移
 	if (key->pressed.X) 
 	{
-		Messenger::GetInstance()->Notify(m_player->GetObjectNumber(), Message::AVOIDANCE);
+		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
-	DirectX::SimpleMath::Vector3 v = m_player->GetVelocity();
+
+	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 	
 	//重力
-	v.y += -0.8f * elapsedTime;
+	velocity.y += World::GRAVITY * elapsedTime;
 
-	m_player->SetVelocity(v);
+	m_pPlayer->SetVelocity(velocity);
 
-	m_player->SetPosition(m_player->GetPosition() + m_player->GetVelocity());
+	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity());
 
 }
 
@@ -121,6 +118,7 @@ void PlayerIdling::Update(const float& elapsedTime)
  */
 void PlayerIdling::PostUpdate()
 {
+	//モーションをリセット
 	m_idlingMotion->Reset();
 }
 
@@ -134,10 +132,10 @@ void PlayerIdling::PostUpdate()
 void PlayerIdling::Render()
 {
 
+#ifdef _DEBUG
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 	
 	debugFont->AddString(L"Idling", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
-#ifdef _DEBUG
 #endif // DEBUG
 
 }

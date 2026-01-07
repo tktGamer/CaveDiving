@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/12/24
  */
 
 // ヘッダファイルの読み込み ===================================================
@@ -48,7 +48,6 @@ GameScene::GameScene()
  */
 GameScene::~GameScene()
 {
-
 }
 
 
@@ -63,6 +62,7 @@ GameScene::~GameScene()
 void GameScene::Initialize()
 {
 	Messenger::GetInstance()->DestroyInstance();
+
 
 	GameData* gameData = GetGameData();
 
@@ -82,25 +82,20 @@ void GameScene::Initialize()
 
 	//オブジェクトの生成--
 	//プレイヤーの生成
-	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), nullptr);
+ 	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(),gameData->GetPlayerData(), nullptr);
 	m_player->SetPosition({ 0.0f,1.55f,0.0f });
 	m_cM->Register(m_player.get());
+
+	//プレイヤーの初期HP設定
+	if (gameData->GetNextStage() != GameData::Stage::FIRST)
+	m_player->SetCurrentHP(gameData->GetScoreInfo().playerCurrentHp);
 
 	//ステージの生成
 	m_stage = GameObjectFactory::CreateStage(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity
 		, GetGameData()->GetIsOnLights(), 10);
 
 	//敵の生成
-	m_enemyManager = std::make_unique<EnemyManager>();
-	if (gameData->GetNextStage() != GameData::Stage::BOSS)
-	{
-		m_enemyManager->Spawn();
-	}
-	if (gameData->GetNextStage() == GameData::Stage::BOSS)
-	{
-		m_enemyManager->SpawnBoss();
-	}
-	gameData->SetIsStageClear(false);
+	SpawnEnemy();
 
 	//カメラの生成
 	m_camera = std::make_unique<Camera>();
@@ -116,7 +111,7 @@ void GameScene::Initialize()
 	m_hpGauge = UIFactory::CreateGauge();
 	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
 	//所持宝石UIの生成
-	m_holdGem = UIFactory::CreateHoldGem();
+	m_holdGem = UIFactory::CreateHoldGem(gameData->GetPlayerData().gemID);
 
 
 
@@ -127,7 +122,8 @@ void GameScene::Initialize()
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
-
+	m_bloomEffect = std::make_unique<Bloom>();
+	m_bloomEffect->Initialize();
 	PreUpdate();
 }
 
@@ -175,25 +171,26 @@ void GameScene::Update(float elapsedTime)
 	m_holdGem->Update();
 	m_buffUI->Update();
 
-	std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
+	const std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
 	m_clearConditionsUI->Update((int)enemies.size());
 
 	//ゲームクリア・ゲームオーバー判定
 	if (traker->pressed.Q || enemies.size() == 0 && !GetGameData()->IsStageClear())
 	{
+		GameData* gameData = GetGameData();
 		ParticleManager::GetInstance()->Reset();
-		if (GetGameData()->GetNextStage() == GameData::Stage::BOSS)
+		if (gameData->GetNextStage() == GameData::Stage::BOSS)
 		{
 			//SaveLight();
-			GetGameData()->SetIsGameClear(true);
+			gameData->SetIsGameClear(true);
 			ChangeScene<GemSelectScene>();
 			return;
 		}
-		GetGameData()->SetNextStage();
+		gameData->SetNextStage();
 		
 		//ステージのライト状況を保存
 		SaveLight();
-		GetGameData()->SetIsStageClear(true);
+		gameData->SetIsStageClear(true);
 		ChangeScene<GemSelectScene>();
 	}
 	else if (!m_player->IsAlive()) 
@@ -218,9 +215,19 @@ void GameScene::Update(float elapsedTime)
 	//衝突判定
 	m_cM->CollisionCheck();
 
+
+	WallShader::CameraToPlayerCB cameraToPlayerCB;
+	cameraToPlayerCB.cameraPos = m_camera->GetEyePos();
+	cameraToPlayerCB.fadeRadius = 5.0f;
+	cameraToPlayerCB.playerPos = m_player->GetCurrentPosition();
+	cameraToPlayerCB.fadestrength = 0.0f;
+
+	ShaderManager::GetInstance()->SetCameraToPlayerCB(cameraToPlayerCB);
+
 	ParticleManager::GetInstance()->Update();
 
 	GetGameData()->AddTime(elapsedTime);
+
 }
 
 
@@ -228,9 +235,7 @@ void GameScene::Update(float elapsedTime)
 /**
  * @brief 描画処理
  *
- * @param[in] context
- * @param[in] states
- * @param[in] proj
+ * @param[in] なし
  *
  * @return なし
  */
@@ -249,6 +254,15 @@ void GameScene::Render()
 	// 画面のサイズを取得
 	RECT rect = Graphics::GetInstance()->GetDeviceResources()->GetOutputSize();
 
+
+
+	WallShader::CameraToPlayerCB cameraToPlayerCB;
+	cameraToPlayerCB.cameraPos = m_camera->GetEyePos();
+	cameraToPlayerCB.fadeRadius = 8.0f;
+	cameraToPlayerCB.playerPos = m_player->GetCurrentPosition();
+	cameraToPlayerCB.fadestrength = 0.0f;
+
+	ShaderManager::GetInstance()->SetCameraToPlayerCB(cameraToPlayerCB);
 
 
 	//レンダーターゲットを変更----------------
@@ -284,11 +298,17 @@ void GameScene::Render()
 	m_basicPostProcess->SetBloomExtractParameter(0.25f);
 	m_basicPostProcess->SetSourceTexture(offScreenSRV);//レンダーターゲットをソースにして作成
 	m_basicPostProcess->Process(context);
+
+	//Pass1で使ったSRVを解除する----------------
+	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };
+	context->PSSetShaderResources(0, 1, nullSRV);
 	//----------------------------------------
 
 	//Pass2 blur1SRVをもとにblur2RTV(blur2SRV)に横にぶれた画像を作成する-----------------
 	auto blur2RTV = m_blur2RT->GetRenderTargetView();
 	auto blur2SRV = m_blur2RT->GetShaderResourceView();
+	
+	
 	//切り替え
 	context->OMSetRenderTargets(1, &blur2RTV, nullptr);
 
@@ -303,6 +323,7 @@ void GameScene::Render()
 	m_basicPostProcess->SetSourceTexture(blur1SRV);
 	m_basicPostProcess->Process(context);
 
+	context->PSSetShaderResources(0, 1, nullSRV);
 	//------------------------------------------------------
 
 	//Pass3 blur2SRVをもとにblur1RTV(blur1SRV)に縦にぶれた画像を作成する-----------------
@@ -320,7 +341,7 @@ void GameScene::Render()
 	m_basicPostProcess->SetSourceTexture(blur2SRV);
 	m_basicPostProcess->Process(context);
 
-
+	context->PSSetShaderResources(0, 1, nullSRV);
 	// -------------------------------------------------------------------------- //
 	// レンダーターゲットとビューポートを元に戻す
 	// -------------------------------------------------------------------------- //
@@ -355,11 +376,12 @@ void GameScene::Render()
 
 	m_dualPostProcess->Process(context);
 
-
+	context->PSSetShaderResources(0, 1, nullSRV);
 	//------------------------------------------------------
 	//---------------------------------------------------------------------------//
 	//通常描画
 	//---------------------------------------------------------------------------//
+    //m_stage->Draw();
 
 
 	m_player->Draw();
@@ -378,6 +400,7 @@ void GameScene::Render()
 
 	ParticleManager::GetInstance()->Render();
 
+
 }
 
 
@@ -391,7 +414,27 @@ void GameScene::Render()
  */
 void GameScene::Finalize()
 {
+	//プレイヤーのデータ保存
 	GetGameData()->SetPlayerCurrentHP(m_player->GetCurrentHP());
+
+	const HolderGem& playerHolderGem = m_player->GetHolderGem();
+
+	GameData::PlayerData saveData;
+	saveData.currentHP = m_player->GetCurrentHP();
+	saveData.maxHP = m_player->GetMaxHP();
+	auto& gems =playerHolderGem.GetGems();
+	saveData.gemID.resize(gems.size());
+	for (int i = 0; i < gems.size(); i++) 
+	{
+		int id = -1;
+		if (gems[i]) 
+		{
+			id = gems[i]->GetAbility().id;
+		}
+		saveData.gemID[i] = id;
+	}
+
+	GetGameData()->SetPlayerData(saveData);
 
 	m_cM->AllRelease();
 	m_player->Finalize();
@@ -405,37 +448,19 @@ void GameScene::Finalize()
 	Messenger::GetInstance()->UnRegisterLight();
 }
 
+
+/**
+ * @brief 
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GameScene::CreateDeviceDependentResources()
 {
 	//std::this_thread::sleep_for(std::chrono::seconds{ 3 });
 	auto device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
 
-	////レンダーテクスチャの作成
-	//m_offScreenRT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);//画像の保存形式の指定
-	//m_offScreenRT->SetDevice(device);
-	//RECT rect = Graphics::GetInstance()->GetDeviceResources()->GetOutputSize();
-	//m_offScreenRT->SetWindow(rect);
-
-
-	////ベーシックエフェクト作成
-	//m_basicPostProcess = std::make_unique<DirectX::BasicPostProcess>(device);
-
-	////レンダーテクスチャの作成
-	////画面サイズを半分にする
-	//rect.right /= 2.0f;
-	//rect.bottom /= 2.0f;
-
-	////ブラーの作成
-	//m_blur1RT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);
-	//m_blur1RT->SetDevice(device);
-	//m_blur1RT->SetWindow(rect);
-
-	//m_blur2RT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);
-	//m_blur2RT->SetDevice(device);
-	//m_blur2RT->SetWindow(rect);
-	//
-	////デュアルポストプロセスの作成
-	//m_dualPostProcess = std::make_unique<DirectX::DualPostProcess>(device);
 }
 
 void GameScene::CreateWindowSizeDependentResources()
@@ -477,6 +502,13 @@ void GameScene::OnDeviceLost()
 }
 
 
+/**
+ * @brief ライトの状態を記録
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GameScene::SaveLight()
 {
 	//ステージのライトを取得
@@ -491,5 +523,26 @@ void GameScene::SaveLight()
 		GetGameData()->SetIsOnLightNumber(it->get()->IsOnLight(), index);
 		index++;
 	}
+}
+
+
+/**
+ * @brief 敵の生成
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void GameScene::SpawnEnemy()
+{
+	GameData* gameData = GetGameData();
+	//敵管理クラスの生成
+	m_enemyManager = std::make_unique<EnemyManager>();
+
+	
+	//敵生成
+	m_enemyManager->Spawn(gameData->GetEnemySpawnDataPath());
+	//クリアフラグを偽に
+	gameData->SetIsStageClear(false);
 }
 

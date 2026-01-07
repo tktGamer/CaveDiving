@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　2025/11/21
+ * @date   日付　2025/12/31
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -16,7 +16,7 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] attackPowerModifier モーションによる攻撃力補正
  */
 AttackMotion::AttackMotion(const float& attackPowerModifier)
 	:m_attackPowerModifier{attackPowerModifier}
@@ -66,7 +66,7 @@ float AttackMotion::GetAttackPowerModifier() const
 /**
  * @brief 攻撃力補正値の設定
  *
- * @param[in] 攻撃力補正値
+ * @param[in] modifier 攻撃力補正値
  *
  * @return なし
  */

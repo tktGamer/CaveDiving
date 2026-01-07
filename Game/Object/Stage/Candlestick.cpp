@@ -34,7 +34,7 @@ CandleStick::CandleStick(const ModelShader::PointLightCB& lightData, GameObject*
 	SetTexture(ResourceManager::GetInstance()->RequestTexture("rock.png"));
 	SetShape(&m_box);
 
-	m_light = std::make_unique<Light>(nullptr, m_initialPosition, m_initialAngle);
+	m_light = std::make_unique<Light>(nullptr, GetInitialPosition(), GetInitialQuaternion());
 	m_light->Initialize();
 
 	m_light->SetLightData(lightData);
@@ -76,17 +76,21 @@ void CandleStick::Initialize(bool isOnLight)
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] currentPosition 親の座標
+ * @param[in] currentAngle    親の角度
  *
  * @return なし
  */
 void CandleStick::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	//位置の更新
+	SetCurrentPosition(GetInitialPosition() + GetPosition() + currentPosition);
+	//角度の更新
+	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion() * currentAngle);
 
-	m_currentAngle =m_initialAngle* GetQuaternion() * currentAngle;
-	m_currentPosition = m_initialPosition + GetPosition() + currentPosition;
-
-	m_light->Update(m_currentPosition, m_currentAngle);
+	//ライトの更新
+	m_light->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	//当たり判定の更新
 	m_box.SetCenter(GetCurrentPosition());
 
 }

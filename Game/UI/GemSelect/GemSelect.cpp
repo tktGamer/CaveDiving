@@ -23,7 +23,7 @@
  * @param[in] height
  * @param[in] pUIManager
  */
-GemSelect::GemSelect(int width, int height, GemSelectUIManager* pUIManager)
+GemSelect::GemSelect(int width, int height,const std::vector<int>& gemID, GemSelectUIManager* pUIManager)
     : m_menuIndex(0)
     , m_windowHeight(height)
     , m_windowWidth(width)
@@ -31,6 +31,7 @@ GemSelect::GemSelect(int width, int height, GemSelectUIManager* pUIManager)
     ,m_pGemManager{GemManager::GetInstance()}
     ,m_pUIManager{pUIManager}
     ,m_pGems{}
+    ,m_gemID{gemID}
 {
     m_cursorSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
     m_decideSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("decidegem.wav"));
@@ -87,35 +88,64 @@ void GemSelect::Update()
         if (m_menuIndex >= 3) 
         {
             m_pUIManager->RequestClearUI();
-            m_pUIManager->SelectFinishNotice();
+            m_pUIManager->SelectFinishNotice(-1);
 
             return;
         }
 
 
         //宝石を選択していたらスロットに空きがあるか確認
-        if (m_pGemManager->IsBlankSlot()) 
+        for (int i = 0; i < m_gemID.size(); i++) 
         {
-            //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
-            if (m_menuIndex < _countof(m_pGems)) 
+            if (m_gemID[i] == -1) 
             {
-                m_decideSound->Play(false);
-                //プレイヤーの所持する宝石に登録
-                m_pGemManager->SetHoldGem(m_pGems[m_menuIndex]);
-                m_pUIManager->SelectFinishNotice();
+                //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
+                if (m_menuIndex < _countof(m_pGems))
+                {
+                    m_decideSound->Play(false);
+                    //プレイヤーの所持する宝石に登録
+                    m_pUIManager->SetHoldGem(m_pGems[m_menuIndex]);
+                    m_pUIManager->SelectFinishNotice(i);
+                }
+
+                break;
+            }
+            //空きがなかったら
+            if (i == m_gemID.size() - 1) 
+            {
+                //空きがなかったら入れ替え確認UI生成
+                m_pUIManager->RequestPushUI(GemSelectUIManager::UI::CHANGECOFIRM);
+
+                //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
+                if (m_menuIndex < _countof(m_pGems))
+                {
+                    m_pUIManager->SetHoldGem(m_pGems[m_menuIndex]);
+                }
+
             }
         }
-        else
-        {
-            //空きがなかったら入れ替え確認UI生成
-            m_pUIManager->RequestPushUI(GemSelectUIManager::UI::CHANGECOFIRM);
-           
-            //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
-            if (m_menuIndex < _countof(m_pGems)) 
-            {
-                m_pGemManager->SetReplacementGem(m_pGems[m_menuIndex]);
-            }
-        }
+        //if (m_gemID[i]IsBlankSlot()) 
+        //{
+        //    //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
+        //    if (m_menuIndex < _countof(m_pGems)) 
+        //    {
+        //        m_decideSound->Play(false);
+        //        //プレイヤーの所持する宝石に登録
+        //        m_pGemManager->SetHoldGem(m_pGems[m_menuIndex]);
+        //        m_pUIManager->SelectFinishNotice();
+        //    }
+        //}
+        //else
+        //{
+        //    //空きがなかったら入れ替え確認UI生成
+        //    m_pUIManager->RequestPushUI(GemSelectUIManager::UI::CHANGECOFIRM);
+        //   
+        //    //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
+        //    if (m_menuIndex < _countof(m_pGems)) 
+        //    {
+        //        m_pGemManager->SetReplacementGem(m_pGems[m_menuIndex]);
+        //    }
+        //}
         
     }
 

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/10/08
+ * @date   日付　2026/01/04
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -111,82 +111,78 @@ void EnemyManager::Finalize()
 /**
  * @brief 敵の生成
  *
- * @param[in] なし
+ * @param[in] spawnData 敵生成データのパス
  *
  * @return なし
  */
-void EnemyManager::Spawn()
+void EnemyManager::Spawn(const std::string& spawnData)
 {
 
-
-	//スポーン位置
-	DirectX::SimpleMath::Vector3 spawnPos = DirectX::SimpleMath::Vector3::Zero;
-
-	//パスの生成
-	std::string path = "Resources/Data/EnemySpawnData.csv";
 	//ファイルのオープン
-	std::ifstream ifs{ path };
+	std::ifstream ifs{ spawnData };
 	if (!ifs.is_open())
 	{
 		//読み込み失敗
 		return;
 	}
+	//読み込んだ文字列を入れる
+	std::string line;
+	//一行飛ばす
+	std::getline(ifs, line);
 
-	ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-
-	while (ifs)
+	while (std::getline(ifs,line))
 	{
-		//敵の種類を読み込む
-		std::string line;
-		std::getline(ifs, line, ',');
-		
-		//座標を読み込む
-		ifs >> spawnPos.x;
-		ifs.ignore(); //カンマを読み飛ばす
-		ifs >> spawnPos.y;
-		ifs.ignore(); //カンマを読み飛ばす
-		ifs >> spawnPos.z;
-		ifs.ignore(); //カンマを読み飛ばす
+		std::stringstream ss(line);
+		//敵の種類
+		std::string type;
+		//座標
+		std::string x, y, z;
+
+		std::getline(ss, type, ',');
+		std::getline(ss, x, ',');
+		std::getline(ss, y, ',');
+		std::getline(ss, z, ',');
+
+		//数値に変換
+		DirectX::SimpleMath::Vector3 spawnPos;
+		spawnPos.x = std::stof(x);
+		spawnPos.y = std::stof(y);
+		spawnPos.z = std::stof(z);
+
 
 
 
 		//読み込んだ種類を生成
-		if (line == "コウモリ") 
+		if (type == "コウモリ")
 		{
+			//生成
 			m_enemies.emplace_back(GameObjectFactory::CreateBat());
-			m_enemies.back()->SetPosition(spawnPos);
-			CollisionManager::GetInstance()->Register(m_enemies.back().get());
-			Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
 		}
-		
-		ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		//読み込んだ種類を生成
+		else if (type == "ゴーレム")
+		{
+			//生成
+			m_enemies.emplace_back(GameObjectFactory::CreateGolem());
+		}
+
+		//座標設定
+		m_enemies.back()->SetPosition(spawnPos);
+		//当たり判定クラスに登録
+		CollisionManager::GetInstance()->Register(m_enemies.back().get());
+		//メッセンジャークラスに登録
+		Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
+
+		//残りを飛ばす
+		//ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	}
+	//ファイルを閉じる
 	ifs.close();
 
 	return;
-}
-
-
-
-/**
- * @brief ボスモンスター生成
- *
- * @param[in] なし
- *
- * @return なし
- */
-void EnemyManager::SpawnBoss()
-{
-	m_enemies.emplace_back(std::make_unique<Golem>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
-	m_enemies.back()->Initialize();
-	m_enemies.back()->SetPosition({ 0.0f, 1.0f, -15.0f });
-	CollisionManager::GetInstance()->Register(m_enemies.back().get());
-	Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
-
 
 }
+
 
 /**
  * @brief 敵の消去
@@ -205,8 +201,9 @@ void EnemyManager::DeleteEnemy()
             // 死亡している場合はリストから削除
             CollisionManager::GetInstance()->UnRegister(it->get());
 
-
+			//消滅パーティクル生成をリクエスト
 			ParticleManager::GetInstance()->RequestVanishParticle((*it)->GetCurrentPosition());
+
             it = m_enemies.erase(it);
         }
         else

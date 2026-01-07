@@ -1,11 +1,11 @@
 /**
  * @file   BatChasing.h
  *
- * @brief  コウモリの移動状態に関するヘッダファイル
+ * @brief  コウモリの追跡状態に関するヘッダファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2025/12/31
  */
 
  // 多重インクルードの防止 =====================================================
@@ -14,7 +14,6 @@
 #define BAT_CHASING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
 // クラスの宣言 ===============================================================
 class Bat;
 class GameObject;
@@ -24,15 +23,23 @@ class GameObject;
   */
 class BatChasing : public IState
 {
-	// クラス定数の宣言 -------------------------------------------------
-public:
+// クラス定数の宣言 -------------------------------------------------
 private:
-	// コウモリ
+	//攻撃範囲
+	static constexpr  float ATTACK_RANGE = 4.5f;
+
+	//追跡速度
+	static constexpr  float CHASE_SPPED = 0.7f;
+public:
+
+// データメンバの宣言 -----------------------------------------------
+private:
+	// コウモリのポインタ
 	Bat* m_bat;
 
 	const GameObject* m_pPlayer;
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	BatChasing(Bat* bat);
@@ -50,9 +57,14 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-//内部処理
+//　取得・設定
+public:
+
+//　内部操作
 private:
-	//二点のラジアン角を求める
-	const float CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target);
+	//移動
+	void Movement();
+	//状態遷移判定
+	void CheckStateTransition();
 };
-#endif		// BAT_IDLING_DEFINED
+#endif		// BAT_CHASING_DEFINED

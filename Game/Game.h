@@ -83,12 +83,12 @@ private:
     // マウスステートトラッカー
     DirectX::Mouse::ButtonStateTracker m_mouseTracker;
 
+    // シーン間で渡すゲームに必要なデータ
+    std::unique_ptr<GameData> m_gameData;
     // マネージャ関連
     ResourceManager* m_resourceManager;    ///< リソースマネージャ
     std::unique_ptr<SceneManager<GameData>>    m_sceneManager;       ///< シーンマネージャ
     GemManager*      m_gemManager;         ///< 宝石マネージャ
     Graphics* m_graphics;  ///< Graphicsクラスのインスタンス
-    // シーンへ渡すユーザー定義のリソースへのポインタ
-    std::unique_ptr<GameData> m_userResources;
 
 };

@@ -14,8 +14,8 @@
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
 #include"../Shader.h"
-class Light;
 // クラスの宣言 ===============================================================
+class Light;
 
 // クラスの定義 ===============================================================
 /**
@@ -32,6 +32,15 @@ public:
 		DirectX::SimpleMath::Matrix		matView;
 		DirectX::SimpleMath::Matrix		matProj;
 		DirectX::SimpleMath::Vector4	flash;
+
+	};
+	//	データ受け渡し用コンスタントバッファ(送信側)
+	struct ItemCB
+	{
+		DirectX::SimpleMath::Matrix		matWorld;
+		DirectX::SimpleMath::Matrix		matView;
+		DirectX::SimpleMath::Matrix		matProj;
+		DirectX::SimpleMath::Vector4	color;
 
 	};
 
@@ -54,6 +63,8 @@ public:
 		DirectX::SimpleMath::Vector3 dammy;
 
 	};
+
+
 
 // データメンバの宣言 -----------------------------------------------
 private:

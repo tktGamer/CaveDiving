@@ -23,7 +23,7 @@
  *
  * @param[in] texturePath テクスチャハンドル
  */
-ParticleVanishControl::ParticleVanishControl(const std::string& texturePath)
+ParticleVanishControl::ParticleVanishControl(const wchar_t* texturePath)
 	:ParticleControl{texturePath}
 {
 

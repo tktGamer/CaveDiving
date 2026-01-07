@@ -14,6 +14,7 @@
 #include<string>
 #include"Game/Common/Graphics.h"
 #include"Game/Common/BinaryFile.h"
+#include"Game/ResourcePath.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================

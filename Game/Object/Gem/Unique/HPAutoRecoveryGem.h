@@ -1,11 +1,11 @@
 /**
  * @file   HPAutoRecoveryGem.h
  *
- * @brief  宝石に関するヘッダファイル
+ * @brief  HP自動回復宝石に関するヘッダファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/08/27
+ * @date   日付  2025/01/04
  */
 
  // 多重インクルードの防止 =====================================================
@@ -17,13 +17,18 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief 宝石
+  * @brief HP自動回復宝石
   */
 class HPAutoRecoveryGem :public Gem
 {
 // クラス定数の宣言 -------------------------------------------------
-public:
+private:
+	//回復なし
+	static constexpr int NO_HEAL = 0;
+	//タイマーリセット
+	static constexpr float RESET = 0.0f;
 
+public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	//回復間隔タイマー
@@ -32,9 +37,8 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	// 宝石の種類と効果値を指定して初期化
-	HPAutoRecoveryGem(int id, std::string type, Type powerUp, int value);
-	HPAutoRecoveryGem(GemAbility ability, GemImagePath image);
+	HPAutoRecoveryGem(const GemAbility& ability, const GemImagePath& image);
+	HPAutoRecoveryGem(const HPAutoRecoveryGem& other) = default;
 
 	// デストラクタ
 	~HPAutoRecoveryGem();
@@ -42,10 +46,14 @@ public:
 
 //操作
 public:
+	//多態コピー
+	std::unique_ptr<Gem> Clone()const override;
+
+	//初期化
 	void Initialize();
-
+	//HP回復
 	int RecoveryHP();
-
+	//終了
 	void Finalize();
 //取得・設定
 public:

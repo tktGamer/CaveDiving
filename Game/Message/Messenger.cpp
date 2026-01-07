@@ -23,8 +23,8 @@ std::unique_ptr<Messenger> Messenger::s_messenger = nullptr;
  * @param[in]‚È‚µ
  */
 Messenger::Messenger()
-	:m_elapsedTime{0.0f}
-	,m_outlineActive{}
+	:m_lights{}
+	,m_objects{}
 {
 }
 
@@ -131,11 +131,25 @@ GameObject* Messenger::GetObject(int objectID)
 
 
 
+/**
+ * @brief ƒ‰ƒCƒg‚ğ“o˜^‚·‚é
+ *
+ * @param[in] light “o˜^‚·‚éƒ‰ƒCƒg‚Ìƒ|ƒCƒ“ƒ^
+ *
+ * @return ‚È‚µ
+ */
 void Messenger::RegisterLight(Light* light)
 {
 	m_lights.push_back(light);
 }
 
+/**
+ * @brief ‚·‚×‚Ä‚Ìƒ‰ƒCƒg‚Ì“o˜^‚ğ‰ğœ‚·‚é
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
 void Messenger::UnRegisterLight()
 {
 	for (auto& light : m_lights)

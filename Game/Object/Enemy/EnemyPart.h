@@ -3,9 +3,9 @@
  *
  * @brief  敵の体の一部に関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔　
  *
- * @date   日付
+ * @date   日付　2026/01/04
  */
 
  // 多重インクルードの防止 =====================================================
@@ -33,7 +33,7 @@ private:
 public:
 	// コンストラクタ
 	EnemyPart(Character* root,
-		 GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	virtual ~EnemyPart();

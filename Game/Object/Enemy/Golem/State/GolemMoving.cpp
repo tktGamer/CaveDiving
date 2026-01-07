@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/11/15
+ * @date   日付 2026/01/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -52,8 +52,9 @@ void GolemMoving::Initialize()
 void GolemMoving::PreUpdate()
 {
 	//８方向から進む方向を決める
-	float directionX = TKTLib::GetRand(-1.0f, 1.0f);
-	float directionZ = TKTLib::GetRand(-1.0f, 1.0f);
+	//進む方向を決める
+	float directionX = TKTLib::GetRand(Character::MOVE::LEFT.x, Character::MOVE::RIGHT.x);
+	float directionZ = TKTLib::GetRand(Character::MOVE::FRONT.z, Character::MOVE::BACK.z);
 
 	DirectX::SimpleMath::Vector3 direction = { directionX,0.0f,directionZ };
 
@@ -67,7 +68,6 @@ void GolemMoving::PreUpdate()
 
 	m_golem->SetQuaternion(rotate);
 
-	//m_golem->SetVelocity(direction);
 
 	//向いている方向に進む
 	m_golem->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 5.0f * Messenger::GetInstance()->GetElapsedTime(), m_golem->GetQuaternion()));
@@ -89,27 +89,11 @@ void GolemMoving::Update(const float& elapsedTime)
 	m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
 	//一定時間経ったら待機状態へ遷移
-	if (m_golem->GetFrameCount() >= 1.5f)
+	if (m_golem->GetFrameCount() >= CHANGE_IDLING_TIME)
 	{
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::IDLING);
 
 	}
-
-
-	////プレイヤーを取得
-	//GameObject* pPlayer = Messenger::GetInstance()->GetObject(0);
-	////プレイヤーか確認
-	//if (pPlayer && pPlayer->GetObjectType() == Tag::Player)
-	//{
-	//	//現在位置とプレイヤーの位置の距離
-	//	DirectX::SimpleMath::Vector3 playerPos = pPlayer->GetCurrentPosition();
-	//	float distance = DirectX::SimpleMath::Vector3::Distance(playerPos, m_golem->GetCurrentPosition());
-	//	//範囲内なら遷移
-	//	if (distance < 15.0f)
-	//	{
-	//		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::CHASING);
-	//	}
-	//}
 
 
 

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/10/27
+ * @date   日付  2025/01/04
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -21,19 +21,11 @@ REGISTER_GEM_CLASS("HPAutoRecoveryGem", HPAutoRecoveryGem);
 /**
  * @brief コンストラクタ
  *
- * @param[in] type  宝石の種類
- * @param[in] powerUp 宝石の強化項目
- * @param[in] value 宝石の効果値
+ * @param[in] ability  宝石の詳細
+ * @param[in] image 　 選択時の画像
  */
-HPAutoRecoveryGem::HPAutoRecoveryGem(int id, std::string type, Type powerUp, int value)
-	:Gem{id,type,powerUp,value}
-	,m_recoveryIntervalTimer{0.0f}
-{
-}
-
-HPAutoRecoveryGem::HPAutoRecoveryGem(GemAbility ability, GemImagePath image)
+HPAutoRecoveryGem::HPAutoRecoveryGem(const GemAbility& ability, const GemImagePath& image)
 	:Gem{ability,image}
-	,m_recoveryIntervalTimer{0.0f}
 {
 }
 
@@ -50,6 +42,11 @@ HPAutoRecoveryGem::~HPAutoRecoveryGem()
 
 
 
+std::unique_ptr<Gem> HPAutoRecoveryGem::Clone() const
+{
+	return std::make_unique<HPAutoRecoveryGem>(*this);
+}
+
 /**
  * @brief 初期化処理
  *
@@ -59,7 +56,8 @@ HPAutoRecoveryGem::~HPAutoRecoveryGem()
  */
 void HPAutoRecoveryGem::Initialize()
 {
-
+	//タイマーリセット
+	m_recoveryIntervalTimer = RESET;
 }
 
 /**
@@ -71,14 +69,15 @@ void HPAutoRecoveryGem::Initialize()
  */
 int HPAutoRecoveryGem::RecoveryHP()
 {
+	//タイマー進行
 	m_recoveryIntervalTimer += Messenger::GetInstance()->GetElapsedTime();
 	//回復間隔に達していなかったら処理を飛ばす
 	if (m_recoveryIntervalTimer <= GetAbility().interval) 
 	{
-		return 0;
+		return NO_HEAL;
 	}
-
-	m_recoveryIntervalTimer = 0.0f;
+	//タイマーリセット
+	m_recoveryIntervalTimer = RESET;
 
 	//回復量を返す
 	return GetAbility().value;

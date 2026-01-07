@@ -18,6 +18,7 @@
 #include"Game/Interface/IState.h"
 #include"Game/Common/Collision/Shape.h"
 #include"Game/Tag.h"
+#include"Game/World.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -60,9 +61,9 @@ private:
 	// モデルの拡大率
 	DirectX::SimpleMath::Vector3 m_scale = { 1.0f,1.0f,1.0f };	
 
-protected:
+
 	// 親オブジェクトへのポインタ
-	GameObject* m_parent; 
+	const GameObject* m_parent; 
 	//初期座標
 	DirectX::SimpleMath::Vector3 m_initialPosition;
 	//初期回転角
@@ -77,7 +78,7 @@ protected:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	GameObject(Tag::ObjectType objectType, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	GameObject(Tag::ObjectType objectType,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	virtual ~GameObject();
@@ -101,7 +102,9 @@ public:
 
 //　取得・設定
 public:
-	
+	//親オブジェクトを取得
+	const GameObject* GetParentObject() const { return m_parent; };
+
 	//テクスチャの設定
 	void SetTexture(ID3D11ShaderResourceView** tex);
 	//テクスチャの取得
@@ -114,6 +117,12 @@ public:
 	void SetQuaternion(const DirectX::SimpleMath::Quaternion& q) { m_quaternion = q; }
 	//拡大率の設定
 	void SetScale(const DirectX::SimpleMath::Vector3& scale) { m_scale = scale; }
+
+	//現在位置の設定
+	void SetCurrentPosition(const DirectX::SimpleMath::Vector3& currentPosition) { m_currentPosition = currentPosition; };
+	//現在角度の設定
+	void SetCurrentAngle(const DirectX::SimpleMath::Quaternion& currentAngle) { m_currentAngle = currentAngle; };
+
 
 	// 当たり判定用の形状を設定
 	void SetShape(Shape* shape) { m_shape = shape; }
@@ -128,14 +137,18 @@ public:
 	const DirectX::SimpleMath::Quaternion& GetQuaternion() { return m_quaternion; }
 	// モデルの拡大率の取得
 	const DirectX::SimpleMath::Vector3& GetScale()  { return m_scale; }
-	//
+	
+	//初期位置の取得
+	const DirectX::SimpleMath::Vector3& GetInitialPosition() const { return m_initialPosition; };
+	//初期角度の取得
+	const DirectX::SimpleMath::Quaternion& GetInitialQuaternion() const { return m_initialAngle; }
+	//現在位置の取得
 	const DirectX::SimpleMath::Vector3& GetCurrentPosition() const { return m_currentPosition; }
+	//現在角度の取得
 	const DirectX::SimpleMath::Quaternion& GetCurrentQuaternion() const { return m_currentAngle; }
 	
 	// オブジェクトの種類を取得する
 	Tag::ObjectType GetObjectType() const; 
-	// グラフィックスクラスのポインタを取得する
-	Graphics* GetGraphics() const; 
 
 	// 状態を取得する
 	IState* GetState() { return m_pCurrentState; }

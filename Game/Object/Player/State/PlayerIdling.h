@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/
+ * @date   日付  2026/01/07
  */
 
  // 多重インクルードの防止 =====================================================
@@ -13,7 +13,7 @@
 #ifndef PLAYER_IDLING_DEFINED
 #define PLAYER_IDLING_DEFINED
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
+
 #include"Game/Motion/PlayerMotion/PlayerIdlingMotion.h"
 // クラスの宣言 ===============================================================
 class Player;
@@ -31,15 +31,13 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	// プレイヤー
-	Player* m_player;
-	// グラフィックス
-	Graphics* m_graphics;
+	Player* m_pPlayer;
 	
 	std::unique_ptr<Motion> m_idlingMotion;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	PlayerIdling(Player* soldier);
+	PlayerIdling(Player* pPlayer);
 	// デストラクタ
 	~PlayerIdling();
 // 操作
@@ -56,6 +54,11 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 };
 

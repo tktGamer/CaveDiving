@@ -26,12 +26,13 @@
  * @param[in] pReplacementGem
  * @param[in] pUIManager
  */
-ChangeGem::ChangeGem(int width, int height, Gem* pReplacementGem, GemSelectUIManager* pUIManager)
+ChangeGem::ChangeGem(int width, int height, const std::vector<int>& gemID,GemSelectUIManager* pUIManager)
     :  m_windowHeight(height)
     , m_windowWidth(width)
     , m_arrow{}
     ,m_menu{}
-    ,m_pReplacementGem{pReplacementGem}
+    ,m_gemID{gemID}
+    ,m_pReplacementGem{nullptr}
     ,m_pUIManager{pUIManager}
 {
 }
@@ -45,6 +46,7 @@ ChangeGem::~ChangeGem()
 
 void ChangeGem::Initialize()
 {
+    m_pReplacementGem = m_pUIManager->GetHoldGem();
     m_arrow = UIFactory::CreateUserInterface(L"arrow.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
     //m_arrow->SetWindowSize(m_windowWidth, m_windowHeight);
     //m_arrow->Create(L"arrow.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
@@ -59,7 +61,7 @@ void ChangeGem::Initialize()
     m_replacementGemUI->SetWindowSize(m_windowWidth, m_windowHeight);
     m_replacementGemUI->Create(m_pReplacementGem->GetImagePath().panel, { 950.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
-    m_holdGemInfo = std::make_unique<HoldGemInfoDraw>(m_windowWidth, m_windowHeight);
+    m_holdGemInfo = std::make_unique<HoldGemInfoDraw>(m_windowWidth, m_windowHeight,m_gemID);
     m_holdGemInfo->Initialize();
 
     m_curremtUI = m_holdGemInfo.get();
@@ -91,8 +93,8 @@ void ChangeGem::Update()
             {
                 //「入れ替える」の場合
             case 0:
-                GemManager::GetInstance()->SetHoldGem(m_pReplacementGem, menuIndex);
-                m_pUIManager->SelectFinishNotice();
+                m_pUIManager->SetHoldGem(m_pReplacementGem);
+                m_pUIManager->SelectFinishNotice(m_holdGemInfo->GetMunuIndex());
                 break;
                 //「入れ替えない」の場合
             case 1:

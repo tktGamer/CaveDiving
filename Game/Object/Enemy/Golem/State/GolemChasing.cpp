@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -65,50 +65,50 @@ void GolemChasing::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
-	DirectX::SimpleMath::Vector3 v = m_golem->GetVelocity();
+	DirectX::SimpleMath::Vector3 velocity = m_golem->GetVelocity();
 
 
 
 	//自分からプレイヤーの角度を求める
-	float radian = CaluculateRadian(m_golem->GetCurrentPosition(), m_pPlayer->GetCurrentPosition());
+	float radian = TKTLib::CaluculateRadian(m_golem->GetCurrentPosition(), m_pPlayer->GetCurrentPosition());
 	//目標の角度
 	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, radian);
 
-	//現在の角度と目標の角度の差分
-	DirectX::SimpleMath::Quaternion diff = rotate - m_golem->GetQuaternion();
 
+	//目標に向かう
+	DirectX::SimpleMath::Vector3 chaseSpeed = Character::MOVE::FRONT * CHASE_SPPED * elapsedTime;
+	velocity += DirectX::SimpleMath::Vector3::Transform(chaseSpeed, rotate);
 
-	v += DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3{ 0.0f,0.0f,-0.65f * elapsedTime }, rotate);
 
 	//プレイヤーが範囲外にでて一定時間経ったら待機状態へ遷移
 	float distance = DirectX::SimpleMath::Vector3::Distance(m_pPlayer->GetCurrentPosition(), m_golem->GetCurrentPosition());
 	//範囲外なら遷移
-	if (distance > 20.0f)
+	if (distance > Golem::CHASE_RANGE)
 	{
+		//待機状態
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::IDLING);
 	}
 	//攻撃範囲に入っていたら攻撃準備状態へ遷移
-	if (distance < 7.0)
+	if (distance < ATTACK_RANGE)
 	{
-		if (TKTLib::GetRand(0, 1) == 0) 
-		{
-			m_golem->SetAttackMessage(Message::AttackMesssage::ATTACKTYPE_ONE);
-		}
-		else
-		{
-			m_golem->SetAttackMessage(Message::AttackMesssage::ATTACKTYPE_TWO);
-
-		}
-
+		//ランダムに攻撃を決める
+		m_golem->SetAttackMessage
+		(
+			static_cast<Message::AttackMesssage>(
+			TKTLib::GetRand(
+			Message::AttackMesssage::ATTACKTYPE_ONE, 
+			Message::AttackMesssage::ATTACKTYPE_TWO))
+		);
+		//攻撃準備状態
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::ATTACKPREPARING);
 
 	}
 
 
-	v *= 0.95f;
-	v.y += -0.8f * elapsedTime;
+	velocity *= World::GROUND_FRICTION;
+	velocity.y += World::GRAVITY * elapsedTime;
 
-	m_golem->SetVelocity(v);
+	m_golem->SetVelocity(velocity);
 
 	m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
@@ -125,6 +125,7 @@ void GolemChasing::Update(const float& elapsedTime)
  */
 void GolemChasing::PostUpdate()
 {
+	//経過時間をリセット
 	m_golem->ResetFrameCount();
 
 }
@@ -153,25 +154,4 @@ void GolemChasing::Render()
  */
 void GolemChasing::Finalize()
 {
-}
-
-/**
- * @brief 二点のラジアン角を求める
- *
- * @param[in] eye    自分
- * @param[in] target 相手
- *
- * @return ラジアン角
- */
-const float GolemChasing::CaluculateRadian(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target)
-{
-
-	//自分から相手の方向
-	DirectX::SimpleMath::Vector3 direction = eye - target;
-	direction.Normalize();
-
-	// X-Z 平面上での角度を計算
-	float angle = std::atan2(direction.x, direction.z);
-
-	return angle;
 }

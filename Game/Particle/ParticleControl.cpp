@@ -21,7 +21,7 @@
  *
  * @param[in] texturePath テクスチャハンドル
  */
-ParticleControl::ParticleControl(const std::string& texturePath)
+ParticleControl::ParticleControl(const wchar_t* texturePath)
 	: m_timerAndPos{}
 	, m_vertices{}
 {

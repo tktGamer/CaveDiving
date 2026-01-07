@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/11/15
+ * @date   日付 2026/01/03
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -67,29 +67,24 @@ void GolemDamaged::Update(const float& elapsedTime)
 
 	DirectX::SimpleMath::Vector3 velocity = m_golem->GetVelocity();
 	//重力
-	velocity.y += -0.8f * elapsedTime;
+	velocity.y += World::GRAVITY * elapsedTime;
 
 	//一定時間経過したら移動状態へ遷移
-	if (m_golem->GetFrameCount() > 1.5f)
+	if (m_golem->GetFrameCount() > CHANGE_IDLING_TIME)
 	{
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::IDLING);
 	}
 	//ノックバック時間
-	else if (m_golem->GetFrameCount() < 0.5f)
+	else if (m_golem->GetFrameCount() < KNOCKBACK_TIME)
 	{
 		m_golem->SetVelocity(velocity);
 		//位置更新
-		m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity() * 15.0f * elapsedTime);
+		m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity() * KNOCKBACK_POWER * elapsedTime);
 	}
 
+	m_golem->SetVelocity(velocity);
 
-	//DirectX::SimpleMath::Vector3 v = m_golem->GetVelocity();
-	//
-	//v.y += -0.8f * elapsedTime;
-
-	//m_golem->SetVelocity(v);
-
-	//m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
+	m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
 }
 
@@ -102,6 +97,7 @@ void GolemDamaged::Update(const float& elapsedTime)
  */
 void GolemDamaged::PostUpdate()
 {
+	//経過時間リセット
 	m_golem->ResetFrameCount();
 
 	m_golem->SetInvincible(false);

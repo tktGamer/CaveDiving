@@ -1,11 +1,11 @@
 /**
  * @file   BatDamaged.cpp
  *
- * @brief  コウモリの待機状態に関するソースファイル
+ * @brief  コウモリのダメージをくらった状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/02
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -23,6 +23,7 @@ BatDamaged::BatDamaged(Bat* bat)
 	:m_bat(bat)
 	,m_damageMotion{}
 {
+	//モーションを生成
 	m_damageMotion = std::make_unique<BatDamageMotion>(m_bat);
 
 }
@@ -55,50 +56,46 @@ void BatDamaged::Initialize()
  */
 void BatDamaged::PreUpdate()
 {
+	//モーションを初期化
 	m_damageMotion->Initialize();
 
+	//ノックバックさせる
 	m_bat->SetVelocity(m_bat->GetDamageDirection());
+	//白く点滅
 	m_bat->SetDamageFlash();
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
 void BatDamaged::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-
+	//モーションを更新
 	m_damageMotion->Update();
 
 	DirectX::SimpleMath::Vector3 velocity= m_bat->GetVelocity();
 	//重力
-	velocity.y += -0.8f * elapsedTime;
+	velocity.y += World::GRAVITY * elapsedTime;
 
 	//一定時間経過したら移動状態へ遷移
-	if (m_bat->GetFrameCount() > 1.5f) 
+	if (m_bat->GetFrameCount() > CHANGE_IDLING_TIME) 
 	{
+		//待機状態へ遷移
 		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::IDLING);
 	}
 	//ノックバック時間
-	else if (m_bat->GetFrameCount() < 0.5f)
+	else if (m_bat->GetFrameCount() < KNOCKBACK_TIME)
 	{
 		m_bat->SetVelocity(velocity);
 		//位置更新
-		m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity() * 15.0f * elapsedTime);
+		m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity() * KNOCKBACK_POWER * elapsedTime);
 	}
 
-
-	//DirectX::SimpleMath::Vector3 v = m_bat->GetVelocity();
-	//
-	//v.y += -0.8f * elapsedTime;
-
-	//m_bat->SetVelocity(v);
-
-	//m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
 
 }
 
@@ -111,10 +108,11 @@ void BatDamaged::Update(const float& elapsedTime)
  */
 void BatDamaged::PostUpdate()
 {
+	//経過時間をリセット
 	m_bat->ResetFrameCount();
-
+	//無敵状態を解除
 	m_bat->SetInvincible(false);
-
+	
 	m_damageMotion->Reset();
 }
 

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/10/17
+ * @date   日付　2026/01/03
  */
 
  // 多重インクルードの防止 =====================================================
@@ -23,6 +23,10 @@
 class Wing : public EnemyPart
 {
 // クラス定数の宣言 -------------------------------------------------
+private:
+	//羽のアウトラインの太さ
+	static constexpr  float BAT_WING_OUTLINE_THICKNESS = 0.04f;
+
 public:
 
 
@@ -35,7 +39,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Wing(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Wing(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Wing();
@@ -65,8 +69,8 @@ public:
 public:
 	
 
-	DirectX::SimpleMath::Quaternion GetMotionAngle();
-	void SetMotionAngle(DirectX::SimpleMath::Quaternion angle);
+	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
+	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
 //　内部操作
 private:
 

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025//11//26
+ * @date   日付　2026/01/05
  */
 
  // 多重インクルードの防止 =====================================================
@@ -26,14 +26,6 @@ class OutlineItem : public Item
 public:
 
 
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix	 matWorld;
-		DirectX::SimpleMath::Matrix	 matView;
-		DirectX::SimpleMath::Matrix	 matProj;
-		DirectX::SimpleMath::Vector4 color;
-	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -42,31 +34,23 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	OutlineItem(Item::EffectType effect,int increase,
-		GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	OutlineItem(const Item::ItemInfo& info,
+		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
-	virtual ~OutlineItem();
+	~OutlineItem();
 
 
 // 操作
 public:
-	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
-
-	//描画
-	void Draw() override;
-
-	// メッセージを取得する
-	void OnMessegeAccepted(Message::MessageID messageID);
-
-	//衝突応答分岐
-	void CollisionResponce(GameObject* other);
 
 //　取得・設定
 public:
 
 //　内部操作
 private:
+protected:
+	//アイテムがゲットされたときの追加処理
+	void OnItemGetExtra(const GameObject* other) override;
 };
 

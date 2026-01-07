@@ -13,7 +13,6 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
-#include"../Item/StatusUpItem.h"
 #include"../Item/UniquItem/OutlineItem.h"
 // クラスの宣言 ===============================================================
 
@@ -26,36 +25,18 @@ class ItemManager
 // クラス定数の宣言 -------------------------------------------------
 public:
 	static  std::unordered_map<Item::EffectType, DirectX::SimpleMath::Vector3> ITEM_COLOR;
+	//アイテムデータのリスト
+	using  ItemMap = std::unordered_map<int, Item::ItemInfo>;
 	
-	//アイテムデータ項目
-	struct ItemData
-	{
-		// ID
-		int id = 0;
-		// 種類
-		std::string type;
-		//強化項目
-		std::string item;
-		// 効果
-		int			effect = 0;
-		//効果適用間隔
-		int interval;
-
-
-		//宝石の画像パス
-		std::string  gem;
-		//名前の画像パス
-		std::string  name;
-		//説明の画像パス
-		std::string  explanation;
-
-	};
+	static constexpr char ATTACK[] = "攻撃力";
+	static constexpr char DIFFENCE[] = "防御力";
+	static constexpr char OUTLINE[] = "アウトライン";
 
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	// グラフィックスクラスのポインタ
-	Graphics* m_graphics;	
+	//アイテムのデータ
+	ItemMap m_itemInfoList;
 
 	//アイテムリスト
 	std::list<std::unique_ptr<Item>> m_items;
@@ -92,5 +73,7 @@ public:
 private:
 	//アイテムを消去
 	void DeleteItem();
+
+	void LoadItemData();
 };
 

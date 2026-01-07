@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/10/22
+ * @date   日付　2025/01/04
  */
 
  // 多重インクルードの防止 =====================================================
@@ -58,13 +58,8 @@ private:
 
 
 	// 宝石の配列
-	std::vector<std::unique_ptr<Gem>> m_gemList;	
+	std::vector<std::unique_ptr<Gem>> m_gemList;
 
-	//プレイヤーの持つジェム
-	Gem* m_playerKeepGem[PLAYER_HOLD_GEM_NUM];
-
-	//入れ替え予定の宝石
-	Gem* m_pReplacementGem;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -99,60 +94,21 @@ public:
 	void Finalize();
 
 	//ランダムに宝石を取得する
-	Gem* RandomSelection();
+	const Gem* RandomSelection();
 
-	//プレイヤーの所持している宝石を外部ファイルに保存
-	bool SavePlayerHoldGem();
+	//所持している宝石を外部ファイルに保存
+	bool SaveHoldGem(const std::string& savePath, const std::vector<int>& gemID);
 
-	//プレイヤーの所持している宝石を外部ファイルから読み込み
-	bool LoadPlayerHoldGem();
-
-	//プレイヤーの所持している宝石を空にする
-	void EmptyPlayerHoldGem();
+	//所持している宝石を外部ファイルから読み込み
+	bool LoadHoldGem(const std::string& loadPath, std::vector<int>& gemID);
 //　取得・設定
 public:
 	//id番の宝石を取得
-	Gem* GetIDNumberedGem(const int& id);
+	const Gem* GetIDNumberedGem(const int& id);
 
-	//空のスロットがあるか
-	bool IsBlankSlot() const;
-
-	//プレイヤーの持つ宝石を取得
-	const Gem* const* GetPlayerHoldGem() const;
-
-	//指定の宝石をもっているか
-	template<typename T>
-	std::vector<T*>  IsHasGem();
-
-	//プレイヤーの持つ宝石をセット
-	void SetHoldGem(Gem* pGem, int index=-1);
-
-	//入れ替え先の宝石の設定
-	void SetReplacementGem(Gem* pGem);
-
-	//入れ替え先の宝石の取得
-	Gem* GetReplacementGem();
 //　内部操作
 private:
 	//宝石の種類を決定する
 	Gem::Type DecisinType(const std::string& type);
 };
 
-template<typename T>
-inline std::vector<T*> GemManager::IsHasGem()
-{
-	std::vector<T*> result;
-
-	for (int i = 0; i < PLAYER_HOLD_GEM_NUM; ++i)
-	{
-		if (auto gem = m_playerKeepGem[i])
-		{
-			if (auto targetGem = dynamic_cast<T*>(gem))
-			{
-				//T型のGemを追加
-				result.push_back(targetGem);
-			}
-		}
-	}
-	return result;
-}

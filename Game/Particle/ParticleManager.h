@@ -19,6 +19,7 @@
 #include"../Particle/ItemGet/ParticleItemGetControl.h"
 #include"../Particle/Damage/ParticleDamageControl.h"
 #include"../Particle/HPHeal/ParticleHPHealControl.h"
+#include"../Particle/Shield/ParticleShieldControl.h"
 // クラスの宣言 ===============================================================
 class Camera;
 // クラスの定義 ===============================================================
@@ -37,6 +38,7 @@ public:
 		ItemGet,
 		Hit,
 		HPHeal,
+		Shield,
 		Num
 	};
 // データメンバの宣言 -----------------------------------------------
@@ -45,7 +47,7 @@ private:
 	static std::unique_ptr<ParticleManager> s_particleManager;
 
 	//カメラクラスポインタ
-	Camera* m_pCamera;
+	const Camera* m_pCamera;
 	
 	//消滅パーティクルの管理クラス
 	std::unique_ptr<ParticleVanishControl> m_particleVanishControl;
@@ -59,6 +61,8 @@ private:
 	std::unique_ptr<ParticleDamageControl> m_particleDamageControl;
 	//HP回復パーティクルの管理クラス
 	std::unique_ptr<ParticleHPHealControl> m_particleHPHealControl;
+	//盾パーティクルの管理クラス
+	std::unique_ptr<ParticleShieldControl> m_particleShieldControl;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 private:
@@ -117,11 +121,14 @@ public:
 	void RequestHPHealParticle(
 		const DirectX::SimpleMath::Vector3& pos//パーティクルの発生位置
 	);
-
+	//盾パーティクル生成
+	void RequestShieldParticle(
+		const DirectX::SimpleMath::Vector3& pos//パーティクルの発生位置
+		);
 //　取得・設定
 public:
 	//カメラオブジェクトの設定
-	void SetCamera(Camera* pCamera);
+	void SetCamera(const Camera* pCamera);
 //内部処理
 private:
 

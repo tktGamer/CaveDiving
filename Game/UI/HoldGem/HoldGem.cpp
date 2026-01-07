@@ -20,7 +20,7 @@
  * @param[in] width
  * @param[in] height
  */
-HoldGem::HoldGem(int width, int height)
+HoldGem::HoldGem(int width, int height, const std::vector<int>& gemID)
     : m_menuIndex(0)
     , m_windowHeight(height)
     , m_windowWidth(width)
@@ -28,9 +28,7 @@ HoldGem::HoldGem(int width, int height)
     ,m_position{80,680}
     ,m_scale{1.0f,1.0f}
     ,m_gemTexturePath{}
-    ,m_pGems{}
 {
-   
 }
 
 HoldGem::~HoldGem()
@@ -48,12 +46,10 @@ void HoldGem::Initialize()
     Add(L"slot.png",m_position ,m_scale, UserInterface::MIDDLE_CENTER);
 
 
-    ChangeDrawGem();
 }
 
 void HoldGem::Update()
 {
-    ChangeDrawGem();
 }
 
 void HoldGem::Render()
@@ -105,78 +101,109 @@ void HoldGem::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Di
     
 }
 
-void HoldGem::ChangePositon(const DirectX::SimpleMath::Vector2& pos)
+void HoldGem::ChangeDrawGem(const std::vector<int>& gemID)
 {
-    m_position = pos;
-
-}
-
-void HoldGem::ChangeScale(const DirectX::SimpleMath::Vector2& scale)
-{
-    m_scale = scale;
-
-}
-
-void HoldGem::ChangeDrawGem()
-{
-    const Gem* const* pGems = m_pGemManager->GetPlayerHoldGem();
-
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < gemID.size(); i++)
     {
-        if (pGems[i])
+        const Gem* pGem = GemManager::GetInstance()->GetIDNumberedGem(gemID[i]);
+        if (pGem)
         {
-            if (pGems[i]->GetAbility().type == "エメラルド") 
+            if (pGem->GetAbility().type == "エメラルド")
             {
                 m_gemUI[i]->SetTexture(L"Gem/emerald.png");
 
             }
-            else if (pGems[i]->GetAbility().type == "ルビー") 
+            else if (pGem->GetAbility().type == "ルビー")
             {
                 m_gemUI[i]->SetTexture(L"Gem/ruby.png");
 
             }
-            else if (pGems[i]->GetAbility().type == "サファイア") 
+            else if (pGem->GetAbility().type == "サファイア")
             {
                 m_gemUI[i]->SetTexture(L"Gem/sapphire.png");
 
             }
-            else if (pGems[i]->GetAbility().type == "トパーズ") 
+            else if (pGem->GetAbility().type == "トパーズ")
             {
                 m_gemUI[i]->SetTexture(L"Gem/topaz.png");
 
             }
-            else if (pGems[i]->GetAbility().type == "アメジスト") 
+            else if (pGem->GetAbility().type == "アメジスト")
             {
                 m_gemUI[i]->SetTexture(L"Gem/amethyst.png");
 
             }
-            else if (pGems[i]->GetAbility().type == "アクアマリン") 
+            else if (pGem->GetAbility().type == "アクアマリン")
             {
                 m_gemUI[i]->SetTexture(L"Gem/ aquamarine.png");
 
             }
-            else if (pGems[i]->GetAbility().type == "モルガナイト") 
+            else if (pGem->GetAbility().type == "モルガナイト")
             {
                 m_gemUI[i]->SetTexture(L"Gem/morganite.png");
 
             }
 
-            //switch (pGems[i]->GetAbility().type)
-            //{
-            //case "エメラルド":
-            //    break;
-            //case Gem::Type::STR:
-            //    m_gemUI[i]->SetTexture(L"Gem/ruby.png");
-            //    break;
-            //case Gem::Type::DEF:
-            //    m_gemUI[i]->SetTexture(L"Gem/sapphire.png");
-            //    break;
-            //case Gem::Type::UNIQUE:
-            //    break;
-
-            //}
         }
     }
+
+}
+
+void HoldGem::ChangeDrawGem(const std::vector<Gem*>& gems)
+{
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (gems[i])
+        {
+            if (gems[i]->GetAbility().type == "エメラルド")
+            {
+                m_gemUI[i]->SetTexture(L"Gem/emerald.png");
+
+            }
+            else if (gems[i]->GetAbility().type == "ルビー")
+            {
+                m_gemUI[i]->SetTexture(L"Gem/ruby.png");
+
+            }
+            else if (gems[i]->GetAbility().type == "サファイア")
+            {
+                m_gemUI[i]->SetTexture(L"Gem/sapphire.png");
+
+            }
+            else if (gems[i]->GetAbility().type == "トパーズ")
+            {
+                m_gemUI[i]->SetTexture(L"Gem/topaz.png");
+
+            }
+            else if (gems[i]->GetAbility().type == "アメジスト")
+            {
+                m_gemUI[i]->SetTexture(L"Gem/amethyst.png");
+
+            }
+            else if (gems[i]->GetAbility().type == "アクアマリン")
+            {
+                m_gemUI[i]->SetTexture(L"Gem/ aquamarine.png");
+
+            }
+            else if (gems[i]->GetAbility().type == "モルガナイト")
+            {
+                m_gemUI[i]->SetTexture(L"Gem/morganite.png");
+
+            }
+        }
+    }
+
+}
+
+void HoldGem::ChangePositon(const DirectX::SimpleMath::Vector2& pos)
+{
+    m_position = pos;
+}
+
+void HoldGem::ChangeScale(const DirectX::SimpleMath::Vector2& scale)
+{
+    m_scale = scale;
 
 }
 

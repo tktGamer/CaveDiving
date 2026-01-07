@@ -12,7 +12,7 @@
 #include "pch.h"
 #include "ParticleManager.h"
 #include"Game/Object/Camera.h"
-
+#include"../ResourcePath.h"
 std::unique_ptr<ParticleManager> ParticleManager::s_particleManager = nullptr;
 
 /**
@@ -45,12 +45,13 @@ ParticleManager::ParticleManager()
 	
 {
 	//それぞれのパーティクル管理クラスの生成
-	m_particleVanishControl   = std::make_unique<ParticleVanishControl>("vanish.png");
-	m_particlePowerUpControl  = std::make_unique<ParticlePowerUpControl>("powerup.png");
-	m_particleMoveDustControl = std::make_unique<ParticleMoveDustControl>("grounddust.png");
-	m_particleItemGetControl  = std::make_unique<ParticleItemGetControl>("itemget.png");
-	m_particleDamageControl = std::make_unique<ParticleDamageControl>("number.png");
-	m_particleHPHealControl = std::make_unique<ParticleHPHealControl>("hpheal.png");
+	m_particleVanishControl   = std::make_unique<ParticleVanishControl>  (ResourcePath::TEXTURE::PARTICLE::VANISH);
+	m_particlePowerUpControl  = std::make_unique<ParticlePowerUpControl> (ResourcePath::TEXTURE::PARTICLE::POWER_UP);
+	m_particleMoveDustControl = std::make_unique<ParticleMoveDustControl>(ResourcePath::TEXTURE::PARTICLE::MOVE_DUST);
+	m_particleItemGetControl  = std::make_unique<ParticleItemGetControl> (ResourcePath::TEXTURE::PARTICLE::ITEM_GET);
+	m_particleDamageControl   = std::make_unique<ParticleDamageControl>  (ResourcePath::TEXTURE::PARTICLE::NUMBER);
+	m_particleHPHealControl   = std::make_unique<ParticleHPHealControl>  (ResourcePath::TEXTURE::PARTICLE::HP_HEAL);
+	m_particleShieldControl   = std::make_unique<ParticleShieldControl>  (ResourcePath::TEXTURE::PARTICLE::SHIELD);
 }
 
 /**
@@ -77,6 +78,7 @@ void ParticleManager::Update()
 	m_particleItemGetControl->Update();
 	m_particleDamageControl->Update();
 	m_particleHPHealControl->Update();
+	m_particleShieldControl->Update();
 }
 
 
@@ -91,8 +93,8 @@ void ParticleManager::Render()
 {
 	//カメラの情報を取得
 	const DirectX::SimpleMath::Vector3& target = m_pCamera->GetTargetPos();
-	const DirectX::SimpleMath::Vector3& eye = m_pCamera->GetEyePos();
-	const DirectX::SimpleMath::Vector3& up = m_pCamera->GetUP();
+	const DirectX::SimpleMath::Vector3 eye     = m_pCamera->GetEyePos();
+	const DirectX::SimpleMath::Vector3& up     = m_pCamera->GetUP();
 
 	m_particleVanishControl->Render(target,eye,up);
 	m_particlePowerUpControl->Render(target,eye,up);
@@ -100,6 +102,7 @@ void ParticleManager::Render()
 	m_particleItemGetControl->Render(target, eye, up);
 	m_particleDamageControl->Render(target, eye, up);
 	m_particleHPHealControl->Render(target, eye, up);
+	m_particleShieldControl->Render(target, eye, up);
 }
 
 /**
@@ -117,6 +120,7 @@ void ParticleManager::Reset()
 	m_particleItemGetControl->Reset();
 	m_particleDamageControl->Reset();
 	m_particleHPHealControl->Reset();
+	m_particleShieldControl->Reset();
 }
 
 
@@ -203,6 +207,18 @@ void ParticleManager::RequestHPHealParticle(const DirectX::SimpleMath::Vector3& 
 	m_particleHPHealControl->RequestParticleHPHeal(pos);
 }
 
+/**
+ * @brief 盾パーティクル生成要求
+ *
+ * @param[in]  pos 生成位置
+ *
+ * @return なし
+ */
+void ParticleManager::RequestShieldParticle(const DirectX::SimpleMath::Vector3& pos)
+{
+	m_particleShieldControl->RequestParticleShield(pos);
+}
+
 
 /**
  * @brief カメラポインタ設定
@@ -211,8 +227,7 @@ void ParticleManager::RequestHPHealParticle(const DirectX::SimpleMath::Vector3& 
  *
  * @return なし
  */
-void ParticleManager::SetCamera(Camera* pCamera)
+void ParticleManager::SetCamera(const Camera* pCamera)
 {
 	m_pCamera = pCamera;
 }
-

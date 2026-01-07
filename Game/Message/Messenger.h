@@ -34,13 +34,13 @@ private:
 	std::vector<Light*> m_lights;
 
 	// 経過時間
-	float m_elapsedTime;
+	float m_elapsedTime = 0.0f;
 
 	//強化の適用するか
 	bool m_isApplyPowerUp = false;
 
 	//アウトライン有無
-	bool m_outlineActive;
+	bool m_outlineActive = false;
 //コンストラクタ・デストラクタ
 private:
 	// コピー・ムーブ禁止
@@ -81,6 +81,7 @@ public:
 
 	//アウトラインのオン・オフを取得する
 	const bool& IsOutLineActive() const { return m_outlineActive; };
+	//アウトラインのオン・オフを設定する
 	void SetOutLineActive(const bool& isActive) { m_outlineActive = isActive; };
 };
 

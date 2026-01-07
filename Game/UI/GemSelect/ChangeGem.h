@@ -46,17 +46,18 @@ private:
 	int m_windowWidth, m_windowHeight;
 
 	//入れ替え先の宝石
-	Gem* m_pReplacementGem;
+	const Gem* m_pReplacementGem;
 
 	std::unique_ptr<UserInterface> m_replacementGemUI;
 	std::unique_ptr<HoldGemInfoDraw> m_holdGemInfo;
 
-	
+	const std::vector<int> m_gemID;
+
 	IUI* m_curremtUI;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	ChangeGem(int width, int height, Gem* pReplacementGem,GemSelectUIManager* pUIManager);
+	ChangeGem(int width, int height, const std::vector<int>& gemID, GemSelectUIManager* pUIManager);
 	~ChangeGem();
 	// 操作
 public:

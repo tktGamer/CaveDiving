@@ -5,13 +5,14 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/11/15
+ * @date   日付　2026/01/03
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Golem/State/GolemAttack.h"
 #include "Game/Object/Enemy/Golem/Golem.h"
+#include"Game/Object/Enemy/Golem/GolemHand.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -26,7 +27,7 @@ GolemAttack::GolemAttack(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pL
 	, m_pRightHand{ pRightGolemHand }
 	, m_pLeftHand{ pLeftGolemHand }
 {
-
+	//モーションを設定
 	m_attackMotion = std::make_unique<GolemPunchMotion>(golem, pRightGolemHand, pLeftGolemHand);
 }
 /**
@@ -57,15 +58,17 @@ void GolemAttack::Initialize()
  */
 void GolemAttack::PreUpdate()
 {
+	//モーション決定
 	DecideMotion();
 	m_attackMotion->Initialize();
 
+	m_golem->SetMotionAttackRate(m_attackMotion->GetAttackPowerModifier());
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -82,12 +85,11 @@ void GolemAttack::Update(const float& elapsedTime)
 	}
 
 	//重力
-	velocity.y += -0.05f * elapsedTime;
+	velocity.y += World::GRAVITY * elapsedTime;
 
 
 	m_golem->SetVelocity(velocity);
 
-	//m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
 }
 
@@ -102,6 +104,7 @@ void GolemAttack::PostUpdate()
 {
 	m_attackMotion->Reset();
 	m_golem->ResetFrameCount();
+	m_golem->SetMotionAttackRate(Golem::CONTACT_DAMAGE_MODIFIRE);
 
 }
 

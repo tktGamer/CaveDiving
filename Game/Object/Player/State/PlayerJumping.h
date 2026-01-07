@@ -25,17 +25,21 @@ class Player;
 class PlayerJumping : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+private:
+	//待機状態に遷移するベクトルの条件
+	static constexpr float MIN_LENGTH = 0.0001f;
+	//ジャンプ力
+	static constexpr float JUMP_POWER = 1.0f;
 public:
-
 
 // データメンバの宣言 -----------------------------------------------
 private:
 	// プレイヤー
-	Player* m_player;
+	Player* m_pPlayer;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-	PlayerJumping(Player* soldier);
+	PlayerJumping(Player* pPlayer);
 	// デストラクタ
 	~PlayerJumping();
 
@@ -53,5 +57,12 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
+
+//　取得・設定
+public:
+
+//　内部操作
+private:
+
 };
-#endif		// PLAYER_IDLING_DEFINED
+#endif		// PLAYER_JUMPING_DEFINED

@@ -86,14 +86,14 @@ std::unique_ptr<Gauge> UIFactory::CreateGauge()
  *
  * @return 宝石選択UIクラス
  */
-std::unique_ptr<GemSelect> UIFactory::CreateGemSelect(GemSelectUIManager* pGemSelectUIManager)
+std::unique_ptr<GemSelect> UIFactory::CreateGemSelect(GemSelectUIManager* pGemSelectUIManager, const std::vector<int>& gemID)
 {
 	//スクリーンサイズ取得
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//「宝石選択UI」の生成
-	std::unique_ptr<GemSelect> gemSelect = std::make_unique<GemSelect>(w,h,pGemSelectUIManager );
+	std::unique_ptr<GemSelect> gemSelect = std::make_unique<GemSelect>(w,h,gemID,pGemSelectUIManager );
 	gemSelect->Initialize();
 	return std::move(gemSelect);
 }
@@ -125,17 +125,17 @@ std::unique_ptr<ChangeConfirm> UIFactory::CreateChangeConfirm(GemSelectUIManager
  *
  * @return 宝石入れ替えUIクラス
  */
-std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSelectUIManager)
+std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSelectUIManager,const std::vector<int>& gemID)
 {
 	//スクリーンサイズ取得
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//入れ替え先の宝石の取得
-	Gem* pGem = GemManager::GetInstance()->GetReplacementGem();
+	//Gem* pGem = GemManager::GetInstance()->GetReplacementGem();
 
 	//「宝石入れ替えUI」の生成
-	std::unique_ptr<ChangeGem> changeGem = std::make_unique<ChangeGem>(w, h, pGem, pGemSelectUIManager);
+	std::unique_ptr<ChangeGem> changeGem = std::make_unique<ChangeGem>(w, h,gemID, pGemSelectUIManager);
 	changeGem->Initialize();
 
 	return std::move(changeGem);
@@ -149,7 +149,7 @@ std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSe
  *
  * @return 所持している宝石を表示するUIクラス
  */
-std::unique_ptr<HoldGem> UIFactory::CreateHoldGem()
+std::unique_ptr<HoldGem> UIFactory::CreateHoldGem(const std::vector<int>& gemID)
 {
 	//スクリーンサイズ取得
 	int w, h;
@@ -157,9 +157,9 @@ std::unique_ptr<HoldGem> UIFactory::CreateHoldGem()
 
 
 	//「所持している宝石を表示するUI」の生成
-	std::unique_ptr<HoldGem> holdGem = std::make_unique<HoldGem>(w, h);
+	std::unique_ptr<HoldGem> holdGem = std::make_unique<HoldGem>(w, h,gemID);
 	holdGem->Initialize();
-
+	holdGem->ChangeDrawGem(gemID);
 	return std::move(holdGem);
 }
 
@@ -171,7 +171,7 @@ std::unique_ptr<HoldGem> UIFactory::CreateHoldGem()
  *
  * @return 所持している宝石の内1つの情報を表示するUIクラス
  */
-std::unique_ptr<HoldGemInfoDraw> UIFactory::CreateHoldGemInfoDraw()
+std::unique_ptr<HoldGemInfoDraw> UIFactory::CreateHoldGemInfoDraw(const std::vector<int>& gemID)
 {
 
 	//スクリーンサイズ取得
@@ -179,7 +179,7 @@ std::unique_ptr<HoldGemInfoDraw> UIFactory::CreateHoldGemInfoDraw()
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//「所持している宝石の内1つの情報を表示するUI」の生成
-	std::unique_ptr<HoldGemInfoDraw> holdGemInfo = std::make_unique<HoldGemInfoDraw>(w, h);
+	std::unique_ptr<HoldGemInfoDraw> holdGemInfo = std::make_unique<HoldGemInfoDraw>(w, h,gemID);
 	holdGemInfo->Initialize();
 
 	return std::move(holdGemInfo);

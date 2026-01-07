@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/09/03
+ * @date   日付　2026/01/02
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,10 +24,18 @@ class Bat;
   */
 class BatMoving : public IState
 {
-// メンバ関数の宣言 -------------------------------------------------
+// クラス定数の宣言 -------------------------------------------------
+private:
+	//移動速度
+	static constexpr float MOVING_SPEED = 5.0f;
+	//遷移までの時間
+	static constexpr float CHANGE_IDLING_TIME = 2.0f;
+
+// データメンバの宣言 -----------------------------------------------
 private:
 	// コウモリのポインタ
 	Bat* m_bat;
+// メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
@@ -46,6 +54,11 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
+//　取得・設定
+public:
+
+//　内部操作
+private:
 
 };
-#endif		// BAT_IDLING_DEFINED
+#endif		// BAT_MOVING_DEFINED
