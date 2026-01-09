@@ -66,7 +66,7 @@ private:
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 private:
-
+	//コントラクタ
 	ParticleManager();
 	// インスタンスをコピーすることを禁止する
 	void operator=(const ParticleManager&) = delete;
@@ -78,6 +78,7 @@ private:
 	ParticleManager(ParticleManager&&) = delete;
 
 public:
+	//デストラクタ
 	~ParticleManager();
 // 操作
 public:

@@ -20,7 +20,7 @@
  * @param[in] initialPosition　初期座標 
  * @param[in] initialAngle　　 初期角度 
  */
-Light::Light(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Light::Light(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{Tag::ObjectType::Light,parent,initialPosition,initialAngle}
 	,m_graphics{Graphics::GetInstance()}
 	,m_isOn{}

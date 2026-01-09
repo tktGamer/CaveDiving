@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/06
+ * @date   日付　2025/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -37,9 +37,11 @@ public:
 	{
 		EffectType type;
 		int increase;
-		int time;
+		float time;
 	};
-	static constexpr DirectX::SimpleMath::Vector3 BDX_COLLISION_SIZE = { 1.0f,2.0f,1.0f };
+private:
+	//AABB当たり判定サイズ
+	static constexpr DirectX::SimpleMath::Vector3 BOX_COLLISION_SIZE = { 1.0f,2.0f,1.0f };
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -85,15 +87,16 @@ public:
 	void UpdateCollision(const DirectX::SimpleMath::Vector3& center);
 	//　取得・設定
 public:
-
+	//アイテム情報
+	const Item::ItemInfo& GetItemInfo();
 	//上昇するステータス
-	EffectType GetEffectType() const;
+	const EffectType& GetEffectType() const;
 	//上昇量
-	int GetIncrease() const;
+	const int& GetIncrease() const;
 	//効果時間
-	float GetTime() const;
+	const float& GetTime() const;
 	//取得されたか
-	bool IsGet() const;
+	const bool& IsGet() const;
 	//取得状態のセット
 	void SetIsGet(const bool& isGet);
 	//オブジェクトが取られた位置
@@ -108,6 +111,6 @@ private:
 	void DecideColor();
 protected:
 	//アイテムがゲットされたときの追加処理
-	virtual void OnItemGetExtra(const GameObject* other) {};
+	virtual void OnItemGetExtra(const GameObject* other) { other; };
 };
 

@@ -46,7 +46,7 @@ private:
 public:
 	Buff(const float& time);
 	~Buff();
-	// ‘€ì
+// ‘€ì
 public:
 
 	void Initialize(const wchar_t* path, int width, int height);

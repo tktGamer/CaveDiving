@@ -453,7 +453,7 @@
     <ClInclude Include="Game\Object\Enemy\Golem\GolemHand.h">
       <Filter>Game\Object\Enemy\Golem</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Stage\Candlestick.h">
+    <ClInclude Include="Game\Object\Stage\RumiRock.h">
       <Filter>Game\Object\Stage</Filter>
     </ClInclude>
     <ClInclude Include="Game\Motion\GolemMotion\GolemPunchMotion.h">
@@ -645,8 +645,8 @@
     <ClInclude Include="Game\Shader\Outline\OutlineRenderer.h">
       <Filter>Game\Shader\Outline</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Object\Player\HolderGem.h">
-      <Filter>Game\Object\Player</Filter>
+    <ClInclude Include="Game\Object\Gem\HolderGem.h">
+      <Filter>Game\Object\Gem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -880,7 +880,7 @@
     <ClCompile Include="Game\Object\Enemy\Golem\GolemHand.cpp">
       <Filter>Game\Object\Enemy\Golem</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Stage\Candlestick.cpp">
+    <ClCompile Include="Game\Object\Stage\RumiRock.cpp">
       <Filter>Game\Object\Stage</Filter>
     </ClCompile>
     <ClCompile Include="Game\Motion\GolemMotion\GolemPunchMotion.cpp">
@@ -1066,8 +1066,8 @@
     <ClCompile Include="Game\Shader\Outline\OutlineRenderer.cpp">
       <Filter>Game\Shader\Outline</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object\Player\HolderGem.cpp">
-      <Filter>Game\Object\Player</Filter>
+    <ClCompile Include="Game\Object\Gem\HolderGem.cpp">
+      <Filter>Game\Object\Gem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

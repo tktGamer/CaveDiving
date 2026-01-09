@@ -205,7 +205,8 @@ Gem::Type GemManager::DecisinType(const std::string& type)
  *
  * @param[in] id 番号
  *
- * @return gem id番の宝石ポインタ
+ * @return id番の宝石ポインタ
+ *         なかったら nullptr
  */
 const Gem* GemManager::GetIDNumberedGem(const int& id)
 {

@@ -43,7 +43,7 @@ public:
 
 // 操作
 public:
-	//
+	
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 

@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/10/22
+ * @date   日付  2026/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -290,20 +290,21 @@ void ParticleControl::SetCameraBuffer(const CameraBuffer& cameraCB, const UINT& 
  */
 void ParticleControl::SetShaderState() const
 {
+	ShaderManager* shader = ShaderManager::GetInstance();
 	auto context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = Graphics::GetInstance()->GetCommonStates();
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ParticleControl::ConstBuffer cbuff;
+	ParticleShader::ParticleCB cbuff;
 	//	ビュー設定
 	cbuff.matView = Graphics::GetInstance()->GetViewMatrix().Transpose();
 	//	プロジェクション設定
 	cbuff.matProj = Graphics::GetInstance()->GetProjectionMatrix().Transpose();
 	//	ワールド設定
 	cbuff.matWorld = DirectX::SimpleMath::Matrix::Identity.Transpose();
-	cbuff.Diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
+	cbuff.Light = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(ShaderManager::GetInstance()->GetCBuffer(ShaderManager::ShaderType::Particle), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Particle), 0, NULL, &cbuff, 0, 0);
 
 
 	//	画像用サンプラーの登録
@@ -326,7 +327,7 @@ void ParticleControl::SetShaderState() const
 	context->PSSetShaderResources(0, 1, GetTexture());
 
 	//	インプットレイアウトの登録
-	context->IASetInputLayout(ShaderManager::GetInstance()->GetInputLayout(ShaderManager::ShaderType::Particle));
+	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Particle));
 
 }
 

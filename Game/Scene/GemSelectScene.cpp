@@ -92,7 +92,7 @@ void GemSelectScene::Update(float elapsedTime)
 	//宝石の選択が終わったらゲームシーンへ
 	if (m_gemSelectManager->IsFinishSelect())
 	{
-		if (m_gemSelectManager->GetSlot() != -1) 
+		if (m_gemSelectManager->GetSlot() != Gem::BLANK_ID) 
 		{
 
 		GameData::PlayerData playerData = GetGameData()->GetPlayerData();

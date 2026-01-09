@@ -80,10 +80,7 @@ public:
 	ID3D11GeometryShader* GetGeometryShader();
 
 
-//　内部操作
-private:
 
-protected:
 	//シェーダーの作成
 	void CreateShader(const wchar_t* vsPath, const wchar_t* psPath, const wchar_t* gsPath);
 	//インプットレイアウトの作成
@@ -92,6 +89,8 @@ protected:
 	template<typename T>
 	void CreateConstantBuffer(D3D11_USAGE usage= D3D11_USAGE_DEFAULT,UINT byteWidth=sizeof(T),
 							  UINT bindFlags= D3D11_BIND_CONSTANT_BUFFER,UINT CPUAccessFlags=0);
+//　内部操作
+private:
 };
 
 

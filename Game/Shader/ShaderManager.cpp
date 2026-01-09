@@ -287,21 +287,22 @@ void ShaderManager::CreateShader()
  */
 void ShaderManager::LoadModelShader()
 {
-	Shader::ShaderPath path;
+	Shader::ShaderPath path{};
+	//モデルのシェーダー
 	path.vsPath = ResourcePath::SHADER::MODEL_VS;
 	path.psPath = ResourcePath::SHADER::MODEL_PS;
 	path.gsPath = ResourcePath::SHADER::MODEL_GS;
 	m_modelShader = std::make_unique<ModelShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Model, m_modelShader.get()));
-
+	//アイテムのシェーダー
 	path.psPath = ResourcePath::SHADER::ITEM_MODEL_PS;
 	m_itemShader = std::make_unique<ModelShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Item_Model, m_itemShader.get()));
-
+	//光る石のシェーダー
 	path.psPath = ResourcePath::SHADER::LUMI_ROCK_PS;
 	m_rockShader = std::make_unique<ModelShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Rock_Model, m_rockShader.get()));
-
+	//壁にシェーダー
 	path.psPath = ResourcePath::SHADER::WALL_MODEL_PS;
 	m_wallShader = std::make_unique<WallShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Wall_Model, m_wallShader.get()));
@@ -318,9 +319,9 @@ void ShaderManager::LoadModelShader()
 void ShaderManager::LoadUIShader()
 {
 	Shader::ShaderPath path;
-	path.vsPath = L"Resources/Shaders/UIShader/UIVS.cso";
-	path.psPath = L"Resources/Shaders/UIShader/UIPS.cso";
-	path.gsPath = L"Resources/Shaders/UIShader/UIGS.cso";
+	path.vsPath = ResourcePath::SHADER::UI_VS;
+	path.psPath = ResourcePath::SHADER::UI_PS;
+	path.gsPath = ResourcePath::SHADER::UI_GS;
 	m_uiShader = std::make_unique<UIShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::UI, m_uiShader.get()));
 
@@ -336,9 +337,9 @@ void ShaderManager::LoadUIShader()
 void ShaderManager::LoadParticleShader()
 {
 	Shader::ShaderPath path;
-	path.vsPath = L"Resources/Shaders/ParticleShader/ParticleVS.cso";
-	path.psPath = L"Resources/Shaders/ParticleShader/ParticlePS.cso";
-	path.gsPath = L"Resources/Shaders/ParticleShader/ParticleGS.cso";
+	path.vsPath = ResourcePath::SHADER::PARTICLE_VS;
+	path.psPath = ResourcePath::SHADER::PARTICLE_PS;
+	path.gsPath = ResourcePath::SHADER::PARTICLE_GS;
 	m_particleShader = std::make_unique<ParticleShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Particle, m_particleShader.get()));
 
@@ -355,7 +356,7 @@ void ShaderManager::LoadParticleShader()
 void ShaderManager::LoadFadeShader()
 {
 	Shader::ShaderPath path;
-	path.vsPath = L"Resources/Shaders/FadeShader/FadeVS.cso";
+	path.vsPath = ResourcePath::SHADER::FADE_VS;
 	path.psPath = L"Resources/Shaders/FadeShader/FadePS.cso";
 	path.gsPath = L"Resources/Shaders/FadeShader/FadeGS.cso";
 	m_fadeShader = std::make_unique<FadeShader>(path);

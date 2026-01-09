@@ -37,11 +37,11 @@ GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent, cons
 	, m_model{ nullptr }
 	, m_pCurrentState{ nullptr }
 	, m_currentMessage{}
-	, m_position{} // 初期位置を設定
+	, m_position{} 
 	, m_quaternion{ DirectX::SimpleMath::Quaternion::Identity } // 初期クォータニオンを設定
 	, m_scale{ 1.0f, 1.0f, 1.0f } // 初期拡大率を設定
 	, m_parent{ parent }
-	, m_initialPosition{ initialPosition }
+	, m_initialPosition{ initialPosition }// 初期位置を設定
 	, m_initialAngle{ initialAngle }
 	, m_currentPosition{}
 	, m_currentAngle{}

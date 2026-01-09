@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　2025/09/13
+ * @date   日付　2026/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -19,14 +19,21 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] root　パーツをもつオブジェクトの根
+ * @param[in] parent　親オブジェクトのポインタ
+ * @param[in] initialPosition　初期座標
+ * @param[in] initialAngle　　 初期角度
  */
 Hand::Hand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: PartObject(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
 {
-	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"hand.png"));
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"hand.sdkmesh"));
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	//テクスチャ設定
+	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::PLAYER_HAND));
+	//モデル設定
+	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::PLAYER_HAND));
+	//メッセンジャークラスに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
 }
@@ -96,49 +103,27 @@ void Hand::Draw()
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
-
+	//ワールド行列を計算
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+
+
+	//アウトライン描画
+	if (Messenger::GetInstance()->IsOutLineActive()) 
+	{
+		OutlineRenderer::Draw(*GetModel(), world, PLAYER_HAND_OUTLINE_THICKNESS);
+		// モデル描画（アウトライン専用）
+	}
+
+	//	シェーダーに渡す追加のバッファを作成する。
 	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
 	cbuff.matView = graphics->GetViewMatrix().Transpose();
 	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
 	cbuff.flash.x = GetRootCharacter()->GetDamageFlash();
 
-	OutlineShader::OutlineCB outline;
-	outline.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	outline.matView = graphics->GetViewMatrix().Transpose();
-	outline.matProj = graphics->GetProjectionMatrix().Transpose();
-	outline.outlineThickness = 0.04f;
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Outline), 0, NULL, &outline, 0, 0);
-
-
-
-	if (Messenger::GetInstance()->IsOutLineActive()) {
-
-		// モデル描画（アウトライン専用）
-		GetModel()->Draw(context, *states, world, view, proj, false, [&]() {
-			// カリングを FrontFace にして裏面を描画（アウトライン用）
-			context->RSSetState(states->CullCounterClockwise());
-
-			// ブレンド・デプスステート（深度は通常通り or 調整）
-			context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
-			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
-			// アウトラインシェーダを設定
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Outline);
-			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Outline));
-
-			});
-
-		ShaderManager::GetInstance()->EndShader();
-	}
-
-	//GetModel()->Draw(context, *states, world, view, proj);
-
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	//	受け渡し用バッファの内容更新(ModelCBからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
-
+	//モデル描画
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
@@ -168,12 +153,15 @@ void Hand::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
+			shader->StartShader(ShaderManager::Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	ShaderManager::GetInstance()->EndShader();
+	//シェーダー解放
+	shader->EndShader();
+
+	//武器を持っていたら描画
 	if (m_weapon)
 	m_weapon->Draw();
 }
@@ -201,6 +189,8 @@ void Hand::Finalize()
  */
 void Hand::OnMessegeAccepted(Message::MessageID messageID)
 {
+	UNREFERENCED_PARAMETER(messageID);
+
 }
 
 /**
@@ -212,6 +202,8 @@ void Hand::OnMessegeAccepted(Message::MessageID messageID)
  */
 void Hand::CollisionResponce(GameObject* other)
 {
+	UNREFERENCED_PARAMETER(other);
+
 }
 
 
@@ -247,7 +239,7 @@ bool Hand::HaveWeapon(std::unique_ptr<Weapon> weapon)
  *
  * @return モーションの角度
  */
-DirectX::SimpleMath::Quaternion Hand::GetMotionAngle()
+DirectX::SimpleMath::Quaternion Hand::GetMotionAngle() const
 {
 	return m_motionAngle;
 }
@@ -255,9 +247,9 @@ DirectX::SimpleMath::Quaternion Hand::GetMotionAngle()
 /**
  * @brief モーションの角度の設定
  *
- * @param[in] なし
+ * @param[in] angle　モーション角度
  *
- * @return モーションの角度
+ * @return なし
  */
 void Hand::SetMotionAngle(DirectX::SimpleMath::Quaternion angle)
 {

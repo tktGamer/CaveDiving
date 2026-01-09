@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/02
+ * @date   日付　2026/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -26,7 +26,9 @@ public:
 	//重力
 	static constexpr float GRAVITY = -0.89f;
 	//地上摩擦
-	static constexpr float GROUND_FRICTION = 0.95f;
+	static constexpr float GROUND_FRICTION = 0.93f;
+	//空中摩擦
+	static constexpr float AIR_FRICTION = 0.96f;
 // データメンバの宣言 -----------------------------------------------
 private:
 

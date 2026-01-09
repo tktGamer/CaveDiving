@@ -20,6 +20,7 @@
  */
 class Graphics final
 {
+	//定数
 // 取得/設定
 public:
 	// Graphicsクラスのインスタンスを取得する

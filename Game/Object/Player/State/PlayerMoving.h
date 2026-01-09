@@ -19,7 +19,7 @@ class Player;
 
 // ƒNƒ‰ƒX‚Ì’è‹` ===============================================================
 /**
-  * @brief PlayerMoving
+  * @brief ˆÚ“®ó‘Ô
   */
 class PlayerMoving : public IState
 {

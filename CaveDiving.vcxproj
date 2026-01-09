@@ -241,6 +241,7 @@
     <ClInclude Include="Game\Object\GameObject.h" />
     <ClInclude Include="Game\Object\Gem\Gem.h" />
     <ClInclude Include="Game\Object\Gem\GemManager.h" />
+    <ClInclude Include="Game\Object\Gem\HolderGem.h" />
     <ClInclude Include="Game\Object\Gem\StatusUp\FullHPStatusUpGem.h" />
     <ClInclude Include="Game\Object\Gem\StatusUp\StatusUpGem.h" />
     <ClInclude Include="Game\Object\Gem\Unique\AllSpenningAttackGem.h" />
@@ -253,7 +254,6 @@
     <ClInclude Include="Game\Object\Light.h" />
     <ClInclude Include="Game\Object\PartObject.h" />
     <ClInclude Include="Game\Object\Player\Hand.h" />
-    <ClInclude Include="Game\Object\Player\HolderGem.h" />
     <ClInclude Include="Game\Object\Player\Pikel.h" />
     <ClInclude Include="Game\Object\Player\Player.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerAirAttack.h" />
@@ -263,7 +263,7 @@
     <ClInclude Include="Game\Object\Player\State\PlayerIdling.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerJumping.h" />
     <ClInclude Include="Game\Object\Player\State\PlayerMoving.h" />
-    <ClInclude Include="Game\Object\Stage\Candlestick.h" />
+    <ClInclude Include="Game\Object\Stage\RumiRock.h" />
     <ClInclude Include="Game\Object\Stage\Ground.h" />
     <ClInclude Include="Game\Object\Stage\Stage.h" />
     <ClInclude Include="Game\Object\Stage\Wall.h" />
@@ -389,6 +389,7 @@
     <ClCompile Include="Game\Object\GameObject.cpp" />
     <ClCompile Include="Game\Object\Gem\Gem.cpp" />
     <ClCompile Include="Game\Object\Gem\GemManager.cpp" />
+    <ClCompile Include="Game\Object\Gem\HolderGem.cpp" />
     <ClCompile Include="Game\Object\Gem\StatusUp\FullHPStatusUpGem.cpp" />
     <ClCompile Include="Game\Object\Gem\StatusUp\StatusUpGem.cpp" />
     <ClCompile Include="Game\Object\Gem\Unique\AllSpenningAttackGem.cpp" />
@@ -401,7 +402,6 @@
     <ClCompile Include="Game\Object\Light.cpp" />
     <ClCompile Include="Game\Object\PartObject.cpp" />
     <ClCompile Include="Game\Object\Player\Hand.cpp" />
-    <ClCompile Include="Game\Object\Player\HolderGem.cpp" />
     <ClCompile Include="Game\Object\Player\Pikel.cpp" />
     <ClCompile Include="Game\Object\Player\Player.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerAirAttack.cpp" />
@@ -411,7 +411,7 @@
     <ClCompile Include="Game\Object\Player\State\PlayerIdling.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerJumping.cpp" />
     <ClCompile Include="Game\Object\Player\State\PlayerMoving.cpp" />
-    <ClCompile Include="Game\Object\Stage\Candlestick.cpp" />
+    <ClCompile Include="Game\Object\Stage\RumiRock.cpp" />
     <ClCompile Include="Game\Object\Stage\Ground.cpp" />
     <ClCompile Include="Game\Object\Stage\Stage.cpp" />
     <ClCompile Include="Game\Object\Stage\Wall.cpp" />

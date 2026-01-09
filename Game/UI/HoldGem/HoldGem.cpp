@@ -135,12 +135,17 @@ void HoldGem::ChangeDrawGem(const std::vector<int>& gemID)
             }
             else if (pGem->GetAbility().type == "アクアマリン")
             {
-                m_gemUI[i]->SetTexture(L"Gem/ aquamarine.png");
+                m_gemUI[i]->SetTexture(L"Gem/Aquamarine.png");
 
             }
             else if (pGem->GetAbility().type == "モルガナイト")
             {
                 m_gemUI[i]->SetTexture(L"Gem/morganite.png");
+
+            }
+            else if (pGem->GetAbility().type == "スピネル")
+            {
+                m_gemUI[i]->SetTexture(L"Gem/Spinel.png");
 
             }
 

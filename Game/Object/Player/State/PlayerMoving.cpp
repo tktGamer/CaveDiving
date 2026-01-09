@@ -17,7 +17,7 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] player プレイヤーのポインタ
+ * @param[in] pPlayer プレイヤーのポインタ
  */
 PlayerMoving::PlayerMoving(Player* pPlayer)
 	: m_pPlayer(pPlayer)
@@ -56,7 +56,7 @@ void PlayerMoving::PreUpdate()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -82,37 +82,42 @@ void PlayerMoving::Update(const float& elapsedTime)
 		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
 	}
 
-	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
-
 	//移動
-	if (key->GetLastState().Up) 
+	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
+	//方向
+	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Zero;
+
+	if (key->GetLastState().Up)
 	{
-		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * elapsedTime, m_pPlayer->GetQuaternion());
+		direction += Character::MOVE::FRONT;
 	}
 	if (key->GetLastState().Down)
 	{
-		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::BACK * elapsedTime, m_pPlayer->GetQuaternion());
+		direction += Character::MOVE::BACK;
+
 	}
 	if (key->GetLastState().Left)
 	{
-		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::LEFT * elapsedTime, m_pPlayer->GetQuaternion());
+		direction += Character::MOVE::LEFT;
+
 	}
 	if (key->GetLastState().Right)
 	{
-		velocity += DirectX::SimpleMath::Vector3::Transform(Character::MOVE::RIGHT *elapsedTime, m_pPlayer->GetQuaternion());
+		direction += Character::MOVE::RIGHT;
 	}
-
-
-	if(velocity.Length()<=0.001f)
+	//角度を考慮して速度に加算
+	velocity += DirectX::SimpleMath::Vector3::Transform(direction * elapsedTime, m_pPlayer->GetQuaternion());
+	//ベクトルがある程度小さくなったら待機状態へ
+	if(velocity.Length() <= Player::MIN_LENGTH)
 	{
 		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::IDLING);
 	}
 
 	//摩擦
-	velocity *= 0.96f;
+	velocity *= World::GROUND_FRICTION;
 
 	//重力
-	velocity.y += -0.8f * elapsedTime;
+	velocity.y += World::GRAVITY * elapsedTime;
 
 	//速度を設定
 	m_pPlayer->SetVelocity(velocity);
@@ -143,11 +148,11 @@ void PlayerMoving::PostUpdate()
  */
 void PlayerMoving::Render()
 {
+#ifdef _DEBUG
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 
 	debugFont->AddString(L"Moving", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 
-#ifdef _DEBUG
 #endif // DEBUG
 
 }

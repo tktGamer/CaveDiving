@@ -5,16 +5,15 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2026/01/08
  */
 
  // 多重インクルードの防止 =====================================================
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
-#include "Game/Object/GameObject.h"
 #include "Game/Common/Collision/Box.h"
+#include"Game/Object/GameObject.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -33,7 +32,6 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 	// メッセージID
 	Message::MessageID m_messageID;
 
@@ -44,7 +42,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Ground(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Ground(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Ground();
@@ -52,13 +50,14 @@ public:
 
 // 操作
 public:
+	//初期化
 	void Initialize();
-
+	//更新
 	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-
+	//描画
 	void Draw() override;
-
+	//終了
 	void Finalize();
 
 	// メッセージを取得する

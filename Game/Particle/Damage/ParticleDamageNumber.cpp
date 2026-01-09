@@ -163,7 +163,7 @@ void ParticleDamageNumber::Render(const DirectX::SimpleMath::Vector3& target, co
 	shader->SetCameraCB(cameraBuff);
 	//コンストバッファの要素が基底と異なるのでSetShaderStateは使わない
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	ConstBuffer cbuff;
+	ParticleShader::ParticleCB cbuff;
 	//	ビュー設定
 	cbuff.matView = view.Transpose();
 	//	プロジェクション設定
@@ -174,7 +174,7 @@ void ParticleDamageNumber::Render(const DirectX::SimpleMath::Vector3& target, co
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	world = world * m_billboard;
 	cbuff.matWorld = world.Transpose();
-	cbuff.Diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
+	cbuff.Light = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Number3D), 0, NULL, &cbuff, 0, 0);

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　22025/10/24
+ * @date   日付　2026/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -22,8 +22,8 @@
 #include"../Shader/Outline/OutlineShader.h"
 #include"../Shader/Particle/ParticleShader.h"
 
-class Light;
 // クラスの宣言 ===============================================================
+class Light;
 
 // クラスの定義 ===============================================================
 /**
@@ -53,7 +53,7 @@ public:
 private:
 	// Shaderクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<ShaderManager> s_shader;
-
+	//種類に対応したシェーダマップ
 	std::unordered_map<ShaderType, Shader*>  m_shaderMap;
 
 	//モデル用シェーダー
@@ -109,9 +109,9 @@ public:
 
 // 操作
 public:
-
+	//初期化
 	void Initialize();
-
+	//更新
 	void Update();
 
 	//シェーダー開始
@@ -120,11 +120,12 @@ public:
 	//シェーダー終了
 	void EndShader();
 
-
+	//終了
 	void Finalize();
 
 //　取得・設定
 public:
+	//インスタンスを取得
 	static  ShaderManager* const GetInstance();
 
 	//カメラとプレイヤーの位置情報バッファ設定

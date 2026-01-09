@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/01/06
+ * @date   日付　2025/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -26,7 +26,7 @@
 Item::Item(const ItemInfo& itemInfo, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{ Tag::ObjectType::Item,parent,initialPosition,initialAngle }
 	,m_itemInfomation{itemInfo}
-	, m_box{ initialPosition,BDX_COLLISION_SIZE }
+	, m_box{ initialPosition,BOX_COLLISION_SIZE }
 	, m_isGet{ false }
 	, m_color{ DirectX::Colors::White }
 	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
@@ -96,13 +96,13 @@ void Item::Draw()
 	ShaderManager* shader = ShaderManager::GetInstance();
 
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
+	//	シェーダーに渡す追加のバッファを作成する。
 	ModelShader::ItemCB cbuff;
 	cbuff.matWorld = world.Transpose();
 	cbuff.matView = view.Transpose();
 	cbuff.matProj = proj.Transpose();
 	cbuff.color = GetColor();
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+	//	受け渡し用バッファの内容更新(ItemCBからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Item_Model), 0, NULL, &cbuff, 0, 0);
 
 
@@ -193,6 +193,13 @@ void Item::CollisionResponce(GameObject* other)
 	}
 }
 
+/**
+ * @brief 当たり判定の位置更新
+ *
+ * @param[in] center  中心座標
+ *
+ * @return　なし
+ */
 void Item::UpdateCollision(const DirectX::SimpleMath::Vector3& center)
 {
 	m_box.SetCenter(center);
@@ -200,59 +207,126 @@ void Item::UpdateCollision(const DirectX::SimpleMath::Vector3& center)
 
 
 /**
- * @brief の取得
+ * @brief アイテム情報の取得
+ *
+ * @param[in] なし
+ *
+ * @return　アイテム情報
+ */
+const Item::ItemInfo& Item::GetItemInfo()
+{
+	return m_itemInfomation;
+}
+
+/**
+ * @brief アイテム効果の種類の取得
  *
  * @param[in] なし
  *
  * @return
  */
-Item::EffectType Item::GetEffectType() const
+const Item::EffectType& Item::GetEffectType() const
 {
 	return m_itemInfomation.type;
 }
 
 /**
- * @brief の取得
+ * @brief 上昇量の取得
  *
  * @param[in] なし
  *
  * @return
  */
-int Item::GetIncrease() const
+const int& Item::GetIncrease() const
 {
 	return m_itemInfomation.increase;
 }
 
-float Item::GetTime() const
+/**
+ * @brief 効果時間の取得
+ *
+ * @param[in] なし
+ *
+ * @return
+ */
+const float& Item::GetTime() const
 {
 	return m_itemInfomation.time;
 }
 
-bool Item::IsGet() const
+
+/**
+ * @brief アイテムを取得されたか
+ *
+ * @param[in] なし
+ *
+ * @return  true  取得された
+ * @return  false 取得されていない
+ */
+const bool& Item::IsGet() const
 {
 	return m_isGet;
 }
 
+
+/**
+ * @brief 取得されたかの設定
+ *
+ * @param[in] isGet  取得されたか
+ *
+ * @return　なし
+ */
 void Item::SetIsGet(const bool& isGet)
 {
 	m_isGet = isGet;
 }
 
+
+/**
+ * @brief アイテムを取得したオブジェクトの座標を設定
+ *
+ * @param[in] pos  取得されたか
+ *
+ * @return　なし
+ */
 void Item::SetItemGetObjectPos(const DirectX::SimpleMath::Vector3& pos)
 {
 	m_gotObjectPos = &pos;
 }
 
+/**
+ * @brief アイテムを取得したオブジェクトの座標の取得
+ *
+ * @param[in] なし
+ *
+ * @return　アイテムを取得したオブジェクトの座標
+ */
 const DirectX::SimpleMath::Vector3& Item::GetItemGetObjectPos()
 {
 	return *m_gotObjectPos;
 }
 
+
+/**
+ * @brief アイテムの色の取得
+ *
+ * @param[in] なし
+ *
+ * @return　アイテムの色
+ */
 const DirectX::SimpleMath::Vector4& Item::GetColor()
 {
 	return m_color;
 }
 
+
+/**
+ * @brief アイテムを色を決定
+ *
+ * @param[in] なし
+ *
+ * @return　なし
+ */
 void Item::DecideColor()
 {
 	switch (m_itemInfomation.type)

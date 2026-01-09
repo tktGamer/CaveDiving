@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/07
+ * @date   日付　2026/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -75,21 +75,21 @@ void PlayerJumping::Update(const float& elapsedTime)
 	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Zero;
 	if (key->GetLastState().Up)
 	{
-		direction = Character::MOVE::FRONT;
+		direction += Character::MOVE::FRONT;
 	}
 	if (key->GetLastState().Down)
 	{
-		direction = Character::MOVE::BACK;
+		direction += Character::MOVE::BACK;
 
 	}
 	if (key->GetLastState().Left)
 	{
-		direction = Character::MOVE::LEFT;
+		direction += Character::MOVE::LEFT;
 
 	}
 	if (key->GetLastState().Right)
 	{
-		direction = Character::MOVE::RIGHT;
+		direction += Character::MOVE::RIGHT;
 	}
 	//角度を考慮して速度に加算
 	velocity += DirectX::SimpleMath::Vector3::Transform(direction * elapsedTime, m_pPlayer->GetQuaternion());
@@ -101,11 +101,14 @@ void PlayerJumping::Update(const float& elapsedTime)
 	}
 
 	//移動量が無くなったとみなし待機状態へ
-	if (velocity.Length() <= MIN_LENGTH)
+	if (velocity.Length() <= Player::MIN_LENGTH)
 	{
 		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::IDLING);
 	}
-
+	//摩擦
+	velocity.x *= World::AIR_FRICTION;
+	velocity.z *= World::AIR_FRICTION;
+	//重力
 	velocity.y += World::GRAVITY * elapsedTime;
 
 	m_pPlayer->SetVelocity(velocity);

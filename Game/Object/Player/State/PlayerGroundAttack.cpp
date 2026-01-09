@@ -32,7 +32,7 @@ PlayerGroundAttack::PlayerGroundAttack(Player* pPlayer, Hand* pRightHand, Hand* 
 
 	//m_groundCombo.emplace_back(std::make_unique<PlayerSlamAttack>(m_pHand));
 
-	std::vector<AllSpenningAttackGem*> gems =  m_pPlayer->GetHolderGem().IsHasGem<AllSpenningAttackGem>();
+	const std::vector<AllSpenningAttackGem*>& gems =  m_pPlayer->GetHolderGem().IsHasGem<AllSpenningAttackGem>();
 
 	if (!gems.empty()) 
 	{
@@ -177,7 +177,9 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
  */
 void PlayerGroundAttack::PostUpdate()
 {
-	
+	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, Player::RIGHT_HAND_Z_ANGLE));
+	m_pRightHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
+	m_pLeftHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 
 	//ƒsƒbƒPƒ‹‚Ì“–‚½‚è”»’è‚ð–³Œø‚É‚·‚é
 	Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber() + Player::PIKEL_OBJ_NUMBER, Message::COLLISIONINVALID);

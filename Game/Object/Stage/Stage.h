@@ -15,26 +15,17 @@
 #include"Game/Common/Graphics.h"
 #include"../Stage/Ground.h"
 #include"../Stage/Wall.h"
-#include"../Stage/Candlestick.h"
+#include"../Stage/RumiRock.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Stage
+  * @brief ステージ
   */
 class Stage
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-
-	};
-
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -48,13 +39,13 @@ private:
 	std::unique_ptr<Ground> m_ground;
 
 	//発光する岩
-	std::list<std::unique_ptr<CandleStick>> m_rocks;
+	std::list<std::unique_ptr<RumiRock>> m_rocks;
 	
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Stage(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 
 	// デストラクタ
 	~Stage();
@@ -78,7 +69,7 @@ public:
 	//　取得・設定
 public:
 	//敵を取得
-	std::list<std::unique_ptr<CandleStick>>& GetRocks();
+	std::list<std::unique_ptr<RumiRock>>& GetRocks();
 
 
 //　内部操作

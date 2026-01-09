@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/08
+ * @date   日付　2026/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -25,7 +25,6 @@
 Wall::Wall(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: GameObject(Tag::ObjectType::Wall,parent,initialPosition,initialAngle)
 	, m_messageID{  }
-	, m_graphics{ Graphics::GetInstance() }
 	, m_sphere{ GetPosition(),60.0f} // 初期位置とサイズを設定
 	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
@@ -94,19 +93,21 @@ void Wall::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dir
  */
 void Wall::Draw()
 {
-	ShaderManager* shader = ShaderManager::GetInstance();
-	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = m_graphics->GetProjectionMatrix();
+	Graphics* graphics = Graphics::GetInstance();
 
-	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	Wall::ConstBuffer cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale()).Transpose();
-	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
-	cbuff.color.x = 0.0f;
+	ShaderManager* shader = ShaderManager::GetInstance();
+	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	DirectX::DX11::CommonStates* states  = graphics->GetCommonStates();
+	DirectX::SimpleMath::Matrix  view    = graphics->GetViewMatrix();
+	DirectX::SimpleMath::Matrix  proj    = graphics->GetProjectionMatrix();
+
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
+	//	シェーダーに渡す追加のバッファを作成する。
+	ModelShader::ModelCB cbuff;
+	cbuff.matWorld = world.Transpose();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
+	cbuff.flash.x = 0.0f;
 	
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Wall_Model), 0, NULL, &cbuff, 0, 0);
@@ -140,11 +141,11 @@ void Wall::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullNone());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Wall_Model);
+			shader->StartShader(ShaderManager::Wall_Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Wall_Model));
 		});
-	ShaderManager::GetInstance()->EndShader();
+	shader->EndShader();
 
 	//m_sphere.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()

@@ -1,22 +1,27 @@
+/**
+ * @file   Camera.h
+ *
+ * @brief  カメラに関するヘッダファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2026/01/08
+ */
+
+ // 多重インクルードの防止 =====================================================
 #pragma once
+
 // ヘッダファイルの読み込み ===================================================
 
 class Camera
 {
 
-	//カメラのタイプ
-	enum class Type
-	{
-		Type_A,	//プレイヤーを追尾するカメラ
-		Type_B	//プレイヤーの周りをまわるカメラ
-	};
+// クラス定数の宣言 -------------------------------------------------
+public:
 
+
+// データメンバの宣言 -----------------------------------------------
 private:
-
-	//現在のカメラタイプ
-	Type m_type;
-
-
 
 	//上ベクトル
 	DirectX::SimpleMath::Vector3 m_up;
@@ -46,14 +51,14 @@ public:
 	void Finalize();
 
 
-	void SetEyePos(DirectX::SimpleMath::Vector3 position);
+	void SetEyePos(const DirectX::SimpleMath::Vector3& position);
 	void SetEyePosX(float posX);
 	void SetEyePosY(float posY);
 	void SetEyePosZ(float posZ);
 	void SetTartet(const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Quaternion& rotate,const DirectX::SimpleMath::Vector3& targetVelocity = DirectX::SimpleMath::Vector3::Zero);
 	void SetDistance(DirectX::SimpleMath::Vector3 distance);
 	const DirectX::SimpleMath::Vector3& GetEyePos() const { return m_eyePos; }
-	DirectX::SimpleMath::Matrix GetView();
+	const DirectX::SimpleMath::Matrix& GetView() const;
 
 	DirectX::SimpleMath::Vector3 GetTargetPos() const { return *m_targetPos; }
 	const DirectX::SimpleMath::Vector3& GetUP() const { return m_up; }

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/04
+ * @date   日付  2025/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,6 +24,9 @@ class Gem
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//空白を表すID
+	static constexpr int BLANK_ID = -1;
+	//強化する項目
 	enum class Type
 	{
 		HP = 0, //体力
@@ -31,7 +34,7 @@ public:
 		DEF,    //防御力
 		UNIQUE, //特殊
 	};
-
+	//宝石の情報
 	struct GemAbility
 	{
 		int id; //データ番号
@@ -46,7 +49,6 @@ public:
 	{
 		//宝石の画像パス
 		const wchar_t* panel;
-		
 	};
 
 // データメンバの宣言 -----------------------------------------------
@@ -68,11 +70,13 @@ public:
 
 //操作
 public:
+	//宝石のコピー
 	virtual std::unique_ptr<Gem> Clone() const = 0;
 //取得・設定
 public:
 	//宝石情報の取得
 	const GemAbility& GetAbility() const;
+	//取得選択時の画像パス取得
 	const GemImagePath& GetImagePath() const;
 //内部操作
 private:

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/03
+ * @date   日付　2026/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -24,21 +24,25 @@
  * @param[in] initialAngle　　　初期角度
  */
 Pikel::Pikel(Character* owner, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:m_graphics{Graphics::GetInstance()}
-	, Weapon(owner,Tag::ObjectType::Weapon,parent,initialPosition,initialAngle)
+	: Weapon(owner,Tag::ObjectType::Weapon,parent,initialPosition,initialAngle)
 	, m_messageID{}
-	, m_sphere{ GetPosition(), 1.5f}
+	, m_sphere{ GetPosition(), PIKEL_SPHERE_SIZE}
 	,m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext()}
 {
-	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"pikel.png"));
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"pikel.sdkmesh"));
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	//テクスチャ設定
+	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::PIKEL));
+	//モデル設定
+	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::PIKEL));
 
+	//当たり判定オフ
 	m_sphere.SetEnabled(false);
+	//当たり判定セット
 	SetShape(&m_sphere);
-
+	//メッセンジャークラスに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
-
+	//当たり判定クラスに登録
 	CollisionManager::GetInstance()->Register(this);
 
 }
@@ -87,7 +91,7 @@ void Pikel::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 	SetCurrentAngle(GetQuaternion() * currentAngle * GetInitialQuaternion());
 	//当たり判定の更新
 	//位置を調整する
-	m_sphere.SetCenter(GetCurrentPosition() + DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f), GetCurrentQuaternion()));
+	m_sphere.SetCenter(GetCurrentPosition() + DirectX::SimpleMath::Vector3::Transform(PIKEL_COLLSION_POS_OFFSET, GetCurrentQuaternion()));
 }
 
 
@@ -113,10 +117,9 @@ void Pikel::Draw()
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
-	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
 
-	//GetModel()->Draw(context, *states, world, view, proj);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
@@ -150,12 +153,12 @@ void Pikel::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
+			shader->StartShader(ShaderManager::Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
-	ShaderManager::GetInstance()->EndShader();
+	shader->EndShader();
 	
 	//m_sphere.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()

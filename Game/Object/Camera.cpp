@@ -1,8 +1,17 @@
-// ヘッダファイルの読み込み ===================================================
+/**
+ * @file   Camera.cpp
+ *
+ * @brief  カメラに関するソースファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2026/01/08
+ */
+
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Camera.h"
 
-using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -58,7 +67,7 @@ void Camera::Update(float elapsedTime)
 
 
     //自分で作成したビュー行列で設定する
-    m_view = SimpleMath::Matrix::CreateLookAt(
+    m_view = DirectX::SimpleMath::Matrix::CreateLookAt(
         m_eyePos,       //カメラの位置
         *m_targetPos,    //ターゲットの位置
         m_up);          //カメラの上ベクトル
@@ -78,26 +87,63 @@ void Camera::Finalize()
 }
 
 
-void Camera::SetEyePos(DirectX::SimpleMath::Vector3 position)
+/**
+ * @brief カメラ位置設定
+ *
+ * @param[in] positon  カメラ位置
+ *
+ * @return なし
+ */
+void Camera::SetEyePos(const DirectX::SimpleMath::Vector3& position)
 {
 	m_eyePos = position;
 }
 
+/**
+ * @brief カメラのX位置設定
+ *
+ * @param[in] posX  X位置
+ *
+ * @return なし
+ */
 void Camera::SetEyePosX(float posX)
 {
 	m_eyePos.x = posX;
 }
 
+/**
+ * @brief カメラのY位置設定
+ *
+ * @param[in] posY  Y位置
+ *
+ * @return なし
+ */
 void Camera::SetEyePosY(float posY)
 {
 	m_eyePos.y = posY;
 }
 
+/**
+ * @brief カメラのX位置設定
+ *
+ * @param[in] posZ  Z位置
+ *
+ * @return なし
+ */
 void Camera::SetEyePosZ(float posZ)
 {
 	m_eyePos.z = posZ;
 }
 
+/**
+ * @brief カメラのターゲット設定
+ *
+ * @param[in] targetPos       ターゲットの位置
+ * @param[in] rotate		  ターゲットの角度
+ * @param[in] targetVelocity  ターゲットの速度
+ *
+ * @return なし
+ */
 void Camera::SetTartet(const DirectX::SimpleMath::Vector3& targetPos, const DirectX::SimpleMath::Quaternion& rotate, const DirectX::SimpleMath::Vector3& targetVelocity)
 {
 	m_targetPos = &targetPos;
@@ -106,12 +152,26 @@ void Camera::SetTartet(const DirectX::SimpleMath::Vector3& targetPos, const Dire
 }
 
 
+/**
+ * @brief カメラのターゲットとの距離
+ *
+ * @param[in] distance  距離
+ *
+ * @return なし
+ */
 void Camera::SetDistance(DirectX::SimpleMath::Vector3 distance)
 {
 	m_distance = distance;
 }
 
-DirectX::SimpleMath::Matrix Camera::GetView()
+/**
+ * @brief ビュー行列取得
+ *
+ * @param[in] なし
+ *
+ * @return ビュー行列
+ */
+const DirectX::SimpleMath::Matrix& Camera::GetView() const
 {
     return m_view;
 }

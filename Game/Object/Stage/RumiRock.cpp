@@ -1,16 +1,16 @@
 /**
- * @file   CandleStick.cpp
+ * @file   RumiRock.cpp
  *
- * @brief  ＸＸＸＸに関するソースファイル
+ * @brief  光る石に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "CandleStick.h"
+#include "RumiRock.h"
 #include"Game/Shader/ShaderManager.h"
 // メンバ関数の定義 ===========================================================
 /**
@@ -18,27 +18,31 @@
  *
  * @param[in] なし
  */
-CandleStick::CandleStick(const ModelShader::PointLightCB& lightData, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+RumiRock::RumiRock(const ModelShader::PointLightCB& lightData,const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{ Tag::ObjectType::Light,parent,initialPosition,initialAngle }
-	, m_graphics{ Graphics::GetInstance() }
-	, m_box{ GetPosition(),DirectX::SimpleMath::Vector3{1.3f,1.3f,1.3f} }
-	, m_isOn{}
-	,m_color{}
-	,m_messageID{}
+	, m_box{ GetPosition(),BOX_COLLISION_SIZE }
+	, m_color{}
+	, m_messageID{}
 	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 	Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 
 {
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	//テクスチャ設定
+	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::ROCK));
+	//モデル設定
+	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::RUMI_ROCK));
+	//メッセンジャークラスに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
-	SetModel(ResourceManager::GetInstance()->RequestModel("rock.sdkmesh"));
-	SetTexture(ResourceManager::GetInstance()->RequestTexture("rock.png"));
+	//当たり判定セット
 	SetShape(&m_box);
-
+	//ライト生成
 	m_light = std::make_unique<Light>(nullptr, GetInitialPosition(), GetInitialQuaternion());
 	m_light->Initialize();
 
 	m_light->SetLightData(lightData);
-
+	//ライトを登録
 	Messenger::GetInstance()->RegisterLight(m_light.get());
 
 }
@@ -48,7 +52,7 @@ CandleStick::CandleStick(const ModelShader::PointLightCB& lightData, GameObject*
 /**
  * @brief デストラクタ
  */
-CandleStick::~CandleStick()
+RumiRock::~RumiRock()
 {
 
 }
@@ -58,19 +62,16 @@ CandleStick::~CandleStick()
 /**
  * @brief 初期化処理
  *
- * @param[in] なし
+ * @param[in] isOnLight ライトのオン・オフ
  *
  * @return なし
  */
-void CandleStick::Initialize(bool isOnLight)
+void RumiRock::Initialize(bool isOnLight)
 {
-	//m_light = std::make_unique<Light>(nullptr, m_initialPosition,m_initialAngle);
-	//m_light->Initialize();
-	if (isOnLight) 
+	if (isOnLight)
 	{
 		OnLight();
 	}
-	//m_light->LightOn();
 }
 
 /**
@@ -81,7 +82,7 @@ void CandleStick::Initialize(bool isOnLight)
  *
  * @return なし
  */
-void CandleStick::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void RumiRock::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//位置の更新
 	SetCurrentPosition(GetInitialPosition() + GetPosition() + currentPosition);
@@ -104,26 +105,26 @@ void CandleStick::Update(const DirectX::SimpleMath::Vector3& currentPosition, co
  *
  * @return なし
  */
-void CandleStick::Draw()
+void RumiRock::Draw()
 {
-	ID3D11DeviceContext*		 context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = m_graphics->GetProjectionMatrix();
-
-
 	Graphics* graphics = Graphics::GetInstance();
-
-	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
-	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	CandleStick::ConstBuffer cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale()).Transpose();
-	cbuff.matView = graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
-	cbuff.color = m_color;
 	ShaderManager* shader = ShaderManager::GetInstance();
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Rock_Model), 0, NULL, &cbuff, 0, 0);
+	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
+	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
+	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
+
+
+
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	//	シェーダーに渡す追加のバッファを作成する。
+	ModelShader::ModelCB cbuff;
+	cbuff.matWorld = world.Transpose();
+	cbuff.matView = view.Transpose();
+	cbuff.matProj = proj.Transpose();
+	cbuff.flash = m_color;
+	//	受け渡し用バッファの内容更新(ModelCBからID3D11Bufferへの変換）
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -155,23 +156,13 @@ void CandleStick::Draw()
 			context->RSSetState(states->CullClockwise());
 
 			//シェーダーの設定
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Rock_Model);
-
-			//auto ps = shader->GetRockPS();
-
-			//auto constBuffer = shader->GetCBuffer(ShaderManager::ShaderType::Rock_Model);
-			////	シェーダーにバッファを渡す
-			//ID3D11Buffer* cb[1] = { constBuffer };
-
-			//context->PSSetConstantBuffers(0, 1, cb);
-			//context->PSSetShader(ps, nullptr, 0);
-
+			shader->StartShader(ShaderManager::Model);
 
 			//頂点情報を設定
-			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Rock_Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Model));
 
 		});
-	ShaderManager::GetInstance()->EndShader();
+	shader->EndShader();
 
 	//m_box.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
@@ -188,36 +179,64 @@ void CandleStick::Draw()
  *
  * @return なし
  */
-void CandleStick::Finalize()
+void RumiRock::Finalize()
 {
 }
 
-void CandleStick::OnMessegeAccepted(Message::MessageID messageID)
+/**
+ * @brief メッセージ対応処理
+ *
+ * @param[in] messageID メッセージ
+ *
+ * @return なし
+ */
+void RumiRock::OnMessegeAccepted(Message::MessageID messageID)
 {
 }
 
-void CandleStick::CollisionResponce(GameObject* other)
+/**
+ * @brief 衝突応答
+ *
+ * @param[in] other 衝突したオブジェクト
+ *
+ * @return なし
+ */
+void RumiRock::CollisionResponce(GameObject* other)
 {
-	switch (other->GetObjectType()) 
+	switch (other->GetObjectType())
 	{
-	case Tag::ObjectType::Weapon:
-	{
-		OnLight();
-		break;
-	}
+		case Tag::ObjectType::Weapon:
+		{
+			OnLight();
+			break;
+		}
 
 	}
 }
 
-void CandleStick::OnLight()
+/**
+ * @brief ライトをオンにする
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void RumiRock::OnLight()
 {
 	//明かりを点ける
 	m_light->LightOn();
-	m_color = { 1.0f,1.0f,1.0f,1.0f };
 
 }
 
-bool CandleStick::IsOnLight()
+/**
+ * @brief ライトがオンか
+ *
+ * @param[in] なし
+ *
+ * @return true   オン
+ * @return flase　オフ
+ */
+bool RumiRock::IsOnLight()
 {
 	return m_light->IsOn();
 }

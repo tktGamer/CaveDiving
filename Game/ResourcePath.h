@@ -23,11 +23,11 @@ public:
 		static constexpr wchar_t GOLEM[] = L"Golem.png";
 		static constexpr wchar_t GOLEM_HAND[] = L"GolemHand.png";
 		static constexpr wchar_t BLOCK[] = L"Resources/Texture/block.png";
-		static constexpr wchar_t ROCK[]  = L"Resources/Texture/rock.png";
+		static constexpr wchar_t ROCK[]  = L"Rock.png";
 		static constexpr wchar_t ITEM[]  = L"Item.png";
-		static constexpr wchar_t PLAYER[]  = L"Item.png";
-		static constexpr wchar_t PLAYER_HAND[]  = L"Item.png";
-		static constexpr wchar_t PIKEL[]  = L"Item.png";
+		static constexpr wchar_t PLAYER[]  = L"Player.png";
+		static constexpr wchar_t PLAYER_HAND[]  = L"Hand.png";
+		static constexpr wchar_t PIKEL[]  = L"Pikel.png";
 
 		//宝石用
 
@@ -60,6 +60,10 @@ public:
 		static constexpr wchar_t GOLEM[] = L"Golem.sdkmesh";
 		static constexpr wchar_t GOLEM_HAND[] = L"GolemHand.sdkmesh";
 		static constexpr wchar_t ITEM[] = L"Item.sdkmesh";
+		static constexpr wchar_t PLAYER[] = L"Player.sdkmesh";
+		static constexpr wchar_t PLAYER_HAND[] = L"Hand.sdkmesh";
+		static constexpr wchar_t PIKEL[] = L"Pikel.sdkmesh";
+		static constexpr wchar_t RUMI_ROCK[] = L"Rock.sdkmesh";
 	};
 	//音
 	//"Resources/Sounds/" の次に続くパス
@@ -76,6 +80,8 @@ public:
 		static constexpr wchar_t GOLEM_PUNCH[]   = L"GolemPunch.wav";
 		//ゴーレムの叩きつけ音
 		static constexpr wchar_t GOLEM_SLAMMED_DOWN[]   = L"GolemSlam.wav";
+		//アイテムゲット音
+		static constexpr wchar_t ITEM_GET[]   = L"GetItem.wav";
 
 	};
 	//シェーダー

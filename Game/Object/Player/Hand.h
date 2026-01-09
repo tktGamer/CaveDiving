@@ -1,11 +1,11 @@
 /**
  * @file   Hand.h
  *
- * @brief  手に関するヘッダファイル
+ * @brief  プレイヤーの手に関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -18,11 +18,14 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief Hand
+  * @brief プレイヤーの手
   */
 class Hand : public PartObject
 {
 // クラス定数の宣言 -------------------------------------------------
+private:	
+	//プレイヤーの手のアウトラインの太さ
+	static constexpr  float PLAYER_HAND_OUTLINE_THICKNESS = 0.04f;
 public:
 
 
@@ -46,13 +49,14 @@ public:
 
 // 操作
 public:
+	//初期化
 	void Initialize() override;
-
+	//更新
 	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-
+	//描画
 	void Draw() override;
-
+	//終了
 	void Finalize();
 
 	// メッセージを取得する
@@ -66,7 +70,7 @@ public:
 //　取得・設定
 public:
 
-	DirectX::SimpleMath::Quaternion GetMotionAngle();
+	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
 	void SetMotionAngle(DirectX::SimpleMath::Quaternion angle);
 //　内部操作
 private:

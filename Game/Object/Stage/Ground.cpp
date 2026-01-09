@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "Ground.h"
 #include"Game/Shader/ShaderManager.h"
+#include"Game/Common/Graphics.h"
 
 
 // メンバ関数の定義 ===========================================================
@@ -22,10 +23,9 @@
  * @param[in] initialPosition 初期位置
  * @param[in] initialAngle    初期角度
  */
-Ground::Ground(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Ground::Ground(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: GameObject(Tag::ObjectType::Ground,parent,initialPosition,initialAngle)
 	, m_messageID{  }
-	, m_graphics{ Graphics::GetInstance() }
 	, m_box{ GetPosition(),DirectX::SimpleMath::Vector3(70.01f,1.01f,70.01f)} // 初期位置とサイズを設定
 {
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
@@ -92,25 +92,24 @@ void Ground::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 void Ground::Draw()
 {
 	ShaderManager* shader = ShaderManager::GetInstance();
-	ID3D11DeviceContext* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states  = m_graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix  view    = m_graphics->GetViewMatrix();
-	DirectX::SimpleMath::Matrix  proj    = m_graphics->GetProjectionMatrix();
+	Graphics* graphics = Graphics::GetInstance();
+	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	DirectX::DX11::CommonStates* states  = graphics->GetCommonStates();
+	DirectX::SimpleMath::Matrix  view    = graphics->GetViewMatrix();
+	DirectX::SimpleMath::Matrix  proj    = graphics->GetProjectionMatrix();
 
-	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
+	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ModelShader::ModelCB cbuff;
-	cbuff.matWorld = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale()).Transpose();
-	cbuff.matView = m_graphics->GetViewMatrix().Transpose();
-	cbuff.matProj = m_graphics->GetProjectionMatrix().Transpose();
+	cbuff.matWorld = world.Transpose();
+	cbuff.matView = graphics->GetViewMatrix().Transpose();
+	cbuff.matProj = graphics->GetProjectionMatrix().Transpose();
 	cbuff.flash.x = 0.0f;
 
-	//world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
-	//GetModel()->Draw(context, *states, world, view, proj);
 	
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
-
+	//モデル描画
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
@@ -140,11 +139,11 @@ void Ground::Draw()
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 
-			ShaderManager::GetInstance()->StartShader(ShaderManager::Model);
+			shader->StartShader(ShaderManager::Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 		});
-	ShaderManager::GetInstance()->EndShader();
+	shader->EndShader();
 
 }
 

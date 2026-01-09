@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/
+ * @date   日付  2026/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -26,10 +26,8 @@ class PlayerJumping : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
 private:
-	//待機状態に遷移するベクトルの条件
-	static constexpr float MIN_LENGTH = 0.0001f;
 	//ジャンプ力
-	static constexpr float JUMP_POWER = 1.0f;
+	static constexpr float JUMP_POWER = 0.3f;
 public:
 
 // データメンバの宣言 -----------------------------------------------

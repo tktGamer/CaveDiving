@@ -27,14 +27,6 @@ class ParticleControl
 {
 // クラス定数の宣言 -------------------------------------------------
 protected:
-	//	データ受け渡し用コンスタントバッファ(送信側)
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix		matWorld;
-		DirectX::SimpleMath::Matrix		matView;
-		DirectX::SimpleMath::Matrix		matProj;
-		DirectX::SimpleMath::Vector4	Diffuse;
-	};
 
 	struct CameraBuffer
 	{
@@ -79,9 +71,9 @@ private:
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
-
+	//コンストラクタ
 	ParticleControl(const wchar_t* texturePath);
-
+	//デストラクタ
 	virtual ~ParticleControl();
 // 操作
 public:
@@ -91,7 +83,7 @@ public:
 	//描画
 	virtual void Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp) = 0;
 
-
+	//リセット
 	virtual void Reset() = 0;
 //　取得・設定
 public:

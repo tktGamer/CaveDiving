@@ -3,9 +3,9 @@
  *
  * @brief  つるはし（プレイヤーの武器）に関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -25,13 +25,15 @@
 class Pikel : public Weapon
 {
 // クラス定数の宣言 -------------------------------------------------
+private:
+	//ピッケルの球状当たり判定サイズ
+	static constexpr float PIKEL_SPHERE_SIZE = 1.3f;
+	//ピッケルの当たり判定位置調整
+	static constexpr DirectX::SimpleMath::Vector3 PIKEL_COLLSION_POS_OFFSET = {0.0f,1.0f,0.0f};
 public:
-
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	// グラフィックスクラスのポインタ
-	Graphics* m_graphics;	
 
 	// メッセージID
 	Message::MessageID m_messageID;
@@ -54,14 +56,14 @@ public:
 
 // 操作
 public:
-	//
+	//初期化
 	void Initialize();
-	//
+	//更新
 	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-	//
+	//描画
 	void Draw() override;
-	//
+	//終了
 	void Finalize();
 
 	// メッセージを取得する
@@ -70,7 +72,7 @@ public:
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
 
-	//　取得・設定
+//　取得・設定
 public:
 
 //　内部操作

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2026/01/08
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -24,7 +24,7 @@
  * @param[in] initialPosition 初期位置
  * @param[in] initialAngle    初期角度
  */
-Stage::Stage(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Stage::Stage(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: m_messageID{  }
 	,m_ground{}
 	,m_wall{}
@@ -106,7 +106,7 @@ void Stage::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 	m_ground->Update(DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
 	m_wall->Update(DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
 
-	for (std::unique_ptr<CandleStick>& rock : m_rocks) 
+	for (std::unique_ptr<RumiRock>& rock : m_rocks)
 	{
 		rock->Update( DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	}
@@ -133,7 +133,7 @@ void Stage::Draw()
 	m_ground->Draw();
 	m_wall->Draw();
 
-	for (std::unique_ptr<CandleStick>& rock : m_rocks)
+	for (std::unique_ptr<RumiRock>& rock : m_rocks)
 	{
 		rock->Draw();
 	}
@@ -158,7 +158,7 @@ void Stage::OnMessegeAccepted(Message::MessageID messageID)
 
 }
 
-std::list<std::unique_ptr<CandleStick>>& Stage::GetRocks()
+std::list<std::unique_ptr<RumiRock>>& Stage::GetRocks()
 {
 	return m_rocks;
 }
@@ -220,7 +220,7 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 		lightdata.LightColor = color;
 		lightdata.LightIntensity = intensity;
 
-		m_rocks.emplace_back(std::make_unique<CandleStick>(lightdata,nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
+		m_rocks.emplace_back(std::make_unique<RumiRock>(lightdata,nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
 		m_rocks.back()->Initialize(isOnLight[id-1]);
 		m_rocks.back()->SetPosition(spawnPos);
 

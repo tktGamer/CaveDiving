@@ -28,7 +28,7 @@
 PlayerAirAttack::PlayerAirAttack(Player* pPlayer, Hand* pRightHand, Hand* pLeftHand)
 	:m_pPlayer(pPlayer)
 {
-	std::vector<AllSpenningAttackGem*> gems = m_pPlayer->GetHolderGem().IsHasGem<AllSpenningAttackGem>();
+	const std::vector<AllSpenningAttackGem*>& gems = m_pPlayer->GetHolderGem().IsHasGem<AllSpenningAttackGem>();
 	//ŠŽ•óÎ‚É‚æ‚Á‚ÄUŒ‚ƒ‚[ƒVƒ‡ƒ“‚ð•Ï‰»
 	if (gems.size() >= SPIN_ATTACK_GEM_NUM) 
 	{

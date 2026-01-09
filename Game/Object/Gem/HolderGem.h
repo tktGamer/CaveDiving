@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/04
+ * @date   日付　2025/01/08
  */
 
  // 多重インクルードの防止 =====================================================
@@ -24,16 +24,18 @@ class HolderGem
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//所持できる上限
     static constexpr int MAX_GEM = 3;
-
+	
 // データメンバの宣言 -----------------------------------------------
 private:
+	//所持宝石リスト
    std::vector<std::unique_ptr<Gem>> m_holdGems = std::vector<std::unique_ptr<Gem>>(MAX_GEM);
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	HolderGem(const std::vector<int>& gemID);
+	HolderGem(const std::vector<int>& gemID = std::vector<int>(MAX_GEM,Gem::BLANK_ID));
 
 	// デストラクタ
 	~HolderGem();
@@ -41,16 +43,19 @@ public:
 
 // 操作
 public:
+	//リストクリア
     void Clear();
-
+	//リストに空きがあるか
     bool HasBlankSlot() const;
-    void SetGem(const Gem* gem, int index = -1);
+	//リストに宝石をセット
+    void SetGem(const Gem* gem,const int& index = Gem::BLANK_ID);
+	//リストの宝石を取得
     const std::vector<std::unique_ptr<Gem>>& GetGems() const;
 
 
-	//指定の宝石をもっているか
+	//指定の宝石を取得
 	template<typename T>
-	const std::vector<T*>  IsHasGem()const ;
+	const std::vector<T*>&  IsHasGem() const;
 
 //　取得・設定
 public:
@@ -61,15 +66,25 @@ private:
 };
 
 
+/**
+ * @brief 指定した宝石を取得
+ * 
+ * @tparam T 取得する宝石のクラス
+ * @param[in] なし
+ *
+ * @return 指定した宝石のクラスリスト
+ */
 template<typename T>
-inline const std::vector<T*> HolderGem::IsHasGem() const
+inline const std::vector<T*>& HolderGem::IsHasGem() const
 {
+	//指定の宝石を格納するリスト
 	std::vector<T*> result;
-
+	//リストに宝石があるか調べる
 	for (int i = 0; i < m_holdGems.size(); ++i)
 	{
 		if (auto& gem = m_holdGems[i])
 		{
+			//宝石の型を調べる
 			if (auto targetGem = dynamic_cast<T*>(gem.get()))
 			{
 				//T型のGemを追加

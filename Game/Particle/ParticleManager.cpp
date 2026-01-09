@@ -72,6 +72,7 @@ ParticleManager::~ParticleManager()
  */
 void ParticleManager::Update()
 {
+	//それぞれを更新
 	m_particleVanishControl->Update();
 	m_particleMoveDustControl->Update();
 	m_particlePowerUpControl->Update();
@@ -93,9 +94,9 @@ void ParticleManager::Render()
 {
 	//カメラの情報を取得
 	const DirectX::SimpleMath::Vector3& target = m_pCamera->GetTargetPos();
-	const DirectX::SimpleMath::Vector3 eye     = m_pCamera->GetEyePos();
+	const DirectX::SimpleMath::Vector3& eye     = m_pCamera->GetEyePos();
 	const DirectX::SimpleMath::Vector3& up     = m_pCamera->GetUP();
-
+	//それぞれを描画
 	m_particleVanishControl->Render(target,eye,up);
 	m_particlePowerUpControl->Render(target,eye,up);
 	m_particleMoveDustControl->Render(target, eye, up);
@@ -114,6 +115,7 @@ void ParticleManager::Render()
  */
 void ParticleManager::Reset()
 {
+	//それぞれをリセット
 	m_particleVanishControl->Reset();
 	m_particlePowerUpControl->Reset();
 	m_particleMoveDustControl->Reset();

@@ -56,9 +56,10 @@ ResultScene::~ResultScene()
 void ResultScene::Initialize()
 {
 	GetGameData()->SetTotalDamage(DamageSystem::GetInstance()->GetTotalDamage());
-
+	//âπê∂ê¨
 	m_decideMenuSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("decidemenu.wav"));
 	m_clearSound	  = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("gameclear.wav"));
+	//ÉNÉäÉAâπçƒê∂
 	m_clearSound->Play(false);
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
@@ -76,7 +77,7 @@ void ResultScene::Initialize()
 		m_gameover = UIFactory::CreateUserInterface(L"UI/gameover.png", { 650.0f,100.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 	}
-
+	//îwåiâÊëú
 	m_backTexture = UIFactory::CreateUserInterface(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 	
 	m_scoreUI = std::make_unique<ScoreUIManager>(GetGameData()->GetScoreInfo());

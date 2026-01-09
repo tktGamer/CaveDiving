@@ -23,7 +23,7 @@
 
 // クラスの定義 ===============================================================
 /**
-  * @brief GameObject
+  * @brief オブジェクトの基底
   */
 class GameObject : public IObserver
 {
