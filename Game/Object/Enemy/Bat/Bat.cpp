@@ -85,8 +85,8 @@ void Bat::Initialize()
 	SetScale(DirectX::SimpleMath::Vector3::One);
 
 	//現在位置・角度設定
-	SetCurrentPosition(GetInitialPosition() + GetPosition());
-	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion());
+	SetCurrentPosition(GetPosition());
+	SetCurrentAngle(GetQuaternion());
 
 }
 
@@ -118,9 +118,9 @@ void Bat::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dire
 	DamageFlashUpdate();
 
 	//位置の更新
-	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	SetCurrentPosition(currentPosition + GetPosition());
 	//角度の更新
-	SetCurrentAngle(GetInitialQuaternion() * m_motionAngle * GetQuaternion() * currentAngle);
+	SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle);
 	
 	//当たり判定更新
 	m_sphere.SetCenter(GetCurrentPosition());

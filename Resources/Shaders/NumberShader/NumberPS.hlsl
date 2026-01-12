@@ -9,8 +9,8 @@ float4 main(PS_INPUT input) : SV_TARGET
 	
     //•\¦‚·‚é”š‚ğ‹‚ß‚é
     float2 uv = input.tex;
-    float w = 10.0f;
-    float h = 1.0f;
+    float w = widthNum;
+    float h = heightNum;
     uv.x /= w;
     uv.y /= h;
     uv.x += (1.0f / w) * (number % w);

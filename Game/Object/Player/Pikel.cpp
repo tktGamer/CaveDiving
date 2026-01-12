@@ -86,9 +86,9 @@ void Pikel::Initialize()
 void Pikel::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//位置の更新
-	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	SetCurrentPosition( currentPosition + GetPosition());
 	//角度の更新
-	SetCurrentAngle(GetQuaternion() * currentAngle * GetInitialQuaternion());
+	SetCurrentAngle(GetQuaternion() * currentAngle);
 	//当たり判定の更新
 	//位置を調整する
 	m_sphere.SetCenter(GetCurrentPosition() + DirectX::SimpleMath::Vector3::Transform(PIKEL_COLLSION_POS_OFFSET, GetCurrentQuaternion()));

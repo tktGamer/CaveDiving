@@ -290,8 +290,10 @@
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Scene\GemSelectScene.h" />
     <ClInclude Include="Game\Scene\LoadScene.h" />
+    <ClInclude Include="Game\Scene\LogoScene.h" />
     <ClInclude Include="Game\Scene\ResultScene.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
+    <ClInclude Include="Game\Shader\Animation2D\Animation2DShader.h" />
     <ClInclude Include="Game\Shader\Bloom.h" />
     <ClInclude Include="Game\Shader\Fade\FadeShader.h" />
     <ClInclude Include="Game\Shader\Model\ModelShader.h" />
@@ -306,6 +308,7 @@
     <ClInclude Include="Game\Shader\UI\UIShader.h" />
     <ClInclude Include="Game\Tag.h" />
     <ClInclude Include="Game\Transitor\Transitor.h" />
+    <ClInclude Include="Game\UI\Animation2D.h" />
     <ClInclude Include="Game\UI\Buff\Buff.h" />
     <ClInclude Include="Game\UI\Buff\BuffUIControl.h" />
     <ClInclude Include="Game\UI\ClearConditions\ClearConditions.h" />
@@ -323,6 +326,7 @@
     <ClInclude Include="Game\UI\Result\SaveConfirm.h" />
     <ClInclude Include="Game\UI\Result\Score\Score.h" />
     <ClInclude Include="Game\UI\Result\Score\ScoreUIManager.h" />
+    <ClInclude Include="Game\UI\UIManager.h" />
     <ClInclude Include="Game\UI\UserInterface.h" />
     <ClInclude Include="Game\GameData.h" />
     <ClInclude Include="Game\World.h" />
@@ -437,8 +441,10 @@
     <ClCompile Include="Game\Scene\GameScene.cpp" />
     <ClCompile Include="Game\Scene\GemSelectScene.cpp" />
     <ClCompile Include="Game\Scene\LoadScene.cpp" />
+    <ClCompile Include="Game\Scene\LogoScene.cpp" />
     <ClCompile Include="Game\Scene\ResultScene.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
+    <ClCompile Include="Game\Shader\Animation2D\Animation2DShader.cpp" />
     <ClCompile Include="Game\Shader\Bloom.cpp" />
     <ClCompile Include="Game\Shader\Fade\FadeShader.cpp" />
     <ClCompile Include="Game\Shader\Model\ModelShader.cpp" />
@@ -452,6 +458,7 @@
     <ClCompile Include="Game\Shader\ShaderManager.cpp" />
     <ClCompile Include="Game\Shader\UI\UIShader.cpp" />
     <ClCompile Include="Game\Transitor\Transitor.cpp" />
+    <ClCompile Include="Game\UI\Animation2D.cpp" />
     <ClCompile Include="Game\UI\Buff\Buff.cpp" />
     <ClCompile Include="Game\UI\Buff\BuffUIControl.cpp" />
     <ClCompile Include="Game\UI\ClearConditions\ClearConditions.cpp" />
@@ -469,6 +476,7 @@
     <ClCompile Include="Game\UI\Result\SaveConfirm.cpp" />
     <ClCompile Include="Game\UI\Result\Score\Score.cpp" />
     <ClCompile Include="Game\UI\Result\Score\ScoreUIManager.cpp" />
+    <ClCompile Include="Game\UI\UIManager.cpp" />
     <ClCompile Include="Game\UI\UserInterface.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -492,6 +500,7 @@
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="packages.config" />
+    <None Include="Resources\Shaders\Animation2DShader\Animation2D.hlsli" />
     <None Include="Resources\Shaders\FadeShader\Fade.hlsli" />
     <None Include="Resources\Shaders\LumiRockShader\LumiRockShader.hlsli" />
     <None Include="Resources\Shaders\ModelShader\ModelShader.hlsli" />
@@ -502,6 +511,26 @@
     <None Include="Resources\Shaders\UIShader\UI.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Resources\Shaders\Animation2DShader\Animation2DGS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Animation2DShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Animation2DShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Animation2DShader\Animation2DPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Animation2DShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Animation2DShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Animation2DShader\Animation2DVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Animation2DShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Animation2DShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\FadeShader\FadeGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>

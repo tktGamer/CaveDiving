@@ -60,13 +60,14 @@ TitleScene::~TitleScene()
  */
 void TitleScene::Initialize()
 {
+	CreateDeviceDependentResources();
+	CreateWindowSizeDependentResources();
+
 	m_titleBGM = std::make_unique<Sound>(m_pResourceManager->RequestSound("titlebgm.wav"));
 	m_titleBGM->Play(true);
 	m_gemLoadSound = std::make_unique<Sound>(m_pResourceManager->RequestSound("titlegemload.wav"));
 	m_gameStartSound = std::make_unique<Sound>(m_pResourceManager->RequestSound("gamestart.wav"));
 
-	m_titleTexture = *m_pResourceManager->RequestTexture("title.png");
-	m_pressSpaceTexture = *m_pResourceManager->RequestTexture("pressspace.png");
 
 	//m_demoPlayer = GameObjectFactory::CreatePlayer(nullptr);
 	//m_demoPlayer->SetPosition({ 0.0f,2.0f,7.0f });
@@ -93,10 +94,8 @@ void TitleScene::Initialize()
 
 	m_loadCheckUI = UIFactory::CreateUserInterface(L"UI/loadgemcheck.png", { 200,400 }, { 0.8f,0.8f },UserInterface::ANCHOR::MIDDLE_CENTER);
 	m_checkUI = UIFactory::CreateUserInterface(L"UI/check.png", { 200,400 }, { 0.8f,0.8f },UserInterface::ANCHOR::MIDDLE_CENTER);
-	CreateDeviceDependentResources();
-	CreateWindowSizeDependentResources();
-
-
+	m_title = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::TITLE, {640.0f,180.0f}, {1.0f,1.0f}, UserInterface::ANCHOR::MIDDLE_CENTER);
+	m_pressSpace = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::PRESS_SPACE, { 640.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
@@ -234,19 +233,14 @@ void TitleScene::Render()
 	//m_groundModel->Draw(context, *states, world, view, proj);
 	
 	
-	DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
 
 	m_loadCheckUI->Render();
 	if (m_isLoadPlayerHoldGem) 
 	{
 		m_checkUI->Render();
 	}
-	spriteBatch->Begin();
-	spriteBatch->Draw(m_titleTexture, DirectX::SimpleMath::Vector2(400, 100));
-	spriteBatch->Draw(m_pressSpaceTexture, DirectX::SimpleMath::Vector2(400, 550));
-
-	
-	spriteBatch->End();
+	m_title->Render();
+	m_pressSpace->Render();
 
 }
 

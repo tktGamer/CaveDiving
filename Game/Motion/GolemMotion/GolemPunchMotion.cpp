@@ -117,7 +117,8 @@ void GolemPunchMotion::Reset()
 {
 	//それぞれのオブジェクトを元の位置・角度に戻す
 	m_pGolem->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-	m_pRightGolemHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
+	m_pRightGolemHand->SetPosition(Golem::RIGHTHAND_INIT_POS);
+	m_pLeftGolemHand->SetPosition(Golem::LEFTHAND_INIT_POS);
 	//前に向けていたのを下に向ける
 	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 	m_pLeftGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);

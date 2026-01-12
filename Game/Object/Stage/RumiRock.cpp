@@ -38,7 +38,7 @@ RumiRock::RumiRock(const ModelShader::PointLightCB& lightData,const GameObject* 
 	//当たり判定セット
 	SetShape(&m_box);
 	//ライト生成
-	m_light = std::make_unique<Light>(nullptr, GetInitialPosition(), GetInitialQuaternion());
+	m_light = std::make_unique<Light>(nullptr,DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
 	m_light->Initialize();
 
 	m_light->SetLightData(lightData);
@@ -85,9 +85,9 @@ void RumiRock::Initialize(bool isOnLight)
 void RumiRock::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//位置の更新
-	SetCurrentPosition(GetInitialPosition() + GetPosition() + currentPosition);
+	SetCurrentPosition( GetPosition() + currentPosition);
 	//角度の更新
-	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion() * currentAngle);
+	SetCurrentAngle( GetQuaternion() * currentAngle);
 
 	//ライトの更新
 	m_light->Update(GetCurrentPosition(), GetCurrentQuaternion());
@@ -124,7 +124,7 @@ void RumiRock::Draw()
 	cbuff.matProj = proj.Transpose();
 	cbuff.flash = m_color;
 	//	受け渡し用バッファの内容更新(ModelCBからID3D11Bufferへの変換）
-	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
+	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Rock_Model), 0, NULL, &cbuff, 0, 0);
 
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -156,10 +156,10 @@ void RumiRock::Draw()
 			context->RSSetState(states->CullClockwise());
 
 			//シェーダーの設定
-			shader->StartShader(ShaderManager::Model);
+			shader->StartShader(ShaderManager::Rock_Model);
 
 			//頂点情報を設定
-			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Model));
+			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Rock_Model));
 
 		});
 	shader->EndShader();
@@ -192,6 +192,7 @@ void RumiRock::Finalize()
  */
 void RumiRock::OnMessegeAccepted(Message::MessageID messageID)
 {
+	messageID;
 }
 
 /**
@@ -225,7 +226,7 @@ void RumiRock::OnLight()
 {
 	//明かりを点ける
 	m_light->LightOn();
-
+	m_color = { 1,1,1,1 };
 }
 
 /**

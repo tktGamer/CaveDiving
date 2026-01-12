@@ -33,9 +33,6 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	//円運動の中心座標
-	const DirectX::SimpleMath::Vector3* m_centerPos;
-	//無敵回数
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -52,10 +49,12 @@ public:
 	void Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp);
 
 	void RequestParticleShield(
-		const DirectX::SimpleMath::Vector3& pos//パーティクルの発生位置
+		const int& objectID//パーティクルの発生位置
 		);
 	
 	void Reset();
+
+	void Delete();
 //　取得・設定
 public:
 

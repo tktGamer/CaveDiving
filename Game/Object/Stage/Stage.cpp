@@ -123,20 +123,29 @@ void Stage::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
  */
 void Stage::Draw()
 {
-	//Shader* shader = Shader::GetInstance();	
-	//ID3D11DeviceContext* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
-	//DirectX::DX11::CommonStates* states  = Graphics::GetInstance()->GetCommonStates();
-	//DirectX::SimpleMath::Matrix  view    = Graphics::GetInstance()->GetViewMatrix();
-	//DirectX::SimpleMath::Matrix  proj    = Graphics::GetInstance()->GetProjectionMatrix();
-
-
-	m_ground->Draw();
-	m_wall->Draw();
 
 	for (std::unique_ptr<RumiRock>& rock : m_rocks)
 	{
-		rock->Draw();
+		if (!rock->IsOnLight()) 
+		{
+			rock->Draw();
+		}
 	}
+}
+
+void Stage::BloomDraw()
+{
+	m_ground->Draw();
+	m_wall->Draw();
+	for (std::unique_ptr<RumiRock>& rock : m_rocks)
+	{
+		if(rock->IsOnLight())
+		{
+			rock->Draw();
+
+		}
+	}
+
 }
 
 
@@ -220,9 +229,8 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 		lightdata.LightColor = color;
 		lightdata.LightIntensity = intensity;
 
-		m_rocks.emplace_back(std::make_unique<RumiRock>(lightdata,nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
+		m_rocks.emplace_back(std::make_unique<RumiRock>(lightdata,nullptr, spawnPos, DirectX::SimpleMath::Quaternion::Identity));
 		m_rocks.back()->Initialize(isOnLight[id-1]);
-		m_rocks.back()->SetPosition(spawnPos);
 
 		CollisionManager::GetInstance()->Register(m_rocks.back().get());
 

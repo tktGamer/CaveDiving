@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/17
+ * @date   日付　2025/01/12
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -83,7 +83,8 @@ std::unique_ptr<Gauge> UIFactory::CreateGauge()
  * @brief 「宝石選択UI」の生成
  *
  * @param[in] pGemSelectUIManager  宝石選択UI群管理クラスポインタ
- *
+ * @param[in] gemID  宝石ID
+ * 
  * @return 宝石選択UIクラス
  */
 std::unique_ptr<GemSelect> UIFactory::CreateGemSelect(GemSelectUIManager* pGemSelectUIManager, const std::vector<int>& gemID)
@@ -122,7 +123,8 @@ std::unique_ptr<ChangeConfirm> UIFactory::CreateChangeConfirm(GemSelectUIManager
  * @brief 「宝石入れ替えUI」の生成
  *
  * @param[in] pGemSelectUIManager  宝石選択UI群管理クラスポインタ
- *
+ * @param[in] gemID  宝石ID
+ * 
  * @return 宝石入れ替えUIクラス
  */
 std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSelectUIManager,const std::vector<int>& gemID)
@@ -145,7 +147,7 @@ std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSe
 /**
  * @brief 「所持している宝石を表示するUI」の生成
  *
- * @param[in] なし
+ * @param[in] gemID  宝石ID
  *
  * @return 所持している宝石を表示するUIクラス
  */
@@ -167,8 +169,8 @@ std::unique_ptr<HoldGem> UIFactory::CreateHoldGem(const std::vector<int>& gemID)
 /**
  * @brief 「所持している宝石の内1つの情報を表示するUI」の生成
  *
- * @param[in] なし
- *
+ * @param[in] gemID  宝石ID
+ * 
  * @return 所持している宝石の内1つの情報を表示するUIクラス
  */
 std::unique_ptr<HoldGemInfoDraw> UIFactory::CreateHoldGemInfoDraw(const std::vector<int>& gemID)
@@ -214,16 +216,15 @@ std::unique_ptr<NumberControl> UIFactory::CreateNumberUI(
 }
 
 /**
- * @brief 「数字UI」の生成
+ * @brief 「カウント数字UI」の生成
  *
- * @param[in] data        数字画像情報
- * @param[in] pos  　　　 描画座標
- * @param[in] scale       拡大率
- * @param[in] color    　 色
- * @param[in] initNumber　初期数字
- * @param[in] minDigit    最小表示桁数
+ * @param[in] numberUI      数字UI
+ * @param[in] numberInfoUI  数字の意味UI
+ * @param[in] initNumber    初期数字  
+ * @param[in] targetNumber  目標数字
+ * @param[in] stepNumber　  数字増加量
  *
- * @return 数字UIクラス
+ * @return カウント数字UIクラス
  */
 std::unique_ptr<CountUpNumber> UIFactory::CreateCountUpNumberUI(std::unique_ptr<NumberControl> numberUI, std::unique_ptr<UserInterface> numberInfoUI
 	, const int& initNumber , const int& targetNumber, const int& stepNumber)
@@ -233,5 +234,31 @@ std::unique_ptr<CountUpNumber> UIFactory::CreateCountUpNumberUI(std::unique_ptr<
 	numberControl->CreateNumberUI(std::move(numberUI));
 	numberControl->CreateInfoTextureUI(std::move(numberInfoUI));
 	return std::move(numberControl);
+}
+
+/**
+ * @brief 「アニメーション2DUI」の生成
+ *
+ * @param[in] texturepath    画像パス
+ * @param[in] textureInfo  　画像情報
+ * @param[in] animationTime  アニメーション時間
+ * @param[in] isLoop    　   アニメーションを繰り返すか
+ * @param[in] position　	 座標
+ * @param[in] scale			 拡大率
+ *
+ * @return 2Dアニメーションクラス
+ */
+std::unique_ptr<Animation2D> UIFactory::CreateAnimation2DUI(const wchar_t* texturepath, const Animation2D::AnimationTexture& textureInfo, 
+	const float& animationTime, const bool& isLoop, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale)
+{
+	std::unique_ptr<Animation2D> animation2D = std::make_unique<Animation2D>(
+		texturepath, textureInfo, animationTime,
+		isLoop,position,scale);
+	animation2D->Initialize();
+	//スクリーンサイズ取得
+	int w, h;
+	Graphics::GetInstance()->GetScreenSize(w, h);
+	animation2D->SetWindowSize(DirectX::SimpleMath::Vector2{ static_cast<float>(w),static_cast<float>(h) });
+	return std::move(animation2D);
 }
 

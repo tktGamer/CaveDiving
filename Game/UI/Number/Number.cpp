@@ -111,8 +111,10 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 	Number2DShader::Number2DCB cbuff;
 	//	ウィンドウサイズ
 	cbuff.windowSize = DirectX::SimpleMath::Vector2(static_cast<float>(w), static_cast<float>(h));
-	cbuff.AlphaData = m_renderRatio - m_renderRatioOffset;
-	cbuff.dammy = number; 
+	cbuff.alphaData = m_renderRatio - m_renderRatioOffset;
+	cbuff.number = number; 
+	cbuff.widthNumber = 10;
+	cbuff.heightNumber = 1;
 	cbuff.numberColor = color;
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）

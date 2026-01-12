@@ -13,9 +13,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include"../Particle.h"
-
-
-
+#include <SimpleMath.h>
 
 // クラスの宣言 ===============================================================
 
@@ -33,20 +31,17 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	//	生存時間が経過した後の時間（消滅までの時間）
-	float m_afterLife;
-
-	DirectX::SimpleMath::Color m_afterColor;
 
 	float m_angle = 0.0f;
-	//円運動の中心座標
-	const DirectX::SimpleMath::Vector3* m_centerPos;
-	// メンバ関数の宣言 -------------------------------------------------
+	//円運動の中心オブジェクトのID
+	const int m_centerObjectID;
+// メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	//	関数
 	//	コンストラクタ（初期設定）
 	ParticleShield(
+		const int& centerObjectID, 
 		float life,
 		DirectX::SimpleMath::Vector3 pos,
 		DirectX::SimpleMath::Vector3 velocity,
@@ -62,8 +57,8 @@ public:
 	bool Update() override;
 
 
-
-
+//取得・設定
+	const DirectX::SimpleMath::Vector3& GetCenterPosition() const;
 
 };
 

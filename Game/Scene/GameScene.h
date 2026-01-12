@@ -20,13 +20,14 @@
 #include"../Common/SceneManager.h"
 #include"../GameData.h"
 #include"../Common/Sound.h"
-#include"../Object/Camera.h"
 #include"../Common/Collision/DisplayCollision.h"
 #include"../Common/Collision/CollisionManager.h"
+#include"../Object/Camera.h"
 #include"../UI/Gauge/Gauge.h"
+#include"../UI/ClearConditions/ClearConditions.h"
+#include"../UI/Number/CountUpNumber.h"
 #include"../UI/HoldGem/HoldGem.h"
 #include"../UI/Buff/BuffUIControl.h"
-#include"../UI/ClearConditions/ClearConditions.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 #include"../Object/Enemy/EnemyManager.h"
@@ -44,9 +45,13 @@ class ResourceManager;    ///< リソースマネージャ
  */
 class GameScene : public Scene<GameData>
 {
-// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+// クラス定数の宣言 -------------------------------------------------
 public:
+
+// メンバ関数の宣言 -------------------------------------------------
+// 取得/設定
+public:
+// コンストラクタ/デストラクタ
 	// コンストラクタ
 	GameScene();
 	// デストラクタ
@@ -68,10 +73,19 @@ public:
 	void CreateWindowSizeDependentResources() override;
 	// デバイスロストした時に呼び出される関数
 	void OnDeviceLost() override;
-// 取得/設定
 
-// クラス定数の宣言 -------------------------------------------------
-public:
+// 内部実装
+private:
+	void CreateUI();
+
+	//ステージ終了判定
+	const bool IsFinish();
+	//プレイヤーの状態を保存
+	void SavePlayer();
+	//ステージのライト状況を保存
+	void SaveLight();
+	//敵の生成
+	void SpawnEnemy();
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -98,31 +112,24 @@ private:
 	std::unique_ptr<DirectX::DualPostProcess> m_dualPostProcess;
 
 
-	std::unique_ptr<EnemyManager> m_enemyManager; //<敵管理オブジェクト
-	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
-	std::unique_ptr<Player> m_player;    ///< プレイヤーオブジェクト
-	std::unique_ptr<Stage> m_stage;    ///< ステージオブジェクト
+	//敵管理オブジェクト
+	std::unique_ptr<EnemyManager> m_enemyManager; 
+	// カメラオブジェクト
+	std::unique_ptr<Camera> m_camera;    
+	// プレイヤーオブジェクト
+	std::unique_ptr<Player> m_player;    
+	// ステージオブジェクト
+	std::unique_ptr<Stage> m_stage;    
 
 	std::unique_ptr<Gauge> m_hpGauge;
 	std::unique_ptr<HoldGem> m_holdGem;
 	std::unique_ptr<BuffUIControl> m_buffUI;
 	std::unique_ptr<ClearConditions> m_clearConditionsUI;
+	//std::unique_ptr<NumberControl> m_clearConditionsUI;
 
 	std::unique_ptr<ItemManager> m_itemManager;
 
 
 
 
-// 内部実装
-private:
-	void CreateUI();
-
-	//ステージ終了判定
-	const bool IsFinish();
-	//プレイヤーの状態を保存
-	void SavePlayer();
-	//ステージのライト状況を保存
-	void SaveLight();
-	//敵の生成
-	void SpawnEnemy();
 };

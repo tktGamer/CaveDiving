@@ -70,9 +70,9 @@ void Light::Initialize()
 void Light::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//位置の更新
-	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	SetCurrentPosition(currentPosition + GetPosition());
 	//角度の更新
-	SetCurrentAngle(GetQuaternion() * currentAngle * GetInitialQuaternion());
+	SetCurrentAngle(GetQuaternion() * currentAngle );
 
 
 

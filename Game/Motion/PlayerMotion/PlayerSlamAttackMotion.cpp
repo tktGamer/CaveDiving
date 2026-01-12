@@ -125,11 +125,11 @@ void PlayerSlamAttackMotion::Reset()
 	//それぞれのオブジェクトを元の位置・角度に戻す
 	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, Player::RIGHT_HAND_Z_ANGLE));
 	m_pRightHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-	m_pRightHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
+	m_pRightHand->SetPosition(Player::RIGHT_HAND_INIT_POS);
 
 	m_pLeftHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 	m_pLeftHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-	m_pLeftHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
+	m_pLeftHand->SetPosition(Player::LEFT_HAND_INIT_POS);
 
 	m_pPlayer->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 

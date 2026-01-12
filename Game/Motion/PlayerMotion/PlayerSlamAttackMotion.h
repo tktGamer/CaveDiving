@@ -31,14 +31,14 @@ private:
 	static constexpr float SLAMMED_ATTACK_MOTION_SPEED = 4.0f;
 
 	//右手の位置
-	static constexpr DirectX::SimpleMath::Vector3 RIGHT_HAND_POS = { -1.5f,2.0f,0.0f };
+	static constexpr DirectX::SimpleMath::Vector3 RIGHT_HAND_POS = { 0.0f,3.5f,0.0f };
 	//左手の位置
-	static constexpr DirectX::SimpleMath::Vector3 LEFT_HAND_POS  = { 1.45f,2.0f,0.0f };
+	static constexpr DirectX::SimpleMath::Vector3 LEFT_HAND_POS  = { -0.01f,3.4f,0.0f };
 
 	//手のモーション開始角度
 	static constexpr float HAND_START_MOTION_X_ANGLE = DirectX::XMConvertToRadians(0.0f);
 	//手のモーション終了角度
-	static constexpr float HAND_END_MOTION_X_ANGLE = DirectX::XMConvertToRadians(-110.0f);
+	static constexpr float HAND_END_MOTION_X_ANGLE = DirectX::XMConvertToRadians(-70.0f);
 
 	//プレイヤーのモーション開始角度
 	static constexpr float PLAYER_START_MOTION_X_ANGLE = DirectX::XMConvertToRadians(0.0f);

@@ -28,8 +28,14 @@ public:
 	struct Number2DCB
 	{
 		DirectX::SimpleMath::Vector2	windowSize;
-		float AlphaData = 0;
-		float dammy = 0;
+		float alphaData = 0;
+		//•\¦‚·‚é”š
+		float number = 0;
+		//‰æ‘œ‚Ì‰¡”
+		int widthNumber;
+		//‰æ‘œ‚Ìc”
+		int heightNumber;
+		DirectX::SimpleMath::Vector2 dammy;
 		DirectX::SimpleMath::Vector4 numberColor;
 	};
 

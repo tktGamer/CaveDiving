@@ -414,12 +414,21 @@ DirectX::SimpleMath::Vector3 CollisionManager::CheckContactPoint(Shape* shapeA, 
 		{
 			return ContactPointSphereToSphere(dynamic_cast<Sphere*>(shapeA), dynamic_cast<Sphere*>(shapeB));
 		}
+		else if (shapeTypeB == Shape::ShapeType::Box) 
+		{
+			return ContactPointSphereToBox(dynamic_cast<Sphere*>(shapeA), dynamic_cast<Box*>(shapeB));
+
+		}
 	}
 	else if (shapeTypeA == Shape::ShapeType::Box) 
 	{
 		if (shapeTypeB == Shape::ShapeType::Sphere) 
 		{
 			return ContactPointSphereToBox(dynamic_cast<Sphere*>(shapeB), dynamic_cast<Box*>(shapeA));
+		}
+		else if (shapeTypeB == Shape::ShapeType::Box) 
+		{
+			//return ContactPointBoxToBox(dynamic_cast<Box*>(shapeB), dynamic_cast<Box*>(shapeA));
 		}
 	}
 	//‚Ç‚±‚É‚à‘®‚³‚È‚©‚Á‚½

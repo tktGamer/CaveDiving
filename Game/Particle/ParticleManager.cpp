@@ -216,9 +216,14 @@ void ParticleManager::RequestHPHealParticle(const DirectX::SimpleMath::Vector3& 
  *
  * @return ‚È‚µ
  */
-void ParticleManager::RequestShieldParticle(const DirectX::SimpleMath::Vector3& pos)
+void ParticleManager::RequestShieldParticle(const int& objectID)
 {
-	m_particleShieldControl->RequestParticleShield(pos);
+	m_particleShieldControl->RequestParticleShield(objectID);
+}
+
+void ParticleManager::DeleteShieldParticle(const int& objectID)
+{
+	m_particleShieldControl->Delete();
 }
 
 

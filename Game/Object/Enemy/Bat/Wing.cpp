@@ -72,9 +72,11 @@ void Wing::Initialize()
 void Wing::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//位置の更新
-	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition(), m_motionAngle * currentAngle) + currentPosition + GetPosition());
+	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition(), m_motionAngle * currentAngle) + currentPosition + GetPosition());
+	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition );
 	//角度の更新
-	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion() * m_motionAngle * currentAngle);
+	//SetCurrentAngle(GetInitialQuaternion() * GetQuaternion() * m_motionAngle * currentAngle);
+	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
 	
 }
 

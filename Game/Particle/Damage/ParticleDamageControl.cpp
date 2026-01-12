@@ -107,7 +107,7 @@ void ParticleDamageControl::RequestParticleDamage(const DirectX::SimpleMath::Vec
 
 
 	m_particleDamage.emplace_back(
-		std::make_unique< ParticleDamageNumber>(
+		std::make_unique<ParticleDamageNumber>(
 			ResourcePath::TEXTURE::PARTICLE::NUMBER,
 			pos +DirectX::SimpleMath::Vector3{offsetX,offsetY,offsetZ},
 			damage

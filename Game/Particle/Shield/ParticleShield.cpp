@@ -13,7 +13,7 @@
 #include "pch.h"
 #include "ParticleShield.h"
 #include"Game/Message/Messenger.h"
-
+#include"Game/Object/GameObject.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -28,18 +28,16 @@
  * 
  */
 ParticleShield::ParticleShield(
+	const int& centerObjectID,
 	float life,
 	DirectX::SimpleMath::Vector3 pos,
 	DirectX::SimpleMath::Vector3 velocity,
 	DirectX::SimpleMath::Vector3 accele,
 	DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
 	DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor)
-	:Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor }
+	:Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor },
+	m_centerObjectID{centerObjectID}
 {
-	//	生存時間が経過した後の時間（消滅までの時間）を初期化
-	m_afterLife = life * 0.2f;
-	m_afterColor = endColor;
-	m_afterColor.w = 0.0f;
 }
 /**
  * @brief デストラクタ
@@ -81,23 +79,10 @@ bool ParticleShield::Update()
 
 	float life = GetLife();
 	//	ライフが0未満なら自身を消してもらう
-	//if (life < 0.0f)
-	//{
-	//	if (life+m_afterLife < 0.0f) 
-	//	{
-	//		return false; //	生存時間が経過した後の時間も0未満なら、falseを返す
-	//	}
-	//	
-	//	DirectX::SimpleMath::Color nowColor = GetNowColor();
-
-	//	//最終的に透明になる
-	//	nowColor.A(DirectX::SimpleMath::Color::Lerp(GetStartColor(), m_afterColor, 1.0f - (life + m_afterLife) / m_afterLife).w);
-
-	//	SetColor(nowColor);
-	//	life -= elapsedTime; //	生存時間が経過した後の時間を減らしていく
-	//	SetLife(life);
-	//	return true; //	生存時間が経過した後の時間はあるので、trueを返す
-	//}
+	if (life < 0.0f)
+	{
+		return false; //	生存時間が経過した後の時間はあるので、trueを返す
+	}
 
 	//	スケール。現在の生存時間から、大きさをLerpで算出する
 	SetScele(DirectX::SimpleMath::Vector3::Lerp(GetStartScale(), GetEndScale(), 1.0f - GetLife() / GetStartLife()));
@@ -108,5 +93,10 @@ bool ParticleShield::Update()
 	SetLife(life);
 
 	return true;
+}
+
+const DirectX::SimpleMath::Vector3& ParticleShield::GetCenterPosition() const
+{
+	return Messenger::GetInstance()->GetObject(m_centerObjectID)->GetCurrentPosition();
 }
 

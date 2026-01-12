@@ -106,7 +106,7 @@ void PlayerMoving::Update(const float& elapsedTime)
 		direction += Character::MOVE::RIGHT;
 	}
 	//角度を考慮して速度に加算
-	velocity += DirectX::SimpleMath::Vector3::Transform(direction * elapsedTime, m_pPlayer->GetQuaternion());
+	velocity += DirectX::SimpleMath::Vector3::Transform(direction*Player::MOVE_SPEED * elapsedTime, m_pPlayer->GetQuaternion());
 	//ベクトルがある程度小さくなったら待機状態へ
 	if(velocity.Length() <= Player::MIN_LENGTH)
 	{

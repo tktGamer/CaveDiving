@@ -24,7 +24,7 @@ class GolemSlammedDownPreparingMotion : public Motion
 {
 // ƒNƒ‰ƒX’è”‚ÌéŒ¾ -------------------------------------------------
 private:
-	static constexpr DirectX::SimpleMath::Vector3 SLAM_PREPARE_MOVE = { 0.0f,5.0f,-6.0f };
+	static constexpr DirectX::SimpleMath::Vector3 SLAM_PREPARE_MOVE = { -1.0f,5.0f,-6.0f };
 	//Œ‚ğ³–Ê‚ÉŒü‚¯‚é
 	static constexpr float SLAM_HAND_ANGLE = DirectX::XMConvertToRadians(90.0f);
 

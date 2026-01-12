@@ -76,8 +76,8 @@ void Golem::Initialize()
 	//初期大きさ
 	SetScale(DirectX::SimpleMath::Vector3::One);
 
-	SetCurrentPosition(GetInitialPosition() + GetPosition());
-	SetCurrentAngle(GetInitialQuaternion() * GetQuaternion());
+	SetCurrentPosition( GetPosition());
+	SetCurrentAngle( GetQuaternion());
 	//手の生成
 	m_rightHand = GameObjectFactory::CreateGolemHand(this,this,RIGHTHAND_INIT_POS);
 	m_leftHand = GameObjectFactory::CreateGolemHand(this, this, LEFTHAND_INIT_POS,
@@ -126,9 +126,9 @@ void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 
 	}
 	//位置の更新
-	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	SetCurrentPosition( currentPosition + GetPosition());
 	//角度の更新
-	SetCurrentAngle(GetInitialQuaternion() * m_motionAngle * GetQuaternion() * currentAngle);
+	SetCurrentAngle( m_motionAngle * GetQuaternion() * currentAngle);
 	
 	//当たり判定更新
 	m_box.SetCenter(GetCurrentPosition());

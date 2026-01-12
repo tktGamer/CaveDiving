@@ -12,7 +12,7 @@
 #pragma once
 
 // ヘッダファイルの読み込み ===================================================
-
+#include<unordered_map>
 #include"../Particle/Vanish/ParticleVanishControl.h"
 #include"../Particle/PowerUp/ParticlePowerUpControl.h"
 #include"../Particle/MoveDust/ParticleMoveDustControl.h"
@@ -36,7 +36,7 @@ public:
 		PowerUp,
 		MoveDust,
 		ItemGet,
-		Hit,
+		Daamge,
 		HPHeal,
 		Shield,
 		Num
@@ -45,7 +45,8 @@ public:
 private:
 	// ParticleManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<ParticleManager> s_particleManager;
-
+	//パーティクルコントロールクラス配列
+	std::unordered_map<ParticleType, ParticleControl*> m_particleCotrolers;
 	//カメラクラスポインタ
 	const Camera* m_pCamera;
 	
@@ -124,8 +125,12 @@ public:
 	);
 	//盾パーティクル生成
 	void RequestShieldParticle(
-		const DirectX::SimpleMath::Vector3& pos//パーティクルの発生位置
+		const int& objectID
 		);
+	void DeleteShieldParticle(
+		const int& objectID
+		);
+
 //　取得・設定
 public:
 	//カメラオブジェクトの設定

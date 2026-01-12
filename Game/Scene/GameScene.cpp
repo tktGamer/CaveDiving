@@ -86,13 +86,9 @@ void GameScene::Initialize()
 
 	//オブジェクトの生成--
 	//プレイヤーの生成
-	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), gameData->GetPlayerData(), nullptr,DirectX::SimpleMath::Vector3{ 0.0f,1.55f,0.0f });
-	//m_player->SetPosition(});
+	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), gameData->GetPlayerData(), nullptr,DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f });
 	m_collsionManager->Register(m_player.get());
 
-	//プレイヤーの初期HP設定 ==ファクトリに入れておく＝＝
-	if (gameData->GetNextStage() != GameData::Stage::FIRST)
-	m_player->SetCurrentHP(gameData->GetScoreInfo().playerCurrentHp);
 
 	//ステージの生成
 	m_stage = GameObjectFactory::CreateStage(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity
@@ -111,15 +107,7 @@ void GameScene::Initialize()
 	m_itemManager = std::make_unique<ItemManager>();
 	m_itemManager->Initialize();
 
-	//HPゲージUIの生成
-	m_hpGauge = UIFactory::CreateGauge();
-	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
-	//所持宝石UIの生成
-	m_holdGem = UIFactory::CreateHoldGem(gameData->GetPlayerData().gemID);
-	//クリア条件UI
-	m_clearConditionsUI = std::make_unique<ClearConditions>(DirectX::SimpleMath::Vector2{ 1240,150 });
-	m_clearConditionsUI->Initialize(width, height);
-
+	CreateUI();
 
 	ParticleManager::GetInstance()->SetCamera(m_camera.get());
 	Sound::SetListenerObject(m_player.get());
@@ -182,8 +170,8 @@ void GameScene::Update(float elapsedTime)
 	m_buffUI->Update();
 	const std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
 	m_clearConditionsUI->Update((int)enemies.size());
-
-
+	//m_clearConditionsUI->Update();
+	//m_clearConditionsUI->SetNumber(enemies.size());
 	//ゲームクリア・ゲームオーバー判定
 	if (IsFinish()) 
 	{
@@ -270,7 +258,7 @@ void GameScene::Render()
 	//ブラーするオブジェクトの描画
 	//---------------------------------------------------------------------------//
 
-	m_stage->Draw();
+	m_stage->BloomDraw();
 
 
 	//Pass1 offScreenSRVをもとにblur1RTV blur1SRVに明るい部分を抽出する----------------------------------------
@@ -373,7 +361,7 @@ void GameScene::Render()
 	//---------------------------------------------------------------------------//
 	//通常描画
 	//---------------------------------------------------------------------------//
-    //m_stage->Draw();
+    m_stage->Draw();
 
 	//プレイヤー描画
 	m_player->Draw();
@@ -484,6 +472,37 @@ void GameScene::OnDeviceLost()
 
 
 /**
+ * @brief UI生成
+ *
+ * @param[in] なし
+ *
+ * @return  なし
+ */
+void GameScene::CreateUI()
+{
+	GameData* gameData = GetGameData();
+	//HPゲージUIの生成
+	m_hpGauge = UIFactory::CreateGauge();
+	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
+	//所持宝石UIの生成
+	m_holdGem = UIFactory::CreateHoldGem(gameData->GetPlayerData().gemID);
+	//クリア条件UI
+	//NumberControl::NumberTextureData data;
+	//data.texturePath = TKTLib::WcharToString(ResourcePath::TEXTURE::UI::NUMBER);
+	//data.col = 1;
+	//data.raw = 10;
+	//const std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
+	//m_clearConditionsUI = UIFactory::CreateNumberUI(data, DirectX::SimpleMath::Vector2{ 1240,150 }, DirectX::SimpleMath::Vector2{0.1f,0.1f},
+	//	DirectX::SimpleMath::Vector4::One, enemies.size(), 2);
+	int width, height;
+	Graphics::GetInstance()->GetScreenSize(width, height);
+
+	m_clearConditionsUI = std::make_unique<ClearConditions>(DirectX::SimpleMath::Vector2{ 1240,150 });
+	m_clearConditionsUI->Initialize(width, height);
+
+}
+
+/**
  * @brief ステージを終了するか
  *
  * @param[in] なし
@@ -501,8 +520,8 @@ const bool GameScene::IsFinish()
 		GameData* gameData = GetGameData();
 		GameData::PlayerData playerData = gameData->GetPlayerData();
 		//HP設定
-		playerData.currentHP = Player::PLAYER_BASE_HP;
-		playerData.maxHP = Player::PLAYER_BASE_HP;
+		playerData.currentHP = m_player->GetCurrentHP();
+		playerData.maxHP = m_player->GetMaxHP();
 		//プレイヤーの情報を設定
 		gameData->SetPlayerData(playerData);
 
@@ -511,6 +530,7 @@ const bool GameScene::IsFinish()
 		{
 			//SaveLight();
 			gameData->SetIsGameClear(true);
+			gameData->SetPlayerCurrentHP(m_player->GetCurrentHP());
 			ChangeScene<GemSelectScene>();
 			return true;
 		}
@@ -525,6 +545,8 @@ const bool GameScene::IsFinish()
 	else if (!m_player->IsAlive())
 	{
 		GetGameData()->SetIsGameClear(false);
+		GetGameData()->SetPlayerCurrentHP(m_player->GetCurrentHP());
+
 		ChangeScene<ResultScene>();
 		return true;
 	}

@@ -26,7 +26,9 @@ void GameObject::ResetObjectNumber() { s_objectNumber = 0; }
  * @brief コンストラクタ
  *
  * @param[in]  objectType オブジェクトの種類
- * @param[in]  modelParams モデルパラメータ
+ * @param[in]  parent 
+ * @param[in]  initialPosition 
+ * @param[in]  initialAngle 
  * 
  */
 GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
@@ -37,12 +39,12 @@ GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent, cons
 	, m_model{ nullptr }
 	, m_pCurrentState{ nullptr }
 	, m_currentMessage{}
-	, m_position{} 
-	, m_quaternion{ DirectX::SimpleMath::Quaternion::Identity } // 初期クォータニオンを設定
+	, m_position{initialPosition} 
+	, m_quaternion{ initialAngle } // 初期クォータニオンを設定
 	, m_scale{ 1.0f, 1.0f, 1.0f } // 初期拡大率を設定
 	, m_parent{ parent }
-	, m_initialPosition{ initialPosition }// 初期位置を設定
-	, m_initialAngle{ initialAngle }
+	//, m_initialPosition{ initialPosition }// 初期位置を設定
+	//, m_initialAngle{ initialAngle }
 	, m_currentPosition{}
 	, m_currentAngle{}
 {
@@ -131,7 +133,7 @@ Tag::ObjectType GameObject::GetObjectType() const
  *
  * @return オブジェクトの番号
  */
-const int GameObject::GetObjectNumber()
+const int GameObject::GetObjectNumber() const
 {
 	return m_objectNumber;
 }

@@ -21,7 +21,7 @@
 #include"../Shader/Number/Number3DShader.h"
 #include"../Shader/Outline/OutlineShader.h"
 #include"../Shader/Particle/ParticleShader.h"
-
+#include"../Shader/Animation2D/Animation2DShader.h"
 // クラスの宣言 ===============================================================
 class Light;
 
@@ -46,6 +46,7 @@ public:
 		Particle,//パーティクルシェーダー
 		Fade,
 		Outline,
+		Animation2D
 	};
 
 
@@ -87,7 +88,8 @@ private:
 	//アウトライン用シェーダー
 	std::unique_ptr<OutlineShader> m_outlineShader;
 
-
+	//２Dアニメーション用シェーダー
+	std::unique_ptr<Animation2DShader> m_animation2DShader;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -157,7 +159,9 @@ private:
 	void LoadNumber2DShader();
 	//Number2Dシェーダー読み込み
 	void LoadNumber3DShader();
-	
+	//シェーダー読み込み
+	void LoadAnimation2DShader();
+
 	//モデルシェーダー設定
 	void SetModelShader();
 	void SetItemShader();
@@ -171,7 +175,10 @@ private:
 	void SetFadeShader();
 	//Outlineシェーダー設定
 	void SetOutlineShader();
+	//数字用シェーダー設定
 	void SetNumber2DShader();
 	void SetNumber3DShader();
+	//２Dアニメーション設定
+	void SetAnimation2DShader();
 };
 

@@ -1,4 +1,4 @@
-//	b0にはマトリックス3つとディフューズ情報を構造体として入れることにする
+//	b0にはマトリックス3つと色を構造体として入れることにする
 cbuffer ConstBuffer : register(b0)
 {
     matrix matWorld;

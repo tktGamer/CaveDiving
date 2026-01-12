@@ -25,7 +25,6 @@
  */
 ParticleShieldControl::ParticleShieldControl(const wchar_t* texturePath)
 	:ParticleControl{ texturePath }
-	, m_centerPos{ nullptr }
 {
 
 }
@@ -110,9 +109,15 @@ void ParticleShieldControl::Render(const DirectX::SimpleMath::Vector3& target, c
 			//表示に使う頂点リストに登録されているデータを全削除
 			ClearVertex();
 			//	パーティクル情報から、表示に使う頂点リストを生成する
-			for (const std::unique_ptr<Particle>& particle : GetParticleList())
+			for (const auto& particle : GetParticleList())
 			{
-				if (cameraDir.Dot(particle.get()->GetPosition() - cameraPos) < 0.0f)
+				// particle を ParticleShield* にキャストして使用
+				auto* shield = dynamic_cast<ParticleShield*>(particle.get());
+				if (!shield)
+				{
+					continue;
+				}
+				if (cameraDir.Dot(shield->GetPosition() - cameraPos) < 0.0f)
 				{
 					//	内積の結果がマイナスの場合はカメラの後ろなので表示する必要なし
 					continue;
@@ -121,14 +126,14 @@ void ParticleShieldControl::Render(const DirectX::SimpleMath::Vector3& target, c
 				DirectX::VertexPositionColorTexture vPCT;
 				//---カスタム部分---//
 				//	表示するパーティクルの中心座標のみを入れる。
-				vPCT.position = DirectX::XMFLOAT3(particle.get()->GetPosition() + *m_centerPos);
+				vPCT.position = DirectX::XMFLOAT3(shield->GetPosition() + shield->GetCenterPosition());
 				//-----------------//
 
 				//	テクスチャの色
-				vPCT.color = DirectX::XMFLOAT4(particle.get()->GetNowColor());
+				vPCT.color = DirectX::XMFLOAT4(shield->GetNowColor());
 				//	現在のテクスチャのスケールを「XMFLOAT2」のXに入れる。
 				//	Yは使用しないため、0.0fを入れておく
-				vPCT.textureCoordinate = DirectX::XMFLOAT2(particle.get()->GetNowScale().x, 0.0f);
+				vPCT.textureCoordinate = DirectX::XMFLOAT2(shield->GetNowScale().x, 0.0f);
 
 				//	頂点情報を1つだけ追加。
 				AddVertex(vPCT);
@@ -173,16 +178,21 @@ void ParticleShieldControl::Reset()
 	ClearTimerAndPos();
 }
 
+void ParticleShieldControl::Delete()
+{
+	GetParticleList().erase(GetParticleList().begin());
+}
+
 
 
 /**
- * @brief 敵消滅パーティクルリクエスト
+ * @brief パーティクルリクエスト
  *
- * @param[in] pos 発生位置
+ * @param[in] objectID 中心座標となるオブジェクトのID
  *
  * @return なし
  */
-void ParticleShieldControl::RequestParticleShield(const DirectX::SimpleMath::Vector3& pos)
+void ParticleShieldControl::RequestParticleShield(const int& objectID)
 {
 
 	//float angle = DirectX::XMConvertToRadians(360.0f / 6 * i); // 各オブジェクトの角度
@@ -190,7 +200,8 @@ void ParticleShieldControl::RequestParticleShield(const DirectX::SimpleMath::Vec
 	float addZ = 1.5f * sin(0); // Z座標
 
 	AddParticle(std::make_unique<ParticleShield>(
-		0.3f,																	//	生存時間(s)
+		objectID,
+		1000.0f,																	//	生存時間(s)
 		DirectX::SimpleMath::Vector3{ addX,1.0f,addZ },													//	基準座標
 		DirectX::SimpleMath::Vector3{ addX,0.0f,addZ },														//	速度
 		DirectX::SimpleMath::Vector3::Zero,								//	加速度
@@ -199,7 +210,6 @@ void ParticleShieldControl::RequestParticleShield(const DirectX::SimpleMath::Vec
 	));
 
 	//	パーティクルの発生位置とタイマーを追加
-	AddTimerAndPos(TimerAndPos{ 0.0f, pos });
+	//AddTimerAndPos(TimerAndPos{ 0.0f, pos });
 
-	m_centerPos = &pos;
 }

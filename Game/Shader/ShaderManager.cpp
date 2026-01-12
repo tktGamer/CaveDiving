@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/19
+ * @date   日付　2025/01/19
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -115,6 +115,9 @@ void ShaderManager::StartShader(const ShaderType& type)
 		break;
 	case ShaderManager::Number3D:
 		SetNumber3DShader();
+		break;
+	case ShaderManager::Animation2D:
+		SetAnimation2DShader();
 		break;
 	default:
 		break;
@@ -276,6 +279,7 @@ void ShaderManager::CreateShader()
 	LoadOutlineShader();
 	LoadNumber2DShader();
 	LoadNumber3DShader();
+	LoadAnimation2DShader();
 }
 
 /**
@@ -419,6 +423,24 @@ void ShaderManager::LoadNumber3DShader()
 }
 
 /**
+ * @brief 2Dアニメーションシェーダーの作成
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void ShaderManager::LoadAnimation2DShader()
+{
+	Shader::ShaderPath path;
+	path.vsPath = ResourcePath::SHADER::ANIMATION2D_VS;
+	path.psPath = ResourcePath::SHADER::ANIMATION2D_PS;
+	path.gsPath = ResourcePath::SHADER::ANIMATION2D_GS;
+	m_animation2DShader = std::make_unique<Animation2DShader>(path);
+	m_shaderMap.insert(std::make_pair(ShaderType::Animation2D, m_animation2DShader.get()));
+
+}
+
+/**
  * @brief モデルシェーダーの開始
  *
  * @param[in] なし
@@ -540,6 +562,11 @@ void ShaderManager::SetNumber2DShader()
 void ShaderManager::SetNumber3DShader()
 {
 	m_number3DShader->StartShader(m_cameraCB);
+}
+
+void ShaderManager::SetAnimation2DShader()
+{
+	m_animation2DShader->StartShader();
 }
 
 

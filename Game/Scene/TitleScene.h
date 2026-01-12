@@ -57,8 +57,6 @@ private:
 	//PRESS SPACE画像
 	std::unique_ptr<UserInterface> m_pressSpace;
 
-	ID3D11ShaderResourceView* m_titleTexture;	///< タイトル画像
-	ID3D11ShaderResourceView* m_pressSpaceTexture;	///< PRESS SPACE画像
 
 	TKTLib::ModelParams m_caveModelParams;    ///< 洞窟モデルパラメータ
 	TKTLib::ModelParams m_demoPlayerModelParams;    

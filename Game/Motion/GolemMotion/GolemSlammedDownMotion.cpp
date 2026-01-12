@@ -78,6 +78,8 @@ bool GolemSlammedDownMotion::Update()
 	//現在位置を求める
 	DirectX::SimpleMath::Vector3 currentPos = DirectX::SimpleMath::Vector3::Lerp(m_handStartPosition, m_handGoalPosition, motionLerp);
 	m_pRightGolemHand->SetPosition(currentPos);
+	//右手基準なのでXを変える
+	currentPos.x = -currentPos.x;
 	m_pLeftGolemHand->SetPosition(currentPos);
 
 
@@ -121,10 +123,10 @@ void GolemSlammedDownMotion::Reset()
 	//それぞれのオブジェクトを元の位置・角度に戻す
 	m_pGolem->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	m_pRightGolemHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
+	m_pRightGolemHand->SetPosition(Golem::RIGHTHAND_INIT_POS);
 	m_pLeftGolemHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 	m_pLeftGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	m_pLeftGolemHand->SetPosition(DirectX::SimpleMath::Vector3::Zero);
+	m_pLeftGolemHand->SetPosition(Golem::LEFTHAND_INIT_POS);
 
 }
 

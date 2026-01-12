@@ -84,6 +84,8 @@ bool GolemSlammedDownPreparingMotion::Update()
 	//Œ»ÝˆÊ’u‚ð‹‚ß‚é
 	DirectX::SimpleMath::Vector3 currentPos = DirectX::SimpleMath::Vector3::Lerp(m_handStartPosition, m_handGoalPosition, motionLerp);
 	m_pRightGolemHand->SetPosition(currentPos);
+	//‰EŽèŠî€‚È‚Ì‚ÅX‚ð•Ï‚¦‚é
+	currentPos.x = -currentPos.x;
 
 	m_pLeftGolemHand->SetPosition(currentPos);
 

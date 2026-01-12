@@ -55,7 +55,7 @@ public:
 
 	//指定の宝石を取得
 	template<typename T>
-	const std::vector<T*>&  IsHasGem() const;
+	const std::vector<T*>  FindHasGem() const;
 
 //　取得・設定
 public:
@@ -75,7 +75,7 @@ private:
  * @return 指定した宝石のクラスリスト
  */
 template<typename T>
-inline const std::vector<T*>& HolderGem::IsHasGem() const
+inline const std::vector<T*> HolderGem::FindHasGem() const
 {
 	//指定の宝石を格納するリスト
 	std::vector<T*> result;

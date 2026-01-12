@@ -3,7 +3,9 @@ cbuffer ConstBuffer	: register(b0)
 	float2 windowSize;
 	float alphaData;
 	float number;
-	
+    int widthNum;
+    int heightNum;
+    float2 dammy;
     float4 numberColor;
 };
 

@@ -32,7 +32,7 @@ PlayerGroundAttack::PlayerGroundAttack(Player* pPlayer, Hand* pRightHand, Hand* 
 
 	//m_groundCombo.emplace_back(std::make_unique<PlayerSlamAttack>(m_pHand));
 
-	const std::vector<AllSpenningAttackGem*>& gems =  m_pPlayer->GetHolderGem().IsHasGem<AllSpenningAttackGem>();
+	const std::vector<AllSpenningAttackGem*> gems =  m_pPlayer->GetHolderGem().FindHasGem<AllSpenningAttackGem>();
 
 	if (!gems.empty()) 
 	{

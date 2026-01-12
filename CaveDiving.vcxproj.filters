@@ -194,6 +194,12 @@
     <Filter Include="Game\Particle\Shield">
       <UniqueIdentifier>{10cb17f5-fb2c-46dd-af65-6f2cafdbb14e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\Animation2DShader">
+      <UniqueIdentifier>{42914bce-981f-4f1d-a56a-a2e884faaa7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Shader\Animation2D">
+      <UniqueIdentifier>{ad1d535a-3579-415e-abdc-155c5266919a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -648,6 +654,18 @@
     <ClInclude Include="Game\Object\Gem\HolderGem.h">
       <Filter>Game\Object\Gem</Filter>
     </ClInclude>
+    <ClInclude Include="Game\UI\UIManager.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\LogoScene.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Animation2D.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Shader\Animation2D\Animation2DShader.h">
+      <Filter>Game\Shader\Animation2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1069,6 +1087,18 @@
     <ClCompile Include="Game\Object\Gem\HolderGem.cpp">
       <Filter>Game\Object\Gem</Filter>
     </ClCompile>
+    <ClCompile Include="Game\UI\UIManager.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\LogoScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Animation2D.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Shader\Animation2D\Animation2DShader.cpp">
+      <Filter>Game\Shader\Animation2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -1109,6 +1139,9 @@
     </None>
     <None Include="Resources\Shaders\NumberShader\3D\Number3D.hlsli">
       <Filter>Resources\Shaders\NumberShader\3D</Filter>
+    </None>
+    <None Include="Resources\Shaders\Animation2DShader\Animation2D.hlsli">
+      <Filter>Resources\Shaders\Animation2DShader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -1192,6 +1225,15 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\ModelShader\WallPS.hlsl">
       <Filter>Resources\Shaders\ModelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Animation2DShader\Animation2DGS.hlsl">
+      <Filter>Resources\Shaders\Animation2DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Animation2DShader\Animation2DPS.hlsl">
+      <Filter>Resources\Shaders\Animation2DShader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Animation2DShader\Animation2DVS.hlsl">
+      <Filter>Resources\Shaders\Animation2DShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

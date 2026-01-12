@@ -57,7 +57,8 @@ public:
 	static constexpr float RIGHT_HAND_Z_ANGLE = DirectX::XMConvertToRadians(-50.0f);
 	//左手の初期位置
 	static constexpr DirectX::SimpleMath::Vector3 LEFT_HAND_INIT_POS = { -1.5f,0.0f,0.0f };
-
+	//移動速度
+	static constexpr float MOVE_SPEED = 2.0f;
 	//右手のオブジェクト番号 プレイヤーの番号を基準に
 	static constexpr int RIGHT_HAND_OBJ_NUMBER = 1;
 	//左手のオブジェクト番号 プレイヤーの番号を基準に

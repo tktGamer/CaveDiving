@@ -28,9 +28,9 @@ private:
 	static constexpr float AIR_SPIN_MOTION_MODIFIER = 2.0f;
 
 	//右手の位置
-	static constexpr DirectX::SimpleMath::Vector3 RIGHT_HAND_POS = { -1.5f,2.0f,0.0f };
+	static constexpr DirectX::SimpleMath::Vector3 RIGHT_HAND_POS = { 0.0f,2.5f,0.0f };
 	//左手の位置
-	static constexpr DirectX::SimpleMath::Vector3 LEFT_HAND_POS  = { 1.45f,2.0f,0.0f };
+	static constexpr DirectX::SimpleMath::Vector3 LEFT_HAND_POS  = { 0.0f,2.5f,0.0f };
 	//モーションスピード
 	static constexpr float AIR_SPIN_MOTION_SPEED = 5.0f;
 

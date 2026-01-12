@@ -76,9 +76,11 @@ void Hand::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dir
 {
 	//現在位置の更新
 	//プレイヤーの周囲のトランスフォームさせ、親の位置分移動
-	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition() + GetPosition(), m_motionAngle * currentAngle)+ currentPosition );
+	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition() + GetPosition(), m_motionAngle * currentAngle)+ currentPosition );
+	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle)+ currentPosition );
 	//現在角度の更新
-	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle * GetInitialQuaternion());
+	//SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle * GetInitialQuaternion());
+	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle );
 	
 	//武器を持っていたら更新
 	if(m_weapon)

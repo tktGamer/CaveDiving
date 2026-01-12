@@ -64,10 +64,10 @@ private:
 
 	// 親オブジェクトへのポインタ
 	const GameObject* m_parent; 
-	//初期座標
-	DirectX::SimpleMath::Vector3 m_initialPosition;
-	//初期回転角
-	DirectX::SimpleMath::Quaternion m_initialAngle;
+	////初期座標
+	//DirectX::SimpleMath::Vector3 m_initialPosition;
+	////初期回転角
+	//DirectX::SimpleMath::Quaternion m_initialAngle;
 	// 現在の位置
 	DirectX::SimpleMath::Vector3 m_currentPosition;
 	// 現在の回転角
@@ -138,10 +138,10 @@ public:
 	// モデルの拡大率の取得
 	const DirectX::SimpleMath::Vector3& GetScale()  { return m_scale; }
 	
-	//初期位置の取得
-	const DirectX::SimpleMath::Vector3& GetInitialPosition() const { return m_initialPosition; };
-	//初期角度の取得
-	const DirectX::SimpleMath::Quaternion& GetInitialQuaternion() const { return m_initialAngle; }
+	////初期位置の取得
+	//const DirectX::SimpleMath::Vector3& GetInitialPosition() const { return m_initialPosition; };
+	////初期角度の取得
+	//const DirectX::SimpleMath::Quaternion& GetInitialQuaternion() const { return m_initialAngle; }
 	//現在位置の取得
 	const DirectX::SimpleMath::Vector3& GetCurrentPosition() const { return m_currentPosition; }
 	//現在角度の取得
@@ -172,7 +172,7 @@ public:
 	// オブジェクトをカウントアップする
 	static int CountUpNumber();
 	//オブジェクトの番号を取得
-	const int GetObjectNumber();
+	const int GetObjectNumber() const;
 
 	static void ResetObjectNumber();
 //　内部操作

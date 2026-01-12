@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　　2025/12/03
+ * @date   日付　　2026/01/12
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -52,6 +52,11 @@ Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,c
 	//所持宝石クラスを生成
 	m_holderGem = std::make_unique<HolderGem>(data.gemID);
 
+	//HP調整
+	if (data.maxHP < GetMaxHP()) 
+	{
+		SetCurrentHP(GetCurrentHP() + GetMaxHP() - data.maxHP);
+	}
 }
 
 
@@ -101,13 +106,13 @@ void Player::Initialize()
 	SetState(m_idlingState.get());
 
 	//初期設定
-	SetPosition(PLAYER_INIT_POS);
+	//SetPosition(PLAYER_INIT_POS);
 	SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 	SetScale(DirectX::SimpleMath::Vector3::One);
 	//当たり判定セット
 	SetShape(&m_sphere);
 	//ライト生成
-	m_light = std::make_unique<Light>(this,GetPosition(),DirectX::SimpleMath::Quaternion::Identity);
+	m_light = std::make_unique<Light>(this,DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
 	//ライトオン
 	m_light->LightOn();
 	//メッセンジャークラスに登録
@@ -141,9 +146,9 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 
 
 	//現在位置の更新
-	SetCurrentPosition(GetInitialPosition() + currentPosition + GetPosition());
+	SetCurrentPosition(currentPosition + GetPosition());
 	//現在角度の更新
-	SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle * GetInitialQuaternion());
+	SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle);
 	
 	//パーツの更新
 	for (std::unique_ptr<GameObject>& part : m_bodyParts)
@@ -163,7 +168,7 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 	DamageFlashUpdate();
 
 	//HP自動回復の宝石をもっているか
-	const std::vector<HPAutoRecoveryGem*>& gems = GetHolderGem().IsHasGem<HPAutoRecoveryGem>();
+	const std::vector<HPAutoRecoveryGem*> gems = GetHolderGem().FindHasGem<HPAutoRecoveryGem>();
 	for(HPAutoRecoveryGem* gem : gems)
 	{ 
 		//回復値を取得
@@ -188,7 +193,7 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 	}
 
 	//盾生成の宝石をもっているか
-	const std::vector<GenerateShieldGem*>& shieldGems = GetHolderGem().IsHasGem<GenerateShieldGem>();
+	const std::vector<GenerateShieldGem*> shieldGems = GetHolderGem().FindHasGem<GenerateShieldGem>();
 
 	for (GenerateShieldGem* shieldGem : shieldGems)
 	{
@@ -198,9 +203,9 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 		{
 			continue;
 		}
-		m_invincibleCount += shieldGem->GenerateShield();
+		m_invincibleCount += shield;
 		//盾エフェクト生成
-		ParticleManager::GetInstance()->RequestShieldParticle(GetCurrentPosition());
+		ParticleManager::GetInstance()->RequestShieldParticle(GetObjectNumber());
 
 	}
 
@@ -516,6 +521,9 @@ int Player::TakeDamage(const Character* attacker)
 	{
 		//回数減少
 		m_invincibleCount--;
+		//盾エフェクト消去
+		ParticleManager::GetInstance()->DeleteShieldParticle(GetObjectNumber());
+
 		return 0;
 	}
 

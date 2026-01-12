@@ -53,20 +53,24 @@ public:
 
 // 操作
 public:
+	//初期化
 	void Initialize(bool* isOnLight, int size);
-
+	//更新
 	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle);
 
-
+	//描画
 	void Draw();
+	//ブルーム描画
+	void BloomDraw();
 
+	//終了
 	void Finalize();
 
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 
 
-	//　取得・設定
+//　取得・設定
 public:
 	//敵を取得
 	std::list<std::unique_ptr<RumiRock>>& GetRocks();

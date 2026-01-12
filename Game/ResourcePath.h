@@ -35,6 +35,9 @@ public:
 		struct UI 
 		{
 			static constexpr wchar_t LOGO[]  = L"Logo.png";
+			static constexpr wchar_t TITLE[]  = L"UI/Title.png";
+			static constexpr wchar_t PRESS_SPACE[]  = L"UI/PressSpace.png";
+			static constexpr wchar_t NUMBER[]  = L"Number.png";
 
 		};
 		//パーティクル
@@ -122,6 +125,10 @@ public:
 		static constexpr wchar_t NUMBER3D_VS[] = L"Resources/Shaders/NumberShader/3D/Number3DVS.cso";
 		static constexpr wchar_t NUMBER3D_PS[] = L"Resources/Shaders/NumberShader/3D/Number3DPS.cso";
 		static constexpr wchar_t NUMBER3D_GS[] = L"Resources/Shaders/NumberShader/3D/Number3DGS.cso";
+		//2Dアニメーションシェーダー----------------------
+		static constexpr wchar_t ANIMATION2D_VS[] = L"Resources/Shaders/Animation2DShader/Animation2DVS.cso";
+		static constexpr wchar_t ANIMATION2D_PS[] = L"Resources/Shaders/Animation2DShader/Animation2DPS.cso";
+		static constexpr wchar_t ANIMATION2D_GS[] = L"Resources/Shaders/Animation2DShader/Animation2DGS.cso";
 	};
 	//データ
 	struct DATA

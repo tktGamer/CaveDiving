@@ -23,7 +23,7 @@
 #include"../UI/GemSelect/ChangeGem.h"
 #include"../UI/Number/NumberControl.h"
 #include"../UI/Number/CountUpNumber.h"
-
+#include"../UI/Animation2D.h"
 // ファクトリクラスを定義する
 class UIFactory 
 {
@@ -92,6 +92,16 @@ public:
 		,   const int& targetNumber   
 		,   const int& stepNumber
 		);
+
+	// 「2DアニメーションUI」を生成する
+	static std::unique_ptr<Animation2D> CreateAnimation2DUI(
+		const wchar_t* texturepath,
+		const Animation2D::AnimationTexture& textureInfo,
+		const float& animationTime,
+		const bool& isLoop,
+		const DirectX::SimpleMath::Vector2& position,
+		const DirectX::SimpleMath::Vector2& scale = DirectX::SimpleMath::Vector2::One
+	);
 };
 
 #endif		// UI_FACTORY_DEFINED

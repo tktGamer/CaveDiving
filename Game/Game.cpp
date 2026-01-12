@@ -6,7 +6,7 @@
 #include "Game.h"
 #include<fstream>
 #include<sstream>
-
+#include"Game/Scene/LogoScene.h"
 #include"Game/Scene/TitleScene.h"
 #include"Game/Scene/GameScene.h"
 #include"Game/Scene/GemSelectScene.h"
@@ -66,7 +66,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_gemManager->LoadGemData();
 
     // ‹N“®ƒV[ƒ“Ý’è
-    m_sceneManager->SetScene<TitleScene>();
+    m_sceneManager->SetScene<LogoScene>();
 }
 
 #pragma region Frame Update
