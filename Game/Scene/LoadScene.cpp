@@ -3,9 +3,9 @@
  *
  * @brief  ロードシーンに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付  2026/01/13
  */
 
 // ヘッダファイルの読み込み ===================================================
@@ -14,7 +14,7 @@
 
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
-
+#include"Game/Factory/UIFactory.h"
 
 
 
@@ -25,14 +25,9 @@
  * @param[in] なし
  */
 LoadScene::LoadScene()
-	: m_pResourceManager{}
-	,m_nowloadingRect{0,0,590,250}
-	, m_nowloadingTexture{}
-	, m_backTexture{}
-	, m_time{}
+	: m_nowloadingTexture{},
+	  m_backTexture{}
 {
-	m_camera = std::make_unique<Camera>();
-	m_pResourceManager = ResourceManager::GetInstance();
 }
 
 
@@ -56,12 +51,19 @@ LoadScene::~LoadScene()
  */
 void LoadScene::Initialize()
 {
-	m_nowloadingTexture = *m_pResourceManager->RequestTexture("loading.png");
-	m_backTexture = *m_pResourceManager->RequestTexture("loadback.jpg");
-	//m_camera->Initialize({ 0,11.0f,10.0f });
-
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
+
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	Animation2D::AnimationTexture textureInfo{};
+	textureInfo.frameCount = 4;
+	textureInfo.frameWidth = 1;
+	textureInfo.frameHeight = 4;
+	m_nowloadingTexture = UIFactory::CreateAnimation2DUI(L"loading.png",textureInfo,6,true,
+		DirectX::SimpleMath::Vector2{800.0f,590.0f},DirectX::SimpleMath::Vector2{1.0f,1.0f});
+	m_backTexture = UIFactory::CreateUserInterface(L"loadback.jpg",
+		DirectX::SimpleMath::Vector2{}, DirectX::SimpleMath::Vector2{ 0.7f,0.7f }, UserInterface::ANCHOR::TOP_LEFT);
+
 
 	PreUpdate();
 }
@@ -89,19 +91,8 @@ void LoadScene::PreUpdate()
  */
 void LoadScene::Update(float elapsedTime)
 {
-	DirectX::Keyboard::KeyboardStateTracker* traker = Graphics::GetInstance()->GetKeyboardTracker();
-	
-	/*m_camera->SetEyePosX(m_length * std::cos(r));
-	m_camera->SetEyePosZ(m_length * std::sin(r));*/
+	m_nowloadingTexture->Update();
 
-	m_time += elapsedTime;
-	if (m_time >= 0.8f) 
-	{
-		m_time = 0.0f;
-		m_nowloadingRect.right += 35;
-	}
-
-	//m_camera->Update(elapsedTime);
 }
 
 
@@ -115,34 +106,8 @@ void LoadScene::Update(float elapsedTime)
  */
 void LoadScene::Render()
 {
-	Graphics* graphics = Graphics::GetInstance();
-
-	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
-	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
-	DirectX::SimpleMath::Matrix proj = graphics->GetProjectionMatrix();
-
-	//auto view=m_camera->GetView();
-	//m_testPlayer.Draw(*context, *states, view, proj);
-	DirectX::SimpleMath::Matrix world;
-
-	DirectX::SpriteBatch* spriteBatch = graphics->GetSpriteBatch();
-	RECT rc = { 0, 0, 695, 250 };
-	RECT rc2 = { 0, 0, 1920,1080 };
-	spriteBatch->Begin();
-	spriteBatch->Draw(m_backTexture,
-					  DirectX::SimpleMath::Vector2(0, 0),
-					  &rc2,
-					  DirectX::Colors::White,
-					  0.0f,
-					  DirectX::SimpleMath::Vector2(0, 0),
-					  0.7f);
-	spriteBatch->Draw(m_nowloadingTexture, DirectX::SimpleMath::Vector2(540, 500),&m_nowloadingRect);
-	spriteBatch->End();
-
-	auto debugFont = Graphics::GetInstance()->GetDebugFont();
-
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_time)), DirectX::SimpleMath::Vector2(0.0f, 25.0f));
-
+	m_backTexture->Render();
+	m_nowloadingTexture->Draw();
 }
 
 

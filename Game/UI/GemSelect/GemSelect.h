@@ -27,6 +27,9 @@ class GemSelect : public IUI
 // クラス定数の宣言 -------------------------------------------------
 public:
 	static constexpr float PANNEL_X = 310.0f;
+	//宝石抽選の最大回数
+	static constexpr int MAX_TRY = 100;
+
 // データメンバの宣言 -----------------------------------------------
 private:
 	GemSelectUIManager* m_pUIManager;

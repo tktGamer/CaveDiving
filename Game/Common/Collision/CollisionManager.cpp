@@ -251,6 +251,7 @@ DirectX::SimpleMath::Vector3 CollisionManager::SphereToSpherePushOut(Sphere* sph
 		return newPosition;
 	}
 	
+	return sphereA->GetCenter();
 }
 
 /**

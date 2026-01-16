@@ -36,6 +36,9 @@ Character::Character(int hp, int attack, int diffence, Tag::ObjectType type,cons
 	,m_isInvincible{false}
 	,m_damageFlash{0.0f}
 {
+	//ダメージ時の音　　
+	m_damageSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound( ResourcePath::SOUND::ATTACK_HIT));
+	m_damageSound->SetVolume(0.5f);
 }
 
 
@@ -102,7 +105,7 @@ int Character::TakeDamage(const Character* attacker)
 	}
 
 	m_currentHp -= damage;
-
+	m_damageSound->Play(false);
 	if (m_currentHp < 0) 
 	{
 		m_currentHp = 0;

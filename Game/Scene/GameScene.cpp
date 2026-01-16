@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/24
+ * @date   日付　2026/01/15
  */
 
 // ヘッダファイルの読み込み ===================================================
@@ -35,11 +35,11 @@ GameScene::GameScene()
 {
 
 	m_pResourceManager = ResourceManager::GetInstance();
-
+	//当たり判定表示クラス
 	m_displayCollision = std::make_unique<Ito::DisplayCollision>(
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
-
+	//当たり判定管理クラス
 	m_collsionManager = CollisionManager::GetInstance();
 }
 
@@ -63,6 +63,7 @@ GameScene::~GameScene()
  */
 void GameScene::Initialize()
 {
+	//メッセンジャーリセット
 	Messenger::GetInstance()->DestroyInstance();
 
 	CreateDeviceDependentResources();
@@ -106,14 +107,15 @@ void GameScene::Initialize()
 	//アイテム管理クラスの生成
 	m_itemManager = std::make_unique<ItemManager>();
 	m_itemManager->Initialize();
-
+	//UI生成
 	CreateUI();
-
+	//パーティクルマネージャーにカメラをセット
 	ParticleManager::GetInstance()->SetCamera(m_camera.get());
 	Sound::SetListenerObject(m_player.get());
 
 	m_bloomEffect = std::make_unique<Bloom>();
 	m_bloomEffect->Initialize();
+
 	PreUpdate();
 }
 
@@ -494,11 +496,9 @@ void GameScene::CreateUI()
 	//const std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
 	//m_clearConditionsUI = UIFactory::CreateNumberUI(data, DirectX::SimpleMath::Vector2{ 1240,150 }, DirectX::SimpleMath::Vector2{0.1f,0.1f},
 	//	DirectX::SimpleMath::Vector4::One, enemies.size(), 2);
-	int width, height;
-	Graphics::GetInstance()->GetScreenSize(width, height);
 
 	m_clearConditionsUI = std::make_unique<ClearConditions>(DirectX::SimpleMath::Vector2{ 1240,150 });
-	m_clearConditionsUI->Initialize(width, height);
+	m_clearConditionsUI->Initialize(1280, 720);
 
 }
 

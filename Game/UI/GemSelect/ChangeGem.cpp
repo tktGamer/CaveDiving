@@ -85,7 +85,7 @@ void ChangeGem::Update()
     if (m_curremtUI == m_menu.get())
     {
 
-        if (tracker->pressed.Space)
+        if (tracker->pressed.Z)
         {
             int menuIndex = m_menu->GetMenuIndex();
 

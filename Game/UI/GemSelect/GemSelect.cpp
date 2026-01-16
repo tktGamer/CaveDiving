@@ -15,6 +15,7 @@
 #include"Game/Message/Messenger.h"
 #include"Game/UI/GemSelectUIManager.h"
 #include"Game/Common/Sound.h"
+#include<set>
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -33,8 +34,8 @@ GemSelect::GemSelect(int width, int height,const std::vector<int>& gemID, GemSel
     ,m_pGems{}
     ,m_gemID{gemID}
 {
-    m_cursorSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
-    m_decideSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("decidegem.wav"));
+    m_cursorSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::CURSOL_MOVE));
+    m_decideSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::DECIDE));
 
 }
 
@@ -82,7 +83,7 @@ void GemSelect::Update()
     }
 
     //スペースキーを押したら
-    if (tracker->pressed.Space) 
+    if (tracker->pressed.Z) 
     {
         //「取得しない」ならUI削除
         if (m_menuIndex >= 3) 
@@ -207,18 +208,46 @@ void GemSelect::Randomize()
 {
     m_userInterface.clear();
     m_base.clear();
-
-    //３つの宝石を選出する
-    for (int i = 0; i < 3; i++)
+    //重複させないため
+    std::set<const Gem*> selectedGems;
+    //試行回数
+    int tryCount = 0;
+    //３つの宝石を選出する  iが毎回増えるわけではないので念のためループに制限
+    for (int i = 0; i < 3 && tryCount < MAX_TRY;)
     {
-        m_pGems[i] = m_pGemManager->RandomSelection();
-        Gem::GemAbility ability = m_pGems[i]->GetAbility();
-        Gem::GemImagePath imagePath = m_pGems[i]->GetImagePath();
-        Add(imagePath, { PANNEL_X+PANNEL_X*i,310.0f }, { 0.35f,0.35f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+        const Gem* gem = m_pGemManager->RandomSelection();
+        //まだ選ばれていない宝石なら
+        if (selectedGems.insert(gem).second)
+        {
+            m_pGems[i] = gem;
+            //UI生成
+            Gem::GemImagePath imagePath = gem->GetImagePath();
+            Add(imagePath,
+                { PANNEL_X + PANNEL_X * i, 310.0f },
+                { 0.35f, 0.35f },
+                UserInterface::ANCHOR::MIDDLE_CENTER);
+
+            //次に進む
+            i++;
+        }
+        
     }
 
 
-    //  背景用のウィンドウ画像も追加する
+    //試行回数が限度に達したときのため 
+    for (int i = 0; i < 3; i++) 
+    {
+        //空のとき
+        if (!m_pGems[i]) 
+        {
+            //一番の宝石を入れておく
+            m_pGems[i] = GemManager::GetInstance()->GetIDNumberedGem(1);
+        }
+
+    }
+
+
+    // 取得しないメニュー
     std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
     base->Create(
         L"UI/notacquiredframe.png"

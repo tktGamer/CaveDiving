@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/16
+ * @date   日付　2026/01/14
  */
 
 // ヘッダファイルの読み込み ===================================================
@@ -16,20 +16,36 @@
 
 #include"Game/Factory/UIFactory.h"
 
+std::unique_ptr<UIManager> UIManager::s_uiManager = nullptr;
+
+/**
+ * @brief クラスのインスタンスを取得する
+ *
+ * @param[in] なし
+ *
+ * @return クラスのインスタンスへのポインタ
+ */
+UIManager* const UIManager::GetInstance()
+{
+	if (!s_uiManager)
+	{
+		s_uiManager.reset(new UIManager());
+	}
+	return s_uiManager.get();
+}
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
  * @param[in] なし
  */
-UIManager::UIManager(const std::vector<int>& gemID)
-	:m_isClearUI{}
-	,m_isPopUI{}
-	,m_isPushUI{}
-	,m_pushUI{1}
-	,m_isDrawOnlyCurrentUI{false}
-	,m_isFinishSelect{false}
-	,m_gemID{gemID}
+UIManager::UIManager()
+	:m_isClearUI{},
+	m_isDrawOnlyCurrentUI{},
+	m_isFinishSelect{},
+	m_isPopUI{},
+	m_isPushUI{}
+
 {
 
 }
@@ -55,11 +71,6 @@ UIManager::~UIManager()
  */
 void UIManager::Initialize()
 {
-
-	////初期状態のUI追加
-	//m_uiStack.emplace_back(std::move(UIFactory::CreateHoldGem(m_gemID)));
-	//m_uiStack.emplace_back(std::move(UIFactory::CreateGemSelect(this,m_gemID)));
-
 }
 
 
@@ -82,7 +93,7 @@ void UIManager::Update()
 	if (m_isPopUI) 
 	{
 		//UI消去
-		PopUI();
+		//PopUI();
 	}
 	if (!m_pushUI.empty())
 	{
@@ -152,11 +163,11 @@ void UIManager::Finalize()
  *
  * @return なし
  */
-void UIManager::RequestPushUI(UI pushUI, bool onlyDraw)
+void UIManager::RequestPushUI(std::unique_ptr<IUI> ui, bool onlyDraw)
 {
-	m_pushUI[0] = pushUI;
-
+	m_uiStack.push_back(std::move(ui));
 	m_isDrawOnlyCurrentUI = onlyDraw;
+
 }
 
 /**
@@ -189,47 +200,6 @@ void UIManager::RequestClearUI()
 }
 
 
-/**
- * @brief 宝石選択が終了したか
- *
- * @param[in] なし
- *
- * @return true　終了
- * @return false 未了
- */
-bool UIManager::IsFinishSelect() const
-{
-	return m_isFinishSelect;
-}
-
-
-/**
- * @brief 宝石選択終了知らせ
- *
- * @param[in] なし
- *
- * @return なし
- */
-void UIManager::SelectFinishNotice(int slotNum)
-{
-	m_isFinishSelect = true;
-	m_slot = slotNum;
-}
-
-void UIManager::SetHoldGem(const Gem* pGem)
-{
-	m_pReplacementGem = pGem;
-}
-
-const Gem* UIManager::GetHoldGem()
-{
-	return m_pReplacementGem;
-}
-
-int UIManager::GetSlot()
-{
-	return m_slot;
-}
 
 
 /**
@@ -261,24 +231,6 @@ void UIManager::PushUI()
 
 	//m_uiStack.emplace_back(std::move(ui));
 	//m_pushUI[0] = UI::NONE;
-}
-
-/**
- * @brief UI消去処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void UIManager::PopUI()
-{
-	if (!m_uiStack.empty())
-	{
-		m_uiStack.pop_back();
-	}
-
-	m_isPopUI = false;
-
 }
 
 

@@ -15,6 +15,7 @@
 #include"Game/Object/GameObject.h"
 #include"Game/Common/Collision/Box.h"
 #include"Game/Object/Light.h"
+#include"Game/Common/Sound.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -43,7 +44,7 @@ private:
 	std::unique_ptr<Light> m_light;
 	DirectX::SimpleMath::Vector4 m_color = { 1.0f,1.0f,1.0f,1.0f };
 
-
+	std::unique_ptr<Sound> m_LightOnSound;
 	Ito::DisplayCollision m_display;
 	// メンバ関数の宣言 -------------------------------------------------
 	// コンストラクタ/デストラクタ

@@ -48,10 +48,14 @@ public:
 		CHANGEGEM     //宝石入れ替え
 	};
 	
-
+	//UI配置の基準ウィンドウサイズ
+	static constexpr int WINDOW_SIZE_X = 1280;
+	static constexpr int WINDOW_SIZE_Y = 720;
 // データメンバの宣言 -----------------------------------------------
 private:
-	// システム関連
+	// UIManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
+	static std::unique_ptr<UIManager> s_uiManager;
+
 	//選択が終了
 	bool m_isFinishSelect;
 
@@ -71,21 +75,21 @@ private:
 	//UIのスタック
 	std::vector<std::unique_ptr<IUI>> m_uiStack;
 
-	const std::vector<int> m_gemID;
-	//入れ替え予定の宝石
-	const Gem* m_pReplacementGem;
-	//入れ替えるスロット番号
-	int m_slot = 0;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
-public:
+private:
 	// コンストラクタ
-	UIManager(const std::vector<int>& gemID);
-
-	// デストラクタ
+	UIManager();
+	// インスタンスをコピーすることを禁止する
+	void operator=(const UIManager&) = delete;
+	// インスタンスをムーブすることを禁止する
+	UIManager& operator= (UIManager&&) = delete;
+	// コピーコンストラクタは禁止する
+	UIManager(const UIManager&) = delete;
+	// ムーブコンストラクタは禁止する
+	UIManager(UIManager&&) = delete;
+public:
 	~UIManager();
-
-
 // 操作
 public:
 	// 初期化処理
@@ -100,34 +104,24 @@ public:
 	// 終了処理
 	void Finalize();
 
-
+	//UI全消去
+	void ClearUI();
 // 取得/設定
 public:
+	//インスタンスを取得
+	static  UIManager* const GetInstance();
 
 	void PushUI();
 
 	//UIの追加リクエスト
-	void RequestPushUI(UI pushUI,bool onlyDraw=false);
+	void RequestPushUI(std::unique_ptr<IUI> ui,bool isOnlyDraw);
 	//UIの消去リクエスト
 	void RequestPopUI();
 	//UIの全消去リクエスト
 	void RequestClearUI();
 
-	//宝石の選択が終了したか
-	bool IsFinishSelect() const;
-
-	//宝石選択終了通知
-	void SelectFinishNotice(int slotNum);
-
-	void SetHoldGem(const Gem* pGem);
-
-	const Gem* GetHoldGem();
-
-	int GetSlot();
 // 内部実装
 private:
-	void PopUI();
 
-	void ClearUI();
 
 };

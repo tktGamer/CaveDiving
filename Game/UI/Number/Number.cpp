@@ -13,7 +13,7 @@
 #include "Number.h"
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/ShaderManager.h"
-
+#include"Game/UI/UIManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -110,7 +110,7 @@ void Number::Draw(const int& number, const DirectX::SimpleMath::Vector2& pos, co
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	Number2DShader::Number2DCB cbuff;
 	//	ウィンドウサイズ
-	cbuff.windowSize = DirectX::SimpleMath::Vector2(static_cast<float>(w), static_cast<float>(h));
+	cbuff.windowSize = DirectX::SimpleMath::Vector2(static_cast<float>(UIManager::WINDOW_SIZE_X), static_cast<float>(UIManager::WINDOW_SIZE_Y));
 	cbuff.alphaData = m_renderRatio - m_renderRatioOffset;
 	cbuff.number = number; 
 	cbuff.widthNumber = 10;

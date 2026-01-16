@@ -47,6 +47,7 @@ private:
 	float m_length;
 	float m_angle;
 
+	float m_time=0.0f;
 	//保存したプレイヤー所持している宝石を読み込むか
 	bool m_isLoadPlayerHoldGem;
 	// オブジェクト関連

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/03
+ * @date   日付　2026/01/14
  */
 
  // 多重インクルードの防止 =====================================================
@@ -33,18 +33,16 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	// オブジェクト番号
+	static int s_objectNumber;
+	// オブジェクト番号
 	int m_objectNumber;
 
 	// ステート
 	IState* m_pCurrentState; 
-	// オブジェクト番号
-	static int s_objectNumber;
 	// 現在のメッセージ
 	Message m_currentMessage;
 	// オブジェクトの種類
 	Tag::ObjectType m_objectType;
-	// グラフィックスクラスのポインタ
-	Graphics* m_graphics; 
 	// 当たり判定用の形状
 	Shape* m_shape; 
 
@@ -64,10 +62,6 @@ private:
 
 	// 親オブジェクトへのポインタ
 	const GameObject* m_parent; 
-	////初期座標
-	//DirectX::SimpleMath::Vector3 m_initialPosition;
-	////初期回転角
-	//DirectX::SimpleMath::Quaternion m_initialAngle;
 	// 現在の位置
 	DirectX::SimpleMath::Vector3 m_currentPosition;
 	// 現在の回転角
@@ -86,17 +80,18 @@ public:
 
 // 操作
 public:
+	//初期化
 	virtual void Initialize();
-
+	//更新
 	virtual void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)=0;
-
+	//描画
 	virtual void Draw()=0;
-
+	//終了
 	void Finalize();
 
 	//衝突応答分岐
 	virtual void CollisionResponce(GameObject* other)=0;
-
+	//派生クラスにキャスト
 	template<typename T>
 	T* Cast();
 
@@ -138,10 +133,6 @@ public:
 	// モデルの拡大率の取得
 	const DirectX::SimpleMath::Vector3& GetScale()  { return m_scale; }
 	
-	////初期位置の取得
-	//const DirectX::SimpleMath::Vector3& GetInitialPosition() const { return m_initialPosition; };
-	////初期角度の取得
-	//const DirectX::SimpleMath::Quaternion& GetInitialQuaternion() const { return m_initialAngle; }
 	//現在位置の取得
 	const DirectX::SimpleMath::Vector3& GetCurrentPosition() const { return m_currentPosition; }
 	//現在角度の取得

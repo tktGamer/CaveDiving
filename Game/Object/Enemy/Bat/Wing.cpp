@@ -18,6 +18,7 @@
 /**
  * @brief コンストラクタ
  *
+ * @param[in] root　親クラスのポインタ
  * @param[in] parent　親クラスのポインタ
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
@@ -26,8 +27,12 @@ Wing::Wing(Character* root,const GameObject* parent, const DirectX::SimpleMath::
 	:EnemyPart(root,parent,initialPosition,initialAngle)
 	,m_motionAngle{}
 {
-	SetTexture(ResourceManager::GetInstance()->RequestTexture(L"wing.png"));
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"wing.sdkmesh"));
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	//テクスチャ設定
+	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::BAT_WING));
+	//モデル設定
+	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::BAT_WING));
+	//メッセンジャーに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 
 }
@@ -72,10 +77,8 @@ void Wing::Initialize()
 void Wing::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//位置の更新
-	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition(), m_motionAngle * currentAngle) + currentPosition + GetPosition());
 	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition );
 	//角度の更新
-	//SetCurrentAngle(GetInitialQuaternion() * GetQuaternion() * m_motionAngle * currentAngle);
 	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
 	
 }
@@ -100,23 +103,23 @@ void Wing::Draw()
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+
+
+
+	//アウトライン描画
+	if (Messenger::GetInstance()->IsOutLineActive())
+	{
+		OutlineRenderer::Draw(*GetModel(), world, BAT_WING_OUTLINE_THICKNESS);
+	}
+
+
+
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
 	cbuff.matView = view.Transpose();
 	cbuff.matProj = proj.Transpose();
 	cbuff.flash.x = GetRootCharacter()->GetDamageFlash();
-
-
-
-
-
-	if (Messenger::GetInstance()->IsOutLineActive()) {
-		OutlineRenderer::Draw(*GetModel(), world, BAT_WING_OUTLINE_THICKNESS);
-	}
-
-
-	//GetModel()->Draw(context, *states, world, view, proj);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);

@@ -31,10 +31,9 @@ public:
 private:
 	// メッセージID
 	Message::MessageID m_messageID;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_lBuffer;
 	ModelShader::PointLightCB  m_pointLight;
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
-	bool m_isOn; //ライトのオンオフ状態
+	//ライトのオンオフ状態
+	bool m_isOn; 
 	
 
 	DirectX::SimpleMath::Vector3 m_color;
@@ -50,13 +49,14 @@ public:
 
 // 操作
 public:
+	//初期化
 	void Initialize();
-
+	//更新
 	void Update( const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 
-
+	//描画
 	void Draw() override;
-
+	//終了
 	void Finalize();
 
 	// メッセージを取得する
@@ -71,9 +71,8 @@ public:
 public:
 	//ライトが点いているか
 	bool IsOn()const;
-	ID3D11Buffer* GetLightBuffer() const;
 
-	ModelShader::PointLightCB GetLightData();
+	const ModelShader::PointLightCB& GetLightData();
 
 	void SetLightData(const ModelShader::PointLightCB& lightData);
 

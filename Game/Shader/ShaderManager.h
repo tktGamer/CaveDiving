@@ -52,7 +52,7 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	// Shaderクラスのインスタンスへのユニークポインタ「シングルトン化する」
+	// ShaderManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<ShaderManager> s_shader;
 	//種類に対応したシェーダマップ
 	std::unordered_map<ShaderType, Shader*>  m_shaderMap;

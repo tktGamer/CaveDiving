@@ -68,7 +68,7 @@ void FullHPStatusUpGem::Initialize()
  * @return true   適用する
  * @return false  適用しない
  */
-const bool& FullHPStatusUpGem::IsApplicable(const int& currentHP, const int& maxHP) const
+const bool FullHPStatusUpGem::IsApplicable(const int& currentHP, const int& maxHP) const
 {
 	if (currentHP >= maxHP) 
 	{

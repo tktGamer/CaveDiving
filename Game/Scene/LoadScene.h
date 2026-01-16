@@ -18,9 +18,10 @@
 #include"../Common/SceneManager.h"
 #include"Game/GameData.h"
 
-#include"Game/Object/Camera.h"
 
 #include"math.h"
+#include"Game/UI/UserInterface.h"
+#include"../UI/Animation2D.h"
 
 // クラスの宣言 ===============================================================
 class ResourceManager;    ///< リソースマネージャ
@@ -43,16 +44,13 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	// システム関連
-	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
 
 	// オブジェクト関連
-	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
-	ID3D11ShaderResourceView* m_nowloadingTexture;	///< NowLoading画像
-	ID3D11ShaderResourceView* m_backTexture;	///< 背景画像
+	//NowLoading画像
+	std::unique_ptr<Animation2D> m_nowloadingTexture;	
+	// 背景画像
+	std::unique_ptr<UserInterface> m_backTexture;	
 
-	RECT m_nowloadingRect;	///< NowLoading画像の矩形
-	//時間計測
-	float m_time;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

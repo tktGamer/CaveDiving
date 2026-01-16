@@ -31,6 +31,8 @@ private:
 
 	//敵リスト
 	std::list<std::unique_ptr<Character>> m_enemies;
+	//消滅音
+	std::unique_ptr<Sound> m_vanishSound;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

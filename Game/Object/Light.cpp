@@ -22,13 +22,11 @@
  */
 Light::Light(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:GameObject{Tag::ObjectType::Light,parent,initialPosition,initialAngle}
-	,m_graphics{Graphics::GetInstance()}
 	,m_isOn{}
 	,m_color{DirectX::Colors::White}
 {
+	//ƒƒbƒZƒ“ƒWƒƒ[‚É“o˜^
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
-
-	SetPosition(initialPosition);
 
 }
 
@@ -129,12 +127,8 @@ bool Light::IsOn() const
 	return m_isOn;
 }
 
-ID3D11Buffer* Light::GetLightBuffer() const
-{
-	return m_lBuffer.Get();
-}
 
-ModelShader::PointLightCB  Light::GetLightData()
+const ModelShader::PointLightCB&  Light::GetLightData()
 {
 	return m_pointLight;
 }

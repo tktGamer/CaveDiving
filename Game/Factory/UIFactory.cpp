@@ -11,7 +11,7 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "UIFactory.h"
-
+#include"Game/UI/UIManager.h"
 /**
  * @brief 「UI」の生成
  *
@@ -25,14 +25,11 @@
 std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(
 	const wchar_t* path, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
 {
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 	
 	
 	//「UI」の生成
 	std::unique_ptr<UserInterface> ui = std::make_unique<UserInterface>();
-	ui->SetWindowSize(w, h);
+	ui->SetWindowSize(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y);
 	ui->Create(path, position, scale, anchor);
 	ui->Initialize();
 
@@ -48,12 +45,9 @@ std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(
  */
 std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound)
 {
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//「メニューUI」の生成
-	std::unique_ptr<Menu> menu = std::make_unique<Menu>(w, h,cursolSound);
+	std::unique_ptr<Menu> menu = std::make_unique<Menu>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,cursolSound);
 	menu->Initialize();
 
 	return std::move(menu);
@@ -69,12 +63,9 @@ std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound)
  */
 std::unique_ptr<Gauge> UIFactory::CreateGauge()
 {
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	std::unique_ptr<Gauge> gauge = std::make_unique<Gauge>();
-	gauge->Initialize(w, h);
+	gauge->Initialize(UIManager::WINDOW_SIZE_X,UIManager::WINDOW_SIZE_Y);
 
 	return std::move(gauge);
 }
@@ -89,12 +80,9 @@ std::unique_ptr<Gauge> UIFactory::CreateGauge()
  */
 std::unique_ptr<GemSelect> UIFactory::CreateGemSelect(GemSelectUIManager* pGemSelectUIManager, const std::vector<int>& gemID)
 {
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//「宝石選択UI」の生成
-	std::unique_ptr<GemSelect> gemSelect = std::make_unique<GemSelect>(w,h,gemID,pGemSelectUIManager );
+	std::unique_ptr<GemSelect> gemSelect = std::make_unique<GemSelect>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID,pGemSelectUIManager );
 	gemSelect->Initialize();
 	return std::move(gemSelect);
 }
@@ -108,12 +96,9 @@ std::unique_ptr<GemSelect> UIFactory::CreateGemSelect(GemSelectUIManager* pGemSe
  */
 std::unique_ptr<ChangeConfirm> UIFactory::CreateChangeConfirm(GemSelectUIManager* pGemSelectUIManager)
 {
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//「入れ替え確認UI」の生成
-	std::unique_ptr<ChangeConfirm> changeConfirm = std::make_unique<ChangeConfirm>(w, h, pGemSelectUIManager);
+	std::unique_ptr<ChangeConfirm> changeConfirm = std::make_unique<ChangeConfirm>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y, pGemSelectUIManager);
 	changeConfirm->Initialize();
 
 	return std::move(changeConfirm);
@@ -129,15 +114,12 @@ std::unique_ptr<ChangeConfirm> UIFactory::CreateChangeConfirm(GemSelectUIManager
  */
 std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSelectUIManager,const std::vector<int>& gemID)
 {
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//入れ替え先の宝石の取得
 	//Gem* pGem = GemManager::GetInstance()->GetReplacementGem();
 
 	//「宝石入れ替えUI」の生成
-	std::unique_ptr<ChangeGem> changeGem = std::make_unique<ChangeGem>(w, h,gemID, pGemSelectUIManager);
+	std::unique_ptr<ChangeGem> changeGem = std::make_unique<ChangeGem>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID, pGemSelectUIManager);
 	changeGem->Initialize();
 
 	return std::move(changeGem);
@@ -153,13 +135,10 @@ std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSe
  */
 std::unique_ptr<HoldGem> UIFactory::CreateHoldGem(const std::vector<int>& gemID)
 {
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 
 	//「所持している宝石を表示するUI」の生成
-	std::unique_ptr<HoldGem> holdGem = std::make_unique<HoldGem>(w, h,gemID);
+	std::unique_ptr<HoldGem> holdGem = std::make_unique<HoldGem>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID);
 	holdGem->Initialize();
 	holdGem->ChangeDrawGem(gemID);
 	return std::move(holdGem);
@@ -176,12 +155,9 @@ std::unique_ptr<HoldGem> UIFactory::CreateHoldGem(const std::vector<int>& gemID)
 std::unique_ptr<HoldGemInfoDraw> UIFactory::CreateHoldGemInfoDraw(const std::vector<int>& gemID)
 {
 
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//「所持している宝石の内1つの情報を表示するUI」の生成
-	std::unique_ptr<HoldGemInfoDraw> holdGemInfo = std::make_unique<HoldGemInfoDraw>(w, h,gemID);
+	std::unique_ptr<HoldGemInfoDraw> holdGemInfo = std::make_unique<HoldGemInfoDraw>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID);
 	holdGemInfo->Initialize();
 
 	return std::move(holdGemInfo);
@@ -255,10 +231,7 @@ std::unique_ptr<Animation2D> UIFactory::CreateAnimation2DUI(const wchar_t* textu
 		texturepath, textureInfo, animationTime,
 		isLoop,position,scale);
 	animation2D->Initialize();
-	//スクリーンサイズ取得
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
-	animation2D->SetWindowSize(DirectX::SimpleMath::Vector2{ static_cast<float>(w),static_cast<float>(h) });
+	animation2D->SetWindowSize(DirectX::SimpleMath::Vector2{ static_cast<float>(UIManager::WINDOW_SIZE_X),static_cast<float>(UIManager::WINDOW_SIZE_Y) });
 	return std::move(animation2D);
 }
 

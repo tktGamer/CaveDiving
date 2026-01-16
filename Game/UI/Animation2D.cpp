@@ -203,8 +203,8 @@ void Animation2D::Finalize()
  */
 void Animation2D::SetWindowSize(const DirectX::SimpleMath::Vector2& windowSize)
 {
-	m_windowWidth = windowSize.x;
-	m_windowHeight = windowSize.y;
+	m_windowWidth  =static_cast<int>( windowSize.x);
+	m_windowHeight = static_cast<int>(windowSize.y);
 }
 
 

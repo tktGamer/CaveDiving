@@ -20,6 +20,7 @@ public:
 	{
 		//モデルにつける用
 		static constexpr wchar_t BAT[] = L"Bat.png";
+		static constexpr wchar_t BAT_WING[] = L"Wing.png";
 		static constexpr wchar_t GOLEM[] = L"Golem.png";
 		static constexpr wchar_t GOLEM_HAND[] = L"GolemHand.png";
 		static constexpr wchar_t BLOCK[] = L"Resources/Texture/block.png";
@@ -36,6 +37,9 @@ public:
 		{
 			static constexpr wchar_t LOGO[]  = L"Logo.png";
 			static constexpr wchar_t TITLE[]  = L"UI/Title.png";
+			static constexpr wchar_t LOAD[]  = L"UI/Title.png";
+			static constexpr wchar_t GEM_BACK[]  = L"UI/Title.png";
+
 			static constexpr wchar_t PRESS_SPACE[]  = L"UI/PressSpace.png";
 			static constexpr wchar_t NUMBER[]  = L"Number.png";
 
@@ -60,6 +64,7 @@ public:
 	struct MODEL
 	{
 		static constexpr wchar_t BAT[] = L"Bat.sdkmesh";
+		static constexpr wchar_t BAT_WING[] = L"Wing.sdkmesh";
 		static constexpr wchar_t GOLEM[] = L"Golem.sdkmesh";
 		static constexpr wchar_t GOLEM_HAND[] = L"GolemHand.sdkmesh";
 		static constexpr wchar_t ITEM[] = L"Item.sdkmesh";
@@ -75,6 +80,8 @@ public:
 		//プレイヤー攻撃音
 		static constexpr wchar_t PLAYER_SWING[] = L"PikelSwing.wav";
 		static constexpr wchar_t PLAYER_SPIN[] = L"TurnAttack.wav";
+		//ジャンプ音
+		static constexpr wchar_t PLAYER_JUMP[] = L"Jump.wav";
 		//コウモリの攻撃音
 		static constexpr wchar_t BAT_ATTACK[] = L"BatAttack.wav";
 		//コウモリの羽ばたき音
@@ -83,9 +90,18 @@ public:
 		static constexpr wchar_t GOLEM_PUNCH[]   = L"GolemPunch.wav";
 		//ゴーレムの叩きつけ音
 		static constexpr wchar_t GOLEM_SLAMMED_DOWN[]   = L"GolemSlam.wav";
+		//敵消滅音
+		static constexpr wchar_t ENEMY_VANISH[]   = L"EnemyVanish.wav";
 		//アイテムゲット音
 		static constexpr wchar_t ITEM_GET[]   = L"GetItem.wav";
-
+		//攻撃ヒット音
+		static constexpr wchar_t ATTACK_HIT[]   = L"AttackHit.wav";
+		//光る石が光る音
+		static constexpr wchar_t LUMI_ROCK_RIGHT_ON[]   = L"LumiRockLightOn.wav";
+		//メニュー移動音
+		static constexpr wchar_t CURSOL_MOVE[]   = L"CursorMove.wav";
+		//決定音
+		static constexpr wchar_t DECIDE[]   = L"decidegem.wav";
 	};
 	//シェーダー
 	struct SHADER

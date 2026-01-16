@@ -33,7 +33,6 @@ void GameObject::ResetObjectNumber() { s_objectNumber = 0; }
  */
 GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: m_objectType{ objectType }
-	, m_graphics{ Graphics::GetInstance() }
 	, m_objectNumber{CountUpNumber()}
 	, m_texture{ResourceManager::GetInstance()->RequestTexture("white.png")}
 	, m_model{ nullptr }
@@ -43,8 +42,6 @@ GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent, cons
 	, m_quaternion{ initialAngle } // 初期クォータニオンを設定
 	, m_scale{ 1.0f, 1.0f, 1.0f } // 初期拡大率を設定
 	, m_parent{ parent }
-	//, m_initialPosition{ initialPosition }// 初期位置を設定
-	//, m_initialAngle{ initialAngle }
 	, m_currentPosition{}
 	, m_currentAngle{}
 {

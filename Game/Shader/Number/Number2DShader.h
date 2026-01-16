@@ -30,7 +30,7 @@ public:
 		DirectX::SimpleMath::Vector2	windowSize;
 		float alphaData = 0;
 		//•\¦‚·‚é”š
-		float number = 0;
+		int number = 0;
 		//‰æ‘œ‚Ì‰¡”
 		int widthNumber;
 		//‰æ‘œ‚Ìc”

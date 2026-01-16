@@ -58,8 +58,8 @@ void Bloom::Initialize()
 
 	//レンダーテクスチャの作成
 	//画面サイズを半分にする
-	rect.right /= 2.0f;
-	rect.bottom /= 2.0f;
+	rect.right /= static_cast<LONG>(2.0f);
+	rect.bottom /= static_cast<LONG>(2.0f);
 
 	//ブラーの作成
 	m_blur1RT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);

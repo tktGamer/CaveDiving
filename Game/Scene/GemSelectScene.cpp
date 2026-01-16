@@ -17,7 +17,7 @@
 #include"../Scene/GameScene.h"
 #include "../Scene/LoadScene.h"
 #include"Game/Scene/ResultScene.h"
-
+#include"Game/Factory/UIFactory.h"
 
 // ÉÅÉìÉoä÷êîÇÃíËã` ===========================================================
 /**
@@ -61,10 +61,10 @@ void GemSelectScene::Initialize()
 	m_gemSelectManager = std::make_unique<GemSelectUIManager>(GetGameData()->GetPlayerData().gemID);
 	m_gemSelectManager->Initialize();
 
-	m_backTexture = std::make_unique<UserInterface>();
-	m_backTexture->SetWindowSize(w, h);
-	m_backTexture->Create(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-
+	//m_backTexture = std::make_unique<UserInterface>();
+	//m_backTexture->SetWindowSize(w, h);
+	//m_backTexture->Create(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+	m_backTexture = UIFactory::CreateUserInterface(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();

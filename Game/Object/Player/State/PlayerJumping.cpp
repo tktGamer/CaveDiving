@@ -12,6 +12,8 @@
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerJumping.h"
 #include "Game/Object/Player/Player.h"
+#include "Game/Common/Graphics.h"
+
 #include"Game/Particle/ParticleManager.h"
 // メンバ関数の定義 ===========================================================
 /**
@@ -22,6 +24,9 @@
 PlayerJumping::PlayerJumping(Player* pPlayer)
 	: m_pPlayer(pPlayer)
 {
+	//音生成
+	m_jumpSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::PLAYER_JUMP));
+	m_jumpSound->SetVolume(0.1f);
 }
 /**
  * @brief デストラクタ
@@ -39,6 +44,7 @@ PlayerJumping::~PlayerJumping()
  */
 void PlayerJumping::Initialize()
 {
+	
 	PreUpdate();
 }
 
@@ -53,9 +59,9 @@ void PlayerJumping::PreUpdate()
 {
 	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 	//ジャンプの速度を設定
-	velocity.y = JUMP_POWER;
+	velocity.y = JUMP_POWER /** Messenger::GetInstance()->GetElapsedTime()*/;
 	m_pPlayer->SetVelocity(velocity);
-
+	m_jumpSound->Play(false);
 }
 
 /**

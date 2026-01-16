@@ -1,7 +1,7 @@
 /**
  * @file   TitleScene.cpp
  *
- * @brief  ロゴシーンに関するソースファイル
+ * @brief  シーンに関するソースファイル
  *
  * @author 制作者名
  *
@@ -16,7 +16,7 @@
 #include"Game/Common/Sound.h"
 #include"../Scene/GameScene.h"
 #include "../Scene/LoadScene.h"
-
+#include"../Scene/LogoScene.h"
 #include"../Factory/UIFactory.h"
 #include"../Factory/GameObjectFactory.h"
 // メンバ関数の定義 ===========================================================
@@ -96,13 +96,12 @@ void TitleScene::Initialize()
 	m_checkUI = UIFactory::CreateUserInterface(L"UI/check.png", { 200,400 }, { 0.8f,0.8f },UserInterface::ANCHOR::MIDDLE_CENTER);
 	m_title = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::TITLE, {640.0f,180.0f}, {1.0f,1.0f}, UserInterface::ANCHOR::MIDDLE_CENTER);
 	m_pressSpace = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::PRESS_SPACE, { 640.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	//プレイヤーのデータを初期化
 	GetGameData()->SetPlayerData(GameData::PlayerData{});
 
 	PreUpdate();
+	m_time = 0.0f;
 }
 
 void TitleScene::PreUpdate()
@@ -167,6 +166,11 @@ void TitleScene::Update(float elapsedTime)
 	//m_gem->Update();
 	m_camera->Update(elapsedTime);
 
+	m_time += elapsedTime;
+	if (m_time > 15.0f) 
+	{
+		ChangeScene<LogoScene>();
+	}
 }
 
 

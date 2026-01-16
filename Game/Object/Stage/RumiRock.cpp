@@ -33,6 +33,7 @@ RumiRock::RumiRock(const ModelShader::PointLightCB& lightData,const GameObject* 
 	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::ROCK));
 	//モデル設定
 	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::RUMI_ROCK));
+	m_LightOnSound = std::make_unique<Sound>(resourceManager->RequestSound(ResourcePath::SOUND::LUMI_ROCK_RIGHT_ON));
 	//メッセンジャークラスに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 	//当たり判定セット
@@ -208,7 +209,11 @@ void RumiRock::CollisionResponce(GameObject* other)
 	{
 		case Tag::ObjectType::Weapon:
 		{
-			OnLight();
+			//点いていなかったら
+			if (!IsOnLight()) 
+			{
+				OnLight();
+			}
 			break;
 		}
 
@@ -224,6 +229,8 @@ void RumiRock::CollisionResponce(GameObject* other)
  */
 void RumiRock::OnLight()
 {
+	//音再生
+	m_LightOnSound->Play(false);
 	//明かりを点ける
 	m_light->LightOn();
 	m_color = { 1,1,1,1 };

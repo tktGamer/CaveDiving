@@ -35,7 +35,7 @@
  */
 Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,const GameObject* parent,
 	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: Character(data.currentHP,PLAYER_BASE_ATTACK,PLAYER_BASE_DIFFENCE,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
+	: Character(data.maxHP,PLAYER_BASE_ATTACK,PLAYER_BASE_DIFFENCE,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
 	, m_messageID{  }
 	, m_sphere{ GetPosition(), PLAYER_SPHERE_SIZE }
 	,m_motionAngle{}
@@ -53,9 +53,13 @@ Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,c
 	m_holderGem = std::make_unique<HolderGem>(data.gemID);
 
 	//HPí≤êÆ
-	if (data.maxHP < GetMaxHP()) 
+ 	if (data.maxHP < GetMaxHP()) 
 	{
 		SetCurrentHP(GetCurrentHP() + GetMaxHP() - data.maxHP);
+	}
+	else
+	{
+		SetCurrentHP(data.currentHP);
 	}
 }
 

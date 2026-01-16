@@ -46,13 +46,9 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	// システム関連
-	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
 	//セーブ確認UI
 	bool m_isSaveUIActive = false;
-	// オブジェクト関連
-	std::unique_ptr<Camera> m_camera;    ///< カメラオブジェクト
-
-	std::vector<std::unique_ptr<IUI>> m_uiStack;
+	bool m_isScoreCalculated = false;
 
 	//背景
 	std::unique_ptr<UserInterface> m_backTexture;

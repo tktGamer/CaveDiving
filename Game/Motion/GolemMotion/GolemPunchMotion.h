@@ -30,7 +30,7 @@ private:
 	static constexpr float GOLEM_PUNCH_MOTION_MODIFIER = 1.2f;
 
 	//拳の移動量
-	static constexpr DirectX::SimpleMath::Vector3 PUNCH_MOVE = { -2.5f,-1.8f,-13.0f };
+	static constexpr DirectX::SimpleMath::Vector3 PUNCH_MOVE = { -3.2f,-1.8f,-13.0f };
 	//モーションスピード
 	static constexpr float PUNCH_MOTION_SPEED = 2.0f;
 

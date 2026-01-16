@@ -48,7 +48,7 @@ public:
 	//初期化
 	void Initialize();
 	//効果を適用するか
-	const bool& IsApplicable(const int& currentHP, const int& maxHP) const;
+	const bool IsApplicable(const int& currentHP, const int& maxHP) const;
 	//終了
 	void Finalize();
 //取得・設定

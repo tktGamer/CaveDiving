@@ -66,7 +66,7 @@ void ChangeConfirm::Update()
 
     m_menu->Update();
 
-    if (tracker->pressed.Space) 
+    if (tracker->pressed.Z) 
     {
         int menuIndex = m_menu->GetMenuIndex();
 

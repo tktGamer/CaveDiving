@@ -133,7 +133,7 @@ void ScoreUIManager::Initialize()
 	referenceUI.color			= DirectX::SimpleMath::Vector4{ 0,0,0,1 };
 	referenceUI.infoOffset		= DirectX::SimpleMath::Vector2{ 400,0 };
 	referenceUI.infoTexturePath = L"UI/totaltime.png";
-	referenceUI.initNumber		= m_scoreInfo.totalTime;
+	referenceUI.initNumber		= static_cast<int>(m_scoreInfo.totalTime);
 	referenceUI.finishNumber	= m_scoreInfo.totalTime;
 	referenceUI.stepNumber		= HP_STEP_SECOND;
 	referenceUI.minDigit		= 3;
@@ -180,8 +180,8 @@ void ScoreUIManager::Update()
 		SetNextUpdateUI();
 	}
 
-	//スペースキーを押したら次の処理へいく
-	if (traker->IsKeyPressed(DirectX::Keyboard::Keys::Space)) 
+	//キーを押したら次の処理へいく
+	if (traker->IsKeyPressed(DirectX::Keyboard::Keys::Z)) 
 	{
 		m_updateUI->SkipDirection();
 	}

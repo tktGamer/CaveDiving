@@ -24,8 +24,10 @@
  * @param[in] なし
  */
 EnemyManager::EnemyManager()
+	:m_enemies{},
+	m_vanishSound{}
 {
-
+	m_vanishSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::ENEMY_VANISH));
 }
 
 
@@ -201,6 +203,8 @@ void EnemyManager::DeleteEnemy()
             // 死亡している場合はリストから削除
             CollisionManager::GetInstance()->UnRegister(it->get());
 
+			//消滅音再生
+			m_vanishSound->Play(false);
 			//消滅パーティクル生成をリクエスト
 			ParticleManager::GetInstance()->RequestVanishParticle((*it)->GetCurrentPosition());
 

@@ -13,14 +13,13 @@
 #ifndef PLAYER_JUMPING_DEFINED
 #define PLAYER_JUMPING_DEFINED
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
-
+#include"Game/Common/Sound.h"
 // クラスの宣言 ===============================================================
 class Player;
 
 // クラスの定義 ===============================================================
 /**
-  * @brief PlayerJumping
+  * @brief ジャンプ状態
   */
 class PlayerJumping : public IState
 {
@@ -34,6 +33,8 @@ public:
 private:
 	// プレイヤー
 	Player* m_pPlayer;
+
+	std::unique_ptr<Sound> m_jumpSound;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

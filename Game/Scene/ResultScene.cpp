@@ -3,9 +3,9 @@
  *
  * @brief  リザルトシーンに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名  
  *
- * @date   日付
+ * @date   日付  
  */
 
 // ヘッダファイルの読み込み ===================================================
@@ -26,11 +26,8 @@
  * @param[in] なし
  */
 ResultScene::ResultScene()
-	: m_pResourceManager{}
+	
 {
-	m_camera = std::make_unique<Camera>();
-	m_pResourceManager = ResourceManager::GetInstance();
-
 
 }
 
@@ -64,7 +61,7 @@ void ResultScene::Initialize()
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 
-	m_saveUI = std::make_unique<SaveConfirm>(w, h,GetGameData()->GetPlayerData().gemID);
+	m_saveUI = std::make_unique<SaveConfirm>(1280, 720,GetGameData()->GetPlayerData().gemID);
 	m_saveUI->Initialize();
 
 	//ゲームクリア・ゲームオーバー文字
@@ -77,12 +74,12 @@ void ResultScene::Initialize()
 		m_gameover = UIFactory::CreateUserInterface(L"UI/gameover.png", { 650.0f,100.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 
 	}
-	//背景画像
-	m_backTexture = UIFactory::CreateUserInterface(L"gemselectback.png", { 650, 360 }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 	
 	m_scoreUI = std::make_unique<ScoreUIManager>(GetGameData()->GetScoreInfo());
 	m_scoreUI->Initialize();
 
+	//背景画像
+	m_backTexture = UIFactory::CreateUserInterface(L"gemselectback.png", { 650.0f, 360.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
@@ -112,6 +109,7 @@ void ResultScene::Update(float elapsedTime)
 		ChangeScene<TitleScene>();
 	}
 
+
 	//スコア計算の処理が終わっていなかったら
 	if (m_scoreUI->GetState() != ScoreUIManager::State::END) 
 	{
@@ -119,9 +117,13 @@ void ResultScene::Update(float elapsedTime)
 
 		
 	}
-	else
+	else if(m_isSaveUIActive)
 	{
 		m_saveUI->Update();
+	}
+	if (m_scoreUI->GetState() == ScoreUIManager::State::END && traker->IsKeyPressed(DirectX::Keyboard::Z)) 
+	{
+		m_isSaveUIActive = true;
 	}
 
 }
@@ -142,7 +144,7 @@ void ResultScene::Render()
 	m_scoreUI->Render();
 
 	//スコア計算の処理が終わっていたらセーブ確認UIを表示
-	if (m_scoreUI->GetState() == ScoreUIManager::State::END)
+	if (m_isSaveUIActive)
 	{
 		m_saveUI->Render();
 	}
@@ -170,11 +172,6 @@ void ResultScene::CreateDeviceDependentResources()
 
 void ResultScene::CreateWindowSizeDependentResources()
 {
-	int width = 0, height = 0;
-
-	Graphics::GetInstance()->GetScreenSize(width, height);
-
-	m_backTexture->SetWindowSize(width, height);
 }
 
 void ResultScene::OnDeviceLost()

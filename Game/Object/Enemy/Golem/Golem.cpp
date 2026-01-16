@@ -76,8 +76,8 @@ void Golem::Initialize()
 	//‰Šú‘å‚«‚³
 	SetScale(DirectX::SimpleMath::Vector3::One);
 
-	SetCurrentPosition( GetPosition());
-	SetCurrentAngle( GetQuaternion());
+	SetCurrentPosition(GetPosition());
+	SetCurrentAngle(GetQuaternion());
 	//è‚Ì¶¬
 	m_rightHand = GameObjectFactory::CreateGolemHand(this,this,RIGHTHAND_INIT_POS);
 	m_leftHand = GameObjectFactory::CreateGolemHand(this, this, LEFTHAND_INIT_POS,

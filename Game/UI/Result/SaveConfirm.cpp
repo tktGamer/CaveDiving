@@ -71,12 +71,12 @@ void SaveConfirm::Initialize()
  */
 void SaveConfirm::Update()
 {
-    auto tracker = Graphics::GetInstance()->GetKeyboardTracker();
+    DirectX::Keyboard::KeyboardStateTracker* tracker = Graphics::GetInstance()->GetKeyboardTracker();
 
     m_menu->Update();
 
-    //スペースキーが押されたら
-    if (tracker->pressed.Space) 
+    //キーが押されたら
+    if (tracker->IsKeyPressed(DirectX::Keyboard::Z))
     {
         int menuIndex = m_menu->GetMenuIndex();
 

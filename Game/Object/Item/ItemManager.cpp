@@ -128,7 +128,7 @@ void ItemManager::GenerateItem()
 
 	m_items.emplace_back(std::make_unique<Item>(info, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
 	m_items.back()->Initialize();
-	m_items.back()->SetPosition({ 40.0f,2.0f,-20.0f });
+	m_items.back()->SetPosition({ 45.0f,2.0f,-25.0f });
 	info.type = Item::EffectType::Diffece;
 	info.increase = 10;
 	info.time = 10;

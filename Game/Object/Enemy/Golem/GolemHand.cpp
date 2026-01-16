@@ -77,10 +77,8 @@ void GolemHand::Initialize()
 void GolemHand::Update( const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//位置の更新
-	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition() + GetPosition(), m_motionAngle * currentAngle) + currentPosition);
 	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform( GetPosition(), m_motionAngle * currentAngle) + currentPosition);
 	//角度の更新
-	//SetCurrentAngle(GetInitialQuaternion() * GetQuaternion() * m_motionAngle * currentAngle);
 	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
 	
 	//当たり判定の更新
@@ -113,7 +111,7 @@ void GolemHand::Draw()
 	//ワールド行列を計算
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
 
-
+	//アウトライン描画
 	if (Messenger::GetInstance()->IsOutLineActive()) 
 	{
 		OutlineRenderer::Draw(*GetModel(), world, GOLEM_HAND_OUTLINE_THICKNESS);
@@ -164,8 +162,11 @@ void GolemHand::Draw()
 		});
 	shader->EndShader();
 
-	if (m_weapon)
-	m_weapon->Draw();
+	if (m_weapon) 
+	{
+		m_weapon->Draw();
+
+	}
 
 	//m_sphere.AddDisplayCollision(&m_display);
 	//m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()

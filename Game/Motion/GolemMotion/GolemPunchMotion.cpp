@@ -80,9 +80,8 @@ bool GolemPunchMotion::Update()
 	DirectX::SimpleMath::Vector3 currentPos = DirectX::SimpleMath::Vector3::Lerp(m_startPosition, m_goalPosition, motionLerp);
 	m_pRightGolemHand->SetPosition(currentPos);
 
-
+	//モーション進行
 	motionLerp +=  PUNCH_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
-
 	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
 
 	//モーションが終了したら
