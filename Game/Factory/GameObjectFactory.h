@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/15
+ * @date   日付　2026/01/17
  */
 
  // 多重インクルードの防止 =====================================================
@@ -22,6 +22,8 @@
 #include"../Object/Enemy/Golem/Golem.h"
 #include"../Object/Enemy/Golem/GolemHand.h"
 #include"../Object/Stage/Stage.h"
+#include"../Object/Item/Item.h"
+#include"../Object/Item/UniquItem/OutlineItem.h"
 #include"Game/GameData.h"
 // クラスの宣言 ===============================================================
 class BuffUIControl;
@@ -97,6 +99,38 @@ public:
 		int size
 	);
 
+	// 「地面」を生成する
+	static std::unique_ptr<Ground> CreateGround(
+		GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition ,
+		const DirectX::SimpleMath::Quaternion& initialAngle ,
+		const DirectX::SimpleMath::Vector3& scale
+	);
+
+	// 「壁」を生成する
+	static std::unique_ptr<Wall> CreateWall(
+		GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition ,
+		const DirectX::SimpleMath::Quaternion& initialAngle,
+		const DirectX::SimpleMath::Vector3& scale
+	);
+
+	// 「アイテム」を生成する
+	static std::unique_ptr<Item> CreateItem(
+		const Item::ItemInfo& itemInfo,
+		const GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition,
+		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
+	);
+
+	// 「アウトラインアイテム」を生成する
+	static std::unique_ptr<OutlineItem> CreateOutlineItem(
+		const Item::ItemInfo& itemInfo,
+		const GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition,
+		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
+
+	);
 
 };
 

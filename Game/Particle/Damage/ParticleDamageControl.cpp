@@ -1,22 +1,19 @@
 /**
  * @file   ParticleDamageControl.cpp
  *
- * @brief  敵消滅パーティクル管理に関するソースファイル
+ * @brief  ダメージ数値パーティクル管理に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/25
+ * @date   日付  2026/01/26
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleDamageControl.h"
-
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/Shader.h"
 #include"Game/Message/Messenger.h"
 #include"Game/ResourcePath.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -25,8 +22,6 @@
  */
 ParticleDamageControl::ParticleDamageControl(const wchar_t* texturePath)
 {
-	//m_texture = ResourceManager::GetInstance()->RequestTexture(texturePath);
-
 }
 
 /**
@@ -35,8 +30,6 @@ ParticleDamageControl::ParticleDamageControl(const wchar_t* texturePath)
 ParticleDamageControl::~ParticleDamageControl()
 {
 }
-
-
 
 /**
  * @brief 更新処理
@@ -55,7 +48,6 @@ void ParticleDamageControl::Update()
 	//削除フラグが立っているパーティクルの削除
 	m_particleDamage.remove_if([&](std::unique_ptr<ParticleDamageNumber>& particle) {return particle->IsDelete(); });
 }
-
 
 /**
  * @brief 描画処理
@@ -101,8 +93,8 @@ void ParticleDamageControl::RequestParticleDamage(const DirectX::SimpleMath::Vec
 	//マイナス値を入れられたときの対策
 	DirectX::SimpleMath::Vector3 absRange = { std::abs(range.x),std::abs(range.y),std::abs(range.z) };
 	//描画位置のずれをランダムに出す
-	float offsetX = TKTLib::GetRand(-absRange.x, absRange.x);
-	float offsetY = TKTLib::GetRand(-absRange.y, absRange.y);
+	float offsetX = static_cast<float>(TKTLib::GetRand(-absRange.x, absRange.x));
+	float offsetY = static_cast<float>(TKTLib::GetRand(-absRange.y, absRange.y));
 	float offsetZ = static_cast<float>(TKTLib::GetRand(-absRange.z, absRange.z));
 
 
@@ -115,5 +107,3 @@ void ParticleDamageControl::RequestParticleDamage(const DirectX::SimpleMath::Vec
 	);
 	
 }
-
-

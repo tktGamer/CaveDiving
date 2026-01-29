@@ -5,14 +5,14 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/08/22
+ * @date   日付　2026/01/17
  */
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "CollisionManager.h"
 
-// クラスの静的メンバ変数の初期化
+// クラスの静的メンバ変数の初期化===
 std::unique_ptr<CollisionManager> CollisionManager::s_collisionManager = nullptr;
 
 // メンバ関数の定義 ===========================================================
@@ -96,19 +96,6 @@ void CollisionManager::AllRelease()
 	m_objects.clear();
 }
 
-
-/**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void CollisionManager::Update()
-{
-
-}
-
 /**
  * @brief 当たり判定総チェック
  *
@@ -158,11 +145,6 @@ void CollisionManager::CollisionCheck()
 	}
 }
 
-
-
-
-
-
 /**
  * @brief 終了処理
  *
@@ -172,9 +154,8 @@ void CollisionManager::CollisionCheck()
  */
 void CollisionManager::Finalize()
 {
-
+	AllRelease();
 }
-
 
 /**
  * @brief 押し出し処理
@@ -197,7 +178,7 @@ DirectX::SimpleMath::Vector3 CollisionManager::PushOut(Shape* shape1, Shape* sha
 			dynamic_cast<Box*>(shape2));
 
 		case Shape::ShapeType::Sphere:
-			Box* box = dynamic_cast<Box*>(shape1);
+			Box* box       = dynamic_cast<Box*>(shape1);
 			Sphere* sphere = dynamic_cast<Sphere*>(shape2);
 			return BoxToSpherePushOut(
 				box,
@@ -264,8 +245,10 @@ DirectX::SimpleMath::Vector3 CollisionManager::SphereToSpherePushOut(Sphere* sph
  */
 DirectX::SimpleMath::Vector3 CollisionManager::BoxToSpherePushOut(Box* box, Sphere* sphere/*,DirectX::SimpleMath::Vector3 moveDir*/)
 {
+	//AABB・最小最大
     DirectX::SimpleMath::Vector3 boxMin = box->GetCenter() - box->GetHalfSize();
     DirectX::SimpleMath::Vector3 boxMax = box->GetCenter() + box->GetHalfSize();
+	//球の中心
     DirectX::SimpleMath::Vector3 sphereCenter = sphere->GetCenter();
 
     // AABBの最も近い点を計算
@@ -274,35 +257,50 @@ DirectX::SimpleMath::Vector3 CollisionManager::BoxToSpherePushOut(Box* box, Sphe
     float closestZ = std::max(boxMin.z, std::min(sphereCenter.z, boxMax.z));
 
     // 球の中心と最も近い点のベクトルを計算
-    DirectX::SimpleMath::Vector3 collisionVector = {
+    DirectX::SimpleMath::Vector3 collisionVector = 
+	{
         sphereCenter.x - closestX,
         sphereCenter.y - closestY,
         sphereCenter.z - closestZ
     };
+	//距離
+	float distance = collisionVector.Length();
 
-    // ベクトルの長さを計算
-    float distance = sqrt(collisionVector.x * collisionVector.x +
-        collisionVector.y * collisionVector.y +
-        collisionVector.z * collisionVector.z);
+	if (distance > 0.00001f)
+	{
+		collisionVector /= distance;
+	}
+	//球の中心が内部・面などにある場合
+	else
+	{
+		DirectX::SimpleMath::Vector3 diff = sphereCenter - box->GetCenter();
+		DirectX::SimpleMath::Vector3 half = box->GetHalfSize();
+		//各軸方向の残り距離
+		float px = half.x - fabs(diff.x);
+		float py = half.y - fabs(diff.y);
+		float pz = half.z - fabs(diff.z);
+		//一番浅い方向を求める
+		if (px < py && px < pz) 
+		{
 
+			collisionVector = { (diff.x > 0) ? 1.0f : -1.0f, 0, 0 };
+		}
+		else if (py < pz) 
+		{
+			collisionVector = { 0, (diff.y > 0) ? 1.0f : -1.0f, 0 };
+		}
+		else 
+		{
+			collisionVector = { 0, 0, (diff.z > 0) ? 1.0f : -1.0f };
+		}
 
-	// 押し出し方向が移動ベクトルに対して逆向きであるか？
-	collisionVector.Normalize();
-	//moveDir.Normalize();
+		distance = 0.0f;
+	}
 
-	//float dot = collisionVector.Dot( moveDir);
+	//押し出し量
     float overlap = sphere->GetRadius() - distance;
-
-	//if (dot < 0.0f) {
-	//	// 押し出し方向が移動方向と逆 → 有効な押し出し
-	//	sphereCenter += collisionVector * overlap;
-	//}
-	//else {
-	//	// 押し出し方向が移動方向と同じか近い → 無視
-	//	// すり抜け防止のため微修正するならここで対応
-	//}
-
-		sphereCenter += collisionVector * overlap;
+	//押し出し
+	sphereCenter += collisionVector * overlap;
 	sphere->SetCenter(sphereCenter);
 	return sphereCenter;
 }
@@ -320,13 +318,13 @@ DirectX::SimpleMath::Vector3 CollisionManager::BoxToBoxPushOut(Box* box, Box* bo
 	using Vector3 = DirectX::SimpleMath::Vector3;
 
 	// 中心と半サイズ
-	Vector3 c1 = box->GetCenter();
-	Vector3 e1 = box->GetHalfSize();
-	Vector3 c2 = box2->GetCenter();
-	Vector3 e2 = box2->GetHalfSize();
+	DirectX::SimpleMath::Vector3 c1 = box->GetCenter();
+	DirectX::SimpleMath::Vector3 e1 = box->GetHalfSize();
+	DirectX::SimpleMath::Vector3 c2 = box2->GetCenter();
+	DirectX::SimpleMath::Vector3 e2 = box2->GetHalfSize();
 
 	// 中心差
-	Vector3 delta = c2 - c1;
+	DirectX::SimpleMath::Vector3 delta = c2 - c1;
 
 	// 各軸の重なり量
 	float overlapX = (e1.x + e2.x) - std::abs(delta.x);
@@ -340,7 +338,7 @@ DirectX::SimpleMath::Vector3 CollisionManager::BoxToBoxPushOut(Box* box, Box* bo
 	}
 
 	// 押し出しベクトル（最小貫通軸）
-	Vector3 pushOut = Vector3::Zero;
+	DirectX::SimpleMath::Vector3 pushOut = DirectX::SimpleMath::Vector3::Zero;
 
 	if (overlapX <= overlapY && overlapX <= overlapZ)
 	{
@@ -374,8 +372,6 @@ DirectX::SimpleMath::Vector3 CollisionManager::PushBack(Sphere* sphereA, Sphere*
 	// 中心間ベクトル
 	DirectX::SimpleMath::Vector3 direction = sphereA->GetCenter() - sphereB->GetCenter();
 	float distance = direction.Length();
-
-
 	//direction = direction.Normalize();
 
 	// 球AがBの外に出ているなら
@@ -433,9 +429,8 @@ DirectX::SimpleMath::Vector3 CollisionManager::CheckContactPoint(Shape* shapeA, 
 		}
 	}
 	//どこにも属さなかった
-	return { 0,0,0 };
+	return DirectX::SimpleMath::Vector3::Zero;
 }
-
 
 /**
  * @brief 球同士の接触点（中間地点）の取得
@@ -450,7 +445,7 @@ DirectX::SimpleMath::Vector3 CollisionManager::ContactPointSphereToSphere(Sphere
 	DirectX::SimpleMath::Vector3 diff = sphereB->GetCenter() - sphereA->GetCenter();
 	//距離を求める
 	float dist = diff.Length();
-	float sumR = sphereA->GetRadius() + sphereB->GetRadius();
+	//float sumR = sphereA->GetRadius() + sphereB->GetRadius();
 
 	//if (dist >= sumR)
 	//	return false; // 接触していない

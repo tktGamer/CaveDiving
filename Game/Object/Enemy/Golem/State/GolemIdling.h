@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/03
+ * @date   日付　2026/01/18
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef GOLEM_IDLING_DEFINED
@@ -24,22 +23,20 @@ class Golem;
 class GolemIdling : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+public:
+//非公開定数
 private:
 	//遷移までの時間
 	static constexpr float CHANGE_MOVING_TIME = 1.0f;
-public:
-
-// データメンバの宣言 -----------------------------------------------
-private:
-	// ゴーレム
-	Golem* m_golem;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
 	// コンストラクタ
 	GolemIdling(Golem* golem);
 	// デストラクタ
 	~GolemIdling();
+//　操作
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -52,12 +49,12 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-//　取得・設定
-public:
-
 //　内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	// ゴーレム
+	Golem* m_golem;
 };
-
 #endif		// GOLEM_IDLING_DEFINED

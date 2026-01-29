@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　2026/01/05
+ * @date   日付　2026/01/19
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -24,9 +24,10 @@
  * @param[in] initialAngle　   初期角度
  */
 GolemHand::GolemHand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:EnemyPart(root,parent,initialPosition,initialAngle)
-	,m_motionAngle{}
-	,m_sphere{initialPosition,GOLEM_HAND_SPHERE_SIZE}
+	:
+	EnemyPart(root,parent,initialPosition,initialAngle),
+	m_motionAngle{},
+	m_sphere{initialPosition,GOLEM_HAND_SPHERE_SIZE}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 
@@ -40,17 +41,12 @@ GolemHand::GolemHand(Character* root,const GameObject* parent, const DirectX::Si
 	SetShape(&m_sphere);
 }
 
-
-
 /**
  * @brief デストラクタ
  */
 GolemHand::~GolemHand()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -62,9 +58,6 @@ GolemHand::~GolemHand()
 void GolemHand::Initialize()
 {
 }
-
-
-
 
 /**
  * @brief 更新処理
@@ -88,9 +81,6 @@ void GolemHand::Update( const DirectX::SimpleMath::Vector3& currentPosition, con
 	if(m_weapon)
 	m_weapon->Update(GetCurrentPosition(), GetCurrentQuaternion());
 }
-
-
-
 
 /**
  * @brief 描画処理
@@ -162,6 +152,7 @@ void GolemHand::Draw()
 		});
 	shader->EndShader();
 
+	//武器を持っていたら
 	if (m_weapon) 
 	{
 		m_weapon->Draw();
@@ -171,10 +162,7 @@ void GolemHand::Draw()
 	//m_sphere.AddDisplayCollision(&m_display);
 	//m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
 	//	, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
-
 }
-
-
 
 /**
  * @brief 終了処理
@@ -185,7 +173,6 @@ void GolemHand::Draw()
  */
 void GolemHand::Finalize()
 {
-
 }
 
 /**
@@ -209,11 +196,8 @@ void GolemHand::OnMessegeAccepted(Message::MessageID messageID)
  */
 void GolemHand::CollisionResponce(GameObject* other)
 {
-	switch (other->GetObjectType())
-	{
-	default:
-		break;
-	}
+	UNREFERENCED_PARAMETER(other);
+
 }
 
 

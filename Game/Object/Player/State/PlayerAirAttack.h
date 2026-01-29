@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/01/07
+ * @date   日付  2026/01/20
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef PLAYER_AIR_ATTACK_DEFINED
@@ -24,29 +23,21 @@ class Hand;
 class PlayerAirAttack : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+public:
+//非公開定数
 private:
 	//攻撃を変化させるために必要な宝石
 	static constexpr int SPIN_ATTACK_GEM_NUM = 2;
-public:
-// データメンバの宣言 -----------------------------------------------
-private:
-	// プレイヤー
-	Player* m_pPlayer;
-	//空中での攻撃
-	std::unique_ptr<AttackMotion> m_airAttack;
-
 
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
 	// コンストラクタ
 	PlayerAirAttack(Player* pPlayer, Hand* pRightHand, Hand* pLeftHand);
 	// デストラクタ
 	~PlayerAirAttack();
-
-
 // 操作
-public:
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -59,14 +50,14 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-
-
-//　取得・設定
-public:
-
 //　内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	// プレイヤー
+	Player* m_pPlayer;
+	//空中での攻撃
+	std::unique_ptr<AttackMotion> m_airAttack;
 };
-
 #endif		// PLAYER_AIR_ATTACK_DEFINED

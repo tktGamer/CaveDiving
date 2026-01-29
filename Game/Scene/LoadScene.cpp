@@ -5,19 +5,14 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2026/01/13
+ * @date   日付  2026/01/28
  */
-
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "LoadScene.h"
-
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
 #include"Game/Factory/UIFactory.h"
-
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -54,16 +49,16 @@ void LoadScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	Animation2D::AnimationTexture textureInfo{};
-	textureInfo.frameCount = 4;
-	textureInfo.frameWidth = 1;
-	textureInfo.frameHeight = 4;
-	m_nowloadingTexture = UIFactory::CreateAnimation2DUI(L"loading.png",textureInfo,6,true,
-		DirectX::SimpleMath::Vector2{800.0f,590.0f},DirectX::SimpleMath::Vector2{1.0f,1.0f});
-	m_backTexture = UIFactory::CreateUserInterface(L"loadback.jpg",
-		DirectX::SimpleMath::Vector2{}, DirectX::SimpleMath::Vector2{ 0.7f,0.7f }, UserInterface::ANCHOR::TOP_LEFT);
-
+	textureInfo.frameCount  = NOWLOADING_FRAME_COUNT;
+	textureInfo.frameWidth  = NOWLOADING_FRAME_WIDTH;
+	textureInfo.frameHeight = NOWLOADING_FRAME_HEIGHT;
+	//画像生成
+	m_nowloadingTexture = UIFactory::CreateAnimation2DUI(ResourcePath::TEXTURE::UI::LOAD,textureInfo,NOWLOADING_ANIMATION_TIME,true,
+		NOWLOADING_POSITON,NOWLOADING_SCALE);
+	//背景画像生成
+	m_backTexture = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::LOAD_BACK,
+		BACK_TEXTURE_POS, BACK_TEXTURE_SCALE, UserInterface::ANCHOR::TOP_LEFT);
 
 	PreUpdate();
 }
@@ -80,8 +75,6 @@ void LoadScene::PreUpdate()
 {
 }
 
-
-
 /**
  * @brief 更新処理
  *
@@ -92,10 +85,8 @@ void LoadScene::PreUpdate()
 void LoadScene::Update(float elapsedTime)
 {
 	m_nowloadingTexture->Update();
-
+	m_backTexture->Update();
 }
-
-
 
 /**
  * @brief 描画処理

@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/04
+ * @date   日付　2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "EnemyManager.h"
@@ -16,7 +15,6 @@
 #include"Game/Particle/ParticleManager.h"
 #include<fstream>
 #include<sstream>
-
  // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,23 +22,19 @@
  * @param[in] なし
  */
 EnemyManager::EnemyManager()
-	:m_enemies{},
+	:
+	m_enemies{},
 	m_vanishSound{}
 {
 	m_vanishSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::ENEMY_VANISH));
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 EnemyManager::~EnemyManager()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -50,11 +44,8 @@ EnemyManager::~EnemyManager()
  * @return なし
  */
 void EnemyManager::Initialize()
-{
-	
+{	
 }
-
-
 
 /**
  * @brief 更新処理
@@ -76,8 +67,6 @@ void EnemyManager::Update()
 	}
 }
 
-
-
 /**
  * @brief 描画処理
  *
@@ -87,16 +76,12 @@ void EnemyManager::Update()
  */
 void EnemyManager::Draw()
 {
-
 	//敵の描画
 	for (std::unique_ptr<Character>& enemy : m_enemies)
 	{
 		enemy->Draw();
 	}
-
 }
-
-
 
 /**
  * @brief 終了処理
@@ -107,7 +92,6 @@ void EnemyManager::Draw()
  */
 void EnemyManager::Finalize()
 {
-
 }
 
 /**
@@ -137,10 +121,9 @@ void EnemyManager::Spawn(const std::string& spawnData)
 		std::stringstream ss(line);
 		//敵の種類
 		std::string type;
+		std::getline(ss, type, ',');
 		//座標
 		std::string x, y, z;
-
-		std::getline(ss, type, ',');
 		std::getline(ss, x, ',');
 		std::getline(ss, y, ',');
 		std::getline(ss, z, ',');
@@ -150,9 +133,6 @@ void EnemyManager::Spawn(const std::string& spawnData)
 		spawnPos.x = std::stof(x);
 		spawnPos.y = std::stof(y);
 		spawnPos.z = std::stof(z);
-
-
-
 
 		//読み込んだ種類を生成
 		if (type == "コウモリ")
@@ -180,11 +160,8 @@ void EnemyManager::Spawn(const std::string& spawnData)
 	}
 	//ファイルを閉じる
 	ifs.close();
-
 	return;
-
 }
-
 
 /**
  * @brief 敵の消去

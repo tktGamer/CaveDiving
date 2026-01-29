@@ -7,11 +7,9 @@
  *
  * @date   日付　　2026/01/12
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Player.h"
-
 #include "Game/Interface/IState.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Common/Collision/Sphere.h"
@@ -35,11 +33,12 @@
  */
 Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,const GameObject* parent,
 	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: Character(data.maxHP,PLAYER_BASE_ATTACK,PLAYER_BASE_DIFFENCE,Tag::ObjectType::Player,parent,initialPosition,initialAngle)
-	, m_messageID{  }
-	, m_sphere{ GetPosition(), PLAYER_SPHERE_SIZE }
-	,m_motionAngle{}
-	,m_pBuffUIControl{pBuffUIControl}
+	: 
+	Character(data.maxHP,PLAYER_BASE_ATTACK,PLAYER_BASE_DIFFENCE,Tag::ObjectType::Player,parent,initialPosition,initialAngle),
+	m_messageID{},
+	m_sphere{ GetPosition(), PLAYER_SPHERE_SIZE },
+	m_motionAngle{},
+	m_pBuffUIControl{pBuffUIControl}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	//テクスチャ設定
@@ -63,17 +62,12 @@ Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,c
 	}
 }
 
-
-
 /**
  * @brief デストラクタ
  */
 Player::~Player()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -101,7 +95,6 @@ void Player::Initialize()
 	m_avoidState		= std::make_unique<PlayerAvoidance>(this);
 	m_damagedState		= std::make_unique<PlayerDamaged>(this);
 
-
 	//パーツ配列にムーブ
 	m_bodyParts.emplace_back(std::move(handR));
 	m_bodyParts.emplace_back(std::move(handL));
@@ -110,7 +103,6 @@ void Player::Initialize()
 	SetState(m_idlingState.get());
 
 	//初期設定
-	//SetPosition(PLAYER_INIT_POS);
 	SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 	SetScale(DirectX::SimpleMath::Vector3::One);
 	//当たり判定セット
@@ -143,12 +135,8 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 
 	//向きを変える
 	ChangeDirection();
-
 	//状態の更新
 	GetState()->Update(elapsedTime);
-
-
-
 	//現在位置の更新
 	SetCurrentPosition(currentPosition + GetPosition());
 	//現在角度の更新
@@ -162,10 +150,8 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 
 	//ライトの更新
 	m_light->Update(GetCurrentPosition(), GetCurrentQuaternion());
-
 	//当たり判定の更新
 	m_sphere.SetCenter(GetCurrentPosition());
-
 	//取得アイテムの更新
 	UpdateGotItems();
 	//ダメージ演出
@@ -198,7 +184,6 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 
 	//盾生成の宝石をもっているか
 	const std::vector<GenerateShieldGem*> shieldGems = GetHolderGem().FindHasGem<GenerateShieldGem>();
-
 	for (GenerateShieldGem* shieldGem : shieldGems)
 	{
 		//盾を生成
@@ -210,9 +195,10 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 		m_invincibleCount += shield;
 		//盾エフェクト生成
 		ParticleManager::GetInstance()->RequestShieldParticle(GetObjectNumber());
-
 	}
 
+	SetIsOnGround(false);
+	m_attackBuffered = false;
 }
 
 
@@ -255,7 +241,6 @@ void Player::Draw()
 		OutlineRenderer::Draw(*GetModel(), world, PLAYER_OUTLINE_THICKNESS);
 	}
 
-	
 	//モデル描画
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
@@ -302,7 +287,7 @@ void Player::Draw()
 		part->Draw();
 	}
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 	
@@ -322,16 +307,23 @@ void Player::Draw()
 	debugFont->AddString(L"MaxHP::", DirectX::SimpleMath::Vector2(0.0f, 250.0f));
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetMaxHP())), DirectX::SimpleMath::Vector2(100.0f, 250.0f));
 	//現在座標
-	debugFont->AddString(L"X::", DirectX::SimpleMath::Vector2(0.0f, 300.0f));
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().x)), DirectX::SimpleMath::Vector2(25.0f, 300.0f));
-	debugFont->AddString(L"Y::", DirectX::SimpleMath::Vector2(0.0f, 330.0f));
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().y)), DirectX::SimpleMath::Vector2(25.0f, 330.0f));
-	debugFont->AddString(L"Z::", DirectX::SimpleMath::Vector2(0.0f, 360.0f));
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().z)), DirectX::SimpleMath::Vector2(25.0f, 360.0f));
+	debugFont->AddString(L"PosX::", DirectX::SimpleMath::Vector2(0.0f, 300.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().x)), DirectX::SimpleMath::Vector2(60.0f, 300.0f));
+	debugFont->AddString(L"PosY::", DirectX::SimpleMath::Vector2(0.0f, 330.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().y)), DirectX::SimpleMath::Vector2(60.0f, 330.0f));
+	debugFont->AddString(L"PosZ::", DirectX::SimpleMath::Vector2(0.0f, 360.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetCurrentPosition().z)), DirectX::SimpleMath::Vector2(60.0f, 360.0f));
+	//現在速度
+	debugFont->AddString(L"VelX::", DirectX::SimpleMath::Vector2(0.0f, 390.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetVelocity().x)), DirectX::SimpleMath::Vector2(60.0f, 390.0f));
+	debugFont->AddString(L"VelY::", DirectX::SimpleMath::Vector2(0.0f, 420.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetVelocity().y)), DirectX::SimpleMath::Vector2(60.0f, 420.0f));
+	debugFont->AddString(L"VelZ::", DirectX::SimpleMath::Vector2(0.0f, 450.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetVelocity().z)), DirectX::SimpleMath::Vector2(60.0f, 450.0f));
 	//ダメージ無効化回数
-	debugFont->AddString(L"InvisibleCount", DirectX::SimpleMath::Vector2(0.0f, 390.0f));
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_invincibleCount)), DirectX::SimpleMath::Vector2(180.0f, 390.0f));
-#endif // DEBUG
+	debugFont->AddString(L"InvisibleCount", DirectX::SimpleMath::Vector2(0.0f, 480.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_invincibleCount)), DirectX::SimpleMath::Vector2(180.0f, 480.0f));
+//#endif // DEBUG
 
 }
 
@@ -359,19 +351,36 @@ void Player::Finalize()
  */
 void Player::OnMessegeAccepted(Message::MessageID messageID)
 {
+	uint32_t moveFlag = GetMoveFlags();
 	switch (messageID)
 	{
 		case Message::IDLING:
 			GameObject::ChangeState(m_idlingState.get());
 			break;
 		case Message::MOVING:
-			GameObject::ChangeState(m_movingState.get());
+			//攻撃中ではなければ
+			if (!IsAttacking()) 
+			{
+				GameObject::ChangeState(m_movingState.get());
+			}
 			break;
-		case Message::GROUNDATTACK:
-			GameObject::ChangeState(m_groundAttackState.get());
-			break;
-		case Message::AIRATTACK:
-			GameObject::ChangeState(m_airAttackState.get());
+		case Message::ATTACK:
+			if (IsAttacking()) 
+			{
+				//攻撃入力があったことを記録 コンボするため
+				m_attackBuffered = true;
+				
+			}
+			else
+			{
+				//攻撃状態になかったら地上か空中攻撃状態へ遷移
+				if (IsOnGround()) 
+				{
+					GameObject::ChangeState(m_groundAttackState.get());
+					break;
+				}
+				GameObject::ChangeState(m_airAttackState.get());
+			}
 			break;
 		case Message::AVOIDANCE:
 			GameObject::ChangeState(m_avoidState.get());
@@ -385,9 +394,35 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 				GameObject::ChangeState(m_jumpingState.get());
 			}
 			break;
+		case Message::MOVE_FRONT_ON:
+			moveFlag |= Character::MoveFlag::MOVE_FRONT;
+			break;
+		case Message::MOVE_FRONT_OFF:
+			moveFlag &= ~Character::MoveFlag::MOVE_FRONT;
+			break;
+		case Message::MOVE_LEFT_ON:
+			moveFlag |= Character::MoveFlag::MOVE_LEFT;
+			break;
+		case Message::MOVE_LEFT_OFF:
+			moveFlag &= ~Character::MoveFlag::MOVE_LEFT;
+			break;
+		case Message::MOVE_RIGHT_ON:
+			moveFlag |= Character::MoveFlag::MOVE_RIGHT;
+			break;
+		case Message::MOVE_RIGHT_OFF:
+			moveFlag &= ~Character::MoveFlag::MOVE_RIGHT;
+			break;
+		case Message::MOVE_BACK_ON:
+			moveFlag |= Character::MoveFlag::MOVE_BACK;
+			break;
+		case Message::MOVE_BACK_OFF:
+			moveFlag &= ~Character::MoveFlag::MOVE_BACK;
+			break;
 		default:
 			break;
 	}
+
+	SetMoveFlags(moveFlag);
 }
 
 /**
@@ -408,7 +443,6 @@ void Player::CollisionResponce(GameObject* other)
 			{
 				break;
 			}
-
 			//ダメージ
 			OnDamage(other);
 		}
@@ -430,8 +464,10 @@ void Player::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
+			DirectX::SimpleMath::Vector3 newPosition = CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere);
 
+			SetPosition(newPosition);
+			SetIsOnGround(true);
 			//Yの速度をリセット
 			DirectX::SimpleMath::Vector3 velocity = GetVelocity();
 			velocity.y = 0.0f;
@@ -620,6 +656,25 @@ void Player::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 const HolderGem& Player::GetHolderGem()
 {
 	return *m_holderGem.get();
+}
+
+
+/**
+ * @brief 攻撃中か取得
+ *
+ * @param[in] なし
+ *
+ * @return true  攻撃中
+ * @return false 攻撃していない
+ */
+bool Player::IsAttacking() 
+{
+	return (GetState() == m_airAttackState.get() || GetState() == m_groundAttackState.get());
+}
+
+bool Player::IsAttackBuffered() const
+{
+	return m_attackBuffered;
 }
 
 

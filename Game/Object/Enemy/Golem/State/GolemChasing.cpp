@@ -5,14 +5,12 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/03
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Golem/State/GolemChasing.h"
 #include "Game/Object/Enemy/Golem/Golem.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,7 +18,7 @@
  * @param[in] golem ゴーレムのポインタ
  */
 GolemChasing::GolemChasing(Golem* golem)
-	: m_golem(golem)
+	: m_golem{golem}
 	, m_pPlayer{ Messenger::GetInstance()->GetObject(0) }
 {
 }
@@ -67,8 +65,6 @@ void GolemChasing::Update(const float& elapsedTime)
 
 	DirectX::SimpleMath::Vector3 velocity = m_golem->GetVelocity();
 
-
-
 	//自分からプレイヤーの角度を求める
 	float radian = TKTLib::CaluculateRadian(m_golem->GetCurrentPosition(), m_pPlayer->GetCurrentPosition());
 	//目標の角度
@@ -104,12 +100,13 @@ void GolemChasing::Update(const float& elapsedTime)
 
 	}
 
-
+	//摩擦
 	velocity *= World::GROUND_FRICTION;
+	//重力
 	velocity.y += World::GRAVITY * elapsedTime;
 
 	m_golem->SetVelocity(velocity);
-
+	//座標更新
 	m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
 
 	// 姿勢に回転を加える
@@ -127,7 +124,6 @@ void GolemChasing::PostUpdate()
 {
 	//経過時間をリセット
 	m_golem->ResetFrameCount();
-
 }
 
 /**
@@ -139,10 +135,8 @@ void GolemChasing::PostUpdate()
  */
 void GolemChasing::Render()
 {
-
 #ifdef _DEBUG
 #endif // DEBUG
-
 }
 
 /**

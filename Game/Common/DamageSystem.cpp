@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/08/29
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "DamageSystem.h"
@@ -45,8 +44,6 @@ DamageSystem::DamageSystem()
 
 }
 
-
-
 /**
  * @brief デストラクタ
  */
@@ -54,9 +51,6 @@ DamageSystem::~DamageSystem()
 {
 
 }
-
-
-
 
 /**
  * @brief ダメージ処理
@@ -68,7 +62,7 @@ DamageSystem::~DamageSystem()
  */
 int DamageSystem::DamageToCharacter(const Character* attacker, Character* defender)
 {
-	int attackerPower = attacker->GetAttackPower() * attacker->GetMotionAttackRate();
+	int attackerPower =static_cast<int>(attacker->GetAttackPower() * attacker->GetMotionAttackRate());
 	int defenderDiffence = defender->GetDiffence();
 	
 	int damage = DamageCalculation(attackerPower, defenderDiffence);

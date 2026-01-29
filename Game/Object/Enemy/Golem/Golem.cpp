@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/05
+ * @date   日付　2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Golem.h"
@@ -40,12 +39,7 @@ Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::GOLEM));
 	///当たり判定設定
 	SetShape(&m_box);
-
-
-
 }
-
-
 
 /**
  * @brief デストラクタ
@@ -56,8 +50,6 @@ Golem::~Golem()
 	CollisionManager::GetInstance()->UnRegister(m_rightHand.get());
 	CollisionManager::GetInstance()->UnRegister(m_leftHand.get());
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -218,12 +210,13 @@ void Golem::Draw()
 
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
-
+			//シェーダー設定
 			shader->StartShader(ShaderManager::Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
+	//シェーダー解放
 	shader->EndShader();
 
 	//手の描画
@@ -267,7 +260,7 @@ void Golem::OnMessegeAccepted(Message::MessageID messageID)
 	case Message::MOVING:
 		GameObject::ChangeState(m_movingState.get());
 		break;
-	case Message::GROUNDATTACK:
+	case Message::ATTACK:
 		GameObject::ChangeState(m_attackState.get());
 		break;
 	case Message::DAMAGED:

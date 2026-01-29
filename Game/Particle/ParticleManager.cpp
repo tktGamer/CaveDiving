@@ -5,33 +5,15 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/10
+ * @date   日付　2026/01/28
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleManager.h"
 #include"Game/Object/Camera.h"
 #include"../ResourcePath.h"
+
 std::unique_ptr<ParticleManager> ParticleManager::s_particleManager = nullptr;
-
-/**
- * @brief インスタンスの取得
- *
- * @param[in] なし
- *
- * @return 　パーティクルマネージャーのポインタ
- */
-ParticleManager* const ParticleManager::GetInstance()
-{
-
-	if (s_particleManager == nullptr)
-	{
-		//ParticleManagerオブジェクトを生成し、そのポインタをs_resourceManagerに格納する
-		s_particleManager.reset(new ParticleManager());
-	}
-	return s_particleManager.get();
-}
 
 
 // メンバ関数の定義 ===========================================================
@@ -41,7 +23,9 @@ ParticleManager* const ParticleManager::GetInstance()
  * @param[in] なし
  */
 ParticleManager::ParticleManager()
-	:m_pCamera{nullptr}
+	:
+	m_pCamera{nullptr},
+	m_particleCotrolers{}
 	
 {
 	//それぞれのパーティクル管理クラスの生成
@@ -61,6 +45,23 @@ ParticleManager::~ParticleManager()
 {
 }
 
+/**
+ * @brief インスタンスの取得
+ *
+ * @param[in] なし
+ *
+ * @return 　パーティクルマネージャーのポインタ
+ */
+ParticleManager* const ParticleManager::GetInstance()
+{
+	//まだ生成していないなら
+	if (s_particleManager == nullptr)
+	{
+		//ParticleManagerオブジェクトを生成し、そのポインタをs_resourceManagerに格納する
+		s_particleManager.reset(new ParticleManager());
+	}
+	return s_particleManager.get();
+}
 
 
 /**

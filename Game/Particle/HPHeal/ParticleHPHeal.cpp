@@ -13,35 +13,28 @@
 #include "pch.h"
 #include "ParticleHPHeal.h"
 #include"Game/Message/Messenger.h"
-
-
-/// <summary>
-/// コンストラクタ
-/// 引数は初期設定用の数値
-/// </summary>
-/// <param name="life">生存時間</param>
-/// <param name="pos">座標</param>
-/// <param name="velocity">速度</param>
-/// <param name="accele">加速度</param>
-/// <param name="startScale">初期サイズ</param>
-/// <param name="endScale">最終サイズ</param>
-/// <param name="startColor">初期色</param>
-/// <param name="endColor">最終色</param>
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] pos
+  * @param[in] life　　　　生存時間
+  * @param[in] pos　　　　 座標
+  * @param[in] velocity　　速度
+  * @param[in] accele　　　加速度
+  * @param[in] startScale　初期サイズ
+  * @param[in] endScale　　最終サイズ
+  * @param[in] startColor　初期色
+  * @param[in] endColor　　最終色
  */
 ParticleHPHeal::ParticleHPHeal(
 	float life,
-	DirectX::SimpleMath::Vector3 pos,
-	DirectX::SimpleMath::Vector3 velocity,
-	DirectX::SimpleMath::Vector3 accele,
-	DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-	DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor)
-	:Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor }
+	const DirectX::SimpleMath::Vector3& pos,
+	const DirectX::SimpleMath::Vector3& velocity,
+	const DirectX::SimpleMath::Vector3& accele,
+	const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,
+	const DirectX::SimpleMath::Color& startColor, const DirectX::SimpleMath::Color& endColor)
+	:
+	Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor }
 {
 	//	生存時間が経過した後の時間（消滅までの時間）を初期化
 	m_afterLife = life * 0.2f;
@@ -110,4 +103,3 @@ bool ParticleHPHeal::Update()
 
 	return true;
 }
-

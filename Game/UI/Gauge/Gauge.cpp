@@ -38,7 +38,7 @@ void Gauge::Initialize(int width,int height)
 
 
     Add(L"hpgauge.png"
-        , DirectX::SimpleMath::Vector2(5, 30)
+        , DirectX::SimpleMath::Vector2(45, 50)
         , DirectX::SimpleMath::Vector2(1.0f,1.0f)
         ,UserInterface::ANCHOR::MIDDLE_LEFT);
 
@@ -46,9 +46,6 @@ void Gauge::Initialize(int width,int height)
 
 void Gauge::Update()
 {
-
-
-    //float ratio = m_gauge->GetRenderRatio();
 
     float ratio =(float)m_currentValue / (float)m_maxValue;
 

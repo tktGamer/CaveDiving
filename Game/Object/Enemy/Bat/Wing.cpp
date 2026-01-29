@@ -5,9 +5,8 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付 2025/01/05
+ * @date   日付 2025/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Wing.h"
@@ -24,8 +23,9 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 Wing::Wing(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:EnemyPart(root,parent,initialPosition,initialAngle)
-	,m_motionAngle{}
+	:
+	EnemyPart(root,parent,initialPosition,initialAngle),
+	m_motionAngle{}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	//テクスチャ設定
@@ -34,20 +34,14 @@ Wing::Wing(Character* root,const GameObject* parent, const DirectX::SimpleMath::
 	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::BAT_WING));
 	//メッセンジャーに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 Wing::~Wing()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -58,13 +52,7 @@ Wing::~Wing()
  */
 void Wing::Initialize()
 {
-
-
-
 }
-
-
-
 
 /**
  * @brief 更新処理
@@ -80,11 +68,7 @@ void Wing::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dir
 	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition );
 	//角度の更新
 	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
-	
 }
-
-
-
 
 /**
  * @brief 描画処理
@@ -101,18 +85,13 @@ void Wing::Draw()
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
-
+	//ワールド行列を計算
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
-
-
-
 	//アウトライン描画
 	if (Messenger::GetInstance()->IsOutLineActive())
 	{
 		OutlineRenderer::Draw(*GetModel(), world, BAT_WING_OUTLINE_THICKNESS);
 	}
-
-
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ModelShader::ModelCB cbuff;
@@ -127,8 +106,6 @@ void Wing::Draw()
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
-
-
 			//	画像用サンプラーの登録
 			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
 			context->PSSetSamplers(0, 1, sampler);
@@ -138,29 +115,22 @@ void Wing::Draw()
 				//	読み込んだ画像をピクセルシェーダに伝える
 				context->PSSetShaderResources(0, 1, GetTexture());
 			}
-
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
-
+			//シェーダー設定
 			shader->StartShader(ShaderManager::Model);
-
+			//頂点情報設定
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
-
 		});
+	//シェーダー解放
 	shader->EndShader();
-
 }
-
-
 
 /**
  * @brief 終了処理
@@ -171,7 +141,6 @@ void Wing::Draw()
  */
 void Wing::Finalize()
 {
-
 }
 
 /**
@@ -193,9 +162,7 @@ void Wing::OnMessegeAccepted(Message::MessageID messageID)
 		break;
 	case Message::MOVING:
 		break;
-	case Message::GROUNDATTACK:
-		break;
-	case Message::AIRATTACK:
+	case Message::ATTACK:
 		break;
 	case Message::AVOIDANCE:
 		break;
@@ -221,8 +188,8 @@ void Wing::OnMessegeAccepted(Message::MessageID messageID)
  */
 void Wing::CollisionResponce(GameObject* other)
 {
+	UNREFERENCED_PARAMETER(other);
 }
-
 
 DirectX::SimpleMath::Quaternion Wing::GetMotionAngle() const
 {

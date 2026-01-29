@@ -3,17 +3,14 @@
  *
  * @brief  リザルトシーンに関するソースファイル
  *
- * @author 制作者名  
+ * @author 制作者名  福地貴翔
  *
- * @date   日付  
+ * @date   日付  2026/01/28
  */
-
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ResultScene.h"
-
 #include "Game/Common/ResourceManager.h"
-
 #include"../Scene/GameScene.h"
 #include "../Scene/LoadScene.h"
 #include"../Scene/TitleScene.h"
@@ -26,22 +23,23 @@
  * @param[in] なし
  */
 ResultScene::ResultScene()
-	
+	:
+	m_backTexture{},
+	m_holdGem{},
+	m_gameover{},
+	m_saveUI{},
+	m_scoreUI{},
+	m_clearSound{},
+	m_decideMenuSound{}
 {
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 ResultScene::~ResultScene()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -54,12 +52,10 @@ void ResultScene::Initialize()
 {
 	GetGameData()->SetTotalDamage(DamageSystem::GetInstance()->GetTotalDamage());
 	//音生成
-	m_decideMenuSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("decidemenu.wav"));
-	m_clearSound	  = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound("gameclear.wav"));
+	m_decideMenuSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::MENU_DECIDE));
+	m_clearSound	  = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GAME_CLEAR));
 	//クリア音再生
 	m_clearSound->Play(false);
-	int w, h;
-	Graphics::GetInstance()->GetScreenSize(w, h);
 
 	m_saveUI = std::make_unique<SaveConfirm>(1280, 720,GetGameData()->GetPlayerData().gemID);
 	m_saveUI->Initialize();
@@ -67,30 +63,36 @@ void ResultScene::Initialize()
 	//ゲームクリア・ゲームオーバー文字
 	if (GetGameData()->IsGameClear()) 
 	{
-		m_gameover = UIFactory::CreateUserInterface(L"UI/gameclear.png", { 650.0f,100.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+		m_gameover = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GAME_CLEAR, { 650.0f,100.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
 	}
 	else
 	{
-		m_gameover = UIFactory::CreateUserInterface(L"UI/gameover.png", { 650.0f,100.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+		m_gameover = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GAME_CLEAR,{ 650.0f,100.0f }, { 0.5f,0.5f }, UserInterface::MIDDLE_CENTER);
 
 	}
-	
+	//スコア管理UIの生成
 	m_scoreUI = std::make_unique<ScoreUIManager>(GetGameData()->GetScoreInfo());
 	m_scoreUI->Initialize();
 
 	//背景画像
-	m_backTexture = UIFactory::CreateUserInterface(L"gemselectback.png", { 650.0f, 360.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+	m_backTexture = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GEM_BACK, { 650.0f, 360.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
 	PreUpdate();
 }
 
+
+/**
+ * @brief 事前更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void ResultScene::PreUpdate()
 {
 }
-
-
 
 /**
  * @brief 更新処理
@@ -101,6 +103,8 @@ void ResultScene::PreUpdate()
  */
 void ResultScene::Update(float elapsedTime)
 {
+	UNREFERENCED_PARAMETER(elapsedTime);
+
 	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 
 	//選択したならシーン遷移
@@ -108,7 +112,6 @@ void ResultScene::Update(float elapsedTime)
 	{
 		ChangeScene<TitleScene>();
 	}
-
 
 	//スコア計算の処理が終わっていなかったら
 	if (m_scoreUI->GetState() != ScoreUIManager::State::END) 
@@ -125,10 +128,7 @@ void ResultScene::Update(float elapsedTime)
 	{
 		m_isSaveUIActive = true;
 	}
-
 }
-
-
 
 /**
  * @brief 描画処理
@@ -140,6 +140,7 @@ void ResultScene::Update(float elapsedTime)
 void ResultScene::Render()
 {
 	m_backTexture->Render();
+	m_gameover->Render();
 
 	m_scoreUI->Render();
 
@@ -149,10 +150,7 @@ void ResultScene::Render()
 		m_saveUI->Render();
 	}
 
-	//m_gameover->Render();
 }
-
-
 
 /**
  * @brief 終了処理
@@ -162,8 +160,7 @@ void ResultScene::Render()
  * @return なし
  */
 void ResultScene::Finalize()
-{
-	
+{	
 }
 
 void ResultScene::CreateDeviceDependentResources()

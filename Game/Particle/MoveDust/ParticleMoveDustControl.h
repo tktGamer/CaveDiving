@@ -1,20 +1,16 @@
 /**
  * @file   ParticleMoveDustControl.h
  *
- * @brief  歩行パーティクルに関するヘッダファイル
+ * @brief  土埃パーティクル管理に関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付  2026/01/27
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include <list>
-
-
 #include"../MoveDust/ParticleMoveDust.h"
 #include"../ParticleControl.h"
 // クラスの宣言 ===============================================================
@@ -27,34 +23,35 @@ class ParticleMoveDustControl :public ParticleControl
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
-// データメンバの宣言 -----------------------------------------------
+//非公開定数
 private:
-
-
+	//生存時間
+	static constexpr float LIFE_TIME = 0.2f;
+	//速度
+	static constexpr DirectX::SimpleMath::Vector3 PARTICLE_VELOCITY = { 0.0f,1.0f,0.0f };
 // メンバ関数の宣言 -------------------------------------------------
+//　取得・設定
+public:
 // コンストラクタ/デストラクタ
-public:
-
+	//コンストラクタ
 	ParticleMoveDustControl(const wchar_t* texturePath);
+	//デストラクタ
 	~ParticleMoveDustControl();
-	// 操作
-public:
-
-
+// 操作
+	//更新
 	void Update();
-
+	//描画
 	void Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp);
-
-
+	//土埃パーティクル生成要求
 	void RequestMoveDustParticle(
 		DirectX::SimpleMath::Vector3 pos//パーティクルの発生位置
 		);
-	
+	//リセット
 	void Reset();
-//　取得・設定
-public:
+//内部処理
+private:
 
+// データメンバの宣言 -----------------------------------------------
 private:
 
 };

@@ -1,21 +1,17 @@
 /**
  * @file   ParticleMoveDustControl.cpp
  *
- * @brief  歩行パーティクル管理に関するソースファイル
+ * @brief  土埃パーティクル管理に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/11/25
+ * @date   日付  2026/01/27
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleMoveDustControl.h"
-
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,7 +19,8 @@
  * @param[in] texturePath テクスチャハンドル
  */
 ParticleMoveDustControl::ParticleMoveDustControl(const wchar_t* texturePath)
-	:ParticleControl{ texturePath }
+	:
+	ParticleControl{ texturePath }
 {
 }
 
@@ -121,10 +118,8 @@ void ParticleMoveDustControl::Reset()
 	ClearTimerAndPos();
 }
 
-
-
 /**
- * @brief 敵消滅パーティクルリクエスト
+ * @brief 土埃パーティクルリクエスト
  *
  * @param[in] pos 発生位置
  *
@@ -134,9 +129,9 @@ void ParticleMoveDustControl::RequestMoveDustParticle(DirectX::SimpleMath::Vecto
 {
 	AddParticle(
 		std::make_unique<ParticleMoveDust>(
-			0.2f,																							//	生存時間(s)
+			LIFE_TIME,																							//	生存時間(s)
 			pos,																							//	基準座標
-			DirectX::SimpleMath::Vector3{0.0f,1.0f,0.0f},													//	速度
+			PARTICLE_VELOCITY,													//	速度
 			DirectX::SimpleMath::Vector3::One,																//	加速度
 			DirectX::SimpleMath::Vector3::One, DirectX::SimpleMath::Vector3::One*1.0f,							//	初期スケール、最終スケール
 			DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 1.f), DirectX::SimpleMath::Color(1.f, 1.f, 1.f, 0.f)	//	初期カラー、最終カラー

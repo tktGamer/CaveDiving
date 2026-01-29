@@ -22,8 +22,11 @@
  * @param[in] pLeftWing　 左羽のポインタ
  */
 BatAttackPreparingMotion::BatAttackPreparingMotion(Wing* pRightWing, Wing* pLeftWing)
-	: m_pRightWing{ pRightWing }
-	, m_pLeftWing{pLeftWing}
+	: 
+	m_pRightWing{ pRightWing },
+	m_pLeftWing{pLeftWing},
+	m_numLoop{},
+	m_wingSound{}
 {
 	m_wingSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::BAT_WING));
 }

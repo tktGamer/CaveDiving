@@ -5,13 +5,11 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　2025/12/31
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "AttackMotion.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -19,35 +17,15 @@
  * @param[in] attackPowerModifier モーションによる攻撃力補正
  */
 AttackMotion::AttackMotion(const float& attackPowerModifier)
-	:m_attackPowerModifier{attackPowerModifier}
+	:
+	m_attackPowerModifier{attackPowerModifier}
 {
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 AttackMotion::~AttackMotion()
-{
-
-}
-
-
-
-
-
-
-
-/**
- * @brief 終了処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void AttackMotion::Reset()
 {
 }
 
@@ -74,6 +52,3 @@ void AttackMotion::SetAttackPowerModifier(const float& modifier)
 {
 	m_attackPowerModifier = modifier;
 }
-
-
-

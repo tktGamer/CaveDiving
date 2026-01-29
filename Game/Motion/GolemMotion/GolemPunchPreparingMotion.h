@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/26
+ * @date   日付　2026/01/18
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"../Motion.h"
 #include"Game/Object/Enemy/Golem/GolemHand.h"
@@ -23,12 +21,30 @@ class Golem;
 class GolemPunchPreparingMotion : public Motion
 {
 // クラス定数の宣言 -------------------------------------------------
+public:
+//非公開定数
 private:
 	//拳をひく位置
 	static constexpr DirectX::SimpleMath::Vector3 HAND_GOAL_POS = { 0.0f,1.0f,6.0f };
 	//拳を正面に向ける
 	static constexpr float PUNCH_HAND_ANGLE = DirectX::XMConvertToRadians(90.0f);
+// メンバ関数の宣言 -------------------------------------------------
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
+	// コンストラクタ
+	GolemPunchPreparingMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
+	// デストラクタ
+	~GolemPunchPreparingMotion();
+// 操作
+	//初期化
+	void Initialize();
+	//更新
+	bool Update();
+	//リセット
+	void Reset();
+//　内部操作
+private:
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -38,36 +54,8 @@ private:
 	GolemHand* m_pRightGolemHand;
 	//左手のポインタ
 	GolemHand* m_pLeftGolemHand;
-
 	//パンチのスタート位置
 	DirectX::SimpleMath::Vector3 m_startPosition;
 	DirectX::SimpleMath::Vector3 m_goalPosition;
-
-	// メンバ関数の宣言 -------------------------------------------------
-	// コンストラクタ/デストラクタ
-public:
-	// コンストラクタ
-	GolemPunchPreparingMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
-
-	// デストラクタ
-	~GolemPunchPreparingMotion();
-
-
-// 操作
-public:
-	//初期化
-	void Initialize();
-	//更新
-	bool Update();
-
-	//リセット
-	void Reset();
-
-//　取得・設定
-public:
-
-//　内部操作
-private:
-
 };
 

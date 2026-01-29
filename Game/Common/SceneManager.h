@@ -21,65 +21,56 @@ class SceneManager;
 template <typename T>
 class Scene
 {
-private:
-
-	// シーンマネージャーへのポインタ
-	SceneManager<T>* m_sceneManager;
-
+// クラス定数の宣言 -------------------------------------------------
 public:
 
+// メンバ関数の宣言 -------------------------------------------------
+//取得・設定
+	// シーンマネージャー設定関数
+	void SetSceneManager(SceneManager<T>* sceneManager) { m_sceneManager = sceneManager; }
+
+//コンストラクタ・デストラクタ
 	// コンストラクタ
 	Scene() : m_sceneManager(nullptr) {}
-
 	// デストラクタ
 	virtual ~Scene() = default;
-
+//操作
 	// 初期化
 	virtual void Initialize() = 0;
-
 	//更新前準備
 	virtual void PreUpdate() = 0;
-
-
 	// 更新
 	virtual void Update(float elapsedTime) = 0;
-
 	// 描画
 	virtual void Render() = 0;
-
 	// 終了処理
 	virtual void Finalize() = 0;
-
 	// デバイスに依存するリソースを作成する関数
 	virtual void CreateDeviceDependentResources() {}
-
 	// ウインドウサイズに依存するリソースを作成する関数
 	virtual void CreateWindowSizeDependentResources() {}
-
 	// デバイスロストした時に呼び出される関数
 	virtual void OnDeviceLost() {}
 
-public:
-
-	// シーンマネージャー設定関数
-	void SetSceneManager(SceneManager<T>* sceneManager) { m_sceneManager = sceneManager; }
 
 	// シーンの切り替え関数
 	template <typename U>
 	void ChangeScene();
-
+	// ロードシーンを挟むシーンの切り替え関数
 	template <typename U, typename V>
 	void ChangeScene();
-
 	//シーンのスタック処理
 	template <typename U>
 	void StackScene();
 
 	//現在のシーンを削除
 	void PopScene();
-
 	// ユーザーが設定したリソース取得関数
 	T* GetGameData();
+// データメンバの宣言 -----------------------------------------------
+private:
+	// シーンマネージャーへのポインタ
+	SceneManager<T>* m_sceneManager;
 };
 
 
@@ -87,48 +78,14 @@ template <typename T>
 // シーンマネージャークラス
 class SceneManager
 {
-private:
-	// 共通でアクセスしたいオブジェクトへのポインタ
-	T* m_gameData;
-
-	//生成したシーンをスタックするか
-	bool m_isStackNextScene;
-	//現在のシーンを削除するか
-	bool m_isScenePop;
-	// 実行中のシーンへのポインタ
-	std::vector<std::unique_ptr<Scene<T>>> m_scene;
-	//std::stack<Scene<T>> m_pCurrentScene;//現在のシーン
-
-
-	// 次のシーンへのポインタ
-	std::unique_ptr<Scene<T>> m_nextScene;
-
-	// ロード画面 
-	std::unique_ptr<Scene<T>> m_loadingScreen;
-
-	//スレッド＋共有変数（mutexによる排他制御）
-	//std::thread m_loadingThread;
-	//std::mutex m_loadingMutex;
-	//bool m_isLoading;
-
-	////スレッド＋共有変数（atomicによる排他制御）
-	//std::thread m_loadingThread;
-	//std::atomic<bool> m_isLoading;
-
-	////スレッド＋mutexによるスレッドロック
-	//std::thread m_loadingThread;
-	//std::mutex m_loadingMutex;
-
-
-	////スレッド＋共有変数（mutexによる排他制御）
-	std::future<void> m_loadingFuture;
-
-
-	//フェード
-	std::unique_ptr<Transitor> m_transitor;
-
+// クラス定数の宣言 -------------------------------------------------
 public:
 
+// メンバ関数の宣言 -------------------------------------------------
+//取得・設定
+public:
+
+//コンストラクタ・デストラクタ
 	// コンストラクタ
 	SceneManager(T* gameData=nullptr)
 		: m_scene{}
@@ -153,19 +110,15 @@ public:
 		}*/
 	};
 
-
+//操作
 	// 更新
 	void Update(float elapsedTime);
-
 	// 描画
 	void Render();
-
 	// デバイスに依存するリソースを作成する関数
 	void CreateDeviceDependentResources();
-
 	// ウインドウサイズに依存するリソースを作成する関数
 	void CreateWindowSizeDependentResources();
-
 	// デバイスロストした時に呼び出される関数
 	virtual void OnDeviceLost();
 
@@ -201,10 +154,25 @@ private:
 	void ChangeScene();
 	//シーンのスタック処理
 	void StackScene();
-
-
-
-
+// データメンバの宣言 -----------------------------------------------
+private:
+	// 共通でアクセスしたいオブジェクトへのポインタ
+	T* m_gameData;
+	//生成したシーンをスタックするか
+	bool m_isStackNextScene;
+	//現在のシーンを削除するか
+	bool m_isScenePop;
+	// 実行中のシーンへのポインタ
+	std::vector<std::unique_ptr<Scene<T>>> m_scene;
+	//std::stack<Scene<T>> m_pCurrentScene;//現在のシーン
+	// 次のシーンへのポインタ
+	std::unique_ptr<Scene<T>> m_nextScene;
+	// ロード画面 
+	std::unique_ptr<Scene<T>> m_loadingScreen;
+	//スレッド＋共有変数（mutexによる排他制御）
+	std::future<void> m_loadingFuture;
+	//フェード
+	std::unique_ptr<Transitor> m_transitor;
 };
 
 template<typename T>

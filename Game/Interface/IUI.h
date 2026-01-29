@@ -5,16 +5,13 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/18
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef IUI_DEFINED
 #define IUI_DEFINED
-
 // ヘッダファイルの読み込み ===================================================
-
 
 // クラスの宣言 ===============================================================
 
@@ -27,32 +24,21 @@ class IUI
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-// データメンバの宣言 -----------------------------------------------
-private:
-
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-
-	// デストラクタ
-	virtual ~IUI() =default;
-
-
-// 操作
-public:
-	virtual void Initialize() =0;
-
-	virtual void Update()=0;
-
-
-	virtual void Render()=0;
-
 //　取得・設定
 public:
-
-//　内部操作
-private:
-
+// コンストラクタ/デストラクタ
+public:
+	// デストラクタ
+	virtual ~IUI() =default;
+// 操作
+public:
+	//初期化
+	virtual void Initialize() =0;
+	//更新
+	virtual void Update()=0;
+	//描画
+	virtual void Render()=0;
 };
 
-#endif	// \
+#endif	// IUI_DEFINED

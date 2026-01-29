@@ -40,8 +40,8 @@ Animation2D::Animation2D(const wchar_t* texturepath, const AnimationTexture& tex
 	m_pAnimation2DTexture = ResourceManager::GetInstance()->RequestTexture(texturepath);
 	int textureSizeX, textureSizeY;
 	ResourceManager::GetInstance()->GetTextureSize(texturepath, textureSizeX, textureSizeY);
-	m_textureSize.x = textureSizeX;
-	m_textureSize.y = textureSizeY;
+	m_textureSize.x = static_cast<float>(textureSizeX);
+	m_textureSize.y = static_cast<float>(textureSizeY);
 	//ˆê–‡‚ ‚½‚è‚Ì‘å‚«‚³
 	m_frameSize.x = m_textureSize.x / m_textureInfo.frameWidth;
 	m_frameSize.y = m_textureSize.y / m_textureInfo.frameHeight;

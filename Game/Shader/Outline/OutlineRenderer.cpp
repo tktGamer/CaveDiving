@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/03
+ * @date   日付　2026/01/29
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "OutlineRenderer.h"
@@ -31,7 +30,7 @@ void OutlineRenderer::Draw(const DirectX::Model& model, const DirectX::SimpleMat
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 	ShaderManager* shader = ShaderManager::GetInstance();
-
+	// アウトライン用コンスタントバッファ設定
 	OutlineShader::OutlineCB outline;
 	outline.matWorld = world.Transpose();
 	outline.matView = view.Transpose();
@@ -44,17 +43,15 @@ void OutlineRenderer::Draw(const DirectX::Model& model, const DirectX::SimpleMat
 	{
 		// カリングを FrontFace にして裏面を描画（アウトライン用）
 		context->RSSetState(states->CullCounterClockwise());
-
 		// ブレンド・デプスステート
 		context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xFFFFFFFF);
 		context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 		// アウトラインシェーダを設定
 		shader->StartShader(ShaderManager::ShaderType::Outline);
+		//頂点レイアウト設定
 		context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Outline));
 
 	});
-
+	// シェーダ終了
 	shader->EndShader();
-
 }

@@ -20,34 +20,30 @@
  * @param[in] なし
  */
 UserInterface::UserInterface()
-	:m_graphics{Graphics::GetInstance()}
-	, m_windowHeight{ 0 }
-	, m_windowWidth{0}
-	, m_textureHeight{ 0 }
-	, m_textureWidth{0}
-	, m_texture{nullptr}
-	, m_res{ nullptr }
-	, m_scale{ DirectX::SimpleMath::Vector2::One }
-	, m_position{DirectX::SimpleMath::Vector2::Zero}
-	, m_anchor{ ANCHOR::TOP_LEFT }
-	, m_renderRatio{1.0f}
-	, m_renderRatioOffset{ 0.0f }
+	:
+	m_graphics{Graphics::GetInstance()},
+	m_windowHeight{ 0 },
+	m_windowWidth{0},
+	m_textureHeight{ 0 },
+	m_textureWidth{0},
+	m_texture{nullptr},
+	m_res{ nullptr },
+	m_scale{ DirectX::SimpleMath::Vector2::One },
+	m_position{DirectX::SimpleMath::Vector2::Zero},
+	m_anchor{ ANCHOR::TOP_LEFT },
+	m_renderRatio{1.0f},
+	m_renderRatioOffset{ 0.0f },
+	m_states{}
 
 {
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 UserInterface::~UserInterface()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -58,7 +54,6 @@ UserInterface::~UserInterface()
  */
 void UserInterface::Initialize()
 {
-
 }
 
 
@@ -174,7 +169,6 @@ void UserInterface::Finalize()
  */
 void UserInterface::Create(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, ANCHOR anchor)
 {
-	ID3D11Device1* device = m_graphics->GetDeviceResources()->GetD3DDevice();
 	m_position = position;
 	m_baseScale = m_scale = scale;
 	m_anchor = anchor;

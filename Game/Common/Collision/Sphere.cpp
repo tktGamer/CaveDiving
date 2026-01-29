@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付 2025/08/27
+ * @date   日付  2026/01/27
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Sphere.h"
@@ -19,10 +18,11 @@
  * @param[in] center 中心座標
  * @param[in] radius 半径
  */
-Sphere::Sphere(DirectX::SimpleMath::Vector3 center, float radius)
-	: Shape(ShapeType::Sphere)
-	, m_center(center)
-	, m_radius(radius)
+Sphere::Sphere(const DirectX::SimpleMath::Vector3& center,const float& radius)
+	: 
+	Shape(ShapeType::Sphere),
+	m_center(center),
+	m_radius(radius)
 {
 }
 
@@ -127,7 +127,7 @@ void Sphere::SetCenter(const DirectX::SimpleMath::Vector3& center)
  *
  * @return 中心座標
  */
-DirectX::SimpleMath::Vector3 Sphere::GetCenter() const
+const DirectX::SimpleMath::Vector3& Sphere::GetCenter() const
 {
 	return m_center;
 }
@@ -139,7 +139,7 @@ DirectX::SimpleMath::Vector3 Sphere::GetCenter() const
  *
  * @return なし
  */
-void Sphere::SetRadius(float radius)
+void Sphere::SetRadius(const float& radius)
 {
 	m_radius = radius;
 }
@@ -151,7 +151,7 @@ void Sphere::SetRadius(float radius)
  * 
  * @return 半径
  */
-float Sphere::GetRadius() const
+const float& Sphere::GetRadius() const
 {
 	return m_radius;
 }
@@ -163,7 +163,7 @@ float Sphere::GetRadius() const
  *
  * @return 衝突しているかどうか
  */
-bool Sphere::IntersectBox(Box* other) const
+bool Sphere::IntersectBox(const Box* other) const
 {
 	//球とAABB
 	DirectX::SimpleMath::Vector3 boxMin = other->GetCenter() - other->GetHalfSize();
@@ -192,7 +192,7 @@ bool Sphere::IntersectBox(Box* other) const
  * @return true  内包している
  * @return false 内包していない
  */
-bool Sphere::ContainsSphere(Sphere* other) const
+bool Sphere::ContainsSphere(const Sphere* other) const
 {
 	//距離を求める
 	DirectX::SimpleMath::Vector3 distance = m_center - other->GetCenter();
@@ -206,7 +206,7 @@ bool Sphere::ContainsSphere(Sphere* other) const
 	return false;
 }
 
-bool Sphere::ContainsBox(Box* other) const
+bool Sphere::ContainsBox(const Box* other) const
 {
 	return false;
 }
@@ -219,7 +219,7 @@ bool Sphere::ContainsBox(Box* other) const
  *
  * @return 衝突しているかどうか
  */
-bool Sphere::IntersectSphere(Sphere* other) const
+bool Sphere::IntersectSphere(const Sphere* other) const
 {
 	//球と球の当たり判定
 	DirectX::SimpleMath::Vector3 distance = m_center - other->GetCenter();

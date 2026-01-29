@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/08
+ * @date   日付  2026/01/20
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef PLAYER_JUMPING_DEFINED
@@ -16,7 +15,6 @@
 #include"Game/Common/Sound.h"
 // クラスの宣言 ===============================================================
 class Player;
-
 // クラスの定義 ===============================================================
 /**
   * @brief ジャンプ状態
@@ -24,26 +22,21 @@ class Player;
 class PlayerJumping : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+public:
+//非公開定数
 private:
 	//ジャンプ力
 	static constexpr float JUMP_POWER = 0.3f;
-public:
 
-// データメンバの宣言 -----------------------------------------------
-private:
-	// プレイヤー
-	Player* m_pPlayer;
-
-	std::unique_ptr<Sound> m_jumpSound;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
+	//コンストラクタ
 	PlayerJumping(Player* pPlayer);
 	// デストラクタ
 	~PlayerJumping();
-
 // 操作
-public:
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -56,12 +49,14 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-
-//　取得・設定
-public:
-
 //　内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	// プレイヤー
+	Player* m_pPlayer;
+	//ジャンプ音
+	std::unique_ptr<Sound> m_jumpSound;
 };
 #endif		// PLAYER_JUMPING_DEFINED

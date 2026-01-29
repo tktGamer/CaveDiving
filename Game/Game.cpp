@@ -61,8 +61,8 @@ void Game::Initialize(HWND window, int width, int height)
     */
 
     m_graphics->Initialize();
-
 	m_gemManager = GemManager::GetInstance();
+    //宝石データを読み込む
 	m_gemManager->LoadGemData();
 
     // 起動シーン設定
@@ -110,13 +110,13 @@ void Game::Update(DX::StepTimer const& timer)
         }
     }
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
     //デバック時キーを押すとデバッグフォントを表示
     if (m_keyboardTracker.IsKeyPressed(Keyboard::W)) 
     {
         m_isDrawDebugFont = !m_isDrawDebugFont;
     }
-#endif // DEBUG
+//#endif // DEBUG
 
 
 }
@@ -143,7 +143,7 @@ void Game::Render()
     //シーンの描画
     m_sceneManager->Render();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
     //表示許可がでていたらデバッグフォントを表示する
     if (m_isDrawDebugFont)
     {
@@ -152,7 +152,7 @@ void Game::Render()
         m_debugFont->AddString(str.str().c_str(), DirectX::SimpleMath::Vector2::Zero);
         m_debugFont->Render(m_graphics->GetCommonStates());
     }
-#endif // DEBUG
+//#endif // DEBUG
 
 
     m_deviceResources->PIXEndEvent();

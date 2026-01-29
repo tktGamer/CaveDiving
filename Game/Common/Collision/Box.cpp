@@ -5,14 +5,11 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付 2025/07/02
+ * @date   日付  2026/01/17
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Box.h"
-
-
 #include "../Collision/Sphere.h"
 // メンバ関数の定義 ===========================================================
 /**
@@ -23,9 +20,10 @@
  * 
  */
 Box::Box(const DirectX::SimpleMath::Vector3& center,const DirectX::SimpleMath::Vector3& halfSize)
-	:Shape(ShapeType::Box)
-	, m_center(center)
-	, m_halfSize(halfSize)
+	:
+	Shape(ShapeType::Box),
+	m_center(center),
+	m_halfSize(halfSize)
 {
 }
 
@@ -34,11 +32,7 @@ Box::Box(const DirectX::SimpleMath::Vector3& center,const DirectX::SimpleMath::V
  */
 Box::~Box()
 {
-
 }
-
-
-
 
 /**
  * @brief 他の形状と衝突判定を行う
@@ -68,16 +62,20 @@ bool Box::Intersects(Shape* other)
 		break;
 	}
 
-
 	return false;
 }
 
+/**
+ * @brief 他の形状と内包判定を行う  未
+ *
+ * @param[in] other 内包判定を行う他の形状
+ *
+ * @return 内包しているかどうか
+ */
 bool Box::Contains(Shape* other)
 {
 	return false;
 }
-
-
 
 
 /**
@@ -149,7 +147,7 @@ DirectX::SimpleMath::Vector3 Box::GetHalfSize() const
  *
  * @return 衝突しているかどうか
  */
-bool Box::IntersectBox(Box* other)
+bool Box::IntersectBox(const Box* other) const
 {
 	DirectX::SimpleMath::Vector3 thiMin = m_center - m_halfSize;
 	DirectX::SimpleMath::Vector3 thiMax = m_center + m_halfSize;
@@ -174,7 +172,7 @@ bool Box::IntersectBox(Box* other)
  *
  * @return 衝突しているかどうか
  */
-bool Box::IntersectSphere(Sphere* other) const
+bool Box::IntersectSphere(const Sphere* other) const
 {
 	//球とAABB
 	DirectX::SimpleMath::Vector3 boxMin = m_center - m_halfSize;

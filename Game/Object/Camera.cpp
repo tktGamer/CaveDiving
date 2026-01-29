@@ -5,14 +5,11 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/08
+ * @date   日付　2026/01/23
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Camera.h"
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,19 +17,22 @@
  * @param[in] なし
  */
 Camera::Camera()
-    :m_up{0.0f,1.0f,0.0f}
-    ,m_view{}
-	, m_eyePos{}
-	, m_targetPos{}
-	, m_targetRotate{}
-	, m_distance{ 0.0f, 0.0f, 10.0f } // デフォルトの距離を設定
+    :
+	m_up{DirectX::SimpleMath::Vector3::Up},
+	m_view{},
+	m_eyePos{},
+	m_targetPos{},
+	m_targetRotate{},
+	m_distance{ 0.0f, 0.0f, 10.0f } // デフォルトの距離を設定
 {
 }
 
+/**
+ * @brief デストラクタ
+ */
 Camera::~Camera()
 {
 }
-
 
 /**
  * @brief 初期化処理
@@ -45,13 +45,12 @@ void Camera::Initialize(DirectX::SimpleMath::Vector3 eyePos)
 {
 	m_eyePos = eyePos;
     m_up={ 0.0f,1.0f,0.0f };
-
 }
 
 /**
  * @brief 更新処理
  *
- * @param[in] 
+ * @param[in] elapsedTime
  *
  * @return なし
  */
@@ -71,8 +70,6 @@ void Camera::Update(float elapsedTime)
         m_eyePos,       //カメラの位置
         *m_targetPos,    //ターゲットの位置
         m_up);          //カメラの上ベクトル
-
-
 }
 
 /**

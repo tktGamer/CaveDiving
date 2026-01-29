@@ -3,9 +3,9 @@
  *
  * @brief  バイナリ形式ファイル読み込みに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/17
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
@@ -22,35 +22,27 @@ class BinaryFile
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-// データメンバの宣言 -----------------------------------------------
-private:
-
-	//	データ
-	std::shared_ptr<char[]> m_data;
-
-	//	サイズ
-	unsigned int m_size;
-
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-
-	//コンストラクタ
-	BinaryFile();
-
-	//	ムーブコンストラクタ
-	BinaryFile(BinaryFile* in);
-	//デストラクタ
-	~BinaryFile();
-
-// 操作
-public:
-	//	ファイル名を指定してロード
-	std::unique_ptr<BinaryFile> LoadFile( wchar_t const* fileName);
-
 //　取得・設定
 public:
 	//	アクセサ
 	char* GetData() { return m_data.get(); }
 	unsigned int GetSize() { return m_size; }
+// コンストラクタ/デストラクタ
+	//コンストラクタ
+	BinaryFile();
+	//	ムーブコンストラクタ
+	BinaryFile(BinaryFile* in);
+	//デストラクタ
+	~BinaryFile();
+// 操作
+	//	ファイル名を指定してロード
+	std::unique_ptr<BinaryFile> LoadFile(wchar_t const* fileName);
+
+// データメンバの宣言 -----------------------------------------------
+private:
+	//	データ
+	std::shared_ptr<char[]> m_data;
+	//	サイズ
+	unsigned int m_size;
 };

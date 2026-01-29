@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/04
+ * @date   日付  2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "AllSpenningAttackGem.h"
@@ -24,23 +23,25 @@ REGISTER_GEM_CLASS("AllSpenningAttackGem", AllSpenningAttackGem);
  * @param[in] image 　 選択時の画像
  */
 AllSpenningAttackGem::AllSpenningAttackGem(const GemAbility& ability, const GemImagePath& image)
-	:Gem{ ability,image }
+	:
+	Gem{ ability,image }
 {
 }
-
-
-
 
 /**
  * @brief デストラクタ
  */
 AllSpenningAttackGem ::~AllSpenningAttackGem()
 {
-
 }
 
-
-
+/**
+ * @brief 多態コピー
+ *
+ * @param[in] なし
+ *
+ * @return コピー
+ */
 std::unique_ptr<Gem> AllSpenningAttackGem::Clone() const
 {
 	return std::make_unique<AllSpenningAttackGem>(*this);
@@ -55,9 +56,7 @@ std::unique_ptr<Gem> AllSpenningAttackGem::Clone() const
  */
 void AllSpenningAttackGem::Initialize()
 {
-
 }
-
 
 /**
  * @brief 終了処理
@@ -68,7 +67,4 @@ void AllSpenningAttackGem::Initialize()
  */
 void AllSpenningAttackGem::Finalize()
 {
-
 }
-
-

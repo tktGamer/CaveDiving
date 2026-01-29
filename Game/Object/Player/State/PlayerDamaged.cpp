@@ -5,22 +5,22 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/07
+ * @date   日付  2026/01/20
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerDamaged.h"
 #include "Game/Object/Player/Player.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] player プレイヤーのポインタ
+ * @param[in] pPlayer プレイヤーのポインタ
  */
 PlayerDamaged::PlayerDamaged(Player* pPlayer)
-	:m_pPlayer{pPlayer}
+	:
+	m_pPlayer{pPlayer},
+	m_knockbackTime{}
 {
 }
 /**
@@ -69,8 +69,6 @@ void PlayerDamaged::PreUpdate()
 void PlayerDamaged::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-	// キーボードステートを取得する
-	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
 	m_knockbackTime += elapsedTime;
 	//ノックバックが終わったか
 	if (m_knockbackTime > KNOCKBACK_TIME)
@@ -87,16 +85,6 @@ void PlayerDamaged::Update(const float& elapsedTime)
 	m_pPlayer->SetVelocity(velocity);
 	//ノックバックさせる
 	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity()* KNOCKBACK_POWER*elapsedTime);
-
-
-	
-	//回避キーが押されたら回避状態へ遷移
-	if (key->pressed.X) 
-	{
-		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
-	}
-
-
 }
 
 /**
@@ -120,13 +108,10 @@ void PlayerDamaged::PostUpdate()
  */
 void PlayerDamaged::Render()
 {
-
 #ifdef _DEBUG
-	auto debugFont = Graphics::GetInstance()->GetDebugFont();
-	
+	auto debugFont = Graphics::GetInstance()->GetDebugFont();	
 	debugFont->AddString(L"Damaged", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 #endif // DEBUG
-
 }
 
 /**

@@ -134,7 +134,7 @@ void ScoreUIManager::Initialize()
 	referenceUI.infoOffset		= DirectX::SimpleMath::Vector2{ 400,0 };
 	referenceUI.infoTexturePath = L"UI/totaltime.png";
 	referenceUI.initNumber		= static_cast<int>(m_scoreInfo.totalTime);
-	referenceUI.finishNumber	= m_scoreInfo.totalTime;
+	referenceUI.finishNumber	= static_cast<int>(m_scoreInfo.totalTime);
 	referenceUI.stepNumber		= HP_STEP_SECOND;
 	referenceUI.minDigit		= 3;
 

@@ -5,16 +5,13 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付 2025/12/31
+ * @date   日付 2026/01/18
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"../Motion/MotionType.h"
 #include"Game/Common/Sound.h"
-
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -27,40 +24,31 @@ class Motion
 public:
 	//モーション完了
 	static constexpr float MOTION_FINISH = 1.0f;
-// データメンバの宣言 -----------------------------------------------
-private:
-	//モーションの補間値
-	float m_motionLerp = 0.0f;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-	// コンストラクタ
-	Motion();
-
-	// デストラクタ
-	virtual ~Motion();
-
-
-// 操作
-public:
-	//初期化
-	virtual void Initialize()=0;
-
-	//更新
-	virtual bool Update() = 0;
-
-	//リセット
-	virtual void Reset();
-
 //　取得・設定
 public:
-
 	//モーション補間値の取得
 	float GetMotionLerp() const;
 	//モーション補間値の設定
 	void SetMotionLerp(const float& motionLerp);
+// コンストラクタ/デストラクタ
+	// コンストラクタ
+	Motion();
+	// デストラクタ
+	virtual ~Motion();
+// 操作
+	//初期化
+	virtual void Initialize()=0;
+	//更新
+	virtual bool Update() = 0;
+	//リセット
+	virtual void Reset() = 0;
 //　内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	//モーションの補間値
+	float m_motionLerp;
 };
 

@@ -1,15 +1,13 @@
 /**
  * @file   ParticleShield.cpp
  *
- * @brief  敵消滅パーティクルに関するソースファイル
+ * @brief  盾パーティクルに関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/12/25
+ * @date   日付  2026/01/28
  */
-
  // ヘッダファイルの読み込み ===================================================
-
 #include "pch.h"
 #include "ParticleShield.h"
 #include"Game/Message/Messenger.h"
@@ -18,6 +16,8 @@
 /**
  * @brief コンストラクタ
  *
+ * @param[in] centerObjectID 中心オブジェクトのID
+ * @param[in] life　　　　生存時間
  * @param[in] pos 座標
  * @param[in] velocity 速度
  * @param[in] accele 加速度
@@ -30,12 +30,13 @@
 ParticleShield::ParticleShield(
 	const int& centerObjectID,
 	float life,
-	DirectX::SimpleMath::Vector3 pos,
-	DirectX::SimpleMath::Vector3 velocity,
-	DirectX::SimpleMath::Vector3 accele,
-	DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-	DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor)
-	:Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor },
+	const DirectX::SimpleMath::Vector3& pos,
+	const DirectX::SimpleMath::Vector3& velocity,
+	const DirectX::SimpleMath::Vector3& accele,
+	const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,
+	const DirectX::SimpleMath::Color& startColor,const DirectX::SimpleMath::Color& endColor)
+	:
+	Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor },
 	m_centerObjectID{centerObjectID}
 {
 }
@@ -58,7 +59,7 @@ bool ParticleShield::Update()
 {
 	//	処理に使う秒速計(1秒で1.0f)を取得する。
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
-	m_angle += 180.0f * elapsedTime;
+	m_angle += ROTATE_SPEED * elapsedTime;
 
 	float angle = DirectX::XMConvertToRadians(m_angle); // 各オブジェクトの角度
 	float addX = 2.0f * cos(angle); // X座標
@@ -95,6 +96,14 @@ bool ParticleShield::Update()
 	return true;
 }
 
+
+/**
+ * @brief 中心位置
+ *
+ * @param[in] なし
+ *
+ * @return 中心位置
+ */
 const DirectX::SimpleMath::Vector3& ParticleShield::GetCenterPosition() const
 {
 	return Messenger::GetInstance()->GetObject(m_centerObjectID)->GetCurrentPosition();

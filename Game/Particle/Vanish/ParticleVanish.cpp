@@ -5,27 +5,24 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/25
+ * @date   日付  2026/01/28
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleVanish.h"
 #include"Game/Message/Messenger.h"
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] life
- * @param[in] pos
- * @param[in] velocity
- * @param[in] accele
- * @param[in] startScale
- * @param[in] endScale
- * @param[in] startColor
- * @param[in] endColor
+ * @param[in] life 生存時間
+ * @param[in] pos 座標
+ * @param[in] velocity 速度
+ * @param[in] accele 加速度
+ * @param[in] startScale 初期サイズ
+ * @param[in] endScale 最終サイズ
+ * @param[in] startColor 初期色
+ * @param[in] endColor 最終色
  */
 ParticleVanish::ParticleVanish(
 	const float& life,
@@ -60,7 +57,6 @@ bool ParticleVanish::Update()
 {
 	//	処理に使う秒速計(1秒で1.0f)を取得する。
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
-
 
 	//	速度の計算。経過時間と加速度を掛け算して足すことで、加速度を考慮して移動速度を変化させていく
 	DirectX::SimpleMath::Vector3 velocity = GetVelocity();
@@ -101,9 +97,5 @@ bool ParticleVanish::Update()
 	life -= elapsedTime;
 	SetLife(life);
 
-
 	return true;
 }
-
-
-

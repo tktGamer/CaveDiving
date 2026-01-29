@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/19
+ * @date   日付　2025/01/29
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Common/ResourceManager.h"
@@ -15,7 +14,20 @@
 #include "ShaderManager.h"
 // クラス定数の定義 ===========================================================
 
+// ShaderManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
 std::unique_ptr<ShaderManager> ShaderManager::s_shader = nullptr;
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] なし
+ */
+ShaderManager::ShaderManager()
+{
+	//シェーダー作成
+	CreateShader();
+}
+
 
 /**
  * @brief クラスのインスタンスを取得する
@@ -31,46 +43,6 @@ ShaderManager* const ShaderManager::GetInstance()
 		s_shader.reset(new ShaderManager());
 	}
 	return s_shader.get();
-}
-
-
-// メンバ関数の定義 ===========================================================
-/**
- * @brief コンストラクタ
- *
- * @param[in] なし
- */
-ShaderManager::ShaderManager()
-{
-	CreateShader();
-}
-
-
-
-/**
- * @brief 初期化処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void ShaderManager::Initialize()
-{
-
-}
-
-
-
-/**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void ShaderManager::Update()
-{
-
 }
 
 

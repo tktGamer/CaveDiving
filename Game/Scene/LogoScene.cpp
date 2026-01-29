@@ -5,17 +5,14 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2026/01/12
+ * @date   日付  2026/01/28
  */
-
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "LogoScene.h"
-
 #include "Game/Common/ResourceManager.h"
 #include"Game/Common/Sound.h"
 #include"../Scene/TitleScene.h"
-
 #include"../Factory/UIFactory.h"
 #include"../Factory/GameObjectFactory.h"
 // メンバ関数の定義 ===========================================================
@@ -25,23 +22,17 @@
  * @param[in] なし
  */
 LogoScene::LogoScene()
-	
+	:
+	m_logoAnimation{}
 {
-
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 LogoScene::~LogoScene()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -60,6 +51,13 @@ void LogoScene::Initialize()
 	PreUpdate();
 }
 
+/**
+ * @brief 事前更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void LogoScene::PreUpdate()
 {
 }
@@ -75,6 +73,8 @@ void LogoScene::PreUpdate()
  */
 void LogoScene::Update(float elapsedTime)
 {
+	UNREFERENCED_PARAMETER(elapsedTime);
+
 	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 	//スペースキーを押したら、アニメーションが終わったらシーン遷移
 	if (traker->pressed.Space || m_logoAnimation->IsFinish())

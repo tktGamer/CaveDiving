@@ -5,18 +5,14 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/06
+ * @date   日付  2026/01/28
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleShieldControl.h"
-
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,9 +20,9 @@
  * @param[in] texturePath テクスチャハンドル
  */
 ParticleShieldControl::ParticleShieldControl(const wchar_t* texturePath)
-	:ParticleControl{ texturePath }
+	:
+	ParticleControl{ texturePath }
 {
-
 }
 
 /**
@@ -35,8 +31,6 @@ ParticleShieldControl::ParticleShieldControl(const wchar_t* texturePath)
 ParticleShieldControl::~ParticleShieldControl()
 {
 }
-
-
 
 /**
  * @brief 更新処理
@@ -66,15 +60,15 @@ void ParticleShieldControl::Update()
 	}
 	//	パーティクルの更新
 	UpdateParticles();
-
-
 }
 
 
 /**
  * @brief 描画処理
  *
- * @param[in] なし
+ * @param[in] target  　 カメラの注視点
+ * @param[in] cameraPos　カメラの座標
+ * @param[in] cameraUp　 カメラの上ベクトル
  *
  * @return なし
  */
@@ -83,10 +77,8 @@ void ParticleShieldControl::Render(const DirectX::SimpleMath::Vector3& target, c
 
 	ShaderManager* shader = ShaderManager::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
-	ID3D11DeviceContext1* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
-	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 
 	//	頂点情報の作成
 	CreateVertex(target, cameraPos,
@@ -196,8 +188,8 @@ void ParticleShieldControl::RequestParticleShield(const int& objectID)
 {
 
 	//float angle = DirectX::XMConvertToRadians(360.0f / 6 * i); // 各オブジェクトの角度
-	float addX = 1.5f * cos(0); // X座標
-	float addZ = 1.5f * sin(0); // Z座標
+	float addX = 1.5f * static_cast<float>(cos(0)); // X座標
+	float addZ = 1.5f * static_cast<float>(sin(0)); // Z座標
 
 	AddParticle(std::make_unique<ParticleShield>(
 		objectID,

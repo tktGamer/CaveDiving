@@ -5,14 +5,12 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/02
+ * @date   日付  2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Bat/State/BatIdling.h"
 #include "Game/Object/Enemy/Bat/Bat.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,7 +18,8 @@
  * @param[in] bat コウモリのポインタ
  */
 BatIdling::BatIdling(Bat* bat)
-	:m_bat(bat)
+	:
+	m_bat(bat)
 {
 }
 /**
@@ -65,8 +64,6 @@ void BatIdling::PreUpdate()
 void BatIdling::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-
-
 	//一定時間経過したら移動状態へ遷移
 	if (m_bat->GetFrameCount() > CHANGE_MOVING_TIME) 
 	{
@@ -74,7 +71,8 @@ void BatIdling::Update(const float& elapsedTime)
 	}
 
 	//プレイヤーを取得
-	GameObject* pPlayer =  Messenger::GetInstance()->GetObject(0);
+	Messenger* messenger = Messenger::GetInstance();
+	GameObject* pPlayer = messenger->GetObject(messenger->GetPlayerObjectID());
 	//プレイヤーか確認
 	if (pPlayer && pPlayer->GetObjectType() == Tag::Player)
 	{
@@ -84,10 +82,10 @@ void BatIdling::Update(const float& elapsedTime)
 		//範囲内なら遷移
 		if (distance < Bat::CHASE_RANGE)
 		{
+			//追跡状態へ
 			Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::CHASING);
 		}
 	}
-
 }
 
 /**
@@ -113,7 +111,6 @@ void BatIdling::Render()
 {
 #ifdef _DEBUG
 #endif // DEBUG
-
 }
 
 /**

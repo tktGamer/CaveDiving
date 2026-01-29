@@ -5,15 +5,13 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/03
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Golem/State/GolemAttack.h"
 #include "Game/Object/Enemy/Golem/Golem.h"
 #include"Game/Object/Enemy/Golem/GolemHand.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,9 +21,11 @@
  * @param[in] pLeftGolemHand ゴーレムの左手のポインタ
  */
 GolemAttack::GolemAttack(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
-	:m_golem(golem)
-	, m_pRightHand{ pRightGolemHand }
-	, m_pLeftHand{ pLeftGolemHand }
+	:
+	m_golem{golem},
+	m_pRightHand{ pRightGolemHand },
+	m_pLeftHand{ pLeftGolemHand },
+	m_attackMotion{}
 {
 	//モーションを設定
 	m_attackMotion = std::make_unique<GolemPunchMotion>(golem, pRightGolemHand, pLeftGolemHand);
@@ -60,8 +60,9 @@ void GolemAttack::PreUpdate()
 {
 	//モーション決定
 	DecideMotion();
+	//モーション初期化
 	m_attackMotion->Initialize();
-
+	//攻撃力補正を設定
 	m_golem->SetMotionAttackRate(m_attackMotion->GetAttackPowerModifier());
 }
 
@@ -80,17 +81,13 @@ void GolemAttack::Update(const float& elapsedTime)
 	//モーションが終了したら状態を遷移
 	if(m_attackMotion->Update()) 
 	{
+		//待機状態へ
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MessageID::IDLING);
-
 	}
 
 	//重力
 	velocity.y += World::GRAVITY * elapsedTime;
-
-
 	m_golem->SetVelocity(velocity);
-
-
 }
 
 /**
@@ -102,8 +99,11 @@ void GolemAttack::Update(const float& elapsedTime)
  */
 void GolemAttack::PostUpdate()
 {
+	//モーションをリセット
 	m_attackMotion->Reset();
+	//経過時間リセット
 	m_golem->ResetFrameCount();
+	//攻撃力補正を設定
 	m_golem->SetMotionAttackRate(Golem::CONTACT_DAMAGE_MODIFIRE);
 
 }
@@ -117,10 +117,8 @@ void GolemAttack::PostUpdate()
  */
 void GolemAttack::Render()
 {
-
 #ifdef _DEBUG
 #endif // DEBUG
-
 }
 
 /**

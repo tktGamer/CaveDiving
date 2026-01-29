@@ -1,18 +1,16 @@
 /**
  * @file   GolemDamaged.cpp
  *
- * @brief  コウモリの待機状態に関するソースファイル
+ * @brief  ゴーレムの待機状態に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2026/01/03
+ * @date   日付  2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Golem/State/GolemDamaged.h"
 #include "Game/Object/Enemy/Golem/Golem.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,7 +18,7 @@
  * @param[in] golem ゴーレムのポインタ
  */
 GolemDamaged::GolemDamaged(Golem* golem)
-	:m_golem(golem)
+	:m_golem{golem}
 {
 }
 /**
@@ -114,7 +112,6 @@ void GolemDamaged::Render()
 {
 #ifdef _DEBUG
 #endif // DEBUG
-
 }
 
 /**

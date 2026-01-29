@@ -5,18 +5,15 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/08
+ * @date   日付  2026/01/20
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef PLAYER_MOVING_DEFINED
 #define PLAYER_MOVING_DEFINED
 #include "Game/Interface/IState.h"
-
 // クラスの宣言 ===============================================================
 class Player;
-
 // クラスの定義 ===============================================================
 /**
   * @brief 移動状態
@@ -26,22 +23,15 @@ class PlayerMoving : public IState
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-
-// データメンバの宣言 -----------------------------------------------
-private:
-	// プレイヤー
-	Player* m_pPlayer;
-
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
+	//コンストラクタ
 	PlayerMoving(Player* pPlayer);
 	// デストラクタ
 	~PlayerMoving();
-
 // 操作
-public:
-
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -54,11 +44,13 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-//　取得・設定
-public:
 
 //　内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	// プレイヤー
+	Player* m_pPlayer;
 };
 #endif		// PLAYER_MOVING_DEFINED

@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/07
+ * @date   日付  2026/01/20
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerAirAttack.h"
@@ -16,7 +15,6 @@
 #include"Game/Motion/PlayerMotion/PlayerAirSpenningMotion.h"
 #include"Game/Object/Gem/GemManager.h"
 #include"Game/Object/Gem/Unique/AllSpenningAttackGem.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -26,7 +24,9 @@
  * @param[in] pLeftHand 左手のポインタ
  */
 PlayerAirAttack::PlayerAirAttack(Player* pPlayer, Hand* pRightHand, Hand* pLeftHand)
-	:m_pPlayer(pPlayer)
+	:
+	m_pPlayer{pPlayer},
+	m_airAttack{}
 {
 	const std::vector<AllSpenningAttackGem*>& gems = m_pPlayer->GetHolderGem().FindHasGem<AllSpenningAttackGem>();
 	//所持宝石によって攻撃モーションを変化
@@ -72,10 +72,8 @@ void PlayerAirAttack::PreUpdate()
 	m_airAttack->Initialize();
 	//モーションによる攻撃力補正をセット
 	m_pPlayer->SetMotionAttackRate(m_airAttack.get()->GetAttackPowerModifier());
-
 	//ピッケルの当たり判定を有効にする
 	Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber() + Player::PIKEL_OBJ_NUMBER, Message::COLLISIONVALID);
-
 }
 
 /**
@@ -88,25 +86,15 @@ void PlayerAirAttack::PreUpdate()
 void PlayerAirAttack::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-	// キーボードステートを取得する
-	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
 
 	//モーションの更新
 	if (m_airAttack->Update())
 	{
-
 	}
 
 
 	m_pPlayer->SetVelocity(m_pPlayer->GetVelocity()*0.8f);
 
-
-	//回避キーが押されたら
-	if (key->pressed.X)
-	{
-		//回避状態へ遷移
-		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
-	}
 
 	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 
@@ -115,7 +103,6 @@ void PlayerAirAttack::Update(const float& elapsedTime)
 
 
 	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity());
-
 }
 
 /**
@@ -129,9 +116,8 @@ void PlayerAirAttack::PostUpdate()
 {
 	//ピッケルの当たり判定を無効にする
 	Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber() + Player::PIKEL_OBJ_NUMBER, Message::COLLISIONINVALID);
-
+	//モーションリセット
 	m_airAttack->Reset();
-
 }
 
 /**
@@ -143,8 +129,6 @@ void PlayerAirAttack::PostUpdate()
  */
 void PlayerAirAttack::Render()
 {
-
-
 #ifdef _DEBUG
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 	debugFont->AddString(L"AirAttack", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
@@ -162,4 +146,3 @@ void PlayerAirAttack::Render()
 void PlayerAirAttack::Finalize()
 {
 }
-

@@ -5,14 +5,12 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/12/31
+ * @date   日付  2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Bat/State/BatChasing.h"
 #include "Game/Object/Enemy/Bat/Bat.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,9 +18,13 @@
  * @param[in] bat コウモリのポインタ
  */
 BatChasing::BatChasing(Bat* bat)
-	: m_bat(bat)
-	,m_pPlayer{Messenger::GetInstance()->GetObject(0)}
+	: 
+	m_bat{bat},
+	m_pPlayer{}
 {
+	//プレイヤーオブジェクトを取得
+	Messenger* messenger = Messenger::GetInstance();
+	m_pPlayer = messenger->GetObject(messenger->GetPlayerObjectID());
 }
 /**
  * @brief デストラクタ
@@ -64,10 +66,9 @@ void BatChasing::PreUpdate()
 void BatChasing::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-
-
+	//追跡
 	Movement();
-
+	//状態遷移
 	CheckStateTransition();
 }
 
@@ -91,10 +92,8 @@ void BatChasing::PostUpdate()
  */
 void BatChasing::Render()
 {
-
 #ifdef _DEBUG
 #endif // DEBUG
-
 }
 
 /**
@@ -108,7 +107,6 @@ void BatChasing::Finalize()
 {
 }
 
-
 /**
  * @brief 移動処理
  *
@@ -118,10 +116,9 @@ void BatChasing::Finalize()
  */
 void BatChasing::Movement()
 {
-
+	//フレーム間時間
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 
-	DirectX::SimpleMath::Vector3 velocity = m_bat->GetVelocity();
 
 	//自分からプレイヤーの角度を求める
 	float radian = TKTLib::CaluculateRadian(m_bat->GetCurrentPosition(), m_pPlayer->GetCurrentPosition());
@@ -131,6 +128,7 @@ void BatChasing::Movement()
 	//現在の角度と目標の角度の差分
 	//DirectX::SimpleMath::Quaternion diff = rotate - m_bat->GetQuaternion();
 
+	DirectX::SimpleMath::Vector3 velocity = m_bat->GetVelocity();
 	//目標に向かう
 	DirectX::SimpleMath::Vector3 chaseSpeed = Character::MOVE::FRONT * CHASE_SPPED * elapsedTime;
 	velocity += DirectX::SimpleMath::Vector3::Transform(chaseSpeed, rotate);
@@ -142,13 +140,12 @@ void BatChasing::Movement()
 	velocity.y += World::GRAVITY * elapsedTime;
 	//速度を設定
 	m_bat->SetVelocity(velocity);
-
+	//座標更新
 	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
 
 	// 姿勢に回転を加える
 	m_bat->SetQuaternion(rotate);
 }
-
 
 /**
  * @brief 状態遷移判定
@@ -159,18 +156,19 @@ void BatChasing::Movement()
  */
 void BatChasing::CheckStateTransition()
 {
-
 	//プレイヤーが範囲外にでて一定時間経ったら待機状態へ遷移
 	float distance = DirectX::SimpleMath::Vector3::Distance(m_pPlayer->GetCurrentPosition(), m_bat->GetCurrentPosition());
 	//範囲外なら遷移
 	if (distance > Bat::CHASE_RANGE)
 	{
+		//待機状態へ
 		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::IDLING);
 		return;
 	}
 	//攻撃範囲に入っていたら攻撃準備状態へ遷移
 	if (distance < ATTACK_RANGE)
 	{
+		//攻撃準備状態へ
 		Messenger::GetInstance()->Notify(m_bat->GetObjectNumber(), Message::ATTACKPREPARING);
 		return;
 	}

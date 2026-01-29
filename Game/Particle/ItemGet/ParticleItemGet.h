@@ -5,17 +5,12 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/27
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"../Particle.h"
-
-
-
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -26,37 +21,31 @@ class ParticleItemGet : public Particle
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	変数
-
-
-// データメンバの宣言 -----------------------------------------------
-private:
-	const DirectX::SimpleMath::Vector3* m_targetPos;
-
-	float m_speed;
+	
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　操作
 public:
-	//	関数
-	//	コンストラクタ（初期設定）
+// コンストラクタ/デストラクタ
+	//	コンストラクタ
 	ParticleItemGet(
 		const DirectX::SimpleMath::Vector3& targetPos,
 		float life,
-		DirectX::SimpleMath::Vector3 pos,
-		DirectX::SimpleMath::Vector3 velocity,
-		DirectX::SimpleMath::Vector3 accele,
-		DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-		DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor);
+		const DirectX::SimpleMath::Vector3& pos,
+		const DirectX::SimpleMath::Vector3& velocity,
+		const DirectX::SimpleMath::Vector3& accele,
+		const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,
+		const DirectX::SimpleMath::Color& startColor,const DirectX::SimpleMath::Color& endColor);
 	//	デストラクタ
 	~ParticleItemGet();
-
 // 操作
-public:
 	//	更新
 	bool Update() override;
 
-	
-
-
+// データメンバの宣言 -----------------------------------------------
+private:
+	//目標位置
+	const DirectX::SimpleMath::Vector3* m_targetPos;
+	//速度
+	float m_speed;
 };
 

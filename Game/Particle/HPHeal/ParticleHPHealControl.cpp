@@ -5,18 +5,14 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/12/10
+ * @date   日付  2026/01/26
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleHPHealControl.h"
-
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,10 +20,10 @@
  * @param[in] texturePath テクスチャハンドル
  */
 ParticleHPHealControl::ParticleHPHealControl(const wchar_t* texturePath)
-	:ParticleControl{ texturePath }
-	, m_centerPos{ nullptr }
+	:
+	ParticleControl{ texturePath },
+	m_centerPos{ nullptr }
 {
-
 }
 
 /**
@@ -36,8 +32,6 @@ ParticleHPHealControl::ParticleHPHealControl(const wchar_t* texturePath)
 ParticleHPHealControl::~ParticleHPHealControl()
 {
 }
-
-
 
 /**
  * @brief 更新処理
@@ -84,7 +78,7 @@ void ParticleHPHealControl::Render(const DirectX::SimpleMath::Vector3& target, c
 
 	ShaderManager* shader = ShaderManager::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
-	ID3D11DeviceContext1* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
+	//ID3D11DeviceContext1* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
@@ -190,7 +184,7 @@ void ParticleHPHealControl::RequestParticleHPHeal(const DirectX::SimpleMath::Vec
 		AddParticle(std::make_unique<ParticleHPHeal>(
 			0.3f,																	//	生存時間(s)
 			HPHEAL_PARTICLE_POSITION[i],								//	基準座標
-			DirectX::SimpleMath::Vector3{ 0.0f,9.0f,0.0f },						//	速度
+			HPHEAL_PARTICLE_VELOCITY,						//	速度
 			DirectX::SimpleMath::Vector3::One * -0.1f,								//	加速度
 			DirectX::SimpleMath::Vector3::One, DirectX::SimpleMath::Vector3::One,	//	初期スケール、最終スケール
 			DirectX::SimpleMath::Color{ 1,1,1,1 }, DirectX::SimpleMath::Color{ 1,1,1,1 } 	//	初期カラー、最終カラー

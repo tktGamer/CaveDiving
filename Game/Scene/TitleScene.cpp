@@ -1,17 +1,15 @@
 /**
  * @file   TitleScene.cpp
  *
- * @brief  シーンに関するソースファイル
+ * @brief  タイトルシーンに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/28
  */
-
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "TitleScene.h"
-
 #include "Game/Common/ResourceManager.h"
 #include"Game/Common/Sound.h"
 #include"../Scene/GameScene.h"
@@ -26,17 +24,15 @@
  * @param[in] なし
  */
 TitleScene::TitleScene()
-	: m_pResourceManager{}
-	, m_caveModelParams{}
-	, m_demoPlayer{}
-	, m_angle{}
-	, m_length{}
-	,m_isLoadPlayerHoldGem{false}
+	: 
+	m_caveModelParams{},
+	m_demoPlayer{},
+	m_angle{},
+	m_length{},
+	m_isLoadPlayerHoldGem{false},
+	m_skyModel{}
 {
 	m_camera = std::make_unique<Camera>();
-	m_pResourceManager = ResourceManager::GetInstance();
-
-
 }
 
 
@@ -62,40 +58,47 @@ void TitleScene::Initialize()
 {
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
-
-	m_titleBGM = std::make_unique<Sound>(m_pResourceManager->RequestSound("titlebgm.wav"));
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	//音生成
+	m_titleBGM = std::make_unique<Sound>(resourceManager->RequestSound(ResourcePath::SOUND::TITLE_BGM));
 	m_titleBGM->Play(true);
-	m_gemLoadSound = std::make_unique<Sound>(m_pResourceManager->RequestSound("titlegemload.wav"));
-	m_gameStartSound = std::make_unique<Sound>(m_pResourceManager->RequestSound("gamestart.wav"));
+	m_gemLoadSound = std::make_unique<Sound>(resourceManager->RequestSound(ResourcePath::SOUND::TITLE_GEM_LOAD));
+	m_gameStartSound = std::make_unique<Sound>(resourceManager->RequestSound(ResourcePath::SOUND::GAME_START));
 
 
 	//m_demoPlayer = GameObjectFactory::CreatePlayer(nullptr);
 	//m_demoPlayer->SetPosition({ 0.0f,2.0f,7.0f });
 	//m_demoPlayer->SetScale({ 0.5f,0.5f,0.5f });
 	//m_demoPlayer->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
-
-	m_demoPlayerModelParams.SetModelParams(m_pResourceManager->RequestModel("player.sdkmesh"));
+	//プレイヤー配置
+	m_demoPlayerModelParams.SetModelParams(resourceManager->RequestModel(ResourcePath::MODEL::PLAYER));
 	DirectX::SimpleMath::Vector3 position = DirectX::SimpleMath::Vector3{ 0.0f,1.5f,6.5f };
 	DirectX::SimpleMath::Vector3 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
 	DirectX::SimpleMath::Vector3 scale = DirectX::SimpleMath::Vector3(0.5f, 0.5f, 0.5f);
 	m_demoPlayerModelParams.SetModelParams(position, rotation, scale);
-	m_caveModelParams.SetModelParams(m_pResourceManager->RequestModel("cave.sdkmesh"));
+	//洞窟配置
+	m_caveModelParams.SetModelParams(resourceManager->RequestModel(ResourcePath::MODEL::TITLE_CAVE));
 	 position = DirectX::SimpleMath::Vector3::Zero;
-	 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
-	 scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+	 rotation = DirectX::SimpleMath::Vector3::Zero;
+	 scale = DirectX::SimpleMath::Vector3::One;
 	m_caveModelParams.SetModelParams(position, rotation, scale);
 
 	m_length = 20.0f;
 	m_angle = 20.0f;
 	m_camera->Initialize({ 0,17.0f,10.0f });
 	m_camera->SetTartet(m_caveModelParams.GetPosition(), m_caveModelParams.GetQuaternion());
+	//スカイドームモデル生成
+	m_skyModel = ResourceManager::GetInstance()->RequestModel(ResourcePath::MODEL::SKY_DOME);
 
-	m_skyModel = ResourceManager::GetInstance()->RequestModel("skydome.sdkmesh");
-
-	m_loadCheckUI = UIFactory::CreateUserInterface(L"UI/loadgemcheck.png", { 200,400 }, { 0.8f,0.8f },UserInterface::ANCHOR::MIDDLE_CENTER);
-	m_checkUI = UIFactory::CreateUserInterface(L"UI/check.png", { 200,400 }, { 0.8f,0.8f },UserInterface::ANCHOR::MIDDLE_CENTER);
-	m_title = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::TITLE, {640.0f,180.0f}, {1.0f,1.0f}, UserInterface::ANCHOR::MIDDLE_CENTER);
-	m_pressSpace = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::PRESS_SPACE, { 640.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+	//UI生成
+	m_loadCheckUI = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::LOAD_GEM_CHECK,
+		LOAD_CHECK_UI_POS, LOAD_CHECK_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
+	m_checkUI     = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::CHECK,
+		CHECK_MARK_UI_POS, CHECK_MARK_UI_SCALE,UserInterface::ANCHOR::MIDDLE_CENTER);
+	m_title       = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::TITLE,
+		TITLE_UI_POS, TITLE_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
+	m_pressSpace  = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::PRESS_SPACE,
+		PRESS_SPACE_UI_POS, PRESS_SPACE_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
 
 	//プレイヤーのデータを初期化
 	GetGameData()->SetPlayerData(GameData::PlayerData{});
@@ -104,6 +107,13 @@ void TitleScene::Initialize()
 	m_time = 0.0f;
 }
 
+/**
+ * @brief 事前更新処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void TitleScene::PreUpdate()
 {
 	float radian =DirectX::XMConvertToRadians(m_angle);
@@ -163,17 +173,16 @@ void TitleScene::Update(float elapsedTime)
 		m_angle = 0.0f;
 	}
 
-	//m_gem->Update();
 	m_camera->Update(elapsedTime);
 
 	m_time += elapsedTime;
+
+	//一定時間経過でロゴシーンへ
 	if (m_time > 15.0f) 
 	{
 		ChangeScene<LogoScene>();
 	}
 }
-
-
 
 /**
  * @brief 描画処理
@@ -202,6 +211,7 @@ void TitleScene::Render()
 	DirectX::SimpleMath::Matrix trans = DirectX::SimpleMath::Matrix::CreateTranslation(cameraPos);
 	DirectX::SimpleMath::Matrix  scale = DirectX::SimpleMath::Matrix::CreateScale(20.0f);
 	world = scale * DirectX::SimpleMath::Matrix::CreateTranslation(m_caveModelParams.GetPosition());
+	//天球
 	m_skyModel->UpdateEffects([](DirectX::IEffect* effect)
 		{
 			auto lights = dynamic_cast<DirectX::IEffectLights*>(effect);
@@ -222,22 +232,10 @@ void TitleScene::Render()
 			}
 		}
 	);
-
-	//world = scale * trans;
 	m_skyModel->Draw(context, *states,world, view, proj);
-	world = scale *DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX,DirectX::XMConvertToRadians(180.0f)) 
-		*trans;
-	//m_skyModel->Draw(context, *states,world, view, proj);
 
-	trans = DirectX::SimpleMath::Matrix::CreateTranslation({0.0f,-1.0f,0.0f});
-
-	scale = DirectX::SimpleMath::Matrix::CreateScale({40.0f,1.0f,40.0f});
-	world = scale * trans;
-
-	//m_groundModel->Draw(context, *states, world, view, proj);
 	
-	
-
+	//UI描画	
 	m_loadCheckUI->Render();
 	if (m_isLoadPlayerHoldGem) 
 	{
@@ -245,10 +243,7 @@ void TitleScene::Render()
 	}
 	m_title->Render();
 	m_pressSpace->Render();
-
 }
-
-
 
 /**
  * @brief 終了処理

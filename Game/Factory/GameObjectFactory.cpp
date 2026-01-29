@@ -195,3 +195,99 @@ std::unique_ptr<Stage> GameObjectFactory::CreateStage(GameObject* parent,
 	return std::move(stage);
 }
 
+/**
+ * @brief 「地面」の生成
+ *
+ * @param[in] parent   親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　初期角度
+ * @param[in] scale　　拡大率
+ *
+ * @return 地面クラス
+ */
+std::unique_ptr<Ground> GameObjectFactory::CreateGround(GameObject* parent, 
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const DirectX::SimpleMath::Vector3& scale)
+{
+	//「地面」を宣言する
+	std::unique_ptr<Ground> ground;
+	//Groundクラスのインスタンスを生成する
+	ground = std::make_unique<Ground>(parent, initialPosition, initialAngle);
+	//初期化する
+	ground->Initialize();
+	ground->SetScale(scale);
+	// Groundクラスのインスタンスを返す
+	return std::move(ground);
+}
+
+/**
+ * @brief 「壁」の生成
+ *
+ * @param[in] parent   親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　初期角度
+ * @param[in] scale　　       拡大率
+ *
+ * @return 壁クラス
+ */
+std::unique_ptr<Wall> GameObjectFactory::CreateWall(GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const DirectX::SimpleMath::Vector3& scale)
+{
+	//「壁」を宣言する
+	std::unique_ptr<Wall> wall;
+	//Wallクラスのインスタンスを生成する
+	wall = std::make_unique<Wall>(parent, initialPosition, initialAngle);
+	//初期化する
+	wall->Initialize();
+	wall->SetScale(scale);
+	// Wallクラスのインスタンスを返す
+	return std::move(wall);
+}
+
+/**
+ * @brief 「アイテム」の生成
+ *
+ * @param[in] itemInfo　　　　 アイテムの情報
+ * @param[in] parent   　　　　親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　 初期角度
+ *
+ * @return アイテムクラス
+ */
+std::unique_ptr<Item> GameObjectFactory::CreateItem(const Item::ItemInfo& itemInfo, const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+{
+	//「アイテム」を宣言する
+	std::unique_ptr<Item> item;
+	//Itemクラスのインスタンスを生成する
+	item = std::make_unique<Item>(itemInfo, parent, initialPosition, initialAngle);
+	//初期化する
+	item->Initialize();
+	// Itemクラスのインスタンスを返す
+	return std::move(item);
+}
+
+/**
+ * @brief 「アウトラインアイテム」の生成
+ *
+ * @param[in] itemInfo　　　　 アイテムの情報
+ * @param[in] parent   　　　　親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　 初期角度
+ *
+ * @return アウトラインアイテムクラス
+ */
+std::unique_ptr<OutlineItem> GameObjectFactory::CreateOutlineItem(const Item::ItemInfo& itemInfo, const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+{
+	//「アイテム」を宣言する
+	std::unique_ptr<OutlineItem> outlineItem;
+	//OutlineItemクラスのインスタンスを生成する
+	outlineItem = std::make_unique<OutlineItem>(itemInfo, parent, initialPosition, initialAngle);
+	//初期化する
+	outlineItem->Initialize();
+	// OutlineItemクラスのインスタンスを返す
+	return std::move(outlineItem);
+}
+

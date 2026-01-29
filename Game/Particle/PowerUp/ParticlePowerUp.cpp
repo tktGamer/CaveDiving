@@ -39,12 +39,15 @@ const static float ENDLESS = -100.0f;
  */
 ParticlePowerUp::ParticlePowerUp(
 	float life,
-	DirectX::SimpleMath::Vector3 pos,
-	DirectX::SimpleMath::Vector3 velocity,
-	DirectX::SimpleMath::Vector3 accele,
-	DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-	DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor)
-	:Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor }
+	const DirectX::SimpleMath::Vector3& pos,
+	const DirectX::SimpleMath::Vector3& velocity,
+	const DirectX::SimpleMath::Vector3& accele,
+	const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,
+	const DirectX::SimpleMath::Color& startColor, const DirectX::SimpleMath::Color& endColor)
+	:
+	Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor },
+	m_afterColor{},
+	m_afterLife{}
 {
 	//	ê∂ë∂éûä‘Ç™åoâﬂÇµÇΩå„ÇÃéûä‘Åiè¡ñ≈Ç‹Ç≈ÇÃéûä‘ÅjÇèâä˙âª
 	m_afterLife = life * 0.2f;
@@ -113,4 +116,3 @@ bool ParticlePowerUp::Update()
 
 	return true;
 }
-

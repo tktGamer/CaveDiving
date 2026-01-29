@@ -20,11 +20,15 @@
  */
 RumiRock::RumiRock(const ModelShader::PointLightCB& lightData,const GameObject* parent,
 	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:GameObject{ Tag::ObjectType::Light,parent,initialPosition,initialAngle }
-	, m_box{ GetPosition(),BOX_COLLISION_SIZE }
-	, m_color{}
-	, m_messageID{}
-	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+	:
+	GameObject{ Tag::ObjectType::Light,parent,initialPosition,initialAngle },
+	m_box{ GetPosition(),BOX_COLLISION_SIZE },
+	m_color{},
+	m_messageID{},
+	m_isOn{},
+	m_light{},
+	m_LightOnSound{},
+	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 	Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 
 {
@@ -48,17 +52,12 @@ RumiRock::RumiRock(const ModelShader::PointLightCB& lightData,const GameObject* 
 
 }
 
-
-
 /**
  * @brief デストラクタ
  */
 RumiRock::~RumiRock()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -94,10 +93,7 @@ void RumiRock::Update(const DirectX::SimpleMath::Vector3& currentPosition, const
 	m_light->Update(GetCurrentPosition(), GetCurrentQuaternion());
 	//当たり判定の更新
 	m_box.SetCenter(GetCurrentPosition());
-
 }
-
-
 
 /**
  * @brief 描画処理
@@ -116,7 +112,7 @@ void RumiRock::Draw()
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
 
-
+	//ワールド行列を計算
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
 	//	シェーダーに渡す追加のバッファを作成する。
 	ModelShader::ModelCB cbuff;
@@ -168,10 +164,7 @@ void RumiRock::Draw()
 	//m_box.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
 		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
-
 }
-
-
 
 /**
  * @brief 終了処理

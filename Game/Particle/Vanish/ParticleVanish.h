@@ -1,21 +1,16 @@
 /**
  * @file   VanishParticle.h
  *
- * @brief  パーティクルに関するヘッダファイル
+ * @brief  敵消滅パーティクルに関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付  2026/01/28
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"../Particle.h"
-
-
-
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -26,22 +21,12 @@ class ParticleVanish : public Particle
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	//	変数
-
-
-// データメンバの宣言 -----------------------------------------------
-private:
-	
-	//	生存時間が経過した後の時間（消滅までの時間）
-	float m_afterLife;
-
-	DirectX::SimpleMath::Color m_afterColor;
 
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
-	//	関数
-	//	コンストラクタ（初期設定）
+// コンストラクタ/デストラクタ
+	//	コンストラクタ
 	ParticleVanish(
 			const float& life,
 			const DirectX::SimpleMath::Vector3& pos,
@@ -51,14 +36,17 @@ public:
 			const DirectX::SimpleMath::Color& startColor, const DirectX::SimpleMath::Color& endColor);
 	//	デストラクタ
 	~ParticleVanish();
-
 // 操作
-public:
 	//	更新
 	bool Update() override;
-
+//内部処理
+private:
+// データメンバの宣言 -----------------------------------------------
+private:
 	
-
-
+	//	生存時間が経過した後の時間（消滅までの時間）
+	float m_afterLife;
+	//消滅時色
+	DirectX::SimpleMath::Color m_afterColor;
 };
 

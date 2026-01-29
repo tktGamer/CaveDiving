@@ -5,13 +5,11 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/28
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GolemPunchPreparingMotion.h"
-
 #include"Game/Object/Enemy/Golem/Golem.h"
 // メンバ関数の定義 ===========================================================
 /**
@@ -22,14 +20,15 @@
  * @param[in] pLeftGolemHand　 左手のポインタ
  */
 GolemPunchPreparingMotion::GolemPunchPreparingMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
-	: m_pGolem{pGolem}
-	, m_pRightGolemHand{ pRightGolemHand }
-	, m_pLeftGolemHand{ pLeftGolemHand }
+	:
+	m_pGolem{pGolem},
+	m_pRightGolemHand{ pRightGolemHand },
+	m_pLeftGolemHand{ pLeftGolemHand },
+	m_startPosition{},
+	m_goalPosition{}
 {
 
 }
-
-
 
 /**
  * @brief デストラクタ
@@ -38,8 +37,6 @@ GolemPunchPreparingMotion::~GolemPunchPreparingMotion()
 {
 
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -52,17 +49,12 @@ void GolemPunchPreparingMotion::Initialize()
 {
 	//手の向きを変える 正面に向ける
 	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, PUNCH_HAND_ANGLE));
-
-	
 	//スタート位置とゴール位置
 	m_startPosition = m_pRightGolemHand->GetPosition();
 	m_goalPosition  = m_startPosition + HAND_GOAL_POS;
 
 	SetMotionLerp(0.0f);
-
 }
-
-
 
 /**
  * @brief 更新処理
@@ -75,15 +67,13 @@ void GolemPunchPreparingMotion::Initialize()
 bool GolemPunchPreparingMotion::Update()
 {
 
-
 	float motionLerp = GetMotionLerp();
-
 
 	//現在位置を求める
 	DirectX::SimpleMath::Vector3 currentPos = DirectX::SimpleMath::Vector3::Lerp(m_startPosition, m_goalPosition, motionLerp);
 	m_pRightGolemHand->SetPosition(currentPos);
 
-	
+	//モーション進行	
 	motionLerp += Messenger::GetInstance()->GetElapsedTime();
 
 	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
@@ -94,15 +84,8 @@ bool GolemPunchPreparingMotion::Update()
 		return true;
 	}
 
-
-
 	return false;
-
 }
-
-
-
-
 
 /**
  * @brief 終了処理
@@ -114,4 +97,3 @@ bool GolemPunchPreparingMotion::Update()
 void GolemPunchPreparingMotion::Reset()
 {
 }
-

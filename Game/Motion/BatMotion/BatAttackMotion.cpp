@@ -22,15 +22,14 @@
  * @param[in] pLeftWing コウモリの左羽ポインタ
  */
 BatAttackMotion::BatAttackMotion(Bat* pBat, Wing* pRightWing, Wing* pLeftWing)
-	: AttackMotion{BAT_ATTACK_MOTION_MODIFIER}
-	, m_pBat{pBat}
-	, m_pRightWing{pRightWing}
-	, m_pLeftWing{pLeftWing}
+	: 
+	AttackMotion{BAT_ATTACK_MOTION_MODIFIER},
+	m_pBat{pBat},
+	m_pRightWing{pRightWing},
+	m_pLeftWing{pLeftWing}
 {
 
 }
-
-
 
 /**
  * @brief デストラクタ
@@ -39,8 +38,6 @@ BatAttackMotion::~BatAttackMotion()
 {
 
 }
-
-
 
 /**
  * @brief 初期化処理

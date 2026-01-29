@@ -22,43 +22,38 @@
 class HPAutoRecoveryGem :public Gem
 {
 // クラス定数の宣言 -------------------------------------------------
+public:
+//非公開定数
 private:
 	//回復なし
 	static constexpr int NO_HEAL = 0;
 	//タイマーリセット
 	static constexpr float RESET = 0.0f;
 
-public:
-// データメンバの宣言 -----------------------------------------------
-private:
-	//回復間隔タイマー
-	float m_recoveryIntervalTimer = 0.0f;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//取得・設定
 public:
+// コンストラクタ/デストラクタ
 	// コンストラクタ
 	HPAutoRecoveryGem(const GemAbility& ability, const GemImagePath& image);
+	//コピー用
 	HPAutoRecoveryGem(const HPAutoRecoveryGem& other) = default;
-
 	// デストラクタ
 	~HPAutoRecoveryGem();
-
-
 //操作
-public:
 	//多態コピー
 	std::unique_ptr<Gem> Clone()const override;
-
 	//初期化
 	void Initialize();
 	//HP回復
 	int RecoveryHP();
 	//終了
 	void Finalize();
-//取得・設定
-public:
 //内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	//回復間隔タイマー
+	float m_recoveryIntervalTimer = 0.0f;
 };
-

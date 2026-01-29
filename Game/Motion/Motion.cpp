@@ -5,13 +5,11 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付　2025/12/31
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Motion.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -19,38 +17,17 @@
  * @param[in] なし
  */
 Motion::Motion()
+	:
+	m_motionLerp{0.0f}
 {
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 Motion::~Motion()
 {
-
 }
-
-
-
-
-
-
-
-/**
- * @brief 終了処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Motion::Reset()
-{
-	m_motionLerp = 0.0f;
-}
-
 
 /**
  * @brief モーション補間値の取得
@@ -75,5 +52,3 @@ void Motion::SetMotionLerp(const float& motionLerp)
 {
 	m_motionLerp = motionLerp;
 }
-
-

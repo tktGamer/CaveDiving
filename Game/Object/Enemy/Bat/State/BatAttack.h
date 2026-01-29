@@ -5,16 +5,14 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/12/31
+ * @date   日付　2026/01/18
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef BAT_ATTACK_DEFINED
 #define BAT_ATTACK_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-
 #include"Game/Motion/BatMotion/BatAttackMotion.h"
 // クラスの宣言 ===============================================================
 class Bat;
@@ -29,23 +27,15 @@ class BatAttack : public IState
 public:
 	//落下速度
 	static constexpr float FALL_SPEED = -0.05f;
-// データメンバの宣言 -----------------------------------------------
-private:
-	// コウモリのポインタ
-	Bat* m_bat;
-	
-	//攻撃モーション
-	std::unique_ptr<AttackMotion> m_attackMotion;
-
-	//攻撃音
-	std::unique_ptr<Sound> m_attackSound;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
 	// コンストラクタ
 	BatAttack(Bat* bat, Wing* pRightWing, Wing* pLeftWing);
 	// デストラクタ
 	~BatAttack();
+//  操作
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -58,13 +48,16 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-
-//　取得・設定
-public:
-
 //　内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	// コウモリのポインタ
+	Bat* m_bat;
+	//攻撃モーション
+	std::unique_ptr<AttackMotion> m_attackMotion;
+	//攻撃音
+	std::unique_ptr<Sound> m_attackSound;
 };
-
 #endif		// BAT_ATTACK_DEFINED

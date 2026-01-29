@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/01/08
+ * @date   日付　2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Item.h"
@@ -24,12 +23,13 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 Item::Item(const ItemInfo& itemInfo, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:GameObject{ Tag::ObjectType::Item,parent,initialPosition,initialAngle }
-	,m_itemInfomation{itemInfo}
-	, m_box{ initialPosition,BOX_COLLISION_SIZE }
-	, m_isGet{ false }
-	, m_color{ DirectX::Colors::White }
-	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+	:
+	GameObject{ Tag::ObjectType::Item,parent,initialPosition,initialAngle },
+	m_itemInfomation{itemInfo},
+	m_box{ initialPosition,BOX_COLLISION_SIZE },
+	m_isGet{ false },
+	m_color{ DirectX::Colors::White },
+	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 
 {
@@ -46,17 +46,12 @@ Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 	DecideColor();
 }
 
-
-
 /**
  * @brief デストラクタ
  */
 Item::~Item()
 {
-
 }
-
-
 
 /**
  * @brief 更新
@@ -72,12 +67,9 @@ void Item::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dir
 	SetCurrentPosition( currentPosition + GetPosition());
 	//角度の更新
 	SetCurrentAngle(GetQuaternion() * currentAngle );
-
 	//当たり判定更新
 	UpdateCollision(GetCurrentPosition());
-
 }
-
 
 /**
  * @brief 描画
@@ -155,11 +147,12 @@ void Item::Draw()
  */
 void Item::OnMessegeAccepted(Message::MessageID messageID)
 {
-	switch (messageID)
-	{
-	default:
-		break;
-	}
+	messageID;
+	//switch (messageID)
+	//{
+	//default:
+	//	break;
+	//}
 }
 
 /**
@@ -346,6 +339,3 @@ void Item::DecideColor()
 		break;
 	}
 }
-
-
-

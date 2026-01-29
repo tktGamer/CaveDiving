@@ -5,13 +5,11 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付 2025/08/27
+ * @date   日付  2026/01/18
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ResourceManager.h"
-
-using namespace DirectX;
 
 // クラスの静的メンバ変数の初期化
 std::unique_ptr<ResourceManager> ResourceManager::s_resourceManager = nullptr;
@@ -23,11 +21,13 @@ std::unique_ptr<ResourceManager> ResourceManager::s_resourceManager = nullptr;
  * @param[in] なし
  */
 ResourceManager::ResourceManager()
-	:m_texture{}
-	,m_sounds{}
-	,m_models{}
-	, m_audioEngine{ nullptr }
+	:
+	m_texture{},
+	m_sounds{},
+	m_models{},
+	m_audioEngine{ nullptr }
 {
+	LoadResources();
 }
 
 
@@ -280,7 +280,7 @@ void ResourceManager::LoadModel(const std::string& filename)
 		DirectX::DX11::EffectFactory* fx = Graphics::GetInstance()->GetFX();
 		fx->SetDirectory(L"Resources/Models");
 		//モデルデータ読み込み
-		std::unique_ptr<Model> model = Model::CreateFromSDKMESH(device,TKTLib::StringToWchar(fullPath), *fx);
+		std::unique_ptr<DirectX::Model> model = DirectX::Model::CreateFromSDKMESH(device,TKTLib::StringToWchar(fullPath), *fx);
 
 		//ファイル名とデータを結び付けて登録
 		m_models.insert(std::make_pair(filename, std::move(model)));
@@ -315,7 +315,7 @@ void ResourceManager::LoadSound(const std::string& filename)
 	try
 	{	
 		//音データ読み込み
-		std::unique_ptr<SoundEffect> soundEffect=std::make_unique<SoundEffect>(m_audioEngine,TKTLib::StringToWchar(fullPath));
+		std::unique_ptr<DirectX::SoundEffect> soundEffect=std::make_unique<DirectX::SoundEffect>(m_audioEngine,TKTLib::StringToWchar(fullPath));
 		
 		//ファイル名とデータを結び付けて登録
 		m_sounds.insert(std::make_pair(filename, std::move(soundEffect)));
@@ -351,7 +351,7 @@ void ResourceManager::LoadTexture(const std::string& filename)
 		ID3D11Device* device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
 		//ID3D11DeviceContext* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 		//画像データ読み込み
-		 CreateWICTextureFromFile(
+		DirectX::CreateWICTextureFromFile(
 			device,
 			//context,
 			TKTLib::StringToWchar(fullPath),
@@ -377,6 +377,16 @@ void ResourceManager::LoadTexture(const std::string& filename)
 	}
 }
 
+
+/**
+ * @brief 全データの読み込み
+ *
+ * @param[in] なし
+ *
+ * @return  なし
+ */
 void ResourceManager::LoadResources()
 {
+	LoadTexture(TKTLib::WcharToString(ResourcePath::TEXTURE::UI::LOAD));
+	LoadTexture(TKTLib::WcharToString(ResourcePath::TEXTURE::UI::LOAD_BACK));
 }

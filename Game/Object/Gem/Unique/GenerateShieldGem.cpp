@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/04
+ * @date   日付  2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GenerateShieldGem.h"
@@ -25,23 +24,25 @@ REGISTER_GEM_CLASS("GenerateShieldGem", GenerateShieldGem);
  * @param[in] image 　 選択時の画像
  */
 GenerateShieldGem::GenerateShieldGem(const GemAbility& ability, const GemImagePath& image)
-	:Gem{ ability,image }
+	:
+	Gem{ ability,image }
 {
 }
-
-
-
 
 /**
  * @brief デストラクタ
  */
 GenerateShieldGem::~GenerateShieldGem()
 {
-
 }
 
-
-
+/**
+ * @brief 多態コピー
+ *
+ * @param[in] なし
+ *
+ * @return コピー
+ */
 std::unique_ptr<Gem> GenerateShieldGem::Clone() const
 {
 	return std::make_unique<GenerateShieldGem>(*this);
@@ -56,7 +57,6 @@ std::unique_ptr<Gem> GenerateShieldGem::Clone() const
  */
 void GenerateShieldGem::Initialize()
 {
-
 }
 
 /**
@@ -64,7 +64,7 @@ void GenerateShieldGem::Initialize()
  *
  * @param[in] なし
  *
- * @return 
+ * @return 攻撃無効の回数
  */
 int GenerateShieldGem::GenerateShield()
 {
@@ -77,13 +77,9 @@ int GenerateShieldGem::GenerateShield()
 
 	m_generateIntervalTimer = 0.0f;
 
-	//
+	//値分攻撃無効
 	return GetAbility().value;
 }
-
-
-
-
 
 /**
  * @brief 終了処理
@@ -94,7 +90,4 @@ int GenerateShieldGem::GenerateShield()
  */
 void GenerateShieldGem::Finalize()
 {
-
 }
-
-

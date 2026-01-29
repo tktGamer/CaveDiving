@@ -7,13 +7,11 @@
  *
  * @date   日付　2026/01/08
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Wall.h"
 #include"Game/Common/Collision/CollisionManager.h"
 #include"Game/Shader/ShaderManager.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,28 +21,28 @@
  * @param[in] initialAngle    初期角度
  */
 Wall::Wall(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: GameObject(Tag::ObjectType::Wall,parent,initialPosition,initialAngle)
-	, m_messageID{  }
-	, m_sphere{ GetPosition(),60.0f} // 初期位置とサイズを設定
-	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+	: 
+	GameObject(Tag::ObjectType::Wall,parent,initialPosition,initialAngle),
+	m_messageID{},
+	m_sphere{ GetPosition(),60.0f}, // 初期位置とサイズを設定
+	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
-
 {
+	ResourceManager* resourceManager = ResourceManager::GetInstance();
+	//モデル設定
+	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::WALL));
+	//テクスチャ設定
+	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::WALL));
+	//メッセンジャーに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 Wall::~Wall()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -55,19 +53,10 @@ Wall::~Wall()
  */
 void Wall::Initialize()
 {
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"cave_game.sdkmesh"));
-	SetPosition(DirectX::SimpleMath::Vector3::Zero);
-	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	SetScale(DirectX::SimpleMath::Vector3(60.0f, 50.0f, 60.0f));
-	SetTexture(ResourceManager::GetInstance()->RequestTexture("block.png"));
 	
 	SetShape(&m_sphere);
-
 	CollisionManager::GetInstance()->Register(this);
 }
-
-
-
 
 /**
  * @brief 更新処理
@@ -79,10 +68,9 @@ void Wall::Initialize()
  */
 void Wall::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	//当たり判定更新
 	m_sphere.SetCenter(currentPosition + GetPosition());
 }
-
-
 
 /**
  * @brief 描画処理
@@ -100,7 +88,7 @@ void Wall::Draw()
 	DirectX::DX11::CommonStates* states  = graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view    = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj    = graphics->GetProjectionMatrix();
-
+	//ワールド行列を計算
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetPosition(), GetQuaternion(), GetScale());
 	//	シェーダーに渡す追加のバッファを作成する。
 	ModelShader::ModelCB cbuff;
@@ -140,11 +128,12 @@ void Wall::Draw()
 
 			//	カリングはなし
 			context->RSSetState(states->CullNone());
-
+			//シェーダー設定
 			shader->StartShader(ShaderManager::Wall_Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Wall_Model));
 		});
+	//シェーダー解放
 	shader->EndShader();
 
 	//m_sphere.AddDisplayCollision(&m_display);
@@ -164,7 +153,6 @@ void Wall::Draw()
  */
 void Wall::Finalize()
 {
-
 }
 
 /**
@@ -176,7 +164,7 @@ void Wall::Finalize()
  */
 void Wall::OnMessegeAccepted(Message::MessageID messageID)
 {
-
+	messageID;
 }
 
 /**
@@ -188,5 +176,5 @@ void Wall::OnMessegeAccepted(Message::MessageID messageID)
  */
 void Wall::CollisionResponce(GameObject* other)
 {
+	other;
 }
-

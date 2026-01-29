@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/07
+ * @date   日付  2026/01/20
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef PLAYER_GOURND_ATTACK_DEFINED
@@ -26,41 +25,20 @@ class Hand;
 class PlayerGroundAttack : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+public:
+//非公開定数
 private:
 	//入力受付時間
 	static constexpr float INPUT_TIME = 0.3f;
-public:
-
-// データメンバの宣言 -----------------------------------------------
-private:
-	// プレイヤー
-	Player* m_pPlayer;
-	//右手のポインタ
-	Hand* m_pRightHand;  
-	//左手のポインタ
-	Hand* m_pLeftHand;  
-
-
-	//現在の攻撃
-	int m_currentAttack = 0;
-	//地上での攻撃
-	std::vector<std::unique_ptr<AttackMotion>> m_groundCombo;
-	//コンボ攻撃入力待機時間
-	float m_inputTime = 0.0f;
-	//次の攻撃をするかどうか
-	bool m_isNextAttack; 
-
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
 	// コンストラクタ
 	PlayerGroundAttack(Player* pPlayer,Hand* pRightHand, Hand* pLeftHand);
 	// デストラクタ
 	~PlayerGroundAttack();
-
-
 // 操作
-public:
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -73,14 +51,22 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-
-//　取得・設定
-public:
-
 //　内部操作
 private:
 
-
+// データメンバの宣言 -----------------------------------------------
+private:
+	// プレイヤー
+	Player* m_pPlayer;
+	//右手のポインタ
+	Hand* m_pRightHand;  
+	//左手のポインタ
+	Hand* m_pLeftHand;  
+	//現在の攻撃
+	int m_currentAttack = 0;
+	//地上での攻撃
+	std::vector<std::unique_ptr<AttackMotion>> m_groundCombo;
+	//コンボ攻撃入力待機時間
+	float m_inputTime = 0.0f;
 };
-
 #endif		// PLAYER_GOURND_ATTACK_DEFINED

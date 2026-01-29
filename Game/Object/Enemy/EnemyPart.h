@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔　
  *
- * @date   日付　2026/01/04
+ * @date   日付　2026/01/18
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Object/PartObject.h"
 #include"../Character.h"
@@ -25,31 +23,22 @@ class EnemyPart : public PartObject
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-// データメンバの宣言 -----------------------------------------------
-private:
-
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
 	// コンストラクタ
 	EnemyPart(Character* root,
 		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
-
 	// デストラクタ
 	virtual ~EnemyPart();
-
-
 // 操作
-public:
-	//
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
-
-//　取得・設定
-public:
-
 //　内部操作
 private:
 
-};
+// データメンバの宣言 -----------------------------------------------
+private:
 
+};

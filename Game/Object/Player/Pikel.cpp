@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/08
+ * @date   日付　2026/01/20
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Pikel.h"
@@ -24,10 +23,11 @@
  * @param[in] initialAngle　　　初期角度
  */
 Pikel::Pikel(Character* owner, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: Weapon(owner,Tag::ObjectType::Weapon,parent,initialPosition,initialAngle)
-	, m_messageID{}
-	, m_sphere{ GetPosition(), PIKEL_SPHERE_SIZE}
-	,m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+	: 
+	Weapon(owner,Tag::ObjectType::Weapon,parent,initialPosition,initialAngle),
+	m_messageID{},
+	m_sphere{ GetPosition(), PIKEL_SPHERE_SIZE},
+	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext()}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
@@ -44,21 +44,14 @@ Pikel::Pikel(Character* owner, const GameObject* parent, const DirectX::SimpleMa
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 	//当たり判定クラスに登録
 	CollisionManager::GetInstance()->Register(this);
-
 }
-
-
-
 
 /**
  * @brief デストラクタ
  */
 Pikel::~Pikel()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -69,11 +62,7 @@ Pikel::~Pikel()
  */
 void Pikel::Initialize()
 {
-
 }
-
-
-
 
 /**
  * @brief 更新処理
@@ -93,9 +82,6 @@ void Pikel::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 	//位置を調整する
 	m_sphere.SetCenter(GetCurrentPosition() + DirectX::SimpleMath::Vector3::Transform(PIKEL_COLLSION_POS_OFFSET, GetCurrentQuaternion()));
 }
-
-
-
 
 /**
  * @brief 描画処理
@@ -163,10 +149,7 @@ void Pikel::Draw()
 	//m_sphere.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
 		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
-
 }
-
-
 
 /**
  * @brief 終了処理
@@ -177,7 +160,6 @@ void Pikel::Draw()
  */
 void Pikel::Finalize()
 {
-
 }
 
 /**
@@ -222,4 +204,3 @@ void Pikel::CollisionResponce(GameObject* other)
 
 	}
 }
-

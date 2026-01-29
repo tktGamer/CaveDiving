@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/04
+ * @date   日付  2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "HPAutoRecoveryGem.h"
@@ -25,23 +24,25 @@ REGISTER_GEM_CLASS("HPAutoRecoveryGem", HPAutoRecoveryGem);
  * @param[in] image 　 選択時の画像
  */
 HPAutoRecoveryGem::HPAutoRecoveryGem(const GemAbility& ability, const GemImagePath& image)
-	:Gem{ability,image}
+	:
+	Gem{ability,image}
 {
 }
-
-
-
 
 /**
  * @brief デストラクタ
  */
 HPAutoRecoveryGem::~HPAutoRecoveryGem()
 {
-
 }
 
-
-
+/**
+ * @brief 多態コピー
+ *
+ * @param[in] なし
+ *
+ * @return コピー
+ */
 std::unique_ptr<Gem> HPAutoRecoveryGem::Clone() const
 {
 	return std::make_unique<HPAutoRecoveryGem>(*this);
@@ -83,9 +84,6 @@ int HPAutoRecoveryGem::RecoveryHP()
 	return GetAbility().value;
 }
 
-
-
-
 /**
  * @brief 終了処理
  *
@@ -95,7 +93,4 @@ int HPAutoRecoveryGem::RecoveryHP()
  */
 void HPAutoRecoveryGem::Finalize()
 {
-
 }
-
-

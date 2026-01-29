@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/11/25
+ * @date   日付　2026/01/16
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -23,8 +23,20 @@ std::unique_ptr<Messenger> Messenger::s_messenger = nullptr;
  * @param[in]なし
  */
 Messenger::Messenger()
-	:m_lights{}
-	,m_objects{}
+	:
+	m_lights{},
+	m_objects{},
+	m_operateObjectID{},
+	m_playerObjectID{},
+	m_outlineActive{},
+	m_elapsedTime{}
+{
+}
+
+/**
+ * @brief デストラクタ
+ */
+Messenger::~Messenger()
 {
 }
 
@@ -74,6 +86,11 @@ void Messenger::Register(int objectID, GameObject* object)
 {
 	// オブジェクトIDとオブジェクトを登録する
 	m_objects.emplace(objectID, object);
+	//登録されたのがプレイヤーならIDを記録
+	if (object->GetObjectType() == Tag::Player) 
+	{
+		m_playerObjectID = objectID;
+	}
 }
 
 /**

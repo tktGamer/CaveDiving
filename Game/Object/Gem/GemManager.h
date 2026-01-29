@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/04
+ * @date   日付　2026/01/19
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
 #include"Game/Object/Gem/Gem.h"
@@ -51,19 +49,28 @@ public:
 	};
 
 	static constexpr int PLAYER_HOLD_GEM_NUM = 3;
-// データメンバの宣言 -----------------------------------------------
-private:
-	// GemManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
-	static std::unique_ptr<GemManager> s_gemManager;
-
-
-	// 宝石の配列
-	std::vector<std::unique_ptr<Gem>> m_gemList;
-
-
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+	//id番の宝石を取得
+	const Gem* GetIDNumberedGem(const int& id);
+// デストラクタ
+	~GemManager();
+// 操作
+	// GemManagerクラスのインスタンスを取得する
+	static GemManager* const GetInstance();
+	// 宝石データの読み込み
+	void LoadGemData();
+	//ランダムに宝石を取得する
+	const Gem* RandomSelection();
+
+	//所持している宝石を外部ファイルに保存
+	bool SaveHoldGem(const std::string& savePath, const std::vector<int>& gemID);
+	//所持している宝石を外部ファイルから読み込み
+	bool LoadHoldGem(const std::string& loadPath, std::vector<int>& gemID);
+
+// コンストラクタ
+private:
 	// コンストラクタ
 	GemManager();
 	// インスタンスをコピーすることを禁止する
@@ -74,41 +81,14 @@ public:
 	GemManager(const GemManager&) = delete;
 	// ムーブコンストラクタは禁止する
 	GemManager(GemManager&&) = delete;
-
-
-	// デストラクタ
-	~GemManager();
-
-
-// 操作
-public:
-	// GemManagerクラスのインスタンスを取得する
-	static GemManager* const GetInstance();
-
-	// 宝石データの読み込み
-	void LoadGemData();
-
-	void Update();
-
-
-	void Finalize();
-
-	//ランダムに宝石を取得する
-	const Gem* RandomSelection();
-
-	//所持している宝石を外部ファイルに保存
-	bool SaveHoldGem(const std::string& savePath, const std::vector<int>& gemID);
-
-	//所持している宝石を外部ファイルから読み込み
-	bool LoadHoldGem(const std::string& loadPath, std::vector<int>& gemID);
-//　取得・設定
-public:
-	//id番の宝石を取得
-	const Gem* GetIDNumberedGem(const int& id);
-
 //　内部操作
 private:
 	//宝石の種類を決定する
 	Gem::Type DecisinType(const std::string& type);
+// データメンバの宣言 -----------------------------------------------
+private:
+	// GemManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
+	static std::unique_ptr<GemManager> s_gemManager;
+	// 宝石の配列
+	std::vector<std::unique_ptr<Gem>> m_gemList;
 };
-

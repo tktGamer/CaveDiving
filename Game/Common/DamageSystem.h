@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付 2025/08/22
+ * @date   日付  2026/01/17
  */
 
  // 多重インクルードの防止 =====================================================
@@ -26,17 +26,25 @@ class DamageSystem
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-
-// データメンバの宣言 -----------------------------------------------
-private:
-	// DamageSystemクラスのインスタンスへのユニークポインタ「シングルトン化する」
-	static std::unique_ptr<DamageSystem> s_damageSystem;
-
-	//プレイヤーが与えたトータルダメージ
-	int m_totalDamage;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+	//プレイヤーが与えたトータルダメージの取得
+	int GetTotalDamage() const;
+	//トータルダメージのリセット
+	void ResetTotalDamage();
+//デストラクタ
+	// デストラクタ
+	~DamageSystem();
+// 操作
+	// DamageSystemクラスのインスタンスを取得する
+	static DamageSystem* const GetInstance();
+	//ダメージ処理
+	int DamageToCharacter(const Character* attacker, Character* defender);
+	//ダメージ計算
+	int DamageCalculation(const int attackPower, const int diffence);
+//コンストラクタ
+private:
 	// コンストラクタ
 	DamageSystem();
 	// インスタンスをコピーすることを禁止する
@@ -47,29 +55,13 @@ public:
 	DamageSystem(const DamageSystem&) = delete;
 	// ムーブコンストラクタは禁止する
 	DamageSystem(DamageSystem&&) = delete;
-
-	// デストラクタ
-	~DamageSystem();
-
-
-// 操作
-public:
-	// DamageSystemクラスのインスタンスを取得する
-	static DamageSystem* const GetInstance();
-
-	//ダメージ処理
-	int DamageToCharacter(const Character* attacker,Character* defender);
-
-	//ダメージ計算
-	int DamageCalculation(const int attackPower, const int diffence);
-//　取得・設定
-public:
-	//プレイヤーが与えたトータルダメージの取得
-	int GetTotalDamage() const;
-	//トータルダメージのリセット
-	void ResetTotalDamage();
 //　内部操作
-private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	// DamageSystemクラスのインスタンスへのユニークポインタ「シングルトン化する」
+	static std::unique_ptr<DamageSystem> s_damageSystem;
+	//プレイヤーが与えたトータルダメージ
+	int m_totalDamage;
 };
 

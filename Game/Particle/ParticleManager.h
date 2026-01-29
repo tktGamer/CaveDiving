@@ -5,12 +5,10 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付 2025/10/23
+ * @date   日付 2026/01/28
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include<unordered_map>
 #include"../Particle/Vanish/ParticleVanishControl.h"
@@ -30,6 +28,7 @@ class ParticleManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//パーティクルの種類
 	enum ParticleType
 	{
 		Vanish = 0,
@@ -41,48 +40,15 @@ public:
 		Shield,
 		Num
 	};
-// データメンバの宣言 -----------------------------------------------
-private:
-	// ParticleManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
-	static std::unique_ptr<ParticleManager> s_particleManager;
-	//パーティクルコントロールクラス配列
-	std::unordered_map<ParticleType, ParticleControl*> m_particleCotrolers;
-	//カメラクラスポインタ
-	const Camera* m_pCamera;
-	
-	//消滅パーティクルの管理クラス
-	std::unique_ptr<ParticleVanishControl> m_particleVanishControl;
-	//パワーアップパーティクルの管理クラス
-	std::unique_ptr<ParticlePowerUpControl> m_particlePowerUpControl;
-	//移動時の土埃パーティクルの管理クラス
-	std::unique_ptr<ParticleMoveDustControl> m_particleMoveDustControl;
-	//アイテムゲットパーティクルの管理クラス
-	std::unique_ptr<ParticleItemGetControl> m_particleItemGetControl;
-	//ダメージパーティクルの管理クラス
-	std::unique_ptr<ParticleDamageControl> m_particleDamageControl;
-	//HP回復パーティクルの管理クラス
-	std::unique_ptr<ParticleHPHealControl> m_particleHPHealControl;
-	//盾パーティクルの管理クラス
-	std::unique_ptr<ParticleShieldControl> m_particleShieldControl;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-private:
-	//コントラクタ
-	ParticleManager();
-	// インスタンスをコピーすることを禁止する
-	void operator=(const ParticleManager&) = delete;
-	// インスタンスをムーブすることを禁止する
-	ParticleManager& operator= (ParticleManager&&) = delete;
-	// コピーコンストラクタは禁止する
-	ParticleManager(const ParticleManager&) = delete;
-	// ムーブコンストラクタは禁止する
-	ParticleManager(ParticleManager&&) = delete;
-
+//　取得・設定
 public:
+	//カメラオブジェクトの設定
+	void SetCamera(const Camera* pCamera);
+//デストラクタ
 	//デストラクタ
 	~ParticleManager();
 // 操作
-public:
 	// ParticleManagerクラスのインスタンスを取得する
 	static ParticleManager* const GetInstance();
 
@@ -90,7 +56,6 @@ public:
 	void Update();
 	//描画
 	void Render();
-
 	//リセット
 	void Reset();
 
@@ -131,12 +96,41 @@ public:
 		const int& objectID
 		);
 
-//　取得・設定
-public:
-	//カメラオブジェクトの設定
-	void SetCamera(const Camera* pCamera);
 //内部処理
 private:
+// コンストラクタ
+	//コントラクタ
+	ParticleManager();
+	// インスタンスをコピーすることを禁止する
+	void operator=(const ParticleManager&) = delete;
+	// インスタンスをムーブすることを禁止する
+	ParticleManager& operator= (ParticleManager&&) = delete;
+	// コピーコンストラクタは禁止する
+	ParticleManager(const ParticleManager&) = delete;
+	// ムーブコンストラクタは禁止する
+	ParticleManager(ParticleManager&&) = delete;
 
-	
+// データメンバの宣言 -----------------------------------------------
+private:
+	// ParticleManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
+	static std::unique_ptr<ParticleManager> s_particleManager;
+	//パーティクルコントロールクラス配列
+	std::unordered_map<ParticleType, std::unique_ptr<ParticleControl>> m_particleCotrolers;
+	//カメラクラスポインタ
+	const Camera* m_pCamera;
+
+	//消滅パーティクルの管理クラス
+	std::unique_ptr<ParticleVanishControl> m_particleVanishControl;
+	//パワーアップパーティクルの管理クラス
+	std::unique_ptr<ParticlePowerUpControl> m_particlePowerUpControl;
+	//移動時の土埃パーティクルの管理クラス
+	std::unique_ptr<ParticleMoveDustControl> m_particleMoveDustControl;
+	//アイテムゲットパーティクルの管理クラス
+	std::unique_ptr<ParticleItemGetControl> m_particleItemGetControl;
+	//ダメージパーティクルの管理クラス
+	std::unique_ptr<ParticleDamageControl> m_particleDamageControl;
+	//HP回復パーティクルの管理クラス
+	std::unique_ptr<ParticleHPHealControl> m_particleHPHealControl;
+	//盾パーティクルの管理クラス
+	std::unique_ptr<ParticleShieldControl> m_particleShieldControl;
 };

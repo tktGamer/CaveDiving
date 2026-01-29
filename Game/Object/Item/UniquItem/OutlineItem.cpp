@@ -5,15 +5,13 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/05
+ * @date   日付  2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "OutlineItem.h"
 #include"Game/Common/Collision/CollisionManager.h"
 #include"Game/Shader/ShaderManager.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -26,20 +24,17 @@
  */
 OutlineItem::OutlineItem(const Item::ItemInfo& info,const GameObject* parent,
 	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:Item{info,parent,initialPosition,initialAngle}
+	:
+	Item{info,parent,initialPosition,initialAngle}
 {
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 OutlineItem::~OutlineItem()
 {
-
 }
-
 
 /**
  * @brief アイテムが取得されたときの追加処理
@@ -50,8 +45,7 @@ OutlineItem::~OutlineItem()
  */
 void OutlineItem::OnItemGetExtra(const GameObject* other)
 {
+	UNREFERENCED_PARAMETER(other);
 	//アウトラインをだすようにする
 	Messenger::GetInstance()->SetOutLineActive(true);
-
 }
-

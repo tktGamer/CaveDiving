@@ -5,18 +5,14 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/12/03
+ * @date   日付  2026/01/27
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticlePowerUpControl.h"
-
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,10 +20,10 @@
  * @param[in] texturePath テクスチャハンドル
  */
 ParticlePowerUpControl::ParticlePowerUpControl(const wchar_t* texturePath)
-	:ParticleControl{texturePath}
-	,m_centerPos{nullptr}
+	:
+	ParticleControl{texturePath},
+	m_centerPos{nullptr}
 {
-
 }
 
 /**
@@ -75,7 +71,9 @@ void ParticlePowerUpControl::Update()
 /**
  * @brief 描画処理
  *
- * @param[in] なし
+ * @param[in] target  　 カメラの注視点
+ * @param[in] cameraPos　カメラの座標
+ * @param[in] cameraUp　 カメラの上ベクトル
  *
  * @return なし
  */
@@ -84,7 +82,6 @@ void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target, 
 
 	ShaderManager* shader = ShaderManager::GetInstance();
 	Graphics* graphics = Graphics::GetInstance();
-	ID3D11DeviceContext1* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
@@ -175,25 +172,25 @@ void ParticlePowerUpControl::Reset()
 
 
 /**
- * @brief 敵消滅パーティクルリクエスト
+ * @brief パワーアップパーティクルリクエスト
  *
  * @param[in] pos 発生位置
  *
  * @return なし
  */
-void ParticlePowerUpControl::RequestParticlePowerUp(const DirectX::SimpleMath::Vector3& pos,DirectX::SimpleMath::Color color)
+void ParticlePowerUpControl::RequestParticlePowerUp(const DirectX::SimpleMath::Vector3& pos,const DirectX::SimpleMath::Color& color)
 {
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < PARTICLE_GENERATE_NUM; i++)
 	{
 		
-		float angle = DirectX::XMConvertToRadians(360.0f / 6* i); // 各オブジェクトの角度
+		float angle = DirectX::XMConvertToRadians(360.0f / PARTICLE_GENERATE_NUM* i); // 各オブジェクトの角度
 		 float addX = 2.0f * cos(angle); // X座標
 		 float addZ = 2.0f * sin(angle); // Z座標
 
 		AddParticle(std::make_unique<ParticlePowerUp>(
-			0.3f,																	//	生存時間(s)
+			PARTICLE_LIFE,																	//	生存時間(s)
 			DirectX::SimpleMath::Vector3{ addX,-1.0f,addZ },													//	基準座標
-			DirectX::SimpleMath::Vector3{ 0.0f,10.0f,0.0f },														//	速度
+			PARTICLE_VELOCITY,														//	速度
 			DirectX::SimpleMath::Vector3::One * -0.1f,								//	加速度
 			DirectX::SimpleMath::Vector3::One, DirectX::SimpleMath::Vector3::One,	//	初期スケール、最終スケール
 			color, color	//	初期カラー、最終カラー

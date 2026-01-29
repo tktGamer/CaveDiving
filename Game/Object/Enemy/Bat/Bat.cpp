@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/05
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Bat.h"
@@ -25,10 +24,21 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 Bat::Bat(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: Character(BAT_BASE_HP,BAT_BASE_ATTACK,BAT_BASE_DIFFENCE
-				,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
-	, m_sphere{ GetPosition(), BAT_SPHERE_SIZE } // 初期位置とサイズを設定
-	, m_messageID{}
+	: 
+	Character(BAT_BASE_HP,BAT_BASE_ATTACK,BAT_BASE_DIFFENCE
+				,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle),
+	m_sphere{ GetPosition(), BAT_SPHERE_SIZE },
+	m_messageID{},
+	m_frameCount{},
+	m_motionAngle{},
+	m_idlingState{},   
+	m_movingState{},  
+	m_attackState{},
+	m_chasingState{},
+	m_attackPreaparing{}, 
+	m_damagedState{},
+	m_rightWing{},
+	m_leftWing{}
 {
 	//テクスチャ設定
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(ResourcePath::TEXTURE::BAT));
@@ -42,22 +52,14 @@ Bat::Bat(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPo
 	//モデルの初期が左羽の向きなので反対向きにする
 	m_rightWing = GameObjectFactory::CreateBatWing(this, this,RIGHTWING_INIT_POS
 	,DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,RIGHT_WING_INIT_ANGLE));
-
-
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 Bat::~Bat()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -78,7 +80,6 @@ void Bat::Initialize()
 
 	//初期状態設定
 	SetState(m_idlingState.get());
-
 	//角度設定
 	SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 	//大きさ設定
@@ -87,10 +88,7 @@ void Bat::Initialize()
 	//現在位置・角度設定
 	SetCurrentPosition(GetPosition());
 	SetCurrentAngle(GetQuaternion());
-
 }
-
-
 
 /**
  * @brief 更新処理
@@ -110,10 +108,8 @@ void Bat::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dire
 		return;
 	}
 
-
 	//現在の状態を更新
 	GetState()->Update(elapsedTime);
-
 	//ダメージ演出更新
 	DamageFlashUpdate();
 
@@ -133,9 +129,6 @@ void Bat::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dire
 	m_frameCount += elapsedTime;
 }
 
-
-
-
 /**
  * @brief 描画処理
  *
@@ -150,17 +143,14 @@ void Bat::Draw()
 	{
 		return;
 	}
-
-
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 	ShaderManager* shader = ShaderManager::GetInstance();
-
+	///ワールド行列を計算
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
-
 	//アウトラインの描画
 	if (Messenger::GetInstance()->IsOutLineActive()) 
 	{
@@ -228,7 +218,6 @@ void Bat::Draw()
  */
 void Bat::Finalize()
 {
-
 }
 
 /**
@@ -242,21 +231,27 @@ void Bat::OnMessegeAccepted(Message::MessageID messageID)
 {
 	switch (messageID)
 	{
+		//待機
 	case Message::IDLING:
 		GameObject::ChangeState(m_idlingState.get());
 		break;
+		//移動
 	case Message::MOVING:
 		GameObject::ChangeState(m_movingState.get());
 		break;
-	case Message::GROUNDATTACK:
+		//攻撃
+	case Message::ATTACK:
 		GameObject::ChangeState(m_attackState.get());
 		break;
+		//ダメージ
 	case Message::DAMAGED:
 		GameObject::ChangeState(m_damagedState.get());
 		break;
+		//追跡
 	case Message::CHASING:
 		GameObject::ChangeState(m_chasingState.get());
 		break;
+		//攻撃準備
 	case Message::ATTACKPREPARING:
 		GameObject::ChangeState(m_attackPreaparing.get());
 		break;
@@ -264,7 +259,6 @@ void Bat::OnMessegeAccepted(Message::MessageID messageID)
 	default:
 		break;
 	}
-
 }
 
 /**
@@ -314,7 +308,6 @@ void Bat::CollisionResponce(GameObject* other)
 				break;
 			}
 
-
 			//ステージ壁との衝突応答　押し出し
 			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere, dynamic_cast<Sphere*>(other->GetShape())));
 			
@@ -343,9 +336,6 @@ void Bat::CollisionResponce(GameObject* other)
 	}
 }
 
-
-
-
 /**
  * @brief 経過時間の取得
  *
@@ -370,8 +360,6 @@ void Bat::ResetFrameCount()
 	m_frameCount = 0.0f;
 }
 
-
-
 /**
  * @brief モーション用角度の取得
  *
@@ -383,7 +371,6 @@ const DirectX::SimpleMath::Quaternion& Bat::GetMotionAngle() const
 {
 	return m_motionAngle;
 }
-
 
 /**
  * @brief モーション用角度の設定

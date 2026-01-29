@@ -5,15 +5,13 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/26
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GolemPunchMotion.h"
 #include"Game/Object/Enemy/Golem/Golem.h"
 #include"Game/Object/Enemy/Golem/GolemHand.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,10 +21,15 @@
  * @param[in] pLeftGolemHand  左手のポインタ
  */
 GolemPunchMotion::GolemPunchMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
-	: AttackMotion{GOLEM_PUNCH_MOTION_MODIFIER}
-	, m_pGolem{ pGolem }
-	, m_pRightGolemHand{ pRightGolemHand }
-	, m_pLeftGolemHand{ pLeftGolemHand }
+	: 
+	AttackMotion{GOLEM_PUNCH_MOTION_MODIFIER},
+	m_pGolem{ pGolem },
+	m_pRightGolemHand{ pRightGolemHand },
+	m_pLeftGolemHand{ pLeftGolemHand },
+	m_startPosition{},
+	m_goalPosition{},
+	m_coolTime{},
+	m_attackSound{}
 {
 	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GOLEM_PUNCH));
 }
@@ -41,8 +44,6 @@ GolemPunchMotion::~GolemPunchMotion()
 
 }
 
-
-
 /**
  * @brief 初期化処理
  *
@@ -55,7 +56,7 @@ void GolemPunchMotion::Initialize()
 	//スタート位置とゴール位置
 	m_startPosition = m_pRightGolemHand->GetPosition();
 	m_goalPosition  = m_startPosition + PUNCH_MOVE;
-
+	//モーション値初期化
 	SetMotionLerp(0.0f);
 
 	m_attackSound->Play(false);
@@ -95,10 +96,7 @@ bool GolemPunchMotion::Update()
 		}
 	}
 
-
-
 	return false;
-
 }
 
 
@@ -122,4 +120,3 @@ void GolemPunchMotion::Reset()
 	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 	m_pLeftGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 }
-

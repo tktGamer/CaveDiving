@@ -5,13 +5,11 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/12/02
+ * @date   日付　2026/01/25
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "PartObject.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -22,21 +20,18 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 PartObject::PartObject(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:GameObject{ Tag::ObjectPart,parent,initialPosition,initialAngle }
-	, m_parentCharacter{ root }
+	:
+	GameObject{ Tag::ObjectPart,parent,initialPosition,initialAngle },
+	m_parentCharacter{ root }
 {
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 PartObject::~PartObject()
 {
-
 }
-
 
 /**
  * @brief メッセージ対応処理
@@ -47,10 +42,6 @@ PartObject::~PartObject()
  */
 void PartObject::OnMessegeAccepted(Message::MessageID messageID)
 {
-	switch (messageID)
-	{
-
-	}
 }
 
 /**

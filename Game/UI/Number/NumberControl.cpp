@@ -31,8 +31,8 @@ NumberControl::NumberControl(const NumberTextureData& data, const DirectX::Simpl
 	int textureWidth = 0, textureHeight = 0;
 	ResourceManager::GetInstance()->GetTextureSize(TKTLib::StringToWchar(data.texturePath), textureWidth, textureHeight);
 	//”š‚Ğ‚Æ‚Â‚ÌƒTƒCƒY
-	m_numberSize.x  = textureWidth  / data.col;
-	m_numberSize.y  = textureHeight / data.raw;
+	m_numberSize.x = static_cast<float>(textureWidth / data.col);
+	m_numberSize.y = static_cast<float>(textureHeight / data.raw);
 
 	m_numberUI = std::make_unique<Number>(data.texturePath,m_numberSize);
 }

@@ -5,13 +5,11 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/17
+ * @date   日付  2026/01/25
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Weapon.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -22,20 +20,19 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Weapon::Weapon(Character* owner, Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:GameObject{type,parent,initialPosition,initialAngle}
-	,m_owner{owner}
+Weapon::Weapon(Character* owner, Tag::ObjectType type,const GameObject* parent, 
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+	:
+	GameObject{type,parent,initialPosition,initialAngle},
+	m_owner{owner}
 {
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 Weapon::~Weapon()
 {
-
 }
 
 /**
@@ -61,6 +58,3 @@ Character* Weapon::GetOwner() const
 {
 	return m_owner;
 }
-
-
-

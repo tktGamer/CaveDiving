@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/12
+ * @date   日付　2026/01/18
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -25,8 +25,6 @@
 std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(
 	const wchar_t* path, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
 {
-	
-	
 	//「UI」の生成
 	std::unique_ptr<UserInterface> ui = std::make_unique<UserInterface>();
 	ui->SetWindowSize(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y);
@@ -45,13 +43,11 @@ std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(
  */
 std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound)
 {
-
 	//「メニューUI」の生成
 	std::unique_ptr<Menu> menu = std::make_unique<Menu>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,cursolSound);
 	menu->Initialize();
 
 	return std::move(menu);
-
 }
 
 /**

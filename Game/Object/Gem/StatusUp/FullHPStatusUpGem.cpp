@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/04
+ * @date   日付  2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "FullHPStatusUpGem.h"
@@ -24,23 +23,27 @@ REGISTER_GEM_CLASS("FullHPStatusUpGem", FullHPStatusUpGem);
  * @param[in] image 　 選択時の画像
  */
 FullHPStatusUpGem::FullHPStatusUpGem(const GemAbility& ability,const GemImagePath& image)
-	:StatusUpGem{ ability,image }
+	:
+	StatusUpGem{ ability,image }
 {
 }
-
-
-
 
 /**
  * @brief デストラクタ
  */
 FullHPStatusUpGem ::~FullHPStatusUpGem()
 {
-
 }
 
 
 
+/**
+ * @brief 多態コピー
+ *
+ * @param[in] なし
+ *
+ * @return コピー
+ */
 std::unique_ptr<Gem> FullHPStatusUpGem::Clone() const
 {
 	return std::make_unique<FullHPStatusUpGem>(*this);
@@ -55,9 +58,7 @@ std::unique_ptr<Gem> FullHPStatusUpGem::Clone() const
  */
 void FullHPStatusUpGem::Initialize()
 {
-
 }
-
 
 /**
  * @brief 効果を適用するか判断
@@ -77,11 +78,6 @@ const bool FullHPStatusUpGem::IsApplicable(const int& currentHP, const int& maxH
 	return false;
 }
 
-
-
-
-
-
 /**
  * @brief 終了処理
  *
@@ -91,7 +87,4 @@ const bool FullHPStatusUpGem::IsApplicable(const int& currentHP, const int& maxH
  */
 void FullHPStatusUpGem::Finalize()
 {
-
 }
-
-

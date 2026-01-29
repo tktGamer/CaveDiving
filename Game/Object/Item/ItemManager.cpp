@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/07
+ * @date   日付　2026/01/17
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -24,8 +24,10 @@
  * @param[in] なし
  */
 ItemManager::ItemManager()
+	:
+	m_itemInfoList{},
+	m_items{}
 {
-
 }
 
 
@@ -122,28 +124,18 @@ void ItemManager::GenerateItem()
 	info.type = Item::EffectType::Attack;
 	info.increase = 10;
 	info.time = 10;
-	m_items.emplace_back(std::make_unique<Item>(info, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
-	m_items.back()->Initialize();
-	m_items.back()->SetPosition({ -10.0f,2.0f,0.0f });
+	m_items.emplace_back(GameObjectFactory::CreateItem(info, nullptr, DirectX::SimpleMath::Vector3{ -10.0f,2.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
+	m_items.emplace_back(GameObjectFactory::CreateItem(info, nullptr, DirectX::SimpleMath::Vector3{ 45.0f,2.0f,-25.0f }, DirectX::SimpleMath::Quaternion::Identity));
 
-	m_items.emplace_back(std::make_unique<Item>(info, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
-	m_items.back()->Initialize();
-	m_items.back()->SetPosition({ 45.0f,2.0f,-25.0f });
 	info.type = Item::EffectType::Diffece;
 	info.increase = 10;
 	info.time = 10;
-
-	m_items.emplace_back(std::make_unique<Item>(info, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
-	m_items.back()->Initialize();
-	m_items.back()->SetPosition({ -20.0f,2.0f,20.0f });
+	m_items.emplace_back(GameObjectFactory::CreateItem(info, nullptr, DirectX::SimpleMath::Vector3{ -20.0f,2.0f,20.0f }, DirectX::SimpleMath::Quaternion::Identity));
 
 	info.type = Item::EffectType::Outline;
 	info.increase = 0;
 	info.time = 10;
-
-	m_items.emplace_back(std::make_unique<OutlineItem>(info, nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity));
-	m_items.back()->Initialize();
-	m_items.back()->SetPosition({ 0.0f,2.0f,30.0f });
+	m_items.emplace_back(GameObjectFactory::CreateOutlineItem(info, nullptr, DirectX::SimpleMath::Vector3{ 0.0f,2.0f,30.0f }, DirectX::SimpleMath::Quaternion::Identity));
 }
 
 
@@ -243,7 +235,7 @@ void ItemManager::LoadItemData()
 
 		// 効果時間
 		std::getline(ss, token, ',');
-		itemInfo.time = std::stoi(token);
+		itemInfo.time =static_cast<float>(std::stoi(token));
 
 
 		//リストに登録

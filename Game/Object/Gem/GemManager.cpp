@@ -5,9 +5,8 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付   2025/01/04
+ * @date   日付   2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GemManager.h"
@@ -25,20 +24,16 @@ std::unique_ptr<GemManager> GemManager::s_gemManager = nullptr;
  * @param[in] なし
  */
 GemManager::GemManager()
-	:m_gemList{}
-	
+	:
+	m_gemList{}
 {
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 GemManager::~GemManager()
 {
-
 }
 
 /**
@@ -50,45 +45,12 @@ GemManager::~GemManager()
  */
 GemManager* const GemManager::GetInstance()
 {
-
 	if (s_gemManager == nullptr)
 	{
 		//GemManagerオブジェクトを生成し、そのポインタをs_gemManagerに格納する
 		s_gemManager.reset(new GemManager());
 	}
 	return s_gemManager.get();
-}
-
-
-
-
-/**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void GemManager::Update()
-{
-
-}
-
-
-
-
-
-
-/**
- * @brief 終了処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void GemManager::Finalize()
-{
-
 }
 
 /**
@@ -113,6 +75,15 @@ const Gem* GemManager::RandomSelection()
 	return m_gemList[randomIndex].get();
 }
 
+/**
+* @brief 所持宝石を保存
+*
+* @param[in] savePath  保存するファイルパス
+* @param[in] gemID　　 宝石のID
+*
+* @return true   成功
+* @return false  失敗
+*/
 bool GemManager::SaveHoldGem(const std::string& savePath, const std::vector<int>& gemID)
 {
 	//書き込み用ファイルストリーム作成
@@ -125,10 +96,8 @@ bool GemManager::SaveHoldGem(const std::string& savePath, const std::vector<int>
 
 	for (int i = 0; i < gemID.size(); i++)
 	{
-
 		// データを書き込み
 		outFile << gemID[i] << std::endl; 
-	
 	}
 	//ファイルを閉じる
 	outFile.close();
@@ -137,6 +106,16 @@ bool GemManager::SaveHoldGem(const std::string& savePath, const std::vector<int>
 	return true;
 }
 
+
+/**
+* @brief 所持宝石を読み込み
+*
+* @param[in] savePath  読み込みするファイルパス
+* @param[in] gemID　　 宝石のID
+*
+* @return true   成功
+* @return false  失敗
+*/
 bool GemManager::LoadHoldGem(const std::string& loadPath, std::vector<int>& gemID)
 {
 	//宝石をID配列を初期化

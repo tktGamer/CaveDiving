@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/08
+ * @date   日付　2025/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "HolderGem.h"
@@ -33,8 +32,6 @@ HolderGem::HolderGem(const std::vector<int>& gemID)
         }
     }
 }
-
-
 
 /**
  * @brief デストラクタ
@@ -115,7 +112,6 @@ void HolderGem::SetGem(const Gem* gem, const int& index)
         }
     }
 }
-
 
 /**
  * @brief リストの宝石を取得

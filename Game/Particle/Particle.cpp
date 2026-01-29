@@ -5,16 +5,11 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/11/20
+ * @date   日付  2026/01/28
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Particle.h"
-
-
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -32,17 +27,18 @@ Particle::Particle(const float& life,
 	const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Vector3& velocity,
 	const DirectX::SimpleMath::Vector3& accele, const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,
 	const DirectX::SimpleMath::Color& startColor, const DirectX::SimpleMath::Color& endColor)
-	:m_startLife{life}
-	,m_life{life}
-	,m_position{pos}
-	,m_velocity{velocity}
-	,m_accele{accele}
-	,m_startScale{startScale}
-	,m_nowScale{startScale}
-	,m_endScale{endScale}
-	,m_startColor{startColor}
-	,m_nowColor{startColor}
-	,m_endColor{endColor}
+	:
+	m_startLife{life},
+	m_life{life},
+	m_position{pos},
+	m_velocity{velocity},
+	m_accele{accele},
+	m_startScale{startScale},
+	m_nowScale{startScale},
+	m_endScale{endScale},
+	m_startColor{startColor},
+	m_nowColor{startColor},
+	m_endColor{endColor}
 {
 }
 
@@ -259,5 +255,3 @@ const DirectX::SimpleMath::Color Particle::GetEndColor() const
 {
 	return m_endColor;
 }
-
-

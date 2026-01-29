@@ -5,13 +5,11 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/04
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "EnemyPart.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -22,20 +20,17 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 EnemyPart::EnemyPart(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:PartObject{root,parent,initialPosition,initialAngle}
+	:
+	PartObject{root,parent,initialPosition,initialAngle}
 {
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 EnemyPart::~EnemyPart()
 {
-
 }
-
 
 /**
  * @brief メッセージ対応処理
@@ -46,9 +41,4 @@ EnemyPart::~EnemyPart()
  */
 void EnemyPart::OnMessegeAccepted(Message::MessageID messageID)
 {
-	switch (messageID) 
-	{
-
-	}
 }
-

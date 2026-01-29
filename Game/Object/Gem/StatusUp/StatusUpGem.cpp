@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/04
+ * @date   日付  2025/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "StatusUpGem.h"
@@ -22,23 +21,25 @@ REGISTER_GEM_CLASS("StatusUpGem", StatusUpGem);
  * @param[in] image 　 選択時の画像
  */
 StatusUpGem::StatusUpGem(const Gem::GemAbility& ability,const Gem::GemImagePath& image)
-	:Gem{ability,image}
+	:
+	Gem{ability,image}
 {
 }
-
-
-
 
 /**
  * @brief デストラクタ
  */
 StatusUpGem::~StatusUpGem()
 {
-
 }
 
-
-
+/**
+ * @brief 多態コピー
+ *
+ * @param[in] なし
+ *
+ * @return コピー
+ */
 std::unique_ptr<Gem> StatusUpGem::Clone() const
 {
 	return std::make_unique<StatusUpGem>(*this);
@@ -53,11 +54,7 @@ std::unique_ptr<Gem> StatusUpGem::Clone() const
  */
 void StatusUpGem::Initialize()
 {
-
 }
-
-
-
 
 /**
  * @brief 終了処理
@@ -68,6 +65,4 @@ void StatusUpGem::Initialize()
  */
 void StatusUpGem::Finalize()
 {
-
 }
-

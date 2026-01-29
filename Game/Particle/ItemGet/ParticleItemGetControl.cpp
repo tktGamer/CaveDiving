@@ -1,21 +1,17 @@
 /**
  * @file   ParticleItemGetControl.cpp
  *
- * @brief  パーティクル管理に関するソースファイル
+ * @brief  アイテムパーティクル管理に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/11/25
+ * @date   日付  2026/01/27
  */		
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleItemGetControl.h"
-
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,9 +19,9 @@
  * @param[in] texturePath テクスチャハンドル
  */
 ParticleItemGetControl::ParticleItemGetControl(const wchar_t* texturePath)
-	:ParticleControl{ texturePath }
+	:
+	ParticleControl{ texturePath }
 {
-
 }
 
 /**
@@ -34,8 +30,6 @@ ParticleItemGetControl::ParticleItemGetControl(const wchar_t* texturePath)
 ParticleItemGetControl::~ParticleItemGetControl()
 {
 }
-
-
 
 /**
  * @brief 更新処理
@@ -77,7 +71,8 @@ void ParticleItemGetControl::Update()
  *
  * @return なし
  */
-void ParticleItemGetControl::Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
+void ParticleItemGetControl::Render(const DirectX::SimpleMath::Vector3& target, 
+	const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
 {
 	ShaderManager* shader = ShaderManager::GetInstance();
 
@@ -121,16 +116,17 @@ void ParticleItemGetControl::Reset()
 	ClearTimerAndPos();
 }
 
-
-
 /**
- * @brief 敵消滅パーティクルリクエスト
+ * @brief アイテムパーティクルリクエスト
  *
  * @param[in] pos 発生位置
+ * @param[in] targetPos 目標位置
+ * @param[in] color 　色
  *
  * @return なし
  */
-void ParticleItemGetControl::RequestItemGetParticle(const DirectX::SimpleMath::Vector3& pos,const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Color& color)
+void ParticleItemGetControl::RequestItemGetParticle(const DirectX::SimpleMath::Vector3& pos,
+	const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Color& color)
 {
 	//ランダムな数のパーティクルを発生させる
 	int particleNum = static_cast<int>(TKTLib::GetRand(10, 15));
@@ -143,8 +139,7 @@ void ParticleItemGetControl::RequestItemGetParticle(const DirectX::SimpleMath::V
 			static_cast<float>(TKTLib::GetRand(-2.0f,2.0f)),
 			static_cast<float>(TKTLib::GetRand(-3.0f,3.0f)),
 			static_cast<float>(TKTLib::GetRand(-2.0f,2.0f))
-	
-	
+
 		};
 
 		AddParticle(

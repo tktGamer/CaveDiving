@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/25
+ * @date   日付　2026/01/18
  */
 
  // ヘッダファイルの読み込み ===================================================
@@ -21,12 +21,12 @@
  * @param[in] pBat コウモリのポインタ
  */
 BatDamageMotion::BatDamageMotion(Bat* pBat)
-	: m_pBat{pBat}
+	: 
+	m_pBat{pBat},
+	m_wingSound{}
 {
 	m_wingSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::BAT_WING));
 }
-
-
 
 /**
  * @brief デストラクタ
@@ -35,8 +35,6 @@ BatDamageMotion::~BatDamageMotion()
 {
 
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -56,8 +54,6 @@ void BatDamageMotion::Initialize()
 
 }
 
-
-
 /**
  * @brief 更新処理
  *
@@ -68,40 +64,30 @@ void BatDamageMotion::Initialize()
  */
 bool BatDamageMotion::Update()
 {
-
-
 	float motionLerp = GetMotionLerp();
-
+	
 	DirectX::SimpleMath::Quaternion angle = m_pBat->GetQuaternion();
 	//Y軸回転させる
 	angle *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(
 		DirectX::SimpleMath::Vector3::UnitY,
 		BAT_DAMAGE_REACTION_ROTATE_SPEED * Messenger::GetInstance()->GetElapsedTime());
-
 	m_pBat->SetQuaternion(angle);
 
+	//モーション進行
+	motionLerp += MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
 
-	motionLerp += 3.0f * Messenger::GetInstance()->GetElapsedTime();
-
-	SetMotionLerp(std::min(motionLerp, 1.0f));
-
+	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
+	//モーションが完了したら
 	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
+		//音再生
 		m_wingSound->Play(false);
 		
-
 		SetMotionLerp(0.0f);
 	}
 
-
-
 	return false;
-
 }
-
-
-
-
 
 /**
  * @brief 終了処理

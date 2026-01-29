@@ -5,13 +5,11 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/08
+ * @date   日付  2026/01/28
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleControl.h"
-
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
@@ -22,8 +20,13 @@
  * @param[in] texturePath テクスチャハンドル
  */
 ParticleControl::ParticleControl(const wchar_t* texturePath)
-	: m_timerAndPos{}
-	, m_vertices{}
+	: 
+	m_timerAndPos{},
+	m_vertices{},
+	m_batch{},
+	m_cameraCBuffer{},
+	m_texture{},
+	m_particles{}
 {
 	m_texture = ResourceManager::GetInstance()->RequestTexture(texturePath);
 	//	プリミティブバッチの作成
@@ -37,7 +40,6 @@ ParticleControl::ParticleControl(const wchar_t* texturePath)
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bd.CPUAccessFlags = 0;
 	Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice()->CreateBuffer(&bd, nullptr, &m_cameraCBuffer);
-
 }
 
 /**
@@ -46,12 +48,6 @@ ParticleControl::ParticleControl(const wchar_t* texturePath)
 ParticleControl::~ParticleControl()
 {
 }
-
-
-
-
-
-
 
 /**
  * @brief 頂点があるか
@@ -77,8 +73,6 @@ ID3D11ShaderResourceView** ParticleControl::GetTexture() const
 {
 	return m_texture;
 }
-
-
 
 /**
  * @brief パーティクルの更新
@@ -161,8 +155,6 @@ void ParticleControl::CreateVertex(const DirectX::SimpleMath::Vector3& target, c
 		customCreate();
 		return;
 	}
-
-
 
 	//	ビルボード設定時にもらったカメラ情報から、視線ベクトルを計算する
 	DirectX::SimpleMath::Vector3 cameraDir = target - cameraPos;
@@ -302,30 +294,22 @@ void ParticleControl::SetShaderState() const
 	cbuff.matProj = Graphics::GetInstance()->GetProjectionMatrix().Transpose();
 	//	ワールド設定
 	cbuff.matWorld = DirectX::SimpleMath::Matrix::Identity.Transpose();
-	cbuff.Light = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
+	cbuff.diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Particle), 0, NULL, &cbuff, 0, 0);
-
-
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { states->LinearWrap() };
 	context->PSSetSamplers(0, 1, sampler);
-
 	//	半透明描画指定
 	ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 	//	透明判定処理
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 	//	深度バッファに書き込み参照する
 	context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 	//	カリングはなし
 	context->RSSetState(states->CullNone());
-
 	//テクスチャの登録
 	context->PSSetShaderResources(0, 1, GetTexture());
-
 	//	インプットレイアウトの登録
 	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Particle));
 
@@ -360,4 +344,3 @@ void ParticleControl::DrawBatch(const std::function<void()>& customDraw)
 	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &m_vertices[0], m_vertices.size());
 	m_batch->End();
 }
-

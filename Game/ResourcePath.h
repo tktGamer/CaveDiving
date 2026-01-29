@@ -19,6 +19,7 @@ public:
 	struct TEXTURE
 	{
 		//モデルにつける用
+		static constexpr wchar_t WHITE[] = L"White.png";
 		static constexpr wchar_t BAT[] = L"Bat.png";
 		static constexpr wchar_t BAT_WING[] = L"Wing.png";
 		static constexpr wchar_t GOLEM[] = L"Golem.png";
@@ -29,6 +30,9 @@ public:
 		static constexpr wchar_t PLAYER[]  = L"Player.png";
 		static constexpr wchar_t PLAYER_HAND[]  = L"Hand.png";
 		static constexpr wchar_t PIKEL[]  = L"Pikel.png";
+		static constexpr wchar_t GROUND[]  = L"Block.png";
+		static constexpr wchar_t WALL[]  = L"Block.png";
+		static constexpr wchar_t TOON_MAP[]  = L"ToonMap.png";
 
 		//宝石用
 
@@ -37,11 +41,16 @@ public:
 		{
 			static constexpr wchar_t LOGO[]  = L"Logo.png";
 			static constexpr wchar_t TITLE[]  = L"UI/Title.png";
-			static constexpr wchar_t LOAD[]  = L"UI/Title.png";
-			static constexpr wchar_t GEM_BACK[]  = L"UI/Title.png";
+			static constexpr wchar_t LOAD[]  = L"UI/Loading.png";
+			static constexpr wchar_t LOAD_BACK[]  = L"Loadback.jpg";
+			static constexpr wchar_t GEM_BACK[]  = L"UI/GemSelectBack.png";
+			static constexpr wchar_t LOAD_GEM_CHECK[]  = L"UI/LoadGemCheck.png";
+			static constexpr wchar_t CHECK[]  = L"UI/Check.png";
 
 			static constexpr wchar_t PRESS_SPACE[]  = L"UI/PressSpace.png";
 			static constexpr wchar_t NUMBER[]  = L"Number.png";
+			static constexpr wchar_t GAME_CLEAR[]  = L"UI/GameClear.png";
+			static constexpr wchar_t GAME_OVER[]  = L"UI/GameOver.png";
 
 		};
 		//パーティクル
@@ -63,6 +72,8 @@ public:
 	//"Resources/Models/" の次に続くパス
 	struct MODEL
 	{
+		static constexpr wchar_t TITLE_CAVE[] = L"Cave.sdkmesh";
+		static constexpr wchar_t SKY_DOME[] = L"SkyDome.sdkmesh";
 		static constexpr wchar_t BAT[] = L"Bat.sdkmesh";
 		static constexpr wchar_t BAT_WING[] = L"Wing.sdkmesh";
 		static constexpr wchar_t GOLEM[] = L"Golem.sdkmesh";
@@ -72,11 +83,22 @@ public:
 		static constexpr wchar_t PLAYER_HAND[] = L"Hand.sdkmesh";
 		static constexpr wchar_t PIKEL[] = L"Pikel.sdkmesh";
 		static constexpr wchar_t RUMI_ROCK[] = L"Rock.sdkmesh";
+		static constexpr wchar_t GROUND[] = L"Block.sdkmesh";
+		static constexpr wchar_t WALL[] = L"Cave_Game.sdkmesh";
 	};
 	//音
 	//"Resources/Sounds/" の次に続くパス
 	struct SOUND
 	{
+		//タイトルBGM
+		static constexpr wchar_t TITLE_BGM[] = L"TitleBGM.wav";
+		//ゲームBGM
+		static constexpr wchar_t GAME_BGM[] = L"GameBGM.wav";
+		
+		//宝石ロードON・OFF
+		static constexpr wchar_t TITLE_GEM_LOAD[] = L"TitleGemLoad.wav";
+		//ゲームスタート
+		static constexpr wchar_t GAME_START[] = L"GameStart.wav";
 		//プレイヤー攻撃音
 		static constexpr wchar_t PLAYER_SWING[] = L"PikelSwing.wav";
 		static constexpr wchar_t PLAYER_SPIN[] = L"TurnAttack.wav";
@@ -102,6 +124,11 @@ public:
 		static constexpr wchar_t CURSOL_MOVE[]   = L"CursorMove.wav";
 		//決定音
 		static constexpr wchar_t DECIDE[]   = L"decidegem.wav";
+		//メニュー決定音
+		static constexpr wchar_t MENU_DECIDE[]   = L"DecideMenu.wav";
+		//ゲームクリア音
+		static constexpr wchar_t GAME_CLEAR[]   = L"GameClear.wav";
+
 	};
 	//シェーダー
 	struct SHADER

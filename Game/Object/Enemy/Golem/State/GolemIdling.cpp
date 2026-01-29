@@ -5,14 +5,12 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/03
+ * @date   日付  2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Golem/State/GolemIdling.h"
 #include "Game/Object/Enemy/Golem/Golem.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,7 +18,7 @@
  * @param[in] golem ゴーレムのポインタ
  */
 GolemIdling::GolemIdling(Golem* golem)
-	:m_golem(golem)
+	:m_golem{golem}
 {
 }
 /**
@@ -72,8 +70,9 @@ void GolemIdling::Update(const float& elapsedTime)
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MOVING);
 	}
 
-	//プレイヤーを取得
-	GameObject* pPlayer =  Messenger::GetInstance()->GetObject(0);
+	//プレイヤーのオブジェクトを取得
+	Messenger* messenger = Messenger::GetInstance();
+	GameObject* pPlayer = messenger->GetObject(messenger->GetPlayerObjectID());
 	//プレイヤーか確認
 	if (pPlayer && pPlayer->GetObjectType() == Tag::Player)
 	{
@@ -86,8 +85,6 @@ void GolemIdling::Update(const float& elapsedTime)
 			Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::CHASING);
 		}
 	}
-
-
 }
 
 /**
@@ -114,7 +111,6 @@ void GolemIdling::Render()
 {
 #ifdef _DEBUG
 #endif // DEBUG
-
 }
 
 /**

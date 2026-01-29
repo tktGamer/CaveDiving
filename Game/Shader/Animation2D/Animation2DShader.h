@@ -1,24 +1,21 @@
 /**
  * @file   Animation2DShader.h
  *
- * @brief  モデル用シェーダーに関するヘッダファイル
+ * @brief  2Dアニメーション用シェーダーに関するヘッダファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　22025/12/08
+ * @date   日付　2026/01/29
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
 #include"../Shader.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief モデルシェーダー
+  * @brief 2Dアニメーション用シェーダー
   */
 class Animation2DShader : public Shader
 {
@@ -28,45 +25,38 @@ public:
 	struct Animation2DCB
 	{
 		//ウィンドウサイズ
-		DirectX::SimpleMath::Vector2	windowSize;
+		DirectX::SimpleMath::Vector2	windowSize = { 0.0f,0.0f };
 		//透過
-		float alphaData;
+		float alphaData = 1.0f;
 		//アニメーションする時間
-		float animationTime;
+		float animationTime = 0.0f;
 		//経過時間
-		float currentTime;
+		float currentTime = 0.0f;
 		//総枚数
-		int frameCount;
+		int frameCount = 0;
 		//横の枚数
-		int widthFrame;
+		int widthFrame = 0;
 		//縦の枚数
-		int heightFrame;
+		int heightFrame = 0;
 	};
 
-// データメンバの宣言 -----------------------------------------------
-private:
-
-
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
 	//	頂点情報関数
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> ANIMATION_2D_INPUT_LAYOUT;
 	// コンストラクタ
 	Animation2DShader(const ShaderPath& pathes);
-
 	// デストラクタ
 	~Animation2DShader();
-
-
 // 操作
-public:
-
-//　取得・設定
-public:
 
 //　内部操作
 private:
-	
+
+// データメンバの宣言 -----------------------------------------------
+private:
+
 };
 

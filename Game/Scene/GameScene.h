@@ -5,15 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/11/20
+ * @date   日付  2026/01/28
  */
-
 // 多重インクルードの防止 =====================================================
 #pragma once
-
-
-
-
 // ヘッダファイルの読み込み ===================================================
 #include"RenderTexture.h"
 #include<unordered_map>
@@ -34,11 +29,7 @@
 #include"../Object/Item/ItemManager.h"
 #include"../Shader/Bloom.h"
 // クラスの宣言 ===============================================================
-class ResourceManager;    ///< リソースマネージャ
-
-
-
-
+class ResourceManager;
 // クラスの定義 ===============================================================
 /**
  * @brief ゲームシーン
@@ -76,7 +67,15 @@ public:
 
 // 内部実装
 private:
+	//キーボード入力
+	void PressKeyBoard();
+	//移動メッセージ
+	void MovingMessage(const int& operateObjectID);
+
+	//UI生成
 	void CreateUI();
+	//敵の生成
+	void SpawnEnemy();
 
 	//ステージ終了判定
 	const bool IsFinish();
@@ -84,28 +83,25 @@ private:
 	void SavePlayer();
 	//ステージのライト状況を保存
 	void SaveLight();
-	//敵の生成
-	void SpawnEnemy();
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	ResourceManager* m_pResourceManager;    ///< リソースマネージャ
 	//衝突表示オブジェクト
 	std::unique_ptr<Ito::DisplayCollision> m_displayCollision;
+	//当たり判定管理
 	CollisionManager* m_collsionManager;
-
+	//ゲーム音楽
 	std::unique_ptr<Sound> m_gameBGM;
 
-	std::unique_ptr<DX::RenderTexture> m_renderTexture;
-
+	//
 	std::unique_ptr<Bloom> m_bloomEffect;
+	//レンダーテクスチャ
+	std::unique_ptr<DX::RenderTexture> m_renderTexture;
 	//レンダーテクスチャ （シーン全体）
 	std::unique_ptr<DX::RenderTexture> m_offScreenRT;
-
 	//レンダーテクスチャ（ブラー）
 	std::unique_ptr<DX::RenderTexture> m_blur1RT;
 	std::unique_ptr<DX::RenderTexture> m_blur2RT;
-
 	//ポストプロセス
 	std::unique_ptr<DirectX::BasicPostProcess> m_basicPostProcess;
 	//デュアルポストプロセス
@@ -120,16 +116,15 @@ private:
 	std::unique_ptr<Player> m_player;    
 	// ステージオブジェクト
 	std::unique_ptr<Stage> m_stage;    
-
+	//アイテム管理
+	std::unique_ptr<ItemManager> m_itemManager;
+	//プレイヤーのHPゲージUI
 	std::unique_ptr<Gauge> m_hpGauge;
+	//所持宝石UI
 	std::unique_ptr<HoldGem> m_holdGem;
+	//バフ表示UI
 	std::unique_ptr<BuffUIControl> m_buffUI;
+	//残りの敵数UI
 	std::unique_ptr<ClearConditions> m_clearConditionsUI;
 	//std::unique_ptr<NumberControl> m_clearConditionsUI;
-
-	std::unique_ptr<ItemManager> m_itemManager;
-
-
-
-
 };

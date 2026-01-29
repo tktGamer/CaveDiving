@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/12/31
+ * @date   日付　2026/01/18
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #ifndef BAT_CHASING_DEFINED
@@ -24,27 +23,23 @@ class GameObject;
 class BatChasing : public IState
 {
 // クラス定数の宣言 -------------------------------------------------
+public:
+//非公開定数
 private:
 	//攻撃範囲
 	static constexpr  float ATTACK_RANGE = 4.5f;
-
 	//追跡速度
 	static constexpr  float CHASE_SPPED = 0.7f;
-public:
 
-// データメンバの宣言 -----------------------------------------------
-private:
-	// コウモリのポインタ
-	Bat* m_bat;
-
-	const GameObject* m_pPlayer;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
+// コンストラクタ/デストラクタ
 	// コンストラクタ
 	BatChasing(Bat* bat);
 	// デストラクタ
 	~BatChasing();
+//  操作
 	// 初期化する
 	void Initialize();
 	// 事前更新する
@@ -57,14 +52,17 @@ public:
 	void Render();
 	// 後処理を行う
 	void Finalize();
-//　取得・設定
-public:
-
 //　内部操作
 private:
 	//移動
 	void Movement();
 	//状態遷移判定
 	void CheckStateTransition();
+// データメンバの宣言 -----------------------------------------------
+private:
+	// コウモリのポインタ
+	Bat* m_bat;
+	//プレイヤーのポインタ
+	const GameObject* m_pPlayer;
 };
 #endif		// BAT_CHASING_DEFINED

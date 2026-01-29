@@ -227,6 +227,23 @@ namespace TKTLib
 	{
 		return std::wstring(str.begin(), str.end());
 	}
+	/**
+	 * @brief ログの出力
+	 *
+	 * @param[in] str  項目
+	 * @param[in] num  数値
+	 *
+	 * @return なし
+	 */
+	inline void OutPutDebugLog(std::string str, float num)
+	{
+		LPCWCHAR item = TKTLib::StringToWchar(str);
+		LPCWCHAR log = TKTLib::StringToWchar(std::to_string(num));
+		OutputDebugString(item);
+		OutputDebugString(L"::");
+		OutputDebugString(log);
+		OutputDebugString(L"\n");
+	}
 
 
 	//エラーの種類

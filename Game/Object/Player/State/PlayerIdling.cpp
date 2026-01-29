@@ -5,14 +5,12 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2025/09/05
+ * @date   日付  2026/01/20
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerIdling.h"
 #include "Game/Object/Player/Player.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,7 +18,9 @@
  * @param[in] pPlayer プレイヤーのポインタ
  */
 PlayerIdling::PlayerIdling(Player* pPlayer)
-	:m_pPlayer(pPlayer)
+	:
+	m_pPlayer{pPlayer},
+	m_idlingMotion{}
 {
 	//モーションを生成
 	m_idlingMotion = std::make_unique<PlayerIdlingMotion>
@@ -71,40 +71,16 @@ void PlayerIdling::PreUpdate()
 void PlayerIdling::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
-	// キーボードステートを取得する
-	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
 	//モーションを更新
 	m_idlingMotion->Update();
-
-	//移動キーが押されたら移動状態へ遷移
-	if (key->GetLastState().Left || key->GetLastState().Right || key->GetLastState().Up || key->GetLastState().Down)
-	{
-		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::MOVING);
-	}
-	//ジャンプキーが押されたらジャンプ状態へ遷移
-	if (key->pressed.Space) 
-	{
-		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::JUMPING);
-	}
-	//攻撃キーが押されたら攻撃状態へ遷移
-	if (key->pressed.Z) 
-	{
-		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::GROUNDATTACK);
-	}
-	//回避キーが押されたら回避状態へ遷移
-	if (key->pressed.X) 
-	{
-		Messenger::GetInstance()->Notify(m_pPlayer->GetObjectNumber(), Message::AVOIDANCE);
-	}
 
 
 	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 	
 	//重力
 	velocity.y += World::GRAVITY * elapsedTime;
-
 	m_pPlayer->SetVelocity(velocity);
-
+	//座標更新
 	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity());
 
 }
@@ -131,13 +107,10 @@ void PlayerIdling::PostUpdate()
  */
 void PlayerIdling::Render()
 {
-
 #ifdef _DEBUG
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
-	
 	debugFont->AddString(L"Idling", DirectX::SimpleMath::Vector2(500.0f, 50.0f));
 #endif // DEBUG
-
 }
 
 /**

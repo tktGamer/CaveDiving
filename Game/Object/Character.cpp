@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/08
+ * @date   日付  2026/01/23
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Character.h"
@@ -28,29 +27,28 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 Character::Character(int hp, int attack, int diffence, Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:GameObject{type,parent,initialPosition,initialAngle}
-	,m_hp{hp}
-	,m_currentHp{hp}
-	,m_attackPower{attack}
-	,m_diffence{diffence}
-	,m_isInvincible{false}
-	,m_damageFlash{0.0f}
+	:
+	GameObject{type,parent,initialPosition,initialAngle},
+	m_hp{hp},
+	m_currentHp{hp},
+	m_attackPower{attack},
+	m_diffence{diffence},
+	m_isInvincible{false},
+	m_motionAttackRate{ 0.0f },
+	m_damageFlash{ NO_DAMAGE_FLASH },
+	m_isOnGround{ false }
 {
 	//ダメージ時の音　　
 	m_damageSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound( ResourcePath::SOUND::ATTACK_HIT));
 	m_damageSound->SetVolume(0.5f);
 }
 
-
-
 /**
  * @brief デストラクタ
  */
 Character::~Character()
 {
-
 }
-
 
 /**
  * @brief 攻撃を受けたときの処理
@@ -66,26 +64,18 @@ void Character::OnDamage(GameObject* other)
 	{
 		return;
 	}
-
-
 	//当たった攻撃の方向
 	m_damageDirection = GetCurrentPosition() - other->GetCurrentPosition();
 	m_damageDirection.Normalize();
 
-
 	// ダメージを受ける
 	int damage = TakeDamage(other->Cast<Character>());
-
-
 	//ダメージ数値描画をリクエストする
 	ParticleManager::GetInstance()->RequestDamageParticle(CollisionManager::GetInstance()->CheckContactPoint(this->GetShape(), other->GetShape()),{2,2,1},damage);
-	
 	//ダメージ状態へ遷移
 	OnMessegeAccepted(Message::DAMAGED);
-
 	//無敵になる
 	SetInvincible(true);
-
 }
 
 /**
@@ -98,14 +88,16 @@ void Character::OnDamage(GameObject* other)
 int Character::TakeDamage(const Character* attacker)
 {
 	int damage = DamageSystem::GetInstance()->DamageToCharacter(attacker, this);
-
+	//ダメージがマイナスなら0にする
 	if (damage < 0) 
 	{
 		return 0;
 	}
-
+	//体力を減らす
 	m_currentHp -= damage;
+
 	m_damageSound->Play(false);
+	
 	if (m_currentHp < 0) 
 	{
 		m_currentHp = 0;
@@ -132,13 +124,52 @@ bool Character::DamageFlashUpdate()
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 	//経過時間でフラッシュを弱める
 	m_damageFlash -= elapsedTime;
-
+	//マイナスにならないように
 	if (m_damageFlash < NO_DAMAGE_FLASH) 
 	{
 		m_damageFlash = NO_DAMAGE_FLASH;
 	}
 
 	return true;
+}
+
+/**
+ * @brief 移動方向の計算
+ *
+ * @param[in] なし
+ *
+ * @return 移動方向
+ */
+DirectX::SimpleMath::Vector3 Character::CalcMoveDirection() const
+{
+
+	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Zero;
+	//ビット演算から入力された方向に進む
+	if (m_moveFlags & MOVE_FRONT) 
+	{
+		direction += MOVE::FRONT;
+	}
+	if (m_moveFlags & MOVE_BACK) 
+	{
+		direction += MOVE::BACK;
+	}
+	if (m_moveFlags & MOVE_LEFT) 
+	{
+		direction += MOVE::LEFT;
+	}
+	if (m_moveFlags & MOVE_RIGHT) 
+	{ 
+		direction += MOVE::RIGHT;
+	}
+
+	// 反対方向同時押しの打ち消しは自然にゼロになる
+
+	if (direction.LengthSquared() > 0.0f)
+	{
+		direction.Normalize(); // 斜め移動の速度補正
+	}
+
+	return direction;
 }
 
 /**
@@ -177,7 +208,6 @@ void Character::SetMaxHP(const int& hp)
 {
 	m_hp = hp;
 }
-
 
 /**
  * @brief 最大HPの取得
@@ -263,16 +293,29 @@ const float& Character::GetMotionAttackRate() const
 	return m_motionAttackRate;
 }
 
+/**
+ * @brief 速度の取得
+ *
+ * @param[in] なし
+ *
+ * @return 速度
+ */
 DirectX::SimpleMath::Vector3 Character::GetVelocity() const
 {
 	return m_velocity;
 }
 
+/**
+ * @brief 速度の設定
+ *
+ * @param[in] velocity 速度
+ *
+ * @return なし
+ */
 void Character::SetVelocity(const DirectX::SimpleMath::Vector3& velocity)
 {
 	m_velocity = velocity;
 }
-
 
 /**
  * @brief 死んでいるか
@@ -285,6 +328,31 @@ void Character::SetVelocity(const DirectX::SimpleMath::Vector3& velocity)
 bool Character::IsAlive() const
 {
 	return (m_currentHp > 0);
+}
+
+/**
+ * @brief 地上にいるか
+ *
+ * @param[in] なし
+ *
+ * @return true　地上
+ * @return false 空中
+ */
+bool Character::IsOnGround() const
+{
+	return m_isOnGround;
+}
+
+/**
+ * @brief 地上にいるかの設定
+ *
+ * @param[in] isOnGround　　地上にいるか
+ *
+ * @return　なし
+ */
+void Character::SetIsOnGround(const bool& isOnGround)
+{
+	m_isOnGround = isOnGround;
 }
 
 /**
@@ -325,17 +393,62 @@ const DirectX::SimpleMath::Vector3& Character::GetDamageDirection() const
 	return m_damageDirection;
 }
 
+/**
+ * @brief ダメージを受けた方向を設定
+ *
+ * @param[in] damageDirection ダメージを受けた方向
+ *
+ * @return なし
+ */
 void Character::SetDamageDirection(const DirectX::SimpleMath::Vector3& damageDirection)
 {
 	m_damageDirection = damageDirection;
 }
 
+/**
+ * @brief ダメージフラッシュの設定
+ *
+ * @param[in] flash 光加減 0.0～1.0
+ *
+ * @return なし
+ */
 void Character::SetDamageFlash(const float& flash)
 {
 	m_damageFlash = flash;
 }
 
+/**
+ * @brief ダメージフラッシュの取得
+ *
+ * @param[in] なし
+ *
+ * @return ダメージフラッシュ
+ */
 const float& Character::GetDamageFlash() const
 {
 	return m_damageFlash;
+}
+
+/**
+ * @brief 移動方向の設定
+ *
+ * @param[in] moveFlags 移動フラグ
+ *
+ * @return なし
+ */
+void Character::SetMoveFlags(const uint32_t& moveFlags)
+{
+	m_moveFlags = moveFlags;
+}
+
+/**
+ * @brief 移動方向の取得
+ *
+ * @param[in] なし
+ *
+ * @return 移動フラグ
+ */
+const uint32_t& Character::GetMoveFlags() const
+{
+	return m_moveFlags;
 }

@@ -3,41 +3,41 @@
  *
  * @brief  3D空間上の数字に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/26
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleNumber3D.h"
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/Shader.h"
 #include"Game/Message/Messenger.h"
-
  // メンバ関数の定義 ===========================================================
  /**
   * @brief コンストラクタ
   *
-  * @param[in] life
-  * @param[in] pos
-  * @param[in] velocity
-  * @param[in] accele
-  * @param[in] startScale
-  * @param[in] endScale
-  * @param[in] startColor
-  * @param[in] endColor
+  * @param[in] life　　　　生存時間
+  * @param[in] pos　　　　 座標
+  * @param[in] velocity　　速度
+  * @param[in] accele　　　加速度
+  * @param[in] startScale　初期サイズ
+  * @param[in] endScale　　最終サイズ
+  * @param[in] startColor　初期色
+  * @param[in] endColor　　最終色
+  * @param[in] num　　     表示する数字
   */
 ParticleNumber3D::ParticleNumber3D(
 	float life,
-	DirectX::SimpleMath::Vector3 pos,
-	DirectX::SimpleMath::Vector3 velocity,
-	DirectX::SimpleMath::Vector3 accele,
-	DirectX::SimpleMath::Vector3 startScale, DirectX::SimpleMath::Vector3 endScale,
-	DirectX::SimpleMath::Color startColor, DirectX::SimpleMath::Color endColor,
+	const DirectX::SimpleMath::Vector3& pos,
+	const DirectX::SimpleMath::Vector3& velocity,
+	const DirectX::SimpleMath::Vector3& accele,
+	const DirectX::SimpleMath::Vector3& startScale, const DirectX::SimpleMath::Vector3& endScale,
+	const DirectX::SimpleMath::Color& startColor,const DirectX::SimpleMath::Color& endColor,
 	int num)
-	:Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor }
-	, m_number{ num }
+	:
+	Particle{ life,pos,velocity,accele,startScale,endScale,startColor,endColor },
+	m_number{ num }
 {
 }
 
@@ -78,8 +78,6 @@ bool ParticleNumber3D::Update()
 	if (life < 0.0f)
 	{
 		return false; //	生存時間が経過した後の時間も0未満なら、falseを返す
-		
-
 	}
 
 	//	スケール。現在の生存時間から、大きさをLerpで算出する
@@ -92,5 +90,3 @@ bool ParticleNumber3D::Update()
 
 	return true;
 }
-
-

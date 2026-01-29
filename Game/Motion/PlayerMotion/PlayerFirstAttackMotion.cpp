@@ -5,14 +5,12 @@
  *
  * @author 制作者名  福地貴翔
  *　
- * @date   日付　2025/12/30
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "PlayerFirstAttackMotion.h"
 #include"Game/Object/Player/Hand.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -21,14 +19,14 @@
  * @param[in] pLeftHand　 左手のポインタ
  */
 PlayerFirstAttackMotion::PlayerFirstAttackMotion(Hand* pRightHand, Hand* pLeftHand)
-	: AttackMotion{ FIRST_ATTACK_MOTION_MODIFIER }
-	, m_pRightHand{ pRightHand }
-	, m_pLeftHand{ pLeftHand }
+	: 
+	AttackMotion{ FIRST_ATTACK_MOTION_MODIFIER },
+	m_pRightHand{ pRightHand },
+	m_pLeftHand{ pLeftHand },
+	m_sound{}
 {
 	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::PLAYER_SWING));
 }
-
-
 
 /**
  * @brief デストラクタ
@@ -37,8 +35,6 @@ PlayerFirstAttackMotion::~PlayerFirstAttackMotion()
 {
 
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -51,14 +47,11 @@ void PlayerFirstAttackMotion::Initialize()
 {
 	//真横に向ける
 	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, RIGHT_HAND_Z_ANGLE));
-
+	//音再生
 	m_sound->Play(false);
 
 	SetMotionLerp(0.0f);
-
 }
-
-
 
 /**
  * @brief 更新処理
@@ -81,27 +74,20 @@ bool PlayerFirstAttackMotion::Update()
 
 	DirectX::SimpleMath::Quaternion leftHandMotionAngle
 		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,leftHandAngle);
-
-
-	motionLerp += FIRST_ATTACK_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
-
+	//モーション角度設定
 	m_pRightHand->SetMotionAngle(rightHandMotionAngle);
 	m_pLeftHand->SetMotionAngle(leftHandMotionAngle);
 
-
+	//モーション値進行
+	motionLerp += FIRST_ATTACK_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
 	SetMotionLerp(std::min(motionLerp,Motion::MOTION_FINISH));
-
+	//モーションが完了したら
 	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
 		return true;
 	}
 	return false;
-
 }
-
-
-
-
 
 /**
  * @brief 終了処理
@@ -113,4 +99,3 @@ bool PlayerFirstAttackMotion::Update()
 void PlayerFirstAttackMotion::Reset()
 {
 }
-

@@ -7,7 +7,6 @@
  *
  * @date   日付　2026/01/15
  */
-
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GameScene.h"
@@ -29,12 +28,13 @@
  * @param[in] なし
  */
 GameScene::GameScene()
-	: m_pResourceManager{},
-	  m_basicPostProcess{}
+	:m_basicPostProcess{},
+	m_player{},
+	m_camera{},
+	m_enemyManager{},
+	m_itemManager{}
 
 {
-
-	m_pResourceManager = ResourceManager::GetInstance();
 	//当たり判定表示クラス
 	m_displayCollision = std::make_unique<Ito::DisplayCollision>(
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
@@ -71,10 +71,6 @@ void GameScene::Initialize()
 
 	GameData* gameData = GetGameData();
 
-	//ゲーム中のBGM再生
-	m_gameBGM = std::make_unique<Sound>(m_pResourceManager->RequestSound("gamebgm.wav"));
-	m_gameBGM->SetVolume(0.8f);
-	m_gameBGM->Play(true);
 
 
 	int width, height;
@@ -111,10 +107,12 @@ void GameScene::Initialize()
 	CreateUI();
 	//パーティクルマネージャーにカメラをセット
 	ParticleManager::GetInstance()->SetCamera(m_camera.get());
-	Sound::SetListenerObject(m_player.get());
 
 	m_bloomEffect = std::make_unique<Bloom>();
 	m_bloomEffect->Initialize();
+
+	//操作するオブジェクトを設定する
+	Messenger::GetInstance()->SetOperateObject(m_player->GetObjectNumber());
 
 	PreUpdate();
 }
@@ -149,8 +147,14 @@ void GameScene::PreUpdate()
 
 	m_itemManager->Update();
 
+
 	//衝突判定
 	m_collsionManager->CollisionCheck();
+
+	//ゲーム中のBGM再生
+	m_gameBGM = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GAME_BGM));
+	m_gameBGM->SetVolume(0.8f);
+	m_gameBGM->Play(true);
 
 }
 
@@ -180,11 +184,11 @@ void GameScene::Update(float elapsedTime)
 		return;
 	}
 
+	PressKeyBoard();
 	//オブジェクトの更新--
 	m_player->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_stage->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 
-	//m_camera->SetEyePos(m_player->GetModelParams().GetPosition() + DirectX::SimpleMath::Vector3(0.0f, 1.0f, 5.0f));
 	m_enemyManager->Update();
 	m_camera->Update(elapsedTime);
 
@@ -472,6 +476,95 @@ void GameScene::OnDeviceLost()
 {
 }
 
+
+/**
+ * @brief キーボード操作
+ *
+ * @param[in] なし
+ *
+ * @return  なし
+ */
+void GameScene::PressKeyBoard()
+{
+	//キーボード
+	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
+	//メッセンジャー
+	Messenger* messenger = Messenger::GetInstance();
+	//操作するオブジェクトのID
+	const int operateObjectID = messenger->GetOperateObjectID();
+	//移動------------------------------------------------------------
+	MovingMessage(operateObjectID);
+	// 
+	//ジャンプ------------------------------------------------------------
+	if (key->pressed.Space)
+	{
+		messenger->Notify(operateObjectID, Message::JUMPING);
+	}
+	//攻撃------------------------------------------------------------
+	if (key->pressed.Z)
+	{
+		messenger->Notify(operateObjectID, Message::ATTACK);
+	}
+	//回避------------------------------------------------------------
+	if (key->pressed.X)
+	{
+		messenger->Notify(operateObjectID, Message::AVOIDANCE);
+	}
+
+
+}
+
+void GameScene::MovingMessage(const int& operateObjectID)
+{
+	//キーボード
+	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
+	//メッセンジャー
+	Messenger* messenger = Messenger::GetInstance();
+	//移動キーが押されたら移動状態へ遷移
+	if (key->GetLastState().Left || key->GetLastState().Right || key->GetLastState().Up || key->GetLastState().Down)
+	{
+		messenger->Notify(operateObjectID, Message::MOVING);
+	}
+
+
+	//前方向
+	if (key->pressed.Up)
+	{
+		messenger->Notify(operateObjectID, Message::MOVE_FRONT_ON);
+	}
+	else if (key->released.Up)
+	{
+		messenger->Notify(operateObjectID, Message::MOVE_FRONT_OFF);
+	}
+	//左方向
+	if (key->pressed.Left)
+	{
+		messenger->Notify(operateObjectID, Message::MOVE_LEFT_ON);
+	}
+	else if (key->released.Left)
+	{
+		messenger->Notify(operateObjectID, Message::MOVE_LEFT_OFF);
+	}
+	//右方向
+	if (key->pressed.Right)
+	{
+		messenger->Notify(operateObjectID, Message::MOVE_RIGHT_ON);
+	}
+	else if (key->released.Right)
+	{
+		messenger->Notify(operateObjectID, Message::MOVE_RIGHT_OFF);
+	}
+	//後ろ方向
+	if (key->pressed.Down)
+	{
+		messenger->Notify(operateObjectID, Message::MOVE_BACK_ON);
+	}
+	else if (key->released.Down)
+	{
+		messenger->Notify(operateObjectID, Message::MOVE_BACK_OFF);
+	}
+
+}
 
 /**
  * @brief UI生成

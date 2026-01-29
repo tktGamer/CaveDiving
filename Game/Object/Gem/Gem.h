@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/08
+ * @date   日付  2026/01/19
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include <string>
 #include<memory>
@@ -50,6 +48,25 @@ public:
 		//宝石の画像パス
 		const wchar_t* panel;
 	};
+// メンバ関数の宣言 -------------------------------------------------
+//取得・設定
+public:
+	//宝石情報の取得
+	const GemAbility& GetAbility() const;
+	//取得選択時の画像パス取得
+	const GemImagePath& GetImagePath() const;
+// コンストラクタ/デストラクタ
+	// コンストラクタ
+	Gem(const GemAbility& ability, const GemImagePath& image);
+	//コピー用
+	Gem(const Gem& other) = default;
+	// デストラクタ
+	virtual ~Gem();
+//操作
+	//宝石のコピー
+	virtual std::unique_ptr<Gem> Clone() const = 0;
+//内部操作
+private:
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -57,29 +74,4 @@ private:
 	GemImagePath m_gemImage; 
 	// 宝石の能力値
 	GemAbility m_ability; 
-	// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-	// コンストラクタ
-	Gem(const GemAbility& ability, const GemImagePath& image);
-	Gem(const Gem& other) = default;
-
-	// デストラクタ
-	virtual ~Gem();
-
-
-//操作
-public:
-	//宝石のコピー
-	virtual std::unique_ptr<Gem> Clone() const = 0;
-//取得・設定
-public:
-	//宝石情報の取得
-	const GemAbility& GetAbility() const;
-	//取得選択時の画像パス取得
-	const GemImagePath& GetImagePath() const;
-//内部操作
-private:
-
 };
-

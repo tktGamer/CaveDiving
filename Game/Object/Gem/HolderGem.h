@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/08
+ * @date   日付　2026/01/19
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Object/Gem/Gem.h"
 #include<vector>
@@ -27,44 +25,34 @@ public:
 	//所持できる上限
     static constexpr int MAX_GEM = 3;
 	
-// データメンバの宣言 -----------------------------------------------
-private:
-	//所持宝石リスト
-   std::vector<std::unique_ptr<Gem>> m_holdGems = std::vector<std::unique_ptr<Gem>>(MAX_GEM);
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+//　取得・設定
 public:
-	// コンストラクタ
-	HolderGem(const std::vector<int>& gemID = std::vector<int>(MAX_GEM,Gem::BLANK_ID));
-
-	// デストラクタ
-	~HolderGem();
-
-
-// 操作
-public:
-	//リストクリア
-    void Clear();
-	//リストに空きがあるか
-    bool HasBlankSlot() const;
 	//リストに宝石をセット
     void SetGem(const Gem* gem,const int& index = Gem::BLANK_ID);
 	//リストの宝石を取得
     const std::vector<std::unique_ptr<Gem>>& GetGems() const;
-
-
 	//指定の宝石を取得
 	template<typename T>
 	const std::vector<T*>  FindHasGem() const;
-
-//　取得・設定
-public:
-
+// コンストラクタ/デストラクタ
+	// コンストラクタ
+	HolderGem(const std::vector<int>& gemID = std::vector<int>(MAX_GEM,Gem::BLANK_ID));
+	// デストラクタ
+	~HolderGem();
+// 操作
+	//リストクリア
+    void Clear();
+	//リストに空きがあるか
+    bool HasBlankSlot() const;
 //　内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	//所持宝石リスト
+   std::vector<std::unique_ptr<Gem>> m_holdGems = std::vector<std::unique_ptr<Gem>>(MAX_GEM);
 };
-
 
 /**
  * @brief 指定した宝石を取得

@@ -1,9 +1,15 @@
-//
-// Game.h
-//
-
+/**
+ * @file   Game.h
+ *
+ * @brief  ゲームループに関するヘッダファイル
+ *
+ * @author 制作者名　
+ *
+ * @date   日付　2025/09/17
+ */
+ // 多重インクルードの防止 =====================================================
 #pragma once
-
+// ヘッダファイルの読み込み ===================================================
 #include "DeviceResources.h"
 #include "StepTimer.h"
 #include"Game/GameData.h"
@@ -12,21 +18,32 @@
 #include "Game/Common/SceneManager.h"
 #include"Game/Object/Gem/GemManager.h"
 #include"Game/Shader/Shader.h"
+// クラスの宣言 ===============================================================
+
+// クラスの定義 ===============================================================
+/**
+  * @brief ゲームループ
+  */
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
 class Game final : public DX::IDeviceNotify
 {
+// クラス定数の宣言 -------------------------------------------------
 public:
 
+    
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
+    //コンストラクタ
     Game() noexcept(false);
-    ~Game() = default;
-
     Game(Game&&) = default;
     Game& operator= (Game&&) = default;
-
     Game(Game const&) = delete;
     Game& operator= (Game const&) = delete;
 
+    //デストラクタ
+    ~Game() = default;
+//  操作
     // Initialization and management
     void Initialize(HWND window, int width, int height);
 
@@ -48,16 +65,18 @@ public:
 
     // Properties
     void GetDefaultSize( int& width, int& height ) const noexcept;
-
+//内部処理
 private:
-
+    //更新
     void Update(DX::StepTimer const& timer);
+    //描画
     void Render();
-
+    //
     void Clear();
 
     void CreateDeviceDependentResources();
     void CreateWindowSizeDependentResources();
+ // データメンバの宣言 -----------------------------------------------
 
     // Device resources.
     DX::DeviceResources* m_deviceResources;
@@ -90,5 +109,4 @@ private:
     std::unique_ptr<SceneManager<GameData>>    m_sceneManager;       ///< シーンマネージャ
     GemManager*      m_gemManager;         ///< 宝石マネージャ
     Graphics* m_graphics;  ///< Graphicsクラスのインスタンス
-
 };

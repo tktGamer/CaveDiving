@@ -9,13 +9,11 @@
  */
 
  // ヘッダファイルの読み込み ===================================================
-
 #include "pch.h"
 #include "ParticleDamageNumber.h"
 #include"Game/Message/Messenger.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Common/ResourceManager.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -25,8 +23,9 @@
  * @param[in] number		 描画する数列
  */
 ParticleDamageNumber::ParticleDamageNumber(const wchar_t* texturePsth, const DirectX::SimpleMath::Vector3& pos,const int& number)
-	:ParticleControl{texturePsth}
-	,m_basePosition{pos}
+	:
+	ParticleControl{texturePsth},
+	m_basePosition{pos}
 {
 	//渡された数字の桁を取得
 	int digit = CheckDigit(number);
@@ -137,7 +136,7 @@ void ParticleDamageNumber::Render(const DirectX::SimpleMath::Vector3& target, co
 				vPCT.color = DirectX::XMFLOAT4(particle.get()->GetNowColor());
 				//---カスタム部分---//
 				//第４要素に表示する数字の情報を入れる
-				vPCT.color.w =dynamic_cast<ParticleNumber3D*>(particle.get())->GetNumber();
+				vPCT.color.w = static_cast<float>(dynamic_cast<ParticleNumber3D*>(particle.get())->GetNumber());
 				//-----------------//
 
 				//	現在のテクスチャのスケールを「XMFLOAT2」のXに入れる。
@@ -174,7 +173,7 @@ void ParticleDamageNumber::Render(const DirectX::SimpleMath::Vector3& target, co
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity;
 	world = world * m_billboard;
 	cbuff.matWorld = world.Transpose();
-	cbuff.Light = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
+	cbuff.diffuse = DirectX::SimpleMath::Vector4(1, 1, 1, 1);
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::ShaderType::Number3D), 0, NULL, &cbuff, 0, 0);

@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/08
+ * @date   日付　2026/01/23
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include "../Object/GameObject.h"
 #include"../Common/Sound.h"
@@ -46,60 +44,20 @@ public:
 		static constexpr DirectX::SimpleMath::Vector3 UP    = { 0.0f,1.0f, 0.0f };
 		//下
 		static constexpr DirectX::SimpleMath::Vector3 DOWN  = { 0.0f,-1.0f, 0.0f };
-
-
 	};
 
 	static constexpr float NO_DAMAGE_FLASH = 0.0f;
 
-// データメンバの宣言 -----------------------------------------------
-private:
-	//現在の体力
-	int m_currentHp;
+	//移動フラグ
+	enum MoveFlag
+	{
+		MOVE_FRONT = 1 << 0,
+		MOVE_BACK = 1 << 1,
+		MOVE_LEFT = 1 << 2,
+		MOVE_RIGHT = 1 << 3,
+	};
 
-	//最大体力
-	int m_hp;
-	//攻撃力
-	int m_attackPower;
-	//防御力
-	int m_diffence;
-
-	//モーションによる攻撃力補正
-	float m_motionAttackRate = 0.0f;
-
-	// 速度 
-	DirectX::SimpleMath::Vector3 m_velocity; 
-
-	//ダメージフラッシュ ダメージを受けたとき1.0をセット
-	float m_damageFlash;
-
-	//無敵状態か
-	bool m_isInvincible;
-	//攻撃をくらった方向
-	DirectX::SimpleMath::Vector3 m_damageDirection;
-
-	std::unique_ptr<Sound> m_damageSound;
 // メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-	// コンストラクタ
-	Character(int hp,int attack, int diffence,
-		Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
-
-	// デストラクタ
-	virtual ~Character();
-
-
-// 操作
-public:
-	//ダメージを受けたときの処理
-	virtual void OnDamage(GameObject* other);
-
-	//ダメージを受ける
-	virtual int TakeDamage(const Character* attacker);
-
-	//ダメージフラッシュ更新
-	bool DamageFlashUpdate();
 //　取得・設定
 public:
 	//現在の体力の設定
@@ -109,7 +67,7 @@ public:
 	// 体力の設定
 	void SetMaxHP(const int& hp);
 	// 体力の取得
-	virtual const int GetMaxHP() const ;
+	virtual const int GetMaxHP() const;
 	// 攻撃力の設定
 	void SetAttackPower(const int& attack);
 	// 攻撃力の取得
@@ -118,37 +76,81 @@ public:
 	void SetDiffence(const int& diffence);
 	// 防御力の取得
 	virtual const int GetDiffence();
-
 	//モーションによる攻撃力補正の設定
 	void SetMotionAttackRate(const float& rate);
 	//モーションによる攻撃力補正の取得
 	const float& GetMotionAttackRate() const;
-
 	//速度の取得
 	DirectX::SimpleMath::Vector3 GetVelocity() const;
 	//速度の設定
 	void SetVelocity(const DirectX::SimpleMath::Vector3& velocity);
-
-
 	//生きているか
 	bool IsAlive() const;
-
+	//地上にいるか
+	bool IsOnGround() const;
+	//地上にいるかの設定
+	void SetIsOnGround(const bool& isOnGround);
 	//ダメージを受けた方向の取得
 	const DirectX::SimpleMath::Vector3& GetDamageDirection() const;
-
+	//ダメージをうけた方向を設定
 	void SetDamageDirection(const DirectX::SimpleMath::Vector3& damageDirection);
 	//無敵か
 	const bool IsInvincible() const;
-
 	//無敵の設定
 	void SetInvincible(const bool& isInvinccible);
-
 	//ダメージフラッシュ
 	void SetDamageFlash(const float& flash = 1.0f);
+	//ダメージフラッシュ取得
 	const float& GetDamageFlash() const;
-
+	//移動方向
+	void SetMoveFlags(const uint32_t& moveFlags);
+	//移動方向取得
+	const uint32_t& GetMoveFlags() const;
+// コンストラクタ/デストラクタ
+	// コンストラクタ
+	Character(int hp,int attack, int diffence,
+		Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	// デストラクタ
+	virtual ~Character();
+// 操作
+	//ダメージを受けたときの処理
+	virtual void OnDamage(GameObject* other);
+	//ダメージを受ける
+	virtual int TakeDamage(const Character* attacker);
+	//ダメージフラッシュ更新
+	bool DamageFlashUpdate();
+	//進行方向計算
+	DirectX::SimpleMath::Vector3 CalcMoveDirection() const;
 //　内部操作
 private:
 
-};
+// データメンバの宣言 -----------------------------------------------
+private:
+	//移動入力状態
+	uint32_t m_moveFlags = 0;
 
+	//現在の体力
+	int m_currentHp;
+	//最大体力
+	int m_hp;
+	//攻撃力
+	int m_attackPower;
+	//防御力
+	int m_diffence;
+	//モーションによる攻撃力補正
+	float m_motionAttackRate = 0.0f;
+
+	// 速度 
+	DirectX::SimpleMath::Vector3 m_velocity;
+
+	//ダメージフラッシュ ダメージを受けたとき1.0をセット
+	float m_damageFlash;
+	//地上にいるか
+	bool m_isOnGround = false;
+	//無敵状態か
+	bool m_isInvincible;
+	//攻撃をくらった方向
+	DirectX::SimpleMath::Vector3 m_damageDirection;
+	//ダメージ時の音
+	std::unique_ptr<Sound> m_damageSound;
+};

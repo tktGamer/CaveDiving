@@ -38,6 +38,14 @@ UniqueGem::~UniqueGem()
 
 
 
+/**
+ * @brief 多態コピー
+ *
+ * @param[in] なし
+ *
+ * @return コピー
+ */
+
 std::unique_ptr<Gem> UniqueGem::Clone() const
 {
 	return std::make_unique<UniqueGem>(*this);

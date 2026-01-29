@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/08
+ * @date   日付　2026/01/18
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"Game/GameData.h"
 #include"Game/Object/Character.h"
@@ -26,7 +24,6 @@
 #include"../Player/State/PlayerJumping.h"
 #include"../Player/State/PlayerAvoidance.h"
 #include"../Player/State/PlayerDamaged.h"
-
 // クラスの宣言 ===============================================================
 class IState;
 class Sound;
@@ -39,7 +36,6 @@ class Player : public Character
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
 	//初期HP
 	static constexpr int PLAYER_BASE_HP = 100;
 	//初期攻撃力
@@ -68,6 +64,7 @@ public:
 
 	//待機状態に遷移するベクトルの条件
 	static constexpr float MIN_LENGTH = 0.0001f;
+//非公開定数
 private:
 	//プレイヤーの球状当たり判定サイズ
 	static constexpr float PLAYER_SPHERE_SIZE = 1.2f;
@@ -76,20 +73,76 @@ private:
 	//１秒あたりの回転量
 	static constexpr  float ROTATION_SPEED_Y_ANGLE = DirectX::XMConvertToRadians(180.0f);
 	
+// メンバ関数の宣言 -------------------------------------------------
+//　取得・設定
+public:
+	// 体力の取得
+	const int GetMaxHP() const override;
+	// 攻撃力の取得
+	const int GetAttackPower() const override;
+	// 防御力の取得
+	const int GetDiffence() override;
+
+	//ジャンプ出来る残り回数取得
+	const int GetRemainingJumpCount() const;
+	//ジャンプ出来る残り回数をリセット
+	void ResetJumpCount();
+
+
+	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
+	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
+
+	//所持宝石を取得
+	const HolderGem& GetHolderGem();
+	//攻撃中か
+	bool IsAttacking();
+	//攻撃入力があったか
+	bool IsAttackBuffered() const;
+// コンストラクタ/デストラクタ
+	// コンストラクタ
+	Player(BuffUIControl* pBuffUIControl,const GameData::PlayerData& data,const GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	// デストラクタ
+	~Player();
+// 操作
+	//初期化
+	void Initialize();
+	//更新
+	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	//描画
+	void Draw() override;
+	//終了
+	void Finalize();
+	// メッセージを取得する
+	void OnMessegeAccepted(Message::MessageID messageID);
+	//衝突応答分岐
+	void CollisionResponce(GameObject* other) override;
+	//ダメージ処理
+	int TakeDamage(const Character* attacker) override;
+	//ジャンプ出来る残り回数減少
+	bool ReduceJumpCount();
+
+//　内部操作
+private:
+	//アイテムの強化制限時間経過
+	void UpdateGotItems();
+	//方向転換
+	void ChangeDirection();
+	//宝石で強化された分のステータスを取得
+	int GemPlusStatus(const Gem::Type& type) const;
+	//アイテムで強化された分のステータスを取得
+	int ItemBuff(const Item::EffectType& effectType) const;
 // データメンバの宣言 -----------------------------------------------
 private:
-
 	// メッセージID
 	Message::MessageID m_messageID;
-
-
 	//プレイヤーの所持ライト
 	std::unique_ptr<Light> m_light;
+	DirectX::SimpleMath::Quaternion m_motionAngle;
 
 	//当たり判定
 	Sphere m_sphere;
 	//状態
-	std::unique_ptr<IState> m_pCurrentState; // 現在の状態
 	std::unique_ptr<IState> m_idlingState; // 待機状態 
 	std::unique_ptr<IState> m_movingState; // 移動状態
 	std::unique_ptr<IState> m_groundAttackState; // 地上攻撃状態
@@ -99,16 +152,12 @@ private:
 	std::unique_ptr<IState> m_damagedState; // ダメージ状態
 
 	// プレイヤーの体のパーツ
-	std::vector<std::unique_ptr<GameObject>> m_bodyParts; 
-
-
+	std::vector<std::unique_ptr<GameObject>> m_bodyParts;
 	//ジャンプできる残り回数
 	int m_remainingJumpCount = REMAINING_JUMP;
-
 	//ダメージを無効化できる回数
 	int m_invincibleCount = 0;
 
-	DirectX::SimpleMath::Quaternion m_motionAngle;
 
 	//手に入れたアイテム
 	std::list<Item::ItemInfo> m_gotItems;
@@ -120,75 +169,7 @@ private:
 
 	//プレイヤーの持つジェム
 	std::unique_ptr<HolderGem> m_holderGem;
-
-// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-	// コンストラクタ
-	Player(BuffUIControl* pBuffUIControl,const GameData::PlayerData& data,const GameObject* parent,
-		const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
-
-	// デストラクタ
-	~Player();
-
-
-// 操作
-public:
-	//初期化
-	void Initialize();
-	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
-	//描画
-	void Draw() override;
-	//終了
-	void Finalize();
-
-	// メッセージを取得する
-	void OnMessegeAccepted(Message::MessageID messageID);
-	//衝突応答分岐
-	void CollisionResponce(GameObject* other) override;
-
-	//ダメージ処理
-	int TakeDamage(const Character* attacker) override;
-//　取得・設定
-public:
-	
-	// 体力の取得
-	const int GetMaxHP() const override;
-	// 攻撃力の取得
-	const int GetAttackPower() const override;
-	// 防御力の取得
-	const int GetDiffence() override;
-
-
-
-	//ジャンプ出来る残り回数取得
-	const int GetRemainingJumpCount() const;
-	//ジャンプ出来る残り回数減少
-	bool ReduceJumpCount();
-	//ジャンプ出来る残り回数をリセット
-	void ResetJumpCount();
-
-
-	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
-	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
-
-	//所持宝石を取得
-	const HolderGem& GetHolderGem();
-
-
-//　内部操作
-private:
-	//アイテムの強化制限時間経過
-	void UpdateGotItems();
-
-	//方向転換
-	void ChangeDirection();
-	//宝石で強化された分のステータスを取得
-	int GemPlusStatus(const Gem::Type& type) const;
-	//アイテムで強化された分のステータスを取得
-	int ItemBuff(const Item::EffectType& effectType) const;
-
+	//攻撃入力の有無
+	bool m_attackBuffered = false;
 
 };
-

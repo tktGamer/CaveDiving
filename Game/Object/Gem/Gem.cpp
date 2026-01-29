@@ -5,13 +5,11 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/08
+ * @date   日付  2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Gem.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,24 +18,18 @@
  * @param[in] image 　 選択時の画像
  */
 Gem::Gem(const GemAbility& ability, const GemImagePath& image)
-	:m_ability{ability}
-	,m_gemImage{image}
+	:
+	m_ability{ability},
+	m_gemImage{image}
 {
 }
-
-
-
-
 
 /**
  * @brief デストラクタ
  */
 Gem::~Gem()
 {
-
 }
-
-
 
 /**
  * @brief 宝石の性能を取得

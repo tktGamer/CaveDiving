@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/08
+ * @date   日付　2026/01/22
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Stage.h"
@@ -15,7 +14,7 @@
 #include"Game/Shader/ShaderManager.h"
 #include<fstream>
 #include<sstream>
-
+#include"Game/Factory/GameObjectFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -25,25 +24,24 @@
  * @param[in] initialAngle    初期角度
  */
 Stage::Stage(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: m_messageID{  }
-	,m_ground{}
-	,m_wall{}
+	: 
+	m_messageID{},
+	m_ground{},
+	m_wall{},
+	m_rocks{}
 {
-	//Messenger::GetInstance()->Register(GetObjectNumber(), this);
+	UNREFERENCED_PARAMETER(parent);
+	UNREFERENCED_PARAMETER(initialPosition);
+	UNREFERENCED_PARAMETER(initialAngle);
 
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 Stage::~Stage()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -54,44 +52,16 @@ Stage::~Stage()
  */
 void Stage::Initialize(bool* isOnLight, int size)
 {
-	//SetModel(ResourceManager::GetInstance()->RequestModel(L"block.sdkmesh"));
-	//SetPosition(DirectX::SimpleMath::Vector3(0.0f, -1.5f, 0.0f));
-	//SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	//SetScale(DirectX::SimpleMath::Vector3(70.0f, 1.0f, 70.0f));
-	//SetTexture(ResourceManager::GetInstance()->RequestTexture("block.png"));
-	//
-	//SetShape(&m_box);
-
-	m_ground = std::make_unique<Ground>(nullptr,DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
-	m_ground->Initialize();
-
-
-	m_wall = std::make_unique<Wall>(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
-	m_wall->Initialize();
-
-
+	//地面の生成
+	m_ground = GameObjectFactory::CreateGround(nullptr, INITIAL_GROUND_POS, DirectX::SimpleMath::Quaternion::Identity,INITIAL_GROUND_SCALE);
+	//壁の生成
+	m_wall = GameObjectFactory::CreateWall(nullptr, INITIAL_WALL_POS, DirectX::SimpleMath::Quaternion::Identity, INITIAL_WALL_SCALE);
+	//石の生成
 	GenerateIlumiRock(isOnLight, size);
 
 	CollisionManager* pCM = CollisionManager::GetInstance();
 	pCM->Register(m_ground.get());
-
-
-	//m_rocks.emplace_back(std::make_unique<CandleStick>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
-	//m_rocks.back()->Initialize(isOnLight[0]);
-	//m_rocks.back()->SetPosition({ 5.0f, 0.0f, -25.0f });
-
-	//pCM->Register(m_rocks.back().get());
-
-	//m_rocks.emplace_back(std::make_unique<CandleStick>(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
-	//m_rocks.back()->Initialize(isOnLight[1]);
-	//m_rocks.back()->SetPosition({ -5.0f, 0.0f, 35.0f });
-
-	//pCM->Register(m_rocks.back().get());
-
 }
-
-
-
 
 /**
  * @brief 更新処理
@@ -102,10 +72,13 @@ void Stage::Initialize(bool* isOnLight, int size)
  */
 void Stage::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	
+	UNREFERENCED_PARAMETER(currentPosition);
+	UNREFERENCED_PARAMETER(currentAngle);
+	//地面更新
 	m_ground->Update(DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
+	//壁更新
 	m_wall->Update(DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
-
+	//石更新
 	for (std::unique_ptr<RumiRock>& rock : m_rocks)
 	{
 		rock->Update( DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
@@ -164,14 +137,29 @@ void Stage::Finalize()
 
 void Stage::OnMessegeAccepted(Message::MessageID messageID)
 {
-
+	messageID;
 }
 
+/**
+ * @brief 石の取得
+ *
+ * @param[in] なし
+ *
+ * @return 石のリスト
+ */
 std::list<std::unique_ptr<RumiRock>>& Stage::GetRocks()
 {
 	return m_rocks;
 }
 
+/**
+ * @brief 石の生成
+ *
+ * @param[in] isOnLight　ライトがオンかの配列
+ * @param[in] size　配列の要素数
+ *
+ * @return なし
+ */
 void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 {
 
@@ -239,6 +227,4 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 
 	}
 	ifs.close();
-
 }
-

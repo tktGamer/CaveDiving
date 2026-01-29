@@ -5,22 +5,18 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/11/26
+ * @date   日付　2026/01/25
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GameObject.h"
 
-
 // オブジェクト番号
 int GameObject::s_objectNumber = 0;
-
 // オブジェクトをカウントアップする
 int GameObject::CountUpNumber() { return s_objectNumber++; }
-
+//オブジェクト番号をリセットする
 void GameObject::ResetObjectNumber() { s_objectNumber = 0; }
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -31,32 +27,32 @@ void GameObject::ResetObjectNumber() { s_objectNumber = 0; }
  * @param[in]  initialAngle 
  * 
  */
-GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: m_objectType{ objectType }
-	, m_objectNumber{CountUpNumber()}
-	, m_texture{ResourceManager::GetInstance()->RequestTexture("white.png")}
-	, m_model{ nullptr }
-	, m_pCurrentState{ nullptr }
-	, m_currentMessage{}
-	, m_position{initialPosition} 
-	, m_quaternion{ initialAngle } // 初期クォータニオンを設定
-	, m_scale{ 1.0f, 1.0f, 1.0f } // 初期拡大率を設定
-	, m_parent{ parent }
-	, m_currentPosition{}
-	, m_currentAngle{}
+GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+	: 
+	m_objectType{ objectType },
+	m_objectNumber{CountUpNumber()},
+	m_texture{ResourceManager::GetInstance()->RequestTexture(ResourcePath::TEXTURE::WHITE)},
+	m_model{ nullptr },
+	m_pCurrentState{ nullptr },
+	m_currentMessage{},
+	m_position{initialPosition} ,
+	m_quaternion{ initialAngle }, // 初期クォータニオンを設定
+	m_scale{ DirectX::SimpleMath::Vector3::One }, // 初期拡大率を設定
+	m_parent{ parent },
+	m_currentPosition{},
+	m_currentAngle{}
 {
 }
-
 
 /**
  * @brief デストラクタ
  */
 GameObject::~GameObject()
 {
+	// メッセンジャーから登録解除
 	Messenger::GetInstance()->UnRegister(m_objectNumber);
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -67,10 +63,7 @@ GameObject::~GameObject()
  */
 void GameObject::Initialize()
 {
-
 }
-
-
 
 /**
  * @brief 終了処理
@@ -81,35 +74,7 @@ void GameObject::Initialize()
  */
 void GameObject::Finalize()
 {
-
 }
-
-
-
-/**
- * @brief テクスチャを設定する
- *
- * @param[in] tex テクスチャ
- *
- * @return なし
- */
-void GameObject::SetTexture(ID3D11ShaderResourceView** tex)
-{
-	m_texture = tex;
-}
-
-/**
- * @brief テクスチャを取得する
- *
- * @param[in] なし
- *
- * @return テクスチャ
- */
-ID3D11ShaderResourceView** GameObject::GetTexture()
-{
-	return m_texture;
-}
-
 
 /**
  * @brief オブジェクトの種類を取得する

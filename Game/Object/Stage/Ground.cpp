@@ -5,16 +5,13 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/08/27
+ * @date   日付　2026/01/20
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Ground.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Common/Graphics.h"
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,25 +21,21 @@
  * @param[in] initialAngle    初期角度
  */
 Ground::Ground(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: GameObject(Tag::ObjectType::Ground,parent,initialPosition,initialAngle)
-	, m_messageID{  }
-	, m_box{ GetPosition(),DirectX::SimpleMath::Vector3(70.01f,1.01f,70.01f)} // 初期位置とサイズを設定
+	: 
+	GameObject(Tag::ObjectType::Ground,parent,initialPosition,initialAngle),
+	m_messageID{  },
+	m_box{ GetPosition(),DirectX::SimpleMath::Vector3(70.01f,1.01f,70.01f)} // 初期位置とサイズを設定
 {
+	//メッセンジャーに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
-
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 Ground::~Ground()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -53,34 +46,30 @@ Ground::~Ground()
  */
 void Ground::Initialize()
 {
-	SetModel(ResourceManager::GetInstance()->RequestModel(L"block.sdkmesh"));
-	SetPosition(INITIAL_GROUND_POS);
-	SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(0.0f)));
-	SetScale(INITIAL_GROUND_SCALE);
-	SetTexture(ResourceManager::GetInstance()->RequestTexture("block.png"));
-	
+	//モデル設定
+	SetModel(ResourceManager::GetInstance()->RequestModel(ResourcePath::MODEL::GROUND));
+	//テクスチャ設定
+	SetTexture(ResourceManager::GetInstance()->RequestTexture(ResourcePath::TEXTURE::GROUND));
+	//当たり判定セット
 	SetShape(&m_box);
-
-
 }
-
-
-
 
 /**
  * @brief 更新処理
  *
- * @param[in] currentPosition  
- * @param[in] currentAngle     
+ * @param[in] currentPosition  現在位置
+ * @param[in] currentAngle     現在角度
  *
  * @return なし
  */
 void Ground::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	UNREFERENCED_PARAMETER(currentPosition);
+	UNREFERENCED_PARAMETER(currentAngle);
+
+	//当たり判定位置更新
 	m_box.SetCenter(currentPosition + GetPosition());
 }
-
-
 
 /**
  * @brief 描画処理
@@ -144,10 +133,7 @@ void Ground::Draw()
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 		});
 	shader->EndShader();
-
 }
-
-
 
 /**
  * @brief 終了処理
@@ -158,7 +144,6 @@ void Ground::Draw()
  */
 void Ground::Finalize()
 {
-
 }
 
 /**
@@ -170,7 +155,7 @@ void Ground::Finalize()
  */
 void Ground::OnMessegeAccepted(Message::MessageID messageID)
 {
-
+	messageID;
 }
 
 /**
@@ -182,5 +167,5 @@ void Ground::OnMessegeAccepted(Message::MessageID messageID)
  */
 void Ground::CollisionResponce(GameObject* other)
 {
+	other;
 }
-

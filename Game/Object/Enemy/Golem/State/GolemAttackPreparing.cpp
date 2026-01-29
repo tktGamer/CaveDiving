@@ -5,9 +5,8 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/03
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Golem/State/GolemAttackPreparing.h"
@@ -22,12 +21,11 @@
  * @param[in] pLeftGolemHand ゴーレムの左手のポインタ
  */
 GolemAttackPreparing::GolemAttackPreparing(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
-	:m_golem(golem)
-	,m_pRightHand{pRightGolemHand}
-	,m_pLeftHand{pLeftGolemHand}
+	:m_golem{golem},
+	m_pRightHand{pRightGolemHand},
+	m_pLeftHand{pLeftGolemHand},
+	m_attackPreparingMotion{}
 {
-
-
 }
 /**
  * @brief デストラクタ
@@ -61,7 +59,6 @@ void GolemAttackPreparing::PreUpdate()
 	DecideMotion();
 	//モーション初期化
 	m_attackPreparingMotion->Initialize();
-
 }
 
 /**
@@ -75,23 +72,23 @@ void GolemAttackPreparing::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 	//プレイヤーのオブジェクトを取得
-	GameObject* pPlayer = Messenger::GetInstance()->GetObject(0);
+	Messenger* messenger = Messenger::GetInstance();
+	GameObject* pPlayer = messenger->GetObject(messenger->GetPlayerObjectID());
 
 	//自分からプレイヤーの角度を求める
 	float radian = TKTLib::CaluculateRadian(m_golem->GetCurrentPosition(), pPlayer->GetCurrentPosition());
 	//目標の角度
 	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, radian);
 
-
+	//角度設定
 	m_golem->SetQuaternion(rotate);
 
-
-	//攻撃予備モーションが終わったら攻撃状態へ遷移
+	//攻撃予備モーションが終わったら遷移
 	if (m_attackPreparingMotion->Update())
 	{
-		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MessageID::GROUNDATTACK);
+		//攻撃状態へ
+		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::MessageID::ATTACK);
 	}
-
 }
 
 /**
@@ -103,10 +100,10 @@ void GolemAttackPreparing::Update(const float& elapsedTime)
  */
 void GolemAttackPreparing::PostUpdate()
 {
+	//モーションリセット
 	m_attackPreparingMotion->Reset();
 	//経過時間リセット
 	m_golem->ResetFrameCount();
-
 }
 
 /**
@@ -118,10 +115,8 @@ void GolemAttackPreparing::PostUpdate()
  */
 void GolemAttackPreparing::Render()
 {
-
 #ifdef _DEBUG
 #endif // DEBUG
-
 }
 
 /**

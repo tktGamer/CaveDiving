@@ -5,14 +5,12 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/02
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Enemy/Bat/State/BatDamaged.h"
 #include "Game/Object/Enemy/Bat/Bat.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -20,12 +18,12 @@
  * @param[in] bat コウモリのポインタ
  */
 BatDamaged::BatDamaged(Bat* bat)
-	:m_bat(bat)
-	,m_damageMotion{}
+	:
+	m_bat(bat),
+	m_damageMotion{}
 {
 	//モーションを生成
 	m_damageMotion = std::make_unique<BatDamageMotion>(m_bat);
-
 }
 /**
  * @brief デストラクタ
@@ -44,7 +42,6 @@ BatDamaged::~BatDamaged()
 void BatDamaged::Initialize()
 {
 	PreUpdate();
-
 }
 
 /**
@@ -58,7 +55,6 @@ void BatDamaged::PreUpdate()
 {
 	//モーションを初期化
 	m_damageMotion->Initialize();
-
 	//ノックバックさせる
 	m_bat->SetVelocity(m_bat->GetDamageDirection());
 	//白く点滅
@@ -95,8 +91,6 @@ void BatDamaged::Update(const float& elapsedTime)
 		//位置更新
 		m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity() * KNOCKBACK_POWER * elapsedTime);
 	}
-
-
 }
 
 /**
@@ -112,7 +106,7 @@ void BatDamaged::PostUpdate()
 	m_bat->ResetFrameCount();
 	//無敵状態を解除
 	m_bat->SetInvincible(false);
-	
+	//モーションリセット
 	m_damageMotion->Reset();
 }
 
@@ -127,7 +121,6 @@ void BatDamaged::Render()
 {
 #ifdef _DEBUG
 #endif // DEBUG
-
 }
 
 /**

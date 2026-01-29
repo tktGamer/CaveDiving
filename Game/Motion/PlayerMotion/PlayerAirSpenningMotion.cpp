@@ -5,15 +5,13 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/30
+ * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "PlayerAirSpenningMotion.h"
 #include"Game/Object/Player/Hand.h"
 #include"Game/Object/Player/Player.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,15 +21,15 @@
  * @param[in] pLeftHand　 左手のポインタ
  */
 PlayerAirSpenningMotion::PlayerAirSpenningMotion(Player* pPlayer, Hand* pRightHand, Hand* pLeftHand)
-	: AttackMotion{ AIR_SPIN_MOTION_MODIFIER }
-	, m_pPlayer{ pPlayer }
-	, m_pRightHand{ pRightHand }
-	, m_pLeftHand{ pLeftHand }
+	: 
+	AttackMotion{ AIR_SPIN_MOTION_MODIFIER },
+	m_pPlayer{ pPlayer },
+	m_pRightHand{ pRightHand },
+	m_pLeftHand{ pLeftHand },
+	m_sound{}
 {
 	m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::PLAYER_SPIN));
 }
-
-
 
 /**
  * @brief デストラクタ
@@ -40,8 +38,6 @@ PlayerAirSpenningMotion::~PlayerAirSpenningMotion()
 {
 
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -60,10 +56,9 @@ void PlayerAirSpenningMotion::Initialize()
 	m_pLeftHand->SetPosition(LEFT_HAND_POS);
 
 	SetMotionLerp(0.0f);
+	//音再生
 	m_sound->Play(false);
 }
-
-
 
 /**
  * @brief 更新処理
@@ -77,12 +72,11 @@ bool PlayerAirSpenningMotion::Update()
 {
 	float motionLerp = GetMotionLerp();
 
-
 	//手のモーションの角度を求める
 	float angle = TKTLib::Lerp(HAND_START_MOTION_X_ANGLE, HAND_END_MOTION_X_ANGLE, motionLerp);
 	DirectX::SimpleMath::Quaternion handMotionAngle
 		= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, angle);
-
+	//モーション角度設定
 	m_pRightHand->SetMotionAngle(handMotionAngle);
 	m_pLeftHand->SetMotionAngle(handMotionAngle);
 
@@ -91,23 +85,17 @@ bool PlayerAirSpenningMotion::Update()
 		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, 
 			TKTLib::Lerp(PLAYER_START_MOTION_X_ANGLE, PLAYER_END_MOTION_X_ANGLE, motionLerp))
 	);
-
+	//モーション値進行
 	motionLerp += AIR_SPIN_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
-
 	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
-
+	//モーションが完了したら
 	if (GetMotionLerp() >= Motion::MOTION_FINISH)
 	{
 		return true;
 	}
 
 	return false;
-
 }
-
-
-
-
 
 /**
  * @brief 終了処理
@@ -119,15 +107,14 @@ bool PlayerAirSpenningMotion::Update()
 void PlayerAirSpenningMotion::Reset()
 {
 	//それぞれのオブジェクトを元の位置・角度に戻す
+	//右手
 	m_pRightHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, Player::RIGHT_HAND_Z_ANGLE));
 	m_pRightHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 	m_pRightHand->SetPosition(Player::RIGHT_HAND_INIT_POS);
-
+	//左手
 	m_pLeftHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 	m_pLeftHand->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
 	m_pLeftHand->SetPosition(Player::LEFT_HAND_INIT_POS);
-
+	//プレイヤー
 	m_pPlayer->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-
 }
-

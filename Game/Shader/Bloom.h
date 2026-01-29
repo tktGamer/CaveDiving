@@ -7,10 +7,8 @@
  *
  * @date   日付
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Common/Graphics.h"
 #include"RenderTexture.h"
@@ -27,6 +25,25 @@ class Bloom
 // クラス定数の宣言 -------------------------------------------------
 public:
 
+// メンバ関数の宣言 -------------------------------------------------
+//　取得・設定
+public:
+// コンストラクタ/デストラクタ
+	// コンストラクタ
+	Bloom();
+	// デストラクタ
+	~Bloom();
+// 操作
+	//初期化
+	void Initialize();
+	//更新
+	void Update();
+	//描画
+	void Draw();
+	//終了処理
+	void Finalize();
+//　内部操作
+private:
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -41,30 +58,5 @@ private:
 	std::unique_ptr<DirectX::BasicPostProcess> m_basicPostProcess;
 	//デュアルポストプロセス
 	std::unique_ptr<DirectX::DualPostProcess> m_dualPostProcess;
-// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-	// コンストラクタ
-	Bloom();
-
-	// デストラクタ
-	~Bloom();
-
-
-// 操作
-public:
-	void Initialize();
-
-	void Update();
-
-	void Draw();
-
-	void Finalize();
-//　取得・設定
-public:
-
-//　内部操作
-private:
-
 };
 

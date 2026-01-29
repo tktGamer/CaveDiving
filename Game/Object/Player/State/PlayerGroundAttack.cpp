@@ -5,45 +5,43 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/20
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerGroundAttack.h"
 #include "Game/Object/Player/Player.h"
 #include"Game/Object/Player/Hand.h"
-
 #include"Game//Object//Gem/GemManager.h"
 #include"Game/Object/Gem/Unique/AllSpenningAttackGem.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] player プレイヤーのポインタ
+ * @param[in] player      プレイヤーのポインタ
+ * @param[in] pRightHand  プレイヤー右手のポインタ
+ * @param[in] pLeftHand   プレイヤー左手のポインタ
  */
 PlayerGroundAttack::PlayerGroundAttack(Player* pPlayer, Hand* pRightHand, Hand* pLeftHand)
-	:m_pPlayer(pPlayer)
-	,m_pRightHand{pRightHand}
-	,m_pLeftHand{pLeftHand}
-	,m_isNextAttack{false}
+	:
+	m_pPlayer(pPlayer),
+	m_pRightHand{pRightHand},
+	m_pLeftHand{pLeftHand},
+	m_currentAttack{},
+	m_groundCombo{},
+	m_inputTime{}
 {
 
-	//m_groundCombo.emplace_back(std::make_unique<PlayerSlamAttack>(m_pHand));
-
 	const std::vector<AllSpenningAttackGem*> gems =  m_pPlayer->GetHolderGem().FindHasGem<AllSpenningAttackGem>();
-
+	//回転攻撃の宝石があったら
 	if (!gems.empty()) 
 	{
 		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
 		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
 		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
-
 	}
 	else
 	{
-
 		m_groundCombo.emplace_back(std::make_unique<PlayerFirstAttackMotion>(pRightHand, pLeftHand));
 		m_groundCombo.emplace_back(std::make_unique<PlayerSecondAttackMotion>(pRightHand, pLeftHand));
 		m_groundCombo.emplace_back(std::make_unique<PlayerThirdAttackMotion>(pRightHand, pLeftHand));
@@ -108,11 +106,22 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
 	//モーションの更新
 	if (m_groundCombo[m_currentAttack]->Update())
 	{
-		//次の攻撃をするか
-		if (key->pressed.Z)
+		//次の攻撃をするフラグがオンになったら
+		if (m_pPlayer->IsAttackBuffered())
 		{
-			m_isNextAttack = true;
+			m_currentAttack++;
+			m_inputTime = 0.0f;
+
+			//要素内なら次のモーションを初期化処理
+			if (m_currentAttack < m_groundCombo.size())
+			{
+				m_groundCombo[m_currentAttack]->Initialize();
+				//モーションによる攻撃力補正をセット
+				m_pPlayer->SetMotionAttackRate(m_groundCombo[m_currentAttack]->GetAttackPowerModifier());
+
+			}
 		}
+
 
 		m_inputTime += elapsedTime;
 
@@ -120,22 +129,6 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
 
 
 
-	//次の攻撃をするフラグがオンになったら
-	if (m_isNextAttack)
-	{
-		m_currentAttack++;
-		m_inputTime = 0.0f;
-		m_isNextAttack = false;
-
-		//要素内なら次のモーションを初期化処理
-		if (m_currentAttack < m_groundCombo.size()) 
-		{
-			m_groundCombo[m_currentAttack]->Initialize();
-			//モーションによる攻撃力補正をセット
-			m_pPlayer->SetMotionAttackRate(m_groundCombo[m_currentAttack]->GetAttackPowerModifier());
-
-		}
-	}
 
 	//一連の攻撃を終わった　入力時間が過ぎたら
 	if (m_currentAttack >= m_groundCombo.size()|| m_inputTime >= INPUT_TIME)

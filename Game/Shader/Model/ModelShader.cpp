@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/08
+ * @date   日付　2026/01/29
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ModelShader.h"
@@ -15,26 +14,22 @@
 #include"Game/Object/Light.h"
 // クラス定数の定義 ===========================================================
 
-
+//頂点関数
 const std::vector<D3D11_INPUT_ELEMENT_DESC> ModelShader::MODEL_INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT,		0, 0,								D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "NORMAL",	    0, DXGI_FORMAT_R32G32B32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT,		0, D3D11_APPEND_ALIGNED_ELEMENT,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
-
-
-
-
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] pathes
+ * @param[in] pathes　シェーダーのパス
  */
 ModelShader::ModelShader(const ShaderPath& pathes)
-	:Shader{}
+	:
+	Shader{}
 {
 	CreateShader(pathes.vsPath, pathes.psPath, pathes.gsPath);
 	CreateInputLayput(MODEL_INPUT_LAYOUT, pathes.vsPath);
@@ -51,7 +46,6 @@ ModelShader::ModelShader(const ShaderPath& pathes)
 
 }
 
-
 /**
  * @brief デストラクタ
  */
@@ -59,7 +53,13 @@ ModelShader::~ModelShader()
 {
 }
 
-
+/**
+ * @brief シェーダーの開始
+ *
+ * @param[in]　なし
+ *
+ * @return なし
+ */
 void ModelShader::StartShader()
 {
 	
@@ -70,6 +70,7 @@ void ModelShader::StartShader()
 	lB.onLightCount = 0;
 	for (Light* const& light : Messenger::GetInstance()->GetLights())
 	{
+		//ライトが点いていたら
 		if (light->IsOn())
 		{
 			//ライトの情報を渡す
@@ -78,14 +79,13 @@ void ModelShader::StartShader()
 			lB.onLightCount++;
 		}
 	}
+	//lBから変換
 	context->UpdateSubresource(m_lBuffer.Get(), 0, NULL, &lB, 0, 0);
-	
 	//ピクセルシェーダーにライトバッファを渡す
 	ID3D11Buffer* lb[1] = { m_lBuffer.Get() };
 	context->PSSetConstantBuffers(1, 1, lb);
-	
 	//明るさによって適用するTexを変えるテクスチャ
-	context->PSSetShaderResources(1, 1, ResourceManager::GetInstance()->RequestTexture("toonmap.png"));
+	context->PSSetShaderResources(1, 1, ResourceManager::GetInstance()->RequestTexture(ResourcePath::TEXTURE::TOON_MAP));
 	
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { GetConstantBuffer()};
@@ -97,6 +97,4 @@ void ModelShader::StartShader()
 	context->VSSetShader(GetVertexShader(), nullptr, 0);
 	context->PSSetShader(GetPixelShader(), nullptr, 0);
 	context->GSSetShader(GetGeometryShader(), nullptr, 0);
-	
-
 }
