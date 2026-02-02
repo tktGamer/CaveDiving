@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/17
+ * @date   日付　2026/02/01
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 
@@ -42,9 +41,62 @@ public:
 	};
 
 
+
+// メンバ関数の宣言 -------------------------------------------------
+//　取得・設定
+public:
+	//ウィンドウサイズの設定
+	void SetWindowSize(const int& width, const int& height);
+	//拡大率の設定
+	void SetScale(const DirectX::SimpleMath::Vector2& scale);
+	//拡大率の取得
+	const DirectX::SimpleMath::Vector2& GetScale() const { return m_scale; }
+	//ベースの拡大率の取得
+	const DirectX::SimpleMath::Vector2& GetBaseScale() const { return m_baseScale; }
+	//描画座標の設定
+	void SetPosition(const DirectX::SimpleMath::Vector2& position);
+	//描画座標の取得
+	const DirectX::SimpleMath::Vector2& GetPosition() const { return m_position; }
+	//アンカー位置の設定
+	void SetAnchor(const ANCHOR& anchor);
+	//アンカー位置の取得
+	const ANCHOR& GetAnchor() const { return m_anchor; }
+	//描画比率の設定
+	void SetRenderRatio(const float& ratio);
+	//描画比率の取得
+	const float& GetRenderRatio() const { return m_renderRatio; }
+	//レンダリングオフセットの設定
+	void SetRenderRatioOffset(const float& offset);
+	//レンダリングオフセットの取得
+	const float& GetRenderRatioOffset() const { return m_renderRatioOffset; }
+	//テクスチャの設定
+	void SetTexture(const wchar_t* path);
+	void SetTexture(ID3D11ShaderResourceView** texture);
+// コンストラクタ/デストラクタ
+	// コンストラクタ
+	UserInterface();
+	// デストラクタ
+	~UserInterface();
+// 操作
+	//初期化
+	void Initialize();
+	//更新
+	void Update();
+	//描画
+	void Render();
+	//終了
+	void Finalize();
+	//生成
+	void Create( const wchar_t* path,
+		const DirectX::SimpleMath::Vector2& position,
+		const DirectX::SimpleMath::Vector2& scale,
+		const ANCHOR& anchor
+		);
+//　内部操作
+private:
+	
 // データメンバの宣言 -----------------------------------------------
 private:
-	Graphics* m_graphics;	// グラフィックスクラスのポインタ
 
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
@@ -79,57 +131,6 @@ private:
 	float m_renderRatio;
 	float m_renderRatioOffset;
 
-
-// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-	// コンストラクタ
-	UserInterface();
-
-	// デストラクタ
-	~UserInterface();
-
-
-// 操作
-public:
-	void Initialize();
-
-	void Update();
-
-	void Render();
-
-	void Finalize();
-
-	void Create( const wchar_t* path
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
-		, ANCHOR anchor
-		);
-
-
-
-//　取得・設定
-public:
-	void SetWindowSize(const int& width, const int& height);
-
-	void SetScale(DirectX::SimpleMath::Vector2 scale);
-	DirectX::SimpleMath::Vector2 GetScale() { return m_scale; }
-	DirectX::SimpleMath::Vector2 GetBaseScale() { return m_baseScale; }
-	void SetPosition(DirectX::SimpleMath::Vector2 position);
-	DirectX::SimpleMath::Vector2 GetPosition() { return m_position; }
-	void SetAnchor(ANCHOR anchor);
-	ANCHOR GetAnchor() { return m_anchor; }
-
-	void SetRenderRatio(float ratio);
-	float GetRenderRatio() { return m_renderRatio; }
-
-	void SetRenderRatioOffset(float offset);
-	float GetRenderRatioOffset() { return m_renderRatioOffset; }
-
-	void SetTexture(const wchar_t* path);
-	void SetTexture(ID3D11ShaderResourceView** texture);
-//　内部操作
-private:
 
 };
 

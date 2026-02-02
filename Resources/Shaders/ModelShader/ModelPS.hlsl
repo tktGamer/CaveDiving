@@ -11,16 +11,13 @@ struct LightStruct
 };
 
 
-
+//ライト情報
 cbuffer CbLight : register(b1)
 {
     LightStruct lights[8];
     int onLightCount;
     float3 dummy;
 }
-
-
-
 
 //	C++側から設定されるデータ②
 Texture2D tex : register(t0);
@@ -29,17 +26,7 @@ SamplerState samLinear : register(s0);
 
 
 float3 ToonStep(float intensity)
-{
-    //// トゥーンステップ（3段階）
-    //if (intensity > 0.46f)
-    //    return 0.9f;
-    //else if (intensity > 0.33f)
-    //    return 0.6f;
-    //else if(intensity> 0.25f)
-    //    return 0.1f;
-    //else
-    //    return 0.0f;
-    
+{    
     //トゥーンステップ
     float4 map = toonMap.Sample(samLinear, float2(intensity,0));
     return map.xyz;

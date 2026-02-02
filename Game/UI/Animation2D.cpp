@@ -3,14 +3,14 @@
  *
  * @brief  2Dアニメーションに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付  2026/02/01
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Animation2D.h"
+#include"Game/Common/Graphics.h"
 #include"Game/Common/ResourceManager.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
@@ -18,20 +18,25 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] texturepath    アニメーションテクスチャのパス
+ * @param[in] textureInfo　  テクスチャの情報
+ * @param[in] animationTime　アニメーション時間
+ * @param[in] isLoop　　　　 繰り返すか
+ * @param[in] position　　　 描画座標
+ * @param[in] scale　　　　  拡大率
  */
 Animation2D::Animation2D(const wchar_t* texturepath, const AnimationTexture& textureInfo, const float& animationTime, const bool& isLoop,
 	const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale)
-	: m_graphics{Graphics::GetInstance()}
-	, m_pAnimation2DTexture{}
-	, m_textureSize{}
-	, m_anchor{UserInterface::ANCHOR::MIDDLE_CENTER}
-	, m_windowHeight{ 0 }
-	, m_windowWidth{ 0 }
-	, m_scale{ scale }
-	, m_position{ position }
-	, m_renderRatio{ 1.0f }
-	, m_renderRatioOffset{ 0.0f },
+	: 
+	m_pAnimation2DTexture{},
+	m_textureSize{},
+	m_anchor{UserInterface::ANCHOR::MIDDLE_CENTER},
+	m_windowHeight{ 0 },
+	m_windowWidth{ 0 },
+	m_scale{ scale },
+	m_position{ position },
+	m_renderRatio{ 1.0f },
+	m_renderRatioOffset{ 0.0f },
 	m_textureInfo{textureInfo},
 	m_animationTime{animationTime},
 	m_loop{isLoop}
@@ -46,21 +51,16 @@ Animation2D::Animation2D(const wchar_t* texturepath, const AnimationTexture& tex
 	m_frameSize.x = m_textureSize.x / m_textureInfo.frameWidth;
 	m_frameSize.y = m_textureSize.y / m_textureInfo.frameHeight;
 	//	プリミティブバッチの作成
-	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(m_graphics->GetDeviceResources()->GetD3DDeviceContext());
+	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
 
 }
-
-
 
 /**
  * @brief デストラクタ
  */
 Animation2D::~Animation2D()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -71,10 +71,7 @@ Animation2D::~Animation2D()
  */
 void Animation2D::Initialize()
 {
-
 }
-
-
 
 /**
  * @brief 更新処理
@@ -100,8 +97,6 @@ void Animation2D::Update()
 	}
 }
 
-
-
 /**
  * @brief 描画処理
  *
@@ -109,11 +104,11 @@ void Animation2D::Update()
  *
  * @return なし
  */
-void Animation2D::Draw()
+void Animation2D::Render()
 {
 	ShaderManager* shader = ShaderManager::GetInstance();
 
-	ID3D11DeviceContext1* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
+	ID3D11DeviceContext1* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	//	頂点情報
 	//	Position.xy	:拡縮用スケール
 	//	Position.z	:アンカータイプ(0～8)の整数で指定
@@ -151,23 +146,16 @@ void Animation2D::Draw()
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { Graphics::GetInstance()->GetCommonStates()->LinearWrap()};
 	context->PSSetSamplers(0, 1, sampler);
-
 	//	半透明描画指定
 	ID3D11BlendState* blendstate = Graphics::GetInstance()->GetCommonStates()->NonPremultiplied();
-
 	//	透明判定処理
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 	//	深度バッファに書き込み参照する
 	context->OMSetDepthStencilState(Graphics::GetInstance()->GetCommonStates()->DepthDefault(), 0);
-
 	//	カリングは左周り
 	context->RSSetState(Graphics::GetInstance()->GetCommonStates()->CullNone());
-
-
 	//	ピクセルシェーダにテクスチャを登録する。
 	context->PSSetShaderResources(0, 1, m_pAnimation2DTexture);
-
 	//	インプットレイアウトの登録
 	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Animation2D));
 
@@ -180,8 +168,6 @@ void Animation2D::Draw()
 	shader->EndShader();
 }
 
-
-
 /**
  * @brief 終了処理
  *
@@ -191,7 +177,6 @@ void Animation2D::Draw()
  */
 void Animation2D::Finalize()
 {
-
 }
 
 /**

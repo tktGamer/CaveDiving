@@ -46,8 +46,18 @@ public:
 			static constexpr wchar_t GEM_BACK[]  = L"UI/GemSelectBack.png";
 			static constexpr wchar_t LOAD_GEM_CHECK[]  = L"UI/LoadGemCheck.png";
 			static constexpr wchar_t CHECK[]  = L"UI/Check.png";
+			static constexpr wchar_t ATTACK_BUFF[]  = L"UI/AttackBuff.png";
+			static constexpr wchar_t DIFFENCE_BUFF[]  = L"UI/DiffenceBuff.png";
+			static constexpr wchar_t OUTLINE_BUFF[]  = L"UI/outlineBuff.png";
 
 			static constexpr wchar_t PRESS_SPACE[]  = L"UI/PressSpace.png";
+			static constexpr wchar_t RED_CURSOL[]  = L"UI/Cursol.png";
+			static constexpr wchar_t CHANGE_MESSAGE[]  = L"UI/ChangeMessage.png";
+			static constexpr wchar_t SAVE_MESSAGE[]  = L"UI/SaveMessage.png";
+			static constexpr wchar_t YES[]  = L"UI/YesFont.png";
+			static constexpr wchar_t NO[]  = L"UI/NoFont.png";
+			static constexpr wchar_t CHANGE[]  = L"UI/ChangeFont.png";
+			static constexpr wchar_t RETURN[]  = L"UI/ReturnFont.png";
 			static constexpr wchar_t NUMBER[]  = L"Number.png";
 			static constexpr wchar_t GAME_CLEAR[]  = L"UI/GameClear.png";
 			static constexpr wchar_t GAME_OVER[]  = L"UI/GameOver.png";
@@ -128,6 +138,8 @@ public:
 		static constexpr wchar_t MENU_DECIDE[]   = L"DecideMenu.wav";
 		//ゲームクリア音
 		static constexpr wchar_t GAME_CLEAR[]   = L"GameClear.wav";
+		//UI表示音
+		static constexpr wchar_t SHOW_CONFIRM[]   = L"ShowConfirmUI.wav";
 
 	};
 	//シェーダー

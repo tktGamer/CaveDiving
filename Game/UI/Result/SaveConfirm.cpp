@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/17
+ * @date   日付　2026/02/01
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include"SaveConfirm.h"
@@ -15,7 +14,6 @@
 #include"Game/Message/Messenger.h"
 #include"Game/UI/GemSelectUIManager.h"
 #include"Game/Factory/UIFactory.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,12 +22,13 @@
  * @param[in] height スクリーン高さ
  */
 SaveConfirm::SaveConfirm(int width, int height, const std::vector<int>& gemID)
-    :  m_windowHeight(height)
-    , m_windowWidth(width)
-    , m_saveMessage{}
-    ,m_menu{}
-    ,m_isDecide{false}
-    ,m_gemID{gemID}
+    : 
+    m_windowHeight{ height },
+    m_windowWidth{width},
+    m_saveMessage{},
+    m_menu{},
+    m_isDecide{false},
+    m_gemID{gemID}
 {
 }
 
@@ -50,17 +49,14 @@ SaveConfirm::~SaveConfirm()
  */
 void SaveConfirm::Initialize()
 {
-
-    m_saveMessage = UIFactory::CreateUserInterface(L"UI/savemessage.png", { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
-
-
-    m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
-    m_menu->Add(L"UI/yesfont.png", { 350.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-    m_menu->Add(L"UI/nofont.png", { 950.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+    //セーブメッセージUI
+    m_saveMessage = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::SAVE_MESSAGE, { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+    //選択肢UI
+    m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::CURSOL_MOVE));
+    m_menu->Add(ResourcePath::TEXTURE::UI::YES, { 350.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+    m_menu->Add(ResourcePath::TEXTURE::UI::NO, { 950.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 
 }
-
-
 
 /**
  * @brief 更新処理
@@ -121,4 +117,3 @@ bool SaveConfirm::IsDecide() const
 {
     return m_isDecide;
 }
-

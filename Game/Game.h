@@ -5,7 +5,7 @@
  *
  * @author 制作者名　
  *
- * @date   日付　2025/09/17
+ * @date   日付　2026/02/01
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
@@ -77,7 +77,7 @@ private:
     void CreateDeviceDependentResources();
     void CreateWindowSizeDependentResources();
  // データメンバの宣言 -----------------------------------------------
-
+private:
     // Device resources.
     DX::DeviceResources* m_deviceResources;
 

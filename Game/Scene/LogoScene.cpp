@@ -97,7 +97,7 @@ void LogoScene::Update(float elapsedTime)
 void LogoScene::Render()
 {
 	//アニメーション
-	m_logoAnimation->Draw();
+	m_logoAnimation->Render();
 }
 
 

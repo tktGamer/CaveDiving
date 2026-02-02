@@ -44,7 +44,7 @@ std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(
 std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound)
 {
 	//「メニューUI」の生成
-	std::unique_ptr<Menu> menu = std::make_unique<Menu>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,cursolSound);
+	std::unique_ptr<Menu> menu = std::make_unique<Menu>(cursolSound);
 	menu->Initialize();
 
 	return std::move(menu);

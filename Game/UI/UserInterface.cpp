@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/17
+ * @date   日付　2026/02/02
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "UserInterface.h"
@@ -21,7 +20,6 @@
  */
 UserInterface::UserInterface()
 	:
-	m_graphics{Graphics::GetInstance()},
 	m_windowHeight{ 0 },
 	m_windowWidth{0},
 	m_textureHeight{ 0 },
@@ -56,8 +54,6 @@ void UserInterface::Initialize()
 {
 }
 
-
-
 /**
  * @brief 更新処理
  *
@@ -67,10 +63,7 @@ void UserInterface::Initialize()
  */
 void UserInterface::Update()
 {
-
 }
-
-
 
 /**
  * @brief 描画処理
@@ -83,7 +76,7 @@ void UserInterface::Render()
 {
 	ShaderManager* shader = ShaderManager::GetInstance();
 
-	ID3D11DeviceContext1* context = m_graphics->GetDeviceResources()->GetD3DDeviceContext();
+	ID3D11DeviceContext1* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	//	頂点情報
 	//	Position.xy	:拡縮用スケール
 	//	Position.z	:アンカータイプ(0～8)の整数で指定
@@ -114,23 +107,16 @@ void UserInterface::Render()
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
 	context->PSSetSamplers(0, 1, sampler);
-
 	//	半透明描画指定
 	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
-
 	//	透明判定処理
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 	//	深度バッファに書き込み参照する
 	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
-
 	//	カリングは左周り
 	context->RSSetState(m_states->CullNone());
-
-
 	//	ピクセルシェーダにテクスチャを登録する。
 	context->PSSetShaderResources(0, 1, m_texture);
-
 	//	インプットレイアウトの登録
 	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::UI));
 
@@ -143,8 +129,6 @@ void UserInterface::Render()
 	shader->EndShader();
 }
 
-
-
 /**
  * @brief 終了処理
  *
@@ -154,7 +138,6 @@ void UserInterface::Render()
  */
 void UserInterface::Finalize()
 {
-
 }
 
 /**
@@ -167,7 +150,7 @@ void UserInterface::Finalize()
  *
  * @return なし
  */
-void UserInterface::Create(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, ANCHOR anchor)
+void UserInterface::Create(const wchar_t* path, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const ANCHOR& anchor)
 {
 	m_position = position;
 	m_baseScale = m_scale = scale;
@@ -176,13 +159,12 @@ void UserInterface::Create(const wchar_t* path, DirectX::SimpleMath::Vector2 pos
 	//画像の設定
 	SetTexture(path);
 	//	プリミティブバッチの作成
-	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(m_graphics->GetDeviceResources()->GetD3DDeviceContext());
+	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
 
-	m_states = m_graphics->GetCommonStates();
+	m_states = Graphics::GetInstance()->GetCommonStates();
 
-	//画像サイズを取得
+	//テクスチャサイズを取得
 	ResourceManager::GetInstance()->GetTextureSize(path, m_textureWidth, m_textureHeight);
-	
 }
 
 /**
@@ -197,9 +179,7 @@ void UserInterface::SetWindowSize(const int& width, const int& height)
 {
 	m_windowWidth = width;
 	m_windowHeight = height;
-
 }
-
 
 /**
  * @brief 拡大率の設定
@@ -208,7 +188,7 @@ void UserInterface::SetWindowSize(const int& width, const int& height)
  *
  * @return なし
  */
-void UserInterface::SetScale(DirectX::SimpleMath::Vector2 scale)
+void UserInterface::SetScale(const DirectX::SimpleMath::Vector2& scale)
 {
 	m_scale = scale;
 }
@@ -220,7 +200,7 @@ void UserInterface::SetScale(DirectX::SimpleMath::Vector2 scale)
  *
  * @return なし
  */
-void UserInterface::SetPosition(DirectX::SimpleMath::Vector2 position)
+void UserInterface::SetPosition(const DirectX::SimpleMath::Vector2& position)
 {
 	m_position = position;
 }
@@ -233,11 +213,10 @@ void UserInterface::SetPosition(DirectX::SimpleMath::Vector2 position)
  *
  * @return なし
  */
-void UserInterface::SetAnchor(ANCHOR anchor)
+void UserInterface::SetAnchor(const ANCHOR& anchor)
 {
 	m_anchor = anchor;
 }
-
 
 /**
  * @brief 描画比率の設定
@@ -246,11 +225,10 @@ void UserInterface::SetAnchor(ANCHOR anchor)
  *
  * @return なし
  */
-void UserInterface::SetRenderRatio(float ratio)
+void UserInterface::SetRenderRatio(const float& ratio)
 {
 	m_renderRatio = ratio;
 }
-
 
 /**
  * @brief 描画オフセットの設定
@@ -259,11 +237,10 @@ void UserInterface::SetRenderRatio(float ratio)
  *
  * @return なし
  */
-void UserInterface::SetRenderRatioOffset(float offset)
+void UserInterface::SetRenderRatioOffset(const float& offset)
 {
 	m_renderRatioOffset = offset;
 }
-
 
 /**
  * @brief テクスチャの設定
@@ -276,7 +253,6 @@ void UserInterface::SetTexture(const wchar_t* path)
 {
 	m_texture = ResourceManager::GetInstance()->RequestTexture(path);
 }
-
 
 /**
  * @brief テクスチャの設定

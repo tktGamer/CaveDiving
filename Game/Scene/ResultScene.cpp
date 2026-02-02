@@ -140,7 +140,7 @@ void ResultScene::Update(float elapsedTime)
 void ResultScene::Render()
 {
 	m_backTexture->Render();
-	m_gameover->Render();
+	//m_gameover->Render();
 
 	m_scoreUI->Render();
 

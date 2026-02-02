@@ -3,17 +3,14 @@
  *
  * @brief  宝石入れ替えUIに関するヘッダファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/30
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include "../UserInterface.h"
-
 #include"Game/Interface/IUI.h"
 #include"../Menu/Menu.h"
 #include"../HoldGem/HoldGemInfoDraw.h"
@@ -35,6 +32,24 @@ public:
 		IS_CHANGI_MENU = 1,
 
 	};
+// メンバ関数の宣言 -------------------------------------------------
+//　取得・設定
+public:
+// コンストラクタ/デストラクタ
+	//コンストラクタ
+	ChangeGem(int width, int height, const std::vector<int>& gemID, GemSelectUIManager* pUIManager);
+	//デストラクタ
+	~ChangeGem();
+// 操作
+	//初期化　　　　　　　　
+	void Initialize();
+	//更新
+	void Update() override;
+	//描画
+	void Render() override;
+//　内部操作
+private:
+
 // データメンバの宣言 -----------------------------------------------
 private:
 	GemSelectUIManager* m_pUIManager;
@@ -54,22 +69,4 @@ private:
 	const std::vector<int> m_gemID;
 
 	IUI* m_curremtUI;
-// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-	ChangeGem(int width, int height, const std::vector<int>& gemID, GemSelectUIManager* pUIManager);
-	~ChangeGem();
-	// 操作
-public:
-	void Initialize() ;
-	void Update() override;
-	void Render() override;
-
-//　取得・設定
-public:
-
-
-//　内部操作
-private:
-
 };

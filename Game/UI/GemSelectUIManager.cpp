@@ -5,17 +5,13 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/16
+ * @date   日付　2026/02/01
  */
-
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GemSelectUIManager.h"
-
 #include "Game/Common/ResourceManager.h"
-
 #include"Game/Factory/UIFactory.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,13 +19,15 @@
  * @param[in] なし
  */
 GemSelectUIManager::GemSelectUIManager(const std::vector<int>& gemID)
-	:m_isClearUI{}
-	,m_isPopUI{}
-	,m_isPushUI{}
-	,m_pushUI{1}
-	,m_isDrawOnlyCurrentUI{false}
-	,m_isFinishSelect{false}
-	,m_gemID{gemID}
+	:
+	m_isClearUI{},
+	m_isPopUI{},
+	m_isPushUI{},
+	m_pushUI{1},
+	m_isDrawOnlyCurrentUI{false},
+	m_isFinishSelect{false},
+	m_gemID{gemID},
+	m_pReplacementGem{}
 {
 
 }
@@ -41,10 +39,7 @@ GemSelectUIManager::GemSelectUIManager(const std::vector<int>& gemID)
  */
 GemSelectUIManager::~GemSelectUIManager()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理
@@ -61,8 +56,6 @@ void GemSelectUIManager::Initialize()
 	m_uiStack.emplace_back(std::move(UIFactory::CreateGemSelect(this,m_gemID)));
 
 }
-
-
 
 /**
  * @brief 更新処理
@@ -102,8 +95,6 @@ void GemSelectUIManager::Update()
 
 }
 
-
-
 /**
  * @brief 描画処理
  *
@@ -129,8 +120,6 @@ void GemSelectUIManager::Render()
 	}
 
 }
-
-
 
 /**
  * @brief 終了処理
@@ -216,17 +205,31 @@ void GemSelectUIManager::SelectFinishNotice(int slotNum)
 	m_slot = slotNum;
 }
 
+/**
+ * @brief 入れ替え予定の宝石の設定
+ *
+ * @param[in] pGem 入れ替え予定の宝石
+ *
+ * @return なし
+ */
 void GemSelectUIManager::SetHoldGem(const Gem* pGem)
 {
 	m_pReplacementGem = pGem;
 }
 
+/**
+ * @brief 入れ替え予定の宝石の取得
+ *
+ * @param[in] なし 
+ *
+ * @return 入れ替え予定の宝石
+ */
 const Gem* GemSelectUIManager::GetHoldGem()
 {
 	return m_pReplacementGem;
 }
 
-int GemSelectUIManager::GetSlot()
+int GemSelectUIManager::GetSlot() const
 {
 	return m_slot;
 }
@@ -295,6 +298,3 @@ void GemSelectUIManager::ClearUI()
 
 	m_isClearUI = false;
 }
-
-
-

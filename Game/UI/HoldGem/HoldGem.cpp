@@ -7,7 +7,6 @@
  *
  * @date   日付
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include"HoldGem.h"
@@ -21,13 +20,14 @@
  * @param[in] height
  */
 HoldGem::HoldGem(int width, int height, const std::vector<int>& gemID)
-    : m_menuIndex(0)
-    , m_windowHeight(height)
-    , m_windowWidth(width)
-    ,m_pGemManager{GemManager::GetInstance()}
-    ,m_position{80,680}
-    ,m_scale{1.0f,1.0f}
-    ,m_gemTexturePath{}
+    : 
+    m_menuIndex(0),
+    m_windowHeight(height),
+    m_windowWidth(width),
+    m_position{80,680},
+    m_scale{1.0f,1.0f},
+    m_gemTexturePath{},
+    m_gemUI{}
 {
 }
 
@@ -35,6 +35,13 @@ HoldGem::~HoldGem()
 {
 }
 
+/**
+ * @brief 初期化処理
+ *
+ * @param[in]なし
+ *
+ * @return なし
+ */
 void HoldGem::Initialize()
 {
    
@@ -48,10 +55,24 @@ void HoldGem::Initialize()
 
 }
 
+/**
+ * @brief 更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void HoldGem::Update()
 {
 }
 
+/**
+ * @brief 描画
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void HoldGem::Render()
 {
     m_base->Render();

@@ -44,6 +44,13 @@ ChangeGem::~ChangeGem()
 {
 }
 
+/**
+ * @brief ‰Šú‰»ˆ—
+ *
+ * @param[in]‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
 void ChangeGem::Initialize()
 {
     m_pReplacementGem = m_pUIManager->GetHoldGem();
@@ -53,8 +60,8 @@ void ChangeGem::Initialize()
 
 
     m_menu =UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound("cursormove.wav"));
-    m_menu->Add(L"UI/changefont.png", { 500.0f,600.0f }, { 0.8f,0.8f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-    m_menu->Add(L"UI/returnfont.png", { 850.0f,600.0f }, { 0.8f,0.8f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+    m_menu->Add(ResourcePath::TEXTURE::UI::CHANGE, { 500.0f,600.0f }, { 0.8f,0.8f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+    m_menu->Add(ResourcePath::TEXTURE::UI::RETURN, { 850.0f,600.0f }, { 0.8f,0.8f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 
 
     m_replacementGemUI = std::make_unique<UserInterface>();
@@ -67,6 +74,13 @@ void ChangeGem::Initialize()
     m_curremtUI = m_holdGemInfo.get();
 }
 
+/**
+ * @brief XV
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
 void ChangeGem::Update()
 {
     auto tracker = Graphics::GetInstance()->GetKeyboardTracker();
@@ -111,6 +125,13 @@ void ChangeGem::Update()
 
 }
 
+/**
+ * @brief •`‰æ
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
 void ChangeGem::Render()
 {
 

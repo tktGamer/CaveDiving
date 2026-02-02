@@ -1,7 +1,13 @@
-//
-// Game.cpp
-//
-
+/**
+ * @file   Game.cpp
+ *
+ * @brief  ゲームに関するソースファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2026/02/01
+ */
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Game.h"
 #include<fstream>

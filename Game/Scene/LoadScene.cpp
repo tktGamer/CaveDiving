@@ -98,7 +98,7 @@ void LoadScene::Update(float elapsedTime)
 void LoadScene::Render()
 {
 	m_backTexture->Render();
-	m_nowloadingTexture->Draw();
+	m_nowloadingTexture->Render();
 }
 
 

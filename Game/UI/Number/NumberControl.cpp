@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/16
+ * @date   日付　2026/02/01
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "NumberControl.h"
@@ -16,16 +15,17 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] data
- * @param[in] pos
+ * @param[in] data   数字テクスチャデータ
+ * @param[in] pos　　描画座標
+ * @param[in] color　色
  */
 NumberControl::NumberControl(const NumberTextureData& data, const DirectX::SimpleMath::Vector2& pos, const DirectX::SimpleMath::Vector4& color)
-	:m_graphics{Graphics::GetInstance()}
-	,m_drawDigit{1}
-	,m_scale{1.0f,1.0f}
-	,m_number{}
-	,m_position{pos}
-	,m_color{color}
+	:
+	m_drawDigit{ 1 },
+	m_scale{1.0f,1.0f},
+	m_number{},
+	m_position{pos},
+	m_color{color}
 {
 	//数字テクスチャの画像サイズを取得
 	int textureWidth = 0, textureHeight = 0;
@@ -37,17 +37,12 @@ NumberControl::NumberControl(const NumberTextureData& data, const DirectX::Simpl
 	m_numberUI = std::make_unique<Number>(data.texturePath,m_numberSize);
 }
 
-
-
 /**
  * @brief デストラクタ
  */
 NumberControl::~NumberControl()
 {
-
 }
-
-
 
 /**
  * @brief 初期化処理

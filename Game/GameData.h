@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/09/12
+ * @date   日付　2026/02/01
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 #include<unordered_map>
@@ -91,12 +90,14 @@ public:
 
 	// コンストラクタ
 	GameData()
-		:m_isGameClear{false}
-		,m_isStageClear{false}
-		,m_nextStage{Stage::FIRST}
-		,m_clearTime{0.0f}
-		,m_isOnLights{false}
-		,m_scoreInfo{}
+		:
+		m_isGameClear{false},
+		m_isStageClear{false},
+		m_nextStage{Stage::FIRST},
+		m_clearTime{0.0f},
+		m_isOnLights{false},
+		
+		m_scoreInfo{}
 	{
 		//ステージに対応したデータを配列に入れる
 		m_enemyData.insert(std::make_pair(GameData::Stage::FIRST, ResourcePath::DATA::ENEMY_SPAWN::FIRST));

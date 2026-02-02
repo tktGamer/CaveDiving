@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/17
+ * @date   日付　2026/02/01
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Score.h"
@@ -17,13 +16,13 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] pManager  管理クラスのポインタ
  * @param[in] score  スコアUIのデータ
  * @param[in] referenceData  情報UIのデータ
  */
 Score::Score(const UIInfo& score, const UIInfo& referenceData)
-    :m_referenceUI{}
-    ,m_scoreUI{}
+    :
+    m_referenceUI{},
+    m_scoreUI{}
 {
     m_scoreUI = std::move(CreateUI(score));
     //入っていないといけない値が入っているか
@@ -156,6 +155,4 @@ std::unique_ptr<CountUpNumber> Score::CreateUI(const UIInfo& info)
 
     //生成して返す
     return UIFactory::CreateCountUpNumberUI(std::move(ncUI), std::move(ui), info.initNumber, info.finishNumber, info.stepNumber);
-
 }
-

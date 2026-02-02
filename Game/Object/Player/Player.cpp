@@ -233,8 +233,6 @@ void Player::Draw()
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(shader->GetCBuffer(ShaderManager::Model), 0, NULL, &cbuff, 0, 0);
 
-
-
 	//アウトライン描画
 	if (Messenger::GetInstance()->IsOutLineActive())
 	{
@@ -245,8 +243,6 @@ void Player::Draw()
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
-
-
 			//	画像用サンプラーの登録
 			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
 			context->PSSetSamplers(0, 1, sampler);
@@ -261,22 +257,16 @@ void Player::Draw()
 
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
-
 			//シェーダーの設定
 			shader->StartShader(ShaderManager::Model);
-
 			//頂点情報を設定
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
-
 		});
 	//シェーダー解放
 	shader->EndShader();
@@ -287,7 +277,7 @@ void Player::Draw()
 		part->Draw();
 	}
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 
 	auto debugFont = Graphics::GetInstance()->GetDebugFont();
 	
@@ -323,7 +313,7 @@ void Player::Draw()
 	//ダメージ無効化回数
 	debugFont->AddString(L"InvisibleCount", DirectX::SimpleMath::Vector2(0.0f, 480.0f));
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_invincibleCount)), DirectX::SimpleMath::Vector2(180.0f, 480.0f));
-//#endif // DEBUG
+#endif // DEBUG
 
 }
 

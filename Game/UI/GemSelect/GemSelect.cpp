@@ -3,11 +3,10 @@
  *
  * @brief  宝石選択UIに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名  福地貴翔
  *
- * @date   日付
+ * @date   日付  2026/01/30
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include"GemSelect.h"
@@ -47,6 +46,13 @@ GemSelect::~GemSelect()
 
 }
 
+/**
+ * @brief 初期化処理
+ *
+ * @param[in]なし
+ *
+ * @return なし
+ */
 void GemSelect::Initialize()
 {
 
@@ -58,6 +64,13 @@ void GemSelect::Initialize()
 
 }
 
+/**
+ * @brief 更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelect::Update()
 {
     auto tracker = Graphics::GetInstance()->GetKeyboardTracker();
@@ -124,30 +137,7 @@ void GemSelect::Update()
                 }
 
             }
-        }
-        //if (m_gemID[i]IsBlankSlot()) 
-        //{
-        //    //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
-        //    if (m_menuIndex < _countof(m_pGems)) 
-        //    {
-        //        m_decideSound->Play(false);
-        //        //プレイヤーの所持する宝石に登録
-        //        m_pGemManager->SetHoldGem(m_pGems[m_menuIndex]);
-        //        m_pUIManager->SelectFinishNotice();
-        //    }
-        //}
-        //else
-        //{
-        //    //空きがなかったら入れ替え確認UI生成
-        //    m_pUIManager->RequestPushUI(GemSelectUIManager::UI::CHANGECOFIRM);
-        //   
-        //    //  m_menuIndexがm_pGemsの有効範囲内かどうかをチェックする
-        //    if (m_menuIndex < _countof(m_pGems)) 
-        //    {
-        //        m_pGemManager->SetReplacementGem(m_pGems[m_menuIndex]);
-        //    }
-        //}
-        
+        }        
     }
 
     //  各アイテムに表示する画像の初期サイズを設定する
@@ -165,12 +155,16 @@ void GemSelect::Update()
     select += selectScale * 0.3f;
     //  算出後のサイズを現在のサイズとして設定する
     m_userInterface[m_menuIndex]->SetScale(select);
-    //  背景用のウィンドウ画像にも同じ割合の値を設定する
-   // m_base[m_menuIndex]->SetScale(select);
-
     
 }
 
+/**
+ * @brief 描画
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelect::Render()
 {
        for (int i = 0; i < m_base.size(); i++)

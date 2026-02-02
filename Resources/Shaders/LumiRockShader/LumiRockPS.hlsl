@@ -24,21 +24,16 @@ cbuffer CbLight : register(b1)
 
 //	C++側から設定されるデータ②
 Texture2D tex : register(t0);
-Texture2D tex2 : register(t1);
+Texture2D toonMap : register(t1);
 SamplerState samLinear : register(s0);
 
 
 float3 ToonStep(float intensity)
 {
-    // トゥーンステップ（3段階）
-    if (intensity > 0.46f)
-        return 0.9f;
-    else if (intensity > 0.33f)
-        return 0.6f;
-    else if(intensity> 0.25f)
-        return 0.1f;
-    else
-        return 0.0f;
+        //トゥーンステップ
+    float4 map = toonMap.Sample(samLinear, float2(intensity, 0));
+    return map.xyz;
+
 }
 
 float SmoothDistanceAttenuation
@@ -72,28 +67,8 @@ float GetDistanceAttenuation
 float4 main(PS_IN input) : SV_TARGET
 {
     
-    //float brightnessThreshold = 1.0;
-
-    //float3 color = tex.Sample(sampler, uv).rgb;
-    //float luminance = dot(color, float3(0.2126, 0.7152, 0.0722)); // 輝度
-
-    //float3 bloomColor = (luminance > brightnessThreshold) ? color : float3(0.0, 0.0, 0.0);
-    //return float4(bloomColor, 1.0);
-    
-    //float3 blurX =
-    //tex.Sample(sampler, uv+float2(-offset, 0)) * weight0 +tex.Sample(sampler, uv) * weight1 +tex.Sample(sampler, uv+float2(offset, 0)) * weight2;
-    
-    //float3 sceneColor = sceneTex.Sample(sampler, uv).rgb;
-    //float3 bloom = bloomTex.Sample(sampler, uv).rgb;
-
-    //float bloomIntensity = 1.0; // 調整可能
-    //return float4(sceneColor + bloom * bloomIntensity, 1.0);
-    
     //元の画像の色
     float4 output = tex.Sample(samLinear, input.Tex);
-    
-    ////ライトからの距離を考慮した色
-    //float3 tem = output.xyz * LightColor * LightIntensity * att;
     
     //すべてのライトからの距離を考慮した色
     float3 temTotal=0;

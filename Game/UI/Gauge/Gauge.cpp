@@ -3,31 +3,46 @@
  *
  * @brief  ゲージUIに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/30
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Gauge.h"
-
-
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] pos  描画座標（右端）
+ */
 Gauge::Gauge()
-    :m_windowHeight(0)
-    ,m_windowWidth(0)
-    ,m_baseTexturePath(nullptr)
-    ,m_gauge(nullptr)
-    ,m_frame(nullptr)
-    ,m_currentValue{}
-    ,m_maxValue{}
+    :
+    m_windowHeight(0),
+    m_windowWidth(0),
+    m_baseTexturePath(nullptr),
+    m_gauge(nullptr),
+    m_frame(nullptr),
+    m_currentValue{},
+    m_maxValue{}
 {
 }
 
+/**
+ * @brief デストラクタ
+ */
 Gauge::~Gauge()
 {
 }
 
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] width　幅
+ * @param[in] height 高さ
+ *
+ * @return なし
+ */
 void Gauge::Initialize(int width,int height)
 {
 
@@ -44,6 +59,14 @@ void Gauge::Initialize(int width,int height)
 
 }
 
+
+/**
+ * @brief 更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Gauge::Update()
 {
 
@@ -51,11 +74,18 @@ void Gauge::Update()
 
     ratio = TKTLib::Clamp(ratio, 0.0f, 1.0f);
    
-
+    //ゲージの大きさを設定
     m_gauge->SetScale({ ratio ,1.0f});
-
 }
 
+
+/**
+ * @brief 描画
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Gauge::Render()
 {
     m_frame->Render();
@@ -90,9 +120,6 @@ void Gauge::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, Dire
         , scale
         , anchor);
     m_gauge->SetWindowSize(m_windowWidth, m_windowHeight);
-
-   // m_frame->SetRenderRatioOffset(0.3f);
-
 
 }
 

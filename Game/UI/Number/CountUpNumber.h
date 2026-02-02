@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/15
+ * @date   日付　2026/01/30
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Interface/IUI.h"
 #include "Game/UI/UserInterface.h"
@@ -26,7 +24,54 @@ class CountUpNumber :public IUI
 // クラス定数の宣言 -------------------------------------------------
 public:
 
+// メンバ関数の宣言 -------------------------------------------------
+//取得・設定
+public:
+	//現在の数字を設定
+	void SetCurrentNumber(const int& currentNumber);
+	//現在の数字を取得
+	int GetCurrentNumber() const;
+	//目標の数字を設定
+	void SetTargetNumber(const int& targetNumber);
+	//目標の数字を取得
+	int GetTargetNumber() const;
+	//増加する量を設定
+	void SetStepNumber(const int& stepNumber);
+	//増加する量を設定
+	int GetStepNumber() const;
 
+	//情報UI画像の幅を設定
+	void SetInfoTextureWidth(const int& width);
+	//情報UI画像の幅を取得
+	int  GetInfoTextureWidth() const;
+	//情報UI画像の高さを設定
+	void SetInfoTextureHeight(const int& height);
+	//情報UI画像の高さを取得
+	int  GetInfoTextureHeight() const;
+
+	//終了したか
+	bool IsFinish() const;
+//コンテキスト・デストラクタ
+	//コンストラクタ
+	CountUpNumber(const int& currentNumber,const int& targetNumber,const int& stepNumber);
+	//デストラクタ
+	~CountUpNumber();
+
+//操作
+	//初期化
+	void Initialize();
+	//更新
+	virtual void Update();
+	//描画
+	virtual void Render();
+	//数字UI生成
+	void CreateNumberUI(std::unique_ptr<NumberControl> numberUI);
+	//数字の情報を表すUI
+	void CreateInfoTextureUI(std::unique_ptr<UserInterface> infoUI);
+//内部処理
+private:
+
+// データメンバの宣言 -----------------------------------------------
 private:
 	//数字UI
 	std::unique_ptr<NumberControl> m_numberUI;
@@ -50,46 +95,4 @@ private:
 	float m_countTime;
 	//値を減らす経過時間ライン
 	float m_stepTime;
-
-//コンテキスト・デストラクタ
-public:
-	CountUpNumber(const int& currentNumber,const int& targetNumber,const int& stepNumber);
-	~CountUpNumber();
-
-//操作
-public:
-	void Initialize();
-	virtual void Update();
-	virtual void Render();
-
-//取得・設定
-public:
-	void SetCurrentNumber(const int& currentNumber);
-	int GetCurrentNumber() const;
-
-	void SetTargetNumber(const int& targetNumber);
-	int GetTargetNumber() const;
-	
-	void SetStepNumber(const int& stepNumber);
-	int GetStepNumber() const;
-	
-	void SetInfoTextureWidth(const int& width);
-	int  GetInfoTextureWidth() const;
-	
-	void SetInfoTextureHeight(const int& height);
-	int  GetInfoTextureHeight() const;
-
-
-
-	bool IsFinish();
-
-	//数字UI生成
-	void CreateNumberUI(std::unique_ptr<NumberControl> numberUI);
-
-	//数字の情報を表すUI
-	void CreateInfoTextureUI(std::unique_ptr<UserInterface> infoUI);
-//内部処理
-private:
-
-protected:
 };

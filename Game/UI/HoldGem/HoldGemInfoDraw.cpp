@@ -3,11 +3,10 @@
  *
  * @brief  所持している宝石の内1つの情報を表示するUIに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付  2026/01/30
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include"HoldGemInfoDraw.h"
@@ -22,14 +21,13 @@
  * @param[in] height
  */
 HoldGemInfoDraw::HoldGemInfoDraw(int width, int height, const std::vector<int>& gemID)
-    : m_menuIndex(0)
-    , m_windowHeight(height)
-    , m_windowWidth(width)
-    , m_pGemManager{ GemManager::GetInstance() }
-    , m_position{ 80,680 }
-    , m_scale{ 1.0f,1.0f }
-    , m_gemTexturePath{}
-    ,m_gemID{gemID}
+    : 
+    m_menuIndex(0),
+    m_windowHeight(height),
+    m_windowWidth(width),
+    m_position{ 80,680 },
+    m_scale{ 1.0f,1.0f },
+    m_gemID{gemID}
 {
 
 }
@@ -41,27 +39,41 @@ HoldGemInfoDraw::~HoldGemInfoDraw()
 {
 }
 
+/**
+ * @brief 初期化処理
+ *
+ * @param[in]なし
+ *
+ * @return なし
+ */
 void HoldGemInfoDraw::Initialize()
 {
 
-    m_gemTexturePath = L"minigem.png";
-
+    
     m_holdGem = UIFactory::CreateHoldGem(m_gemID);
     m_holdGem->ChangePositon({ 650.0f,450.0f });
     m_holdGem->ChangeScale({ 2.0f, 2.0f });
     m_holdGem->Initialize();
     m_holdGem->ChangeDrawGem(m_gemID);
 
-    m_cursol = std::make_unique<UserInterface>();
-    m_cursol->SetWindowSize(m_windowWidth, m_windowHeight);
-    m_cursol->Create(L"UI/cursol.png", { 650.0f,450.0f }, { 2.0f,2.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+    m_cursol = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::RED_CURSOL, CURSOL_UI_POS, { 2.0f,2.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
 
-    m_candidateGemUI = std::make_unique<UserInterface>();
-    m_candidateGemUI->SetWindowSize(m_windowWidth, m_windowHeight);
-    m_candidateGemUI->Create(GemManager::GetInstance()->GetIDNumberedGem(m_gemID[m_menuIndex])->GetImagePath().panel, {350.0f,200.0f}, {1.0f,1.0f}, UserInterface::MIDDLE_CENTER);
+    //入れ替え候補宝石UI
+    m_candidateGemUI = UIFactory::CreateUserInterface(
+        GemManager::GetInstance()->GetIDNumberedGem(m_gemID[m_menuIndex])->GetImagePath().panel,
+        CACDIDATE_GEM_UI_POS,
+        DirectX::SimpleMath::Vector2::One,
+        UserInterface::MIDDLE_CENTER);
 
 }
 
+/**
+ * @brief 更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void HoldGemInfoDraw::Update()
 {
     m_holdGem->Update();
@@ -92,11 +104,18 @@ void HoldGemInfoDraw::Update()
 
     m_candidateGemUI->SetTexture(GemManager::GetInstance()->GetIDNumberedGem(m_gemID[m_menuIndex])->GetImagePath().panel);
 
-    m_cursol->SetPosition({ 650.0f + HoldGem::GEM_POS_X[m_menuIndex]*2.0f ,450.0f });
+    m_cursol->SetPosition({ CURSOL_UI_POS.x + HoldGem::GEM_POS_X[m_menuIndex]*2.0f ,CURSOL_UI_POS.y });
     float scale=abs(std::sin(time)) + 1.0f;
     m_cursol->SetScale({ scale,scale });
 }
 
+/**
+ * @brief 描画
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void HoldGemInfoDraw::Render()
 {
     m_holdGem->Render();
@@ -106,43 +125,32 @@ void HoldGemInfoDraw::Render()
     m_candidateGemUI->Render();
 }
 
-void HoldGemInfoDraw::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, UserInterface::ANCHOR anchor)
-{
 
-    //  
-    std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
-    base->Create(
-        path
-        , position
-        , scale
-        , anchor
-    );
-
-    base->SetWindowSize(m_windowWidth, m_windowHeight);
-
-    //  背景用のアイテムも新しく追加する
-    m_base = std::move(base);
-
-
-    //  
-
-}
-
-void HoldGemInfoDraw::ChangePositon(const DirectX::SimpleMath::Vector2& pos)
+/**
+ * @brief 位置設定
+ *
+ * @param[in] pos  位置
+ *
+ * @return なし
+ */
+void HoldGemInfoDraw::SetPositon(const DirectX::SimpleMath::Vector2& pos)
 {
     m_position = pos;
-
 }
 
-void HoldGemInfoDraw::ChangeScale(const DirectX::SimpleMath::Vector2& scale)
+/**
+ * @brief 大きさ設定
+ *
+ * @param[in] scale
+ *
+ * @return なし
+ */
+void HoldGemInfoDraw::SetScale(const DirectX::SimpleMath::Vector2& scale)
 {
     m_scale = scale;
-
 }
 
-int HoldGemInfoDraw::GetMunuIndex()
+int HoldGemInfoDraw::GetMunuIndex() const
 {
     return m_menuIndex;
 }
-
-

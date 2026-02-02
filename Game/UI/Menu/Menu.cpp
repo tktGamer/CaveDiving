@@ -3,28 +3,28 @@
  *
  * @brief  宝石選択UIに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/30
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Menu.h"
 #include"Game/Common/Sound.h"
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] width
- * @param[in] height
  * @param[in] cursolSound
  */
-Menu::Menu(int width, int height, DirectX::SoundEffect* cursolSound)
-    : m_menuIndex(0)
-    , m_windowHeight(height)
-    , m_windowWidth(width)
-    , m_baseTexturePath(nullptr)
+Menu::Menu(DirectX::SoundEffect* cursolSound)
+    : 
+    m_menuIndex(0),
+    m_baseTexturePath(nullptr),
+    m_cursorSound{},
+    m_userInterface{},
+    m_base{}
 {
     m_cursorSound = std::make_unique<Sound>(cursolSound);
     m_userInterface.clear();
@@ -38,15 +38,26 @@ Menu::~Menu()
 {
 }
 
+/**
+ * @brief 初期化処理
+ *
+ * @param[in]なし
+ *
+ * @return なし
+ */
 void Menu::Initialize()
 {
-   
     //  背景となるウィンドウ画像を読み込む
     m_baseTexturePath = L"UI/buttonframe.png";
-
-
 }
 
+/**
+ * @brief 更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Menu::Update()
 {
     //UIがなかったら処理しない
@@ -97,6 +108,13 @@ void Menu::Update()
     m_base[m_menuIndex]->SetScale(select);
 }
 
+/**
+ * @brief 描画
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Menu::Render()
 {
        for (int i = 0; i < m_userInterface.size(); i++)
@@ -108,36 +126,25 @@ void Menu::Render()
         }
 }
 
-void Menu::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, UserInterface::ANCHOR anchor)
+/**
+ * @brief メニュー追加
+ *
+ * @param[in] path　　　画像パス
+ * @param[in] position　描画位置
+ * @param[in] scale　　 大きさ
+ * @param[in] anchor　　アンカー位置
+ *
+ * @return なし
+ */
+void Menu::Add(const wchar_t* path, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
 {
     //  メニューとしてアイテムを追加する
-    std::unique_ptr<UserInterface> userInterface = std::make_unique<UserInterface>();
-    //  指定された画像を表示するためのアイテムを作成する
-    userInterface->Create(
-          path
-        , position
-        , scale
-        , anchor
-		);
-    userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
-
+    std::unique_ptr<UserInterface> userInterface = UIFactory::CreateUserInterface(path,position,scale,anchor);
     //  アイテムを新しく追加
     m_userInterface.push_back(std::move(userInterface));
 
     //  背景用のウィンドウ画像も追加する
-    std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
-    base->Create(
-          m_baseTexturePath
-        , position
-        , scale
-        , anchor
-        );
-
-    base->SetWindowSize(m_windowWidth, m_windowHeight);
-
+    std::unique_ptr<UserInterface> base = UIFactory::CreateUserInterface(m_baseTexturePath,position,scale,anchor);
     //  背景用のアイテムも新しく追加する
     m_base.push_back(std::move(base));
-
 }
-
-

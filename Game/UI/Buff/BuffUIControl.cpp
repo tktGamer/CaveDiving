@@ -1,19 +1,16 @@
 /**
  * @file   BuffUIControl.cpp
  *
- * @brief  入れ替え確認UIに関するソースファイル
+ * @brief  バフUI管理に関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/01/30
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include"BuffUIControl.h"
 #include"../CaveDiving/Game/Common/ResourceManager.h"
-#include"Game/Message/Messenger.h"
-#include"Game/UI/GemSelectUIManager.h"
 #include"Game/Common/Sound.h"
 #include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
@@ -24,9 +21,11 @@
  * @param[in] height
  */
 BuffUIControl::BuffUIControl(int width, int height)
-    : m_windowHeight{height}
-    , m_windowWidth{ width }
-    ,m_nowBuff{}
+    : 
+    m_windowHeight{height},
+    m_windowWidth{ width },
+    m_nowBuff{},
+	m_textureScale{ DirectX::SimpleMath::Vector2::One }
 {
 
 }
@@ -38,15 +37,29 @@ BuffUIControl::~BuffUIControl()
 {
 }
 
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void BuffUIControl::Initialize()
 {
 
 
 }
 
+/**
+ * @brief 更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void BuffUIControl::Update()
 {
-
+    //バフUIの更新
     for (std::unique_ptr<Buff>& buffUI : m_buffUIs) 
     {
         buffUI->Update();
@@ -75,6 +88,13 @@ void BuffUIControl::Update()
     }
 }
 
+/**
+ * @brief 描画
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void BuffUIControl::Render()
 {
     //バフの描画
@@ -84,36 +104,55 @@ void BuffUIControl::Render()
     }
 }
 
+/**
+ * @brief バフUIの追加
+ *
+ * @param[in] upStatus バフの種類
+ * @param[in] buffTime バフの効果時間
+ *
+ * @return なし
+ */
 void BuffUIControl::AddUI(const Item::EffectType& upStatus, const float& buffTime)
 {
-    m_buffUIs.emplace_back(std::make_unique<Buff>(buffTime));
 
     const wchar_t* texturePath{};
-
+	//バフの種類によって画像を変える
     switch (upStatus)
     {
     case Item::EffectType::Attack:
-        texturePath = L"UI/attackup001A-01.png";
+        texturePath = ResourcePath::TEXTURE::UI::ATTACK_BUFF;
         break;
     case Item::EffectType::Diffece:
-        texturePath = L"UI/defense-up01-1-64x64.png";
+        texturePath = ResourcePath::TEXTURE::UI::DIFFENCE_BUFF;
         break;
     case Item::EffectType::Outline:
-        texturePath = L"UI/outlineicon.png";
+        texturePath = ResourcePath::TEXTURE::UI::OUTLINE_BUFF;
         break;
     default:
         break;
     }
-    m_buffUIs.back()->Initialize(texturePath, m_windowWidth, m_windowHeight);
 
     DirectX::SimpleMath::Vector2 buffPos = FIRST_BUFF_UI_POS;
+	//配置位置計算
     int row = m_nowBuff % ROW_NUM;
     int col = m_nowBuff / ROW_NUM;
 
-    buffPos.x += row * 100;
-    buffPos.y += col * 110;
+    buffPos.x += row * NORMAL_SCALE_BUFF_UI_INTERVAL.x * m_textureScale.x;
+    buffPos.y += col * NORMAL_SCALE_BUFF_UI_INTERVAL.y * m_textureScale.y;
 
-    m_buffUIs.back()->SetPosition(buffPos);
+    m_buffUIs.emplace_back(std::make_unique<Buff>(buffTime,texturePath,buffPos,DirectX::SimpleMath::Vector2{1.0f,1.0f},UserInterface::ANCHOR::MIDDLE_CENTER));
     m_nowBuff++;
+}
+
+/**
+ * @brief バフUIのサイズ設定
+ *
+ * @param[in] size バフUIのサイズ
+ *
+ * @return なし
+ */
+void BuffUIControl::SetBuffUITextureSize(const DirectX::SimpleMath::Vector2& size)
+{
+	m_textureScale = size;
 }
 

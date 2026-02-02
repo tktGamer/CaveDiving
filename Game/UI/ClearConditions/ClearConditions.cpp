@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/10/31
+ * @date   日付　2026/01/30
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ClearConditions.h"
@@ -19,12 +18,13 @@
  * @param[in] pos  描画座標（右端）
  */
 ClearConditions::ClearConditions(const DirectX::SimpleMath::Vector2& pos)
-    : m_windowHeight(0)
-    , m_windowWidth(0)
-    , m_restEnemy(nullptr)
-    , m_enemyIcon(nullptr)
-    ,m_position{pos}
-    ,m_iconTexureWidth{}
+    : 
+    m_windowHeight(0),
+    m_windowWidth(0),
+    m_restEnemy(nullptr),
+    m_enemyIcon(nullptr),
+    m_position{pos},
+    m_iconTexureWidth{}
 {
 }
 
@@ -35,6 +35,15 @@ ClearConditions::~ClearConditions()
 {
 }
 
+
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] width　幅
+ * @param[in] height 高さ
+ *
+ * @return なし
+ */
 void ClearConditions::Initialize(int width, int height)
 {
 
@@ -53,7 +62,7 @@ void ClearConditions::Initialize(int width, int height)
     ResourceManager::GetInstance()->GetTextureSize(L"enemyIcon.png", m_iconTexureWidth, texHeight);
 
     NumberControl::NumberTextureData nTData;
-    nTData.texturePath = "number.png";
+    nTData.texturePath =TKTLib::WcharToString( ResourcePath::TEXTURE::UI::NUMBER);
     nTData.col = 10;
     nTData.raw = 1;
 
@@ -64,15 +73,27 @@ void ClearConditions::Initialize(int width, int height)
     
 }
 
+
+/**
+ * @brief 更新
+ *
+ * @param[in] drawNumber　表示する数字
+ *
+ * @return なし
+ */
 void ClearConditions::Update(const int& drawNumber)
 {
-
     m_restEnemy->SetNumber(drawNumber);
-    //float ratio = m_gauge->GetRenderRatio();
-
-
 }
 
+
+/**
+ * @brief 描画
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void ClearConditions::Render()
 {
     m_restEnemy->Render();

@@ -1,23 +1,20 @@
 /**
  * @file   Score.h
  *
- * @brief  UIに関するヘッダファイル
+ * @brief  スコアUIに関するヘッダファイル
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/12/17
+ * @date   日付　2026/02/01
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Interface/IUI.h"
 #include "Game/UI/UserInterface.h"
 #include"Game/UI/Number/CountUpNumber.h"
 // クラスの宣言 ===============================================================
 class ScoreUIManager;
-
 // クラスの定義 ===============================================================
 /**
   * @brief UI
@@ -26,6 +23,7 @@ class Score :public IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//UIデータ
 	struct UIInfo
 	{
 		//数字テクスチャデータ
@@ -48,34 +46,32 @@ public:
 		int minDigit;
 	};
 
-//メンバ変数
+// データメンバの宣言 -----------------------------------------------
 private:
-
-
-	//アイコンテクスチャの幅
-	int m_iconTexureWidth;
-
-
+	//数字の情報UI
 	std::unique_ptr<CountUpNumber> m_referenceUI;
+	//数字UI
 	std::unique_ptr<CountUpNumber> m_scoreUI;
-
-//コンテキスト・デストラクタ
-public:
-	Score(const UIInfo& score, const UIInfo& referenceData = UIInfo{});
-	~Score();
-
-//操作
-public:
-	void Initialize();
-	void Update();
-	void Render();
-
-	//演出スキップ
-	void SkipDirection();
+// メンバ関数の宣言 -------------------------------------------------
 //取得・設定
 public:
 	//終了したか
 	bool IsFinish();
+//コンテキスト・デストラクタ
+	//コンテキスト
+	Score(const UIInfo& score, const UIInfo& referenceData = UIInfo{});
+	//デストラクタ
+	~Score();
+//操作
+	//初期化
+	void Initialize();
+	//更新
+	void Update();
+	//描画
+	void Render();
+	//演出スキップ
+	void SkipDirection();
+//内部処理
 private:
 	//生成
 	std::unique_ptr<CountUpNumber> CreateUI(const UIInfo& info);

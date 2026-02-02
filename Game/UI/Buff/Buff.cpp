@@ -5,28 +5,29 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2025/10/10
+ * @date   日付　2026/01/30
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Buff.h"
 #include"Game/Message/Messenger.h"
-
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] time
+ * @param[in] time バフの残り時間
+ * @param[in] path バフUIの画像パス
+ * @param[in] position バフUIの位置
+ * @param[in] scale バフUIのスケール
  */
-Buff::Buff(const float& time)
-    :m_windowHeight{0}
-    ,m_windowWidth{0}
-    , m_baseTexturePath{ nullptr }
-    , m_upType{nullptr}
-    , m_frame{nullptr}
-    , m_remainingTime{&time}
+Buff::Buff(const float& time, const wchar_t* path,
+    const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
+	:
+    m_remainingTime{ &time },
+    m_upType{}
 {
+    m_upType = UIFactory::CreateUserInterface(path, position, scale, anchor);
 }
 
 /**
@@ -39,71 +40,36 @@ Buff::~Buff()
 /**
  * @brief 初期化処理
  *
- * @param[in] path
- * @param[in] width
- * @param[in] height
+ * @param[in] なし
  *
  * @return なし
  */
-void Buff::Initialize(const wchar_t* path, int width, int height)
+void Buff::Initialize()
 {
-
-    m_windowWidth = width;
-    m_windowHeight = height;
-    
-    m_baseTexturePath = L"UI/buff.png";
-
-
-    Add(path
-        , DirectX::SimpleMath::Vector2(15, 100)
-        , DirectX::SimpleMath::Vector2(0.8f, 0.8f)
-        , UserInterface::ANCHOR::MIDDLE_LEFT);
-
 }
 
+/**
+ * @brief 更新
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void Buff::Update()
 {
 }
 
-void Buff::Render()
-{
-    //m_frame->Draw();
-    m_upType->Render();
-}
-
 /**
- * @brief バフUIの追加
+ * @brief 描画
  *
- * @param[in] path
- * @param[in] position
- * @param[in] scale
- * @param[in] anchor
+ * @param[in] なし
  *
  * @return なし
  */
-void Buff::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, UserInterface::ANCHOR anchor)
+void Buff::Render()
 {
-
-    m_frame = std::make_unique<UserInterface>();
-    m_frame->Create(
-        m_baseTexturePath
-        , position
-        , scale
-        , anchor);
-    m_frame->SetWindowSize(m_windowWidth, m_windowHeight);
-
-    m_upType = std::make_unique<UserInterface>();
-    m_upType->Create(
-        path
-        , position
-        , scale
-        , anchor);
-    m_upType->SetWindowSize(m_windowWidth, m_windowHeight);
-
-
-
+    m_upType->Render();
 }
-
 
 /**
  * @brief バフUIの追加
@@ -117,9 +83,15 @@ const float& Buff::GetRemainingTime()
     return *m_remainingTime;
 }
 
+/**
+ * @brief バフUIの位置設定
+ *
+ * @param[in] pos バフUIの位置
+ *
+ * @return なし
+ */
 void Buff::SetPosition(const DirectX::SimpleMath::Vector2& pos)
 {
-    m_frame->SetPosition(pos);
     m_upType->SetPosition(pos);
 }
 
