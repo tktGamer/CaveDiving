@@ -24,6 +24,8 @@ public:
 		static constexpr wchar_t BAT_WING[] = L"Wing.png";
 		static constexpr wchar_t GOLEM[] = L"Golem.png";
 		static constexpr wchar_t GOLEM_HAND[] = L"GolemHand.png";
+		static constexpr wchar_t GOLEM_ARM[] = L"GolemArm.png";
+		static constexpr wchar_t GOLEM_FOT[] = L"GolemFot.png";
 		static constexpr wchar_t BLOCK[] = L"Resources/Texture/block.png";
 		static constexpr wchar_t ROCK[]  = L"Rock.png";
 		static constexpr wchar_t ITEM[]  = L"Item.png";
@@ -54,6 +56,7 @@ public:
 			static constexpr wchar_t RED_CURSOL[]  = L"UI/Cursol.png";
 			static constexpr wchar_t CHANGE_MESSAGE[]  = L"UI/ChangeMessage.png";
 			static constexpr wchar_t SAVE_MESSAGE[]  = L"UI/SaveMessage.png";
+			static constexpr wchar_t NOT_CHOOSE_MESSAGE[]  = L"UI/notacquiredframe.png";
 			static constexpr wchar_t YES[]  = L"UI/YesFont.png";
 			static constexpr wchar_t NO[]  = L"UI/NoFont.png";
 			static constexpr wchar_t CHANGE[]  = L"UI/ChangeFont.png";
@@ -88,6 +91,8 @@ public:
 		static constexpr wchar_t BAT_WING[] = L"Wing.sdkmesh";
 		static constexpr wchar_t GOLEM[] = L"Golem.sdkmesh";
 		static constexpr wchar_t GOLEM_HAND[] = L"GolemHand.sdkmesh";
+		static constexpr wchar_t GOLEM_ARM[] = L"GolemArm.sdkmesh";
+		static constexpr wchar_t GOLEM_FOT[] = L"GolemFot.sdkmesh";
 		static constexpr wchar_t ITEM[] = L"Item.sdkmesh";
 		static constexpr wchar_t PLAYER[] = L"Player.sdkmesh";
 		static constexpr wchar_t PLAYER_HAND[] = L"Hand.sdkmesh";
@@ -205,6 +210,8 @@ public:
 		};
 		//アイテム
 		static constexpr char ITEM[] = "Resources/Data/ItemData.csv";
+		//ライト情報
+		static constexpr char LIGHT[] = "Resources/Data/LightPositionData.csv";
 	};
 };
 

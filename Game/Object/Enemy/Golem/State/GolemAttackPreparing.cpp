@@ -17,14 +17,10 @@
  * @brief コンストラクタ
  *
  * @param[in] golem ゴーレムのポインタ
- * @param[in] pRightGolemHand ゴーレムの右手のポインタ
- * @param[in] pLeftGolemHand ゴーレムの左手のポインタ
  */
-GolemAttackPreparing::GolemAttackPreparing(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
+GolemAttackPreparing::GolemAttackPreparing(Golem* golem)
 	:m_golem{golem},
-	m_pRightHand{pRightGolemHand},
-	m_pLeftHand{pLeftGolemHand},
-	m_attackPreparingMotion{}
+     m_attackPreparingMotion{}
 {
 }
 /**
@@ -142,10 +138,10 @@ void GolemAttackPreparing::DecideMotion()
 	switch (m_golem->GetAttackMessage()) 
 	{
 	case Message::AttackMesssage::ATTACKTYPE_ONE:
-		m_attackPreparingMotion = std::make_unique<GolemPunchPreparingMotion>(m_golem, m_pRightHand, m_pLeftHand);
+		m_attackPreparingMotion = std::make_unique<GolemPunchPreparingMotion>(m_golem->GetObjectNumber());
 		break;
 	case Message::AttackMesssage::ATTACKTYPE_TWO:
-		m_attackPreparingMotion = std::make_unique<GolemSlammedDownPreparingMotion>(m_golem, m_pRightHand, m_pLeftHand);
+		m_attackPreparingMotion = std::make_unique<GolemSlammedDownPreparingMotion>(m_golem->GetObjectNumber());
 
 		break;
 	}

@@ -32,6 +32,7 @@ public:
 //コンストラクタ・デストラクタ
 	// コンストラクタ
 	Scene() : m_sceneManager(nullptr) {}
+	//-----IScene
 	// デストラクタ
 	virtual ~Scene() = default;
 //操作
@@ -45,6 +46,7 @@ public:
 	virtual void Render() = 0;
 	// 終了処理
 	virtual void Finalize() = 0;
+	//--------
 	// デバイスに依存するリソースを作成する関数
 	virtual void CreateDeviceDependentResources() {}
 	// ウインドウサイズに依存するリソースを作成する関数

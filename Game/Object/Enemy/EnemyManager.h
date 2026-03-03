@@ -22,7 +22,14 @@ class EnemyManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
+//非公開
+private:
+	//コウモリ
+	static constexpr char BAT[] = "コウモリ";
+	//ゴーレム
+	static constexpr char GOLEM[] = "ゴーレム";
+	//落下判定
+	static constexpr float DEAD_LINE = -50.0f;
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
@@ -48,6 +55,8 @@ public:
 private:
 	//敵を消去
 	void DeleteEnemy();
+	//敵が範囲外にいるか
+	bool IsOutOfStage(const Character* enemy);
 // データメンバの宣言 -----------------------------------------------
 private:
 	//敵リスト

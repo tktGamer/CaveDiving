@@ -13,6 +13,7 @@
 #define GOLEM_CHASING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
+#include"Game/Motion/GolemMotion/GolemWalkMotion.h"
 // クラスの宣言 ===============================================================
 class Golem;
 class GameObject;
@@ -58,6 +59,9 @@ private:
 private:
 	// ゴーレム
 	Golem* m_golem;
+	//移動モーション
+	std::unique_ptr<Motion> m_walkMotion;
+
 	//プレイヤーオブジェクトのポインタ
 	const GameObject* m_pPlayer;
 };

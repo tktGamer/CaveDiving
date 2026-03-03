@@ -40,8 +40,8 @@ GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent,
 	m_quaternion{ initialAngle }, // 初期クォータニオンを設定
 	m_scale{ DirectX::SimpleMath::Vector3::One }, // 初期拡大率を設定
 	m_parent{ parent },
-	m_currentPosition{},
-	m_currentAngle{}
+	m_currentPosition{m_position},
+	m_currentAngle{m_quaternion}
 {
 }
 

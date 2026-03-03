@@ -34,19 +34,25 @@ class ResourceManager;
 /**
  * @brief ゲームシーン
  */
-class GameScene : public Scene<GameData>
+class PlayScene : public Scene<GameData>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//１秒あたりの回転量
+	static constexpr  float ROTATION_SPEED_Y_ANGLE = DirectX::XMConvertToRadians(180.0f);
+	//カメラ初期位置
+	static constexpr DirectX::SimpleMath::Vector3 CAMERA_INIT_POSITION = { 0.0f, 7.0f, 25.0f };
+	//カメラ初期距離
+	static constexpr DirectX::SimpleMath::Vector3 CAMERA_INIT_DISTANCE = { 0.0f, 7.0f, 25.0f };
 
 // メンバ関数の宣言 -------------------------------------------------
 // 取得/設定
 public:
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	GameScene();
+	PlayScene();
 	// デストラクタ
-	~GameScene();
+	virtual ~PlayScene();
 // 操作
 	// 初期化処理
 	void Initialize() override;
@@ -71,7 +77,8 @@ private:
 	void PressKeyBoard();
 	//移動メッセージ
 	void MovingMessage(const int& operateObjectID);
-
+	//視点回転
+	void RotateDirection(const int& operateObjectID, const bool& isRotateRight);
 	//UI生成
 	void CreateUI();
 	//敵の生成

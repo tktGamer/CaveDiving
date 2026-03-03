@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/18
+ * @date   日付　2026/03/01
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -17,18 +17,14 @@
  * @brief コンストラクタ
  *
  * @param[in] golem ゴーレムのポインタ
- * @param[in] pRightGolemHand ゴーレムの右手のポインタ
- * @param[in] pLeftGolemHand ゴーレムの左手のポインタ
  */
-GolemAttack::GolemAttack(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
+GolemAttack::GolemAttack(Golem* golem)
 	:
 	m_golem{golem},
-	m_pRightHand{ pRightGolemHand },
-	m_pLeftHand{ pLeftGolemHand },
 	m_attackMotion{}
 {
 	//モーションを設定
-	m_attackMotion = std::make_unique<GolemPunchMotion>(golem, pRightGolemHand, pLeftGolemHand);
+	m_attackMotion = std::make_unique<GolemPunchMotion>(golem->GetObjectNumber());
 }
 /**
  * @brief デストラクタ
@@ -144,11 +140,10 @@ void  GolemAttack::DecideMotion()
 	switch (m_golem->GetAttackMessage())
 	{
 	case Message::AttackMesssage::ATTACKTYPE_ONE:
-		m_attackMotion = std::make_unique<GolemPunchMotion>(m_golem, m_pRightHand, m_pLeftHand);
+		m_attackMotion = std::make_unique<GolemPunchMotion>(m_golem->GetObjectNumber());
 		break;
 	case Message::AttackMesssage::ATTACKTYPE_TWO:
-		m_attackMotion = std::make_unique<GolemSlammedDownMotion>(m_golem, m_pRightHand, m_pLeftHand);
-
+		m_attackMotion = std::make_unique<GolemSlammedDownMotion>(m_golem->GetObjectNumber());
 		break;
 	}
 }

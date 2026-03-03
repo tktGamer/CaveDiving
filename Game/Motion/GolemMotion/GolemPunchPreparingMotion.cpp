@@ -19,15 +19,22 @@
  * @param[in] pRightGolemHand　右手のポインタ
  * @param[in] pLeftGolemHand　 左手のポインタ
  */
-GolemPunchPreparingMotion::GolemPunchPreparingMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
+GolemPunchPreparingMotion::GolemPunchPreparingMotion(const int& golemObjectID)
 	:
-	m_pGolem{pGolem},
-	m_pRightGolemHand{ pRightGolemHand },
-	m_pLeftGolemHand{ pLeftGolemHand },
+	m_pGolem{},
+	m_pRightGolemArm{},
+	m_pRightGolemHand{},
+	m_pLeftGolemArm{},
+	m_pLeftGolemHand{},
 	m_startPosition{},
 	m_goalPosition{}
 {
-
+	Messenger* messenger = Messenger::GetInstance();
+	m_pGolem = messenger->GetObject(golemObjectID)->Cast<Golem>();
+	m_pRightGolemArm  = messenger->GetObject(golemObjectID + Golem::RIGHT_ARM_OBJ_NUMBER)->Cast<GolemArm>();
+	m_pRightGolemHand = messenger->GetObject(golemObjectID + Golem::RIGHT_HAND_OBJ_NUMBER)->Cast<GolemHand>();
+	m_pLeftGolemArm   = messenger->GetObject(golemObjectID + Golem::LEFT_ARM_OBJ_NUMBER)->Cast<GolemArm>();
+	m_pLeftGolemHand  = messenger->GetObject(golemObjectID + Golem::LEFT_HAND_OBJ_NUMBER)->Cast<GolemHand>();
 }
 
 /**
@@ -48,9 +55,9 @@ GolemPunchPreparingMotion::~GolemPunchPreparingMotion()
 void GolemPunchPreparingMotion::Initialize()
 {
 	//手の向きを変える 正面に向ける
-	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, PUNCH_HAND_ANGLE));
+	m_pRightGolemArm->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitX, PUNCH_HAND_ANGLE));
 	//スタート位置とゴール位置
-	m_startPosition = m_pRightGolemHand->GetPosition();
+	m_startPosition = m_pRightGolemArm->GetPosition();
 	m_goalPosition  = m_startPosition + HAND_GOAL_POS;
 
 	SetMotionLerp(0.0f);
@@ -71,7 +78,7 @@ bool GolemPunchPreparingMotion::Update()
 
 	//現在位置を求める
 	DirectX::SimpleMath::Vector3 currentPos = DirectX::SimpleMath::Vector3::Lerp(m_startPosition, m_goalPosition, motionLerp);
-	m_pRightGolemHand->SetPosition(currentPos);
+	m_pRightGolemArm->SetPosition(currentPos);
 
 	//モーション進行	
 	motionLerp += Messenger::GetInstance()->GetElapsedTime();

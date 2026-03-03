@@ -11,7 +11,7 @@
 #include "pch.h"
 #include "ResultScene.h"
 #include "Game/Common/ResourceManager.h"
-#include"../Scene/GameScene.h"
+#include"../Scene/PlayScene.h"
 #include "../Scene/LoadScene.h"
 #include"../Scene/TitleScene.h"
 #include"../Common/DamageSystem.h"

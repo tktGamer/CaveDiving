@@ -23,7 +23,7 @@ Camera::Camera()
 	m_eyePos{},
 	m_targetPos{},
 	m_targetRotate{},
-	m_distance{ 0.0f, 0.0f, 10.0f } // デフォルトの距離を設定
+	m_distance{ DEFAULT_DISTANCE } // デフォルトの距離を設定
 {
 }
 
@@ -41,10 +41,10 @@ Camera::~Camera()
  *
  * @return なし
  */
-void Camera::Initialize(DirectX::SimpleMath::Vector3 eyePos)
+void Camera::Initialize(const DirectX::SimpleMath::Vector3& eyePosition)
 {
-	m_eyePos = eyePos;
-    m_up={ 0.0f,1.0f,0.0f };
+	m_eyePos = eyePosition;
+	m_up = DirectX::SimpleMath::Vector3::Up;
 }
 
 /**
@@ -54,7 +54,7 @@ void Camera::Initialize(DirectX::SimpleMath::Vector3 eyePos)
  *
  * @return なし
  */
-void Camera::Update(float elapsedTime)
+void Camera::Update(const float& elapsedTime)
 {
 	
 	// ターゲットの位置
@@ -103,7 +103,7 @@ void Camera::SetEyePos(const DirectX::SimpleMath::Vector3& position)
  *
  * @return なし
  */
-void Camera::SetEyePosX(float posX)
+void Camera::SetEyePosX(const float& posX)
 {
 	m_eyePos.x = posX;
 }
@@ -115,7 +115,7 @@ void Camera::SetEyePosX(float posX)
  *
  * @return なし
  */
-void Camera::SetEyePosY(float posY)
+void Camera::SetEyePosY(const float& posY)
 {
 	m_eyePos.y = posY;
 }
@@ -127,7 +127,7 @@ void Camera::SetEyePosY(float posY)
  *
  * @return なし
  */
-void Camera::SetEyePosZ(float posZ)
+void Camera::SetEyePosZ(const float& posZ)
 {
 	m_eyePos.z = posZ;
 }
@@ -141,7 +141,8 @@ void Camera::SetEyePosZ(float posZ)
  *
  * @return なし
  */
-void Camera::SetTartet(const DirectX::SimpleMath::Vector3& targetPos, const DirectX::SimpleMath::Quaternion& rotate, const DirectX::SimpleMath::Vector3& targetVelocity)
+void Camera::SetTartet(const DirectX::SimpleMath::Vector3& targetPos, const DirectX::SimpleMath::Quaternion& rotate,
+	const DirectX::SimpleMath::Vector3& targetVelocity)
 {
 	m_targetPos = &targetPos;
 	m_targetRotate = &rotate; // ターゲットの回転も設定
@@ -156,7 +157,7 @@ void Camera::SetTartet(const DirectX::SimpleMath::Vector3& targetPos, const Dire
  *
  * @return なし
  */
-void Camera::SetDistance(DirectX::SimpleMath::Vector3 distance)
+void Camera::SetDistance(const DirectX::SimpleMath::Vector3& distance)
 {
 	m_distance = distance;
 }

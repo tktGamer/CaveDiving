@@ -21,6 +21,8 @@
 #include"../Object/Enemy/Bat/Wing.h"
 #include"../Object/Enemy/Golem/Golem.h"
 #include"../Object/Enemy/Golem/GolemHand.h"
+#include"../Object/Enemy/Golem/GolemArm.h"
+#include"../Object/Enemy/Golem/GolemFot.h"
 #include"../Object/Stage/Stage.h"
 #include"../Object/Item/Item.h"
 #include"../Object/Item/UniquItem/OutlineItem.h"
@@ -88,6 +90,24 @@ public:
 		GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
+	);
+
+	// 「ゴーレムの腕」を生成する
+	static std::unique_ptr<GolemArm> CreateGolemArm(
+		Character* root,
+		GameObject* parent = nullptr,
+		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
+		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity,
+		const PartObject::RotationLimit& rotationlimit = PartObject::RotationLimit::OFF
+	);
+
+	// 「ゴーレムの足」を生成する
+	static std::unique_ptr<GolemFot> CreateGolemFot(
+		Character* root,
+		GameObject* parent = nullptr,
+		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
+		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity,
+		const PartObject::RotationLimit& rotationlimit = PartObject::RotationLimit::OFF
 	);
 
 	// 「ステージ」を生成する

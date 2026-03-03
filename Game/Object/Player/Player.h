@@ -94,6 +94,8 @@ public:
 
 	//所持宝石を取得
 	const HolderGem& GetHolderGem();
+	//回避中か
+	bool IsAvoidance();
 	//攻撃中か
 	bool IsAttacking();
 	//攻撃入力があったか
@@ -126,8 +128,6 @@ public:
 private:
 	//アイテムの強化制限時間経過
 	void UpdateGotItems();
-	//方向転換
-	void ChangeDirection();
 	//宝石で強化された分のステータスを取得
 	int GemPlusStatus(const Gem::Type& type) const;
 	//アイテムで強化された分のステータスを取得

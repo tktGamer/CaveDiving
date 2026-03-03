@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/19
+ * @date   日付　2026/03/03
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -135,20 +135,18 @@ void EnemyManager::Spawn(const std::string& spawnData)
 		spawnPos.z = std::stof(z);
 
 		//読み込んだ種類を生成
-		if (type == "コウモリ")
+		if (type == BAT)
 		{
 			//生成
-			m_enemies.emplace_back(GameObjectFactory::CreateBat());
+			m_enemies.emplace_back(GameObjectFactory::CreateBat(nullptr,spawnPos));
 		}
 		//読み込んだ種類を生成
-		else if (type == "ゴーレム")
+		else if (type == GOLEM)
 		{
 			//生成
-			m_enemies.emplace_back(GameObjectFactory::CreateGolem());
+			m_enemies.emplace_back(GameObjectFactory::CreateGolem(nullptr,spawnPos));
 		}
 
-		//座標設定
-		m_enemies.back()->SetPosition(spawnPos);
 		//当たり判定クラスに登録
 		CollisionManager::GetInstance()->Register(m_enemies.back().get());
 		//メッセンジャークラスに登録
@@ -156,7 +154,6 @@ void EnemyManager::Spawn(const std::string& spawnData)
 
 		//残りを飛ばす
 		//ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
 	}
 	//ファイルを閉じる
 	ifs.close();
@@ -175,7 +172,7 @@ void EnemyManager::DeleteEnemy()
     for (std::list<std::unique_ptr<Character>>::iterator it = m_enemies.begin(); it != m_enemies.end(); )
     {
 		//生きているか確認
-        if (!(*it)->IsAlive())
+        if (!(*it)->IsAlive() || IsOutOfStage((*it).get()))
         {
             // 死亡している場合はリストから削除
             CollisionManager::GetInstance()->UnRegister(it->get());
@@ -192,4 +189,17 @@ void EnemyManager::DeleteEnemy()
             ++it;
         }
     }
+}
+
+/**
+ * @brief 敵がステージ外にいるか
+ *
+ * @param[in] なし
+ *
+ * @return true  ステージ外
+ *         false ステージ内
+ */
+bool EnemyManager::IsOutOfStage(const Character* enemy)
+{
+	return (enemy->GetCurrentPosition().y < DEAD_LINE);
 }

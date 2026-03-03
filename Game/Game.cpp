@@ -14,7 +14,7 @@
 #include<sstream>
 #include"Game/Scene/LogoScene.h"
 #include"Game/Scene/TitleScene.h"
-#include"Game/Scene/GameScene.h"
+#include"Game/Scene/PlayScene.h"
 #include"Game/Scene/GemSelectScene.h"
 #include"Scene/ResultScene.h"
 extern void ExitGame() noexcept;
@@ -98,10 +98,8 @@ void Game::Update(DX::StepTimer const& timer)
 
     // キーボードステートトラッカーの更新
     m_keyboardTracker.Update(Keyboard::Get().GetState());
-
     // マウスステートトラッカーの更新
     m_mouseTracker.Update(Mouse::Get().GetState());
-
     //シーンの更新
     m_sceneManager->Update(elapsedTime);
 
@@ -266,9 +264,7 @@ void Game::CreateDeviceDependentResources()
     // シーンマネージャーの作成
     if (!m_sceneManager) m_sceneManager = std::make_unique<SceneManager<GameData>>(m_gameData.get());
 
-
 	m_resourceManager->SetAudioEngine(m_audioEngine.get());
-
 
 	m_graphics->SetDebugFont(m_debugFont.get());
 }

@@ -18,8 +18,10 @@
  * @param[in] golem ゴーレムのポインタ
  */
 GolemMoving::GolemMoving(Golem* golem)
-	: m_golem{golem}
+	: m_golem{golem},
+	  m_walkMotion{}
 {
+	m_walkMotion = std::make_unique<GolemWalkMotion>(golem->GetObjectNumber());
 }
 /**
  * @brief デストラクタ
@@ -69,7 +71,8 @@ void GolemMoving::PreUpdate()
 
 	//向いている方向に進む
 	m_golem->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 5.0f * Messenger::GetInstance()->GetElapsedTime(), m_golem->GetQuaternion()));
-
+	//モーション初期化
+	m_walkMotion->Initialize();
 }
 
 /**
@@ -92,6 +95,14 @@ void GolemMoving::Update(const float& elapsedTime)
 		//待機状態へ
 		Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::IDLING);
 	}
+	//重力
+	DirectX::SimpleMath::Vector3 velocity = m_golem->GetVelocity();
+	velocity.y += World::GRAVITY * elapsedTime;
+	m_golem->SetVelocity(velocity);
+
+	//モーションを更新
+	m_walkMotion->Update();
+
 }
 
 /**
@@ -105,6 +116,8 @@ void GolemMoving::PostUpdate()
 {
 	//経過時間リセット
 	m_golem->ResetFrameCount();
+	//モーションリセット
+	m_walkMotion->Reset();
 }
 
 /**

@@ -85,6 +85,11 @@ void GolemIdling::Update(const float& elapsedTime)
 			Messenger::GetInstance()->Notify(m_golem->GetObjectNumber(), Message::CHASING);
 		}
 	}
+	//d—Í
+	DirectX::SimpleMath::Vector3 velocity = m_golem->GetVelocity();
+	velocity.y += World::GRAVITY * elapsedTime;
+	m_golem->SetVelocity(velocity);
+
 }
 
 /**

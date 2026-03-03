@@ -58,7 +58,6 @@ bool PlayerIdlingMotion::Update()
 {
 	float motionLerp = GetMotionLerp();
 
-	//¡‰ñ‚ÌŠp“x‚ğŒvZ
 	//è‚ğã‰º‚É“®‚©‚· Y²•Ï‰»
 	float handPosY = TKTLib::Lerp(MOTION_Y_POS_MIN, MOTION_Y_POS_MAX, motionLerp);
 

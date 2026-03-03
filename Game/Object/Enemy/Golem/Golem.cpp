@@ -1,11 +1,11 @@
 /**
  * @file   Golem.cpp
  *
- * @brief  ゴーレムのボス敵に関するソースファイル
+ * @brief  ゴーレムの敵に関するソースファイル
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/19
+ * @date   日付　2026/03/02
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -24,13 +24,14 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 Golem::Golem(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:Character(GOLEM_BASE_HP,GOLEM_BASE_ATTACK,GOLEM_BASE_DIFFENCE,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle)
-	, m_box{ GetPosition(), {2.5f,3.5f,2.5f} } // 初期位置とサイズを設定
-	,m_frameCount{}
-	,m_messageID{}
-	, m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
-Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
-	,m_attackMessage{Message::AttackMesssage::NONE}
+	:Character(GOLEM_BASE_HP,GOLEM_BASE_ATTACK,GOLEM_BASE_DIFFENCE,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle),
+	m_box{ GetPosition(), GOLEM_COLLISION_SIZE }, // 初期位置とサイズを設定
+	m_frameCount{},
+	m_messageID{},
+	m_parts{},
+	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
+Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() },
+	m_attackMessage{Message::AttackMesssage::NONE}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	//テクスチャ設定
@@ -47,8 +48,10 @@ Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 Golem::~Golem()
 {
 	//当たり判定管理クラスの登録を解除
-	CollisionManager::GetInstance()->UnRegister(m_rightHand.get());
-	CollisionManager::GetInstance()->UnRegister(m_leftHand.get());
+	for (auto& part : m_parts) 
+	{
+		CollisionManager::GetInstance()->UnRegister(part.get());
+	}
 }
 
 /**
@@ -59,34 +62,38 @@ Golem::~Golem()
  * @return なし
  */
 void Golem::Initialize()
-{
-
-	//初期位置
-	SetPosition(DirectX::SimpleMath::Vector3(0.0f, 1.0f, -8.0f));
-	//初期角度
-	SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	//初期大きさ
-	SetScale(DirectX::SimpleMath::Vector3::One);
-
-	SetCurrentPosition(GetPosition());
-	SetCurrentAngle(GetQuaternion());
-	//手の生成
-	m_rightHand = GameObjectFactory::CreateGolemHand(this,this,RIGHTHAND_INIT_POS);
-	m_leftHand = GameObjectFactory::CreateGolemHand(this, this, LEFTHAND_INIT_POS,
-		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, LEFT_HAND_INIT_ANGLE));
+{	
+	CollisionManager* collisionManager = CollisionManager::GetInstance();
+	//右腕の生成
+	m_parts.emplace_back(GameObjectFactory::CreateGolemArm(this, this, GOLEM_RIGHT_ARM_INIT_POS, DirectX::SimpleMath::Quaternion::Identity));
 	//当たり判定管理クラスに登録
-	CollisionManager::GetInstance()->Register(m_rightHand.get());
-	CollisionManager::GetInstance()->Register(m_leftHand.get());
+	collisionManager->Register(m_parts.back().get());
+	//左腕の生成
+	m_parts.emplace_back(GameObjectFactory::CreateGolemArm(this, this, GOLEM_LEFT_ARM_INIT_POS,
+		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, LEFT_HAND_INIT_ANGLE)));
+	//当たり判定管理クラスに登録
+	collisionManager->Register(m_parts.back().get());
+	//右足の生成
+	m_parts.emplace_back(GameObjectFactory::CreateGolemFot(this, this, GOLEM_RIGHT_FOT_INIT_POS,
+		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, FOT_INIT_ANGLE)));
+	//当たり判定管理クラスに登録
+	collisionManager->Register(m_parts.back().get());
+	//左足の生成
+	m_parts.emplace_back(GameObjectFactory::CreateGolemFot(this, this, GOLEM_LEFT_FOT_INIT_POS,
+		DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, FOT_INIT_ANGLE)));
+	//当たり判定管理クラスに登録
+	collisionManager->Register(m_parts.back().get());
 
 	// 状態の初期化
 	m_idlingState  = std::make_unique<GolemIdling>(this);
 	m_movingState  = std::make_unique<GolemMoving>(this);
 	m_chasingState = std::make_unique<GolemChasing>(this);
-	m_attackState  = std::make_unique<GolemAttack>(this, m_rightHand.get(), m_leftHand.get());
-	m_attackPreaparing = std::make_unique<GolemAttackPreparing>(this,m_rightHand.get(), m_leftHand.get());
+	m_attackState  = std::make_unique<GolemAttack>(this);
+	m_attackPreaparing = std::make_unique<GolemAttackPreparing>(this);
 	//m_damagedState = std::make_unique<GolemDamaged>(this);
 	//初期状態をセット
 	SetState(m_idlingState.get());
+
 }
 
 
@@ -108,33 +115,32 @@ void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 		return;
 	}
 
-
 	//現在の状態を更新
 	GetState()->Update(elapsedTime);
 
-	if (!DamageFlashUpdate()) 
+	if (!DamageFlashUpdate())
 	{
 		SetInvincible(false);
 
 	}
+
 	//位置の更新
-	SetCurrentPosition( currentPosition + GetPosition());
+	SetCurrentPosition(currentPosition + GetPosition());
 	//角度の更新
-	SetCurrentAngle( m_motionAngle * GetQuaternion() * currentAngle);
-	
+	SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle);
+
 	//当たり判定更新
 	m_box.SetCenter(GetCurrentPosition());
 
 	//子クラス更新
-	m_rightHand->Update(GetCurrentPosition(), GetCurrentQuaternion());
-	m_leftHand->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	for (std::unique_ptr<PartObject>& part : m_parts) 
+	{
+		part->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	}
+
 	//時間経過
 	m_frameCount += elapsedTime;
-
 }
-
-
-
 
 /**
  * @brief 描画処理
@@ -146,7 +152,7 @@ void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 void Golem::Draw()
 {
 	//生きていない場合描画しない
-	if (!IsAlive()) 
+	if (!IsAlive())
 	{
 		return;
 	}
@@ -164,9 +170,8 @@ void Golem::Draw()
 
 	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
 
-
 	//アウトライン描画
-	if (Messenger::GetInstance()->IsOutLineActive()) 
+	if (Messenger::GetInstance()->IsOutLineActive())
 	{
 		OutlineRenderer::Draw(*GetModel(), world, GOLEM_OUTLINE_THICKNESS);
 	}
@@ -185,8 +190,6 @@ void Golem::Draw()
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
-
-
 			//	画像用サンプラーの登録
 			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
 			context->PSSetSamplers(0, 1, sampler);
@@ -194,42 +197,35 @@ void Golem::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
 				context->PSSetShaderResources(0, 1, GetTexture());
 			}
-
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 			//シェーダー設定
 			shader->StartShader(ShaderManager::Model);
-
+			//頂点情報設定
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});
 	//シェーダー解放
 	shader->EndShader();
 
-	//手の描画
-	m_rightHand->Draw();
-	m_leftHand->Draw();
+	//子クラスの描画
+	for (std::unique_ptr<PartObject>& part : m_parts)
+	{
+		part->Draw();
+	}
 
 	//m_box.AddDisplayCollision(&m_display);
 	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
 		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
-
 }
-
-
 
 /**
  * @brief 終了処理
@@ -240,7 +236,6 @@ void Golem::Draw()
  */
 void Golem::Finalize()
 {
-
 }
 
 /**
@@ -297,15 +292,12 @@ void Golem::CollisionResponce(GameObject* other)
 		}
 		case Tag::ObjectType::Enemy:
 		{
-			//敵同士の衝突処理　押し出し
-			//SetPosition(CollisionManager::GetInstance()->PushOut( &m_box, dynamic_cast<Sphere*>(other->GetShape())));
 
+			break;
 		}
-		break;
 		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			//SetPosition(CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_sphere, GetVelocity()));
 			DirectX::SimpleMath::Vector3 newPosition = CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()),&m_box);
 			SetPosition(newPosition);
 			//m_box.SetCenter(GetCurrentPosition());
@@ -318,12 +310,12 @@ void Golem::CollisionResponce(GameObject* other)
 
 			break;
 		}
+
 		case Tag::ObjectType::Weapon:
 		{
 			Weapon* weapon = other->Cast<Weapon>();
 			//攻撃力をもっている所有者を渡す
 			OnDamage(weapon->GetOwner());
-			SetDamageFlash();
 			break;
 		}
 	default:

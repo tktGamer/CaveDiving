@@ -12,7 +12,7 @@
 #include "TitleScene.h"
 #include "Game/Common/ResourceManager.h"
 #include"Game/Common/Sound.h"
-#include"../Scene/GameScene.h"
+#include"../Scene/PlayScene.h"
 #include "../Scene/LoadScene.h"
 #include"../Scene/LogoScene.h"
 #include"../Factory/UIFactory.h"
@@ -156,7 +156,7 @@ void TitleScene::Update(float elapsedTime)
 		m_gameStartSound->Play(false);
 		GetGameData()->SetNextStage(GameData::Stage::FIRST);
 		GetGameData()->SetIsGameClear(false);
-		ChangeScene<GameScene,LoadScene>();
+		ChangeScene<PlayScene,LoadScene>();
 	}
 
 	if (traker->pressed.Z) 

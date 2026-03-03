@@ -7,14 +7,12 @@
  *
  * @date   日付　2025/11/25
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GemFactory.h"
 std::unordered_map<std::string, GemFactory::CreatorFunc> GemFactory::creators;
 
-
-
+// メンバ関数の定義 ===========================================================
 /**
  * @brief 「宝石」の生成
  *

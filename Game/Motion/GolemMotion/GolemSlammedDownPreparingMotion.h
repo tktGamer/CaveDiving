@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/18
+ * @date   日付　2026/03/02
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
@@ -14,6 +14,7 @@
 // クラスの宣言 ===============================================================
 class Golem;
 class GolemHand;
+class GolemArm;
 // クラスの定義 ===============================================================
 /**
   * @brief の攻撃準備のモーション
@@ -24,15 +25,20 @@ class GolemSlammedDownPreparingMotion : public Motion
 public:
 //非公開定数
 private:
-	static constexpr DirectX::SimpleMath::Vector3 SLAM_PREPARE_MOVE = { -1.0f,5.0f,-6.0f };
-	//拳を正面に向ける
-	static constexpr float SLAM_HAND_ANGLE = DirectX::XMConvertToRadians(90.0f);
+	//腕の移動量
+	static constexpr DirectX::SimpleMath::Vector3 SLAM_PREPARE_MOVE = { -1.0f,2.0f,-1.0f };
+
+	//モーション開始角度
+	static constexpr float ARM_START_MOTION_X_ANGLE = DirectX::XMConvertToRadians(0.0f);
+	//モーション終了角度
+	static constexpr float ARM_END_MOTION_X_ANGLE = DirectX::XMConvertToRadians(140.0f);
+
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	GolemSlammedDownPreparingMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
+	GolemSlammedDownPreparingMotion(const int& golemObjectID);
 	// デストラクタ
 	~GolemSlammedDownPreparingMotion();
 // 操作
@@ -49,8 +55,12 @@ private:
 private:
 	//ゴーレム本体のポインタ
 	Golem* m_pGolem;
+	//右腕のポインタ
+	GolemArm* m_pRightGolemArm;
 	//右手のポインタ
 	GolemHand* m_pRightGolemHand;
+	//左腕のポインタ
+	GolemArm* m_pLeftGolemArm;
 	//左手のポインタ
 	GolemHand* m_pLeftGolemHand;
 	//拳の始まりの位置

@@ -24,14 +24,14 @@
  * @param[in] pUIManager
  */
 GemSelect::GemSelect(int width, int height,const std::vector<int>& gemID, GemSelectUIManager* pUIManager)
-    : m_menuIndex(0)
-    , m_windowHeight(height)
-    , m_windowWidth(width)
-    , m_baseTexturePath(nullptr)
-    ,m_pGemManager{GemManager::GetInstance()}
-    ,m_pUIManager{pUIManager}
-    ,m_pGems{}
-    ,m_gemID{gemID}
+    : 
+    m_menuIndex(0),
+    m_windowHeight(height),
+    m_windowWidth(width),
+    m_pGemManager{GemManager::GetInstance()},
+    m_pUIManager{pUIManager},
+    m_pGems{},
+    m_gemID{gemID}
 {
     m_cursorSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::CURSOL_MOVE));
     m_decideSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::DECIDE));
@@ -43,7 +43,6 @@ GemSelect::GemSelect(int width, int height,const std::vector<int>& gemID, GemSel
  */
 GemSelect::~GemSelect()
 {
-
 }
 
 /**
@@ -55,13 +54,7 @@ GemSelect::~GemSelect()
  */
 void GemSelect::Initialize()
 {
-
-    //  背景となるウィンドウ画像を読み込む
-    m_baseTexturePath = L"Resources/Textures/window.png";
-
-
     Randomize();
-
 }
 
 /**
@@ -179,7 +172,15 @@ void GemSelect::Render()
         }
 }
 
-void GemSelect::Add(Gem::GemImagePath gemImagePath, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, UserInterface::ANCHOR anchor)
+/**
+ * @brief UI追加
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void GemSelect::Add(const Gem::GemImagePath& gemImagePath,const DirectX::SimpleMath::Vector2& position,
+    const DirectX::SimpleMath::Vector2& scale,const UserInterface::ANCHOR& anchor)
 {
 
     //  背景用のウィンドウ画像も追加する
@@ -198,6 +199,13 @@ void GemSelect::Add(Gem::GemImagePath gemImagePath, DirectX::SimpleMath::Vector2
 
 }
 
+/**
+ * @brief 宝石選出処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void GemSelect::Randomize()
 {
     m_userInterface.clear();
@@ -244,7 +252,7 @@ void GemSelect::Randomize()
     // 取得しないメニュー
     std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
     base->Create(
-        L"UI/notacquiredframe.png"
+        ResourcePath::TEXTURE::UI::NOT_CHOOSE_MESSAGE
         , { 650.0f,625.0f }
         , { 1.0f, 1.0f }
         , UserInterface::ANCHOR::MIDDLE_CENTER
@@ -254,5 +262,3 @@ void GemSelect::Randomize()
     //  背景用のアイテムも新しく追加する
     m_userInterface.push_back(std::move(base));
 }
-
-

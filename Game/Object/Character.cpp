@@ -76,6 +76,8 @@ void Character::OnDamage(GameObject* other)
 	OnMessegeAccepted(Message::DAMAGED);
 	//–³“G‚É‚È‚é
 	SetInvincible(true);
+
+	SetDamageFlash();
 }
 
 /**

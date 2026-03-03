@@ -9,7 +9,7 @@
  */
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "GameScene.h"
+#include "PlayScene.h"
 #include"../Scene/TitleScene.h"
 #include"../Scene/GemSelectScene.h"
 #include"Game/Scene/ResultScene.h"
@@ -27,7 +27,7 @@
  *
  * @param[in] なし
  */
-GameScene::GameScene()
+PlayScene::PlayScene()
 	:m_basicPostProcess{},
 	m_player{},
 	m_camera{},
@@ -48,7 +48,7 @@ GameScene::GameScene()
 /**
  * @brief デストラクタ
  */
-GameScene::~GameScene()
+PlayScene::~PlayScene()
 {
 }
 
@@ -61,7 +61,7 @@ GameScene::~GameScene()
  *
  * @return なし
  */
-void GameScene::Initialize()
+void PlayScene::Initialize()
 {
 	//メッセンジャーリセット
 	Messenger::GetInstance()->DestroyInstance();
@@ -86,7 +86,6 @@ void GameScene::Initialize()
 	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), gameData->GetPlayerData(), nullptr,DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f });
 	m_collsionManager->Register(m_player.get());
 
-
 	//ステージの生成
 	m_stage = GameObjectFactory::CreateStage(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity
 		, GetGameData()->GetIsOnLights(), 10);
@@ -96,10 +95,9 @@ void GameScene::Initialize()
 
 	//カメラの生成
 	m_camera = std::make_unique<Camera>();
-	m_camera->Initialize({ 0,1.0f,25.0f });
-	m_camera->SetDistance(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
+	m_camera->Initialize(CAMERA_INIT_POSITION);
+	m_camera->SetDistance(CAMERA_INIT_DISTANCE);
 	m_camera->SetTartet(m_player->GetCurrentPosition(), m_player->GetQuaternion(), m_player->GetVelocity());
-	m_camera->SetEyePos(DirectX::SimpleMath::Vector3{ 0.0f, 7.0f, 25.0f });
 	//アイテム管理クラスの生成
 	m_itemManager = std::make_unique<ItemManager>();
 	m_itemManager->Initialize();
@@ -125,7 +123,7 @@ void GameScene::Initialize()
  *
  * @return なし
  */
-void GameScene::PreUpdate()
+void PlayScene::PreUpdate()
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 
@@ -147,7 +145,6 @@ void GameScene::PreUpdate()
 
 	m_itemManager->Update();
 
-
 	//衝突判定
 	m_collsionManager->CollisionCheck();
 
@@ -155,10 +152,7 @@ void GameScene::PreUpdate()
 	m_gameBGM = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GAME_BGM));
 	m_gameBGM->SetVolume(0.8f);
 	m_gameBGM->Play(true);
-
 }
-
-
 
 /**
  * @brief 更新処理
@@ -167,13 +161,9 @@ void GameScene::PreUpdate()
  *
  * @return なし
  */
-void GameScene::Update(float elapsedTime)
+void PlayScene::Update(float elapsedTime)
 {
 	//auto traker = Graphics::GetInstance()->GetKeyboardTracker();
-	//UIの更新
-	m_hpGauge->Update();
-	m_holdGem->Update();
-	m_buffUI->Update();
 	const std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
 	m_clearConditionsUI->Update((int)enemies.size());
 	//m_clearConditionsUI->Update();
@@ -183,19 +173,23 @@ void GameScene::Update(float elapsedTime)
 	{
 		return;
 	}
-
+	//キーボード入力処理
 	PressKeyBoard();
 	//オブジェクトの更新--
 	m_player->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	m_stage->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 
 	m_enemyManager->Update();
+	m_itemManager->Update();
 	m_camera->Update(elapsedTime);
 
+	//UIの更新
+	m_hpGauge->Update();
+	m_holdGem->Update();
+	m_buffUI->Update();
 	//HPゲージの更新
 	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
 
-	m_itemManager->Update();
 
 	//衝突判定
 	m_collsionManager->CollisionCheck();
@@ -211,12 +205,10 @@ void GameScene::Update(float elapsedTime)
 
 	ParticleManager::GetInstance()->Update();
 
-	//経過時間を記録
+	//経過時間を記録  スコアのため
 	GetGameData()->AddTime(elapsedTime);
 
 }
-
-
 
 /**
  * @brief 描画処理
@@ -225,7 +217,7 @@ void GameScene::Update(float elapsedTime)
  *
  * @return なし
  */
-void GameScene::Render()
+void PlayScene::Render()
 {
 	Graphics::GetInstance()->SetViewMatrix(m_camera->GetView());
 
@@ -331,8 +323,6 @@ void GameScene::Render()
 	// -------------------------------------------------------------------------- //
 	// レンダーターゲットとビューポートを元に戻す
 	// -------------------------------------------------------------------------- //
-	//auto renderTarget = Graphics::GetInstance()->GetDeviceResources()->GetRenderTargetView();
-	//auto depthStencil = Graphics::GetInstance()->GetDeviceResources()->GetDepthStencilView();
 
 
 	context->ClearRenderTargetView(renderTarget, DirectX::Colors::Black);
@@ -389,11 +379,7 @@ void GameScene::Render()
 
 	//パーティクル描画
 	ParticleManager::GetInstance()->Render();
-
-
 }
-
-
 
 /**
  * @brief 終了処理
@@ -402,13 +388,14 @@ void GameScene::Render()
  *
  * @return なし
  */
-void GameScene::Finalize()
+void PlayScene::Finalize()
 {
 	//プレイヤーのデータ保存
 	GetGameData()->SetPlayerCurrentHP(m_player->GetCurrentHP());
 	SavePlayer();
-
+	//当たり判定登録解除
 	m_collsionManager->AllRelease();
+	//終了処理
 	m_player->Finalize();
 	m_stage->Finalize();
 	m_camera->Finalize();
@@ -431,28 +418,26 @@ void GameScene::Finalize()
  *
  * @return なし
  */
-void GameScene::CreateDeviceDependentResources()
+void PlayScene::CreateDeviceDependentResources()
 {
 	//std::this_thread::sleep_for(std::chrono::seconds{ 3 });
 	//auto device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
-
 }
 
-void GameScene::CreateWindowSizeDependentResources()
+void PlayScene::CreateWindowSizeDependentResources()
 {
 	//std::this_thread::sleep_for(std::chrono::seconds{ 3 });
 	auto device = Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice();
 
+	//画面サイズ変更時ブルーム再設定
 	//レンダーテクスチャの作成
 	m_offScreenRT = std::make_unique<DX::RenderTexture>(DXGI_FORMAT_R8G8B8A8_UNORM);//画像の保存形式の指定
 	m_offScreenRT->SetDevice(device);
 	RECT rect = Graphics::GetInstance()->GetDeviceResources()->GetOutputSize();
 	m_offScreenRT->SetWindow(rect);
 
-
 	//ベーシックエフェクト作成
 	m_basicPostProcess = std::make_unique<DirectX::BasicPostProcess>(device);
-
 	//レンダーテクスチャの作成
 	//画面サイズを半分にする
 	rect.right /= static_cast<LONG>(2.0f);
@@ -472,7 +457,7 @@ void GameScene::CreateWindowSizeDependentResources()
 
 }
 
-void GameScene::OnDeviceLost()
+void PlayScene::OnDeviceLost()
 {
 }
 
@@ -484,7 +469,7 @@ void GameScene::OnDeviceLost()
  *
  * @return  なし
  */
-void GameScene::PressKeyBoard()
+void PlayScene::PressKeyBoard()
 {
 	//キーボード
 	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
@@ -510,11 +495,29 @@ void GameScene::PressKeyBoard()
 	{
 		messenger->Notify(operateObjectID, Message::AVOIDANCE);
 	}
+	//視点回転------------------------------------------------------------
+	if (key->GetLastState().LeftShift)
+	{
+		//左回転
+		RotateDirection(operateObjectID, false);
+	}
+	if (key->GetLastState().C)
+	{
+		//右回転
+		RotateDirection(operateObjectID, true);
+	}
 
 
 }
 
-void GameScene::MovingMessage(const int& operateObjectID)
+/**
+ * @brief 移動メッセージ
+ *
+ * @param[in] operateObjectID  メッセージを渡すオブジェクトID
+ *
+ * @return  なし
+ */
+void PlayScene::MovingMessage(const int& operateObjectID)
 {
 	//キーボード
 	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
@@ -525,7 +528,6 @@ void GameScene::MovingMessage(const int& operateObjectID)
 	{
 		messenger->Notify(operateObjectID, Message::MOVING);
 	}
-
 
 	//前方向
 	if (key->pressed.Up)
@@ -567,13 +569,40 @@ void GameScene::MovingMessage(const int& operateObjectID)
 }
 
 /**
+ * @brief オブジェクト回転
+ *
+ * @param[in] operateObjectID  メッセージを渡すオブジェクトID
+ * @param[in] isRotateRight    右回転か
+ *
+ * @return  なし
+ */
+void PlayScene::RotateDirection(const int& operateObjectID, const bool& isRotateRight)
+{
+	float angle = 0;
+	if (isRotateRight) 
+	{
+		angle = -ROTATION_SPEED_Y_ANGLE * Messenger::GetInstance()->GetElapsedTime();
+	}
+	else 
+	{
+		angle =  ROTATION_SPEED_Y_ANGLE * Messenger::GetInstance()->GetElapsedTime();
+	}
+	//回転量
+	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,angle);
+	// 姿勢に回転を加える
+	GameObject* operateObject = Messenger::GetInstance()->GetObject(operateObjectID);
+	operateObject->SetQuaternion(operateObject->GetQuaternion() * rotate);
+
+}
+
+/**
  * @brief UI生成
  *
  * @param[in] なし
  *
  * @return  なし
  */
-void GameScene::CreateUI()
+void PlayScene::CreateUI()
 {
 	GameData* gameData = GetGameData();
 	//HPゲージUIの生成
@@ -603,7 +632,7 @@ void GameScene::CreateUI()
  * @return true   終了
  * @return false  未了
  */
-const bool GameScene::IsFinish() 
+const bool PlayScene::IsFinish() 
 {
 	auto traker = Graphics::GetInstance()->GetKeyboardTracker();
 	const std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
@@ -653,7 +682,7 @@ const bool GameScene::IsFinish()
  *
  * @return なし
  */
-void GameScene::SavePlayer()
+void PlayScene::SavePlayer()
 {
 
 	const HolderGem& playerHolderGem = m_player->GetHolderGem();
@@ -691,7 +720,7 @@ void GameScene::SavePlayer()
  *
  * @return なし
  */
-void GameScene::SaveLight()
+void PlayScene::SaveLight()
 {
 	//ステージのライトを取得
 	auto& rock = m_stage->GetRocks();
@@ -714,7 +743,7 @@ void GameScene::SaveLight()
  *
  * @return なし
  */
-void GameScene::SpawnEnemy()
+void PlayScene::SpawnEnemy()
 {
 	GameData* gameData = GetGameData();
 	//敵管理クラスの生成

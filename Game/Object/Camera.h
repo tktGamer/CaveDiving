@@ -19,7 +19,8 @@ class Camera
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
+	//デフォルト距離
+	static constexpr DirectX::SimpleMath::Vector3 DEFAULT_DISTANCE = { 0.0f,2.0f,8.0f };
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -29,23 +30,24 @@ public:
 	~Camera();
 //　操作
 	//初期化
-	void Initialize(DirectX::SimpleMath::Vector3 position);
+	void Initialize(const DirectX::SimpleMath::Vector3& eyePosition);
 	//更新
-	void Update(float elapsedTime);
+	void Update(const float& elapsedTime);
 	//終了
 	void Finalize();
 //　取得・設定
 	//カメラ位置設定
 	void SetEyePos(const DirectX::SimpleMath::Vector3& position);
-	void SetEyePosX(float posX);
-	void SetEyePosY(float posY);
-	void SetEyePosZ(float posZ);
+	void SetEyePosX(const float& posX);
+	void SetEyePosY(const float& posY);
+	void SetEyePosZ(const float& posZ);
 	//カメラ位置取得
 	const DirectX::SimpleMath::Vector3& GetEyePos() const { return m_eyePos; }
 	//注視点設定
-	void SetTartet(const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Quaternion& rotate,const DirectX::SimpleMath::Vector3& targetVelocity = DirectX::SimpleMath::Vector3::Zero);
+	void SetTartet(const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Quaternion& rotate,
+		const DirectX::SimpleMath::Vector3& targetVelocity = DirectX::SimpleMath::Vector3::Zero);
 	//
-	void SetDistance(DirectX::SimpleMath::Vector3 distance);
+	void SetDistance(const DirectX::SimpleMath::Vector3& distance);
 	//ビュー行列取得
 	const DirectX::SimpleMath::Matrix& GetView() const;
 	//上ベクトル取得

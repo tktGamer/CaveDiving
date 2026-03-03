@@ -7,11 +7,11 @@
  *
  * @date   日付　2026/01/18
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "UIFactory.h"
 #include"Game/UI/UIManager.h"
+ // メンバ関数の定義 ===========================================================
 /**
  * @brief 「UI」の生成
  *
@@ -59,7 +59,7 @@ std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound)
  */
 std::unique_ptr<Gauge> UIFactory::CreateGauge()
 {
-
+	//ゲージUI生成
 	std::unique_ptr<Gauge> gauge = std::make_unique<Gauge>();
 	gauge->Initialize(UIManager::WINDOW_SIZE_X,UIManager::WINDOW_SIZE_Y);
 
@@ -110,17 +110,12 @@ std::unique_ptr<ChangeConfirm> UIFactory::CreateChangeConfirm(GemSelectUIManager
  */
 std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSelectUIManager,const std::vector<int>& gemID)
 {
-
-	//入れ替え先の宝石の取得
-	//Gem* pGem = GemManager::GetInstance()->GetReplacementGem();
-
 	//「宝石入れ替えUI」の生成
 	std::unique_ptr<ChangeGem> changeGem = std::make_unique<ChangeGem>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID, pGemSelectUIManager);
 	changeGem->Initialize();
 
 	return std::move(changeGem);
 }
-
 
 /**
  * @brief 「所持している宝石を表示するUI」の生成
@@ -131,15 +126,13 @@ std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSe
  */
 std::unique_ptr<HoldGem> UIFactory::CreateHoldGem(const std::vector<int>& gemID)
 {
-
-
 	//「所持している宝石を表示するUI」の生成
 	std::unique_ptr<HoldGem> holdGem = std::make_unique<HoldGem>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID);
 	holdGem->Initialize();
+	//表示する宝石を決める
 	holdGem->ChangeDrawGem(gemID);
 	return std::move(holdGem);
 }
-
 
 /**
  * @brief 「所持している宝石の内1つの情報を表示するUI」の生成
@@ -150,8 +143,6 @@ std::unique_ptr<HoldGem> UIFactory::CreateHoldGem(const std::vector<int>& gemID)
  */
 std::unique_ptr<HoldGemInfoDraw> UIFactory::CreateHoldGemInfoDraw(const std::vector<int>& gemID)
 {
-
-
 	//「所持している宝石の内1つの情報を表示するUI」の生成
 	std::unique_ptr<HoldGemInfoDraw> holdGemInfo = std::make_unique<HoldGemInfoDraw>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID);
 	holdGemInfo->Initialize();
@@ -230,4 +221,3 @@ std::unique_ptr<Animation2D> UIFactory::CreateAnimation2DUI(const wchar_t* textu
 	animation2D->SetWindowSize(DirectX::SimpleMath::Vector2{ static_cast<float>(UIManager::WINDOW_SIZE_X),static_cast<float>(UIManager::WINDOW_SIZE_Y) });
 	return std::move(animation2D);
 }
-

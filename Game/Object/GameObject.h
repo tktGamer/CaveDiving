@@ -14,6 +14,7 @@
 #include"Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
 #include"Game/Interface/IState.h"
+#include"Game/Interface/IComponent.h"
 #include"Game/Common/Collision/Shape.h"
 #include"Game/Tag.h"
 #include"Game/World.h"
@@ -23,7 +24,7 @@
 /**
   * @brief オブジェクトの基底
   */
-class GameObject : public IObserver
+class GameObject : public IComponent
 {
 // クラス定数の宣言 -------------------------------------------------
 public:

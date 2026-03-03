@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/18
+ * @date   日付　2026/03/02
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
@@ -15,6 +15,8 @@
 #include"Game/Object/Enemy/Golem/GolemHand.h"
 // クラスの宣言 ===============================================================
 class Sound;
+class GolemHand;
+class GolemArm;
 // クラスの定義 ===============================================================
 /**
   * @brief 叩きつけの攻撃のモーション
@@ -27,19 +29,23 @@ public:
 private:
 	//モーションの攻撃力補正値
 	static constexpr float GOLEM_SLAMMED_DOWN_MOTION_MODIFIER = 1.5f;
-	//拳の移動量
-	static constexpr DirectX::SimpleMath::Vector3 SLAMMED_DOWN_MOVE = { -0.0f,-8.5f,0.0f };
-	//モーションスピード
-	static constexpr float SLAMMED_MOTION_SPEED = 2.0f;
 	//クールタイム
 	static constexpr float COOL_TIME = 0.5f;
+	//拳の移動量
+	static constexpr DirectX::SimpleMath::Vector3 SLAMMED_DOWN_MOVE = { -0.0f,-8.0f,0.0f };
+	//モーションスピード
+	static constexpr float SLAMMED_MOTION_SPEED = 2.0f;
+	//モーション開始角度
+	static constexpr float ARM_START_MOTION_X_ANGLE = DirectX::XMConvertToRadians(140.0f);
+	//モーション終了角度
+	static constexpr float ARM_END_MOTION_X_ANGLE = DirectX::XMConvertToRadians(75.0f);
 
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	GolemSlammedDownMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
+	GolemSlammedDownMotion(const int& golemObjectID);
 	// デストラクタ
 	~GolemSlammedDownMotion();
 // 操作
@@ -54,13 +60,19 @@ private:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	//ゴーレムのポインタ
+	//ゴーレム本体のポインタ
 	Golem* m_pGolem;
+	//右腕のポインタ
+	GolemArm* m_pRightGolemArm;
 	//右手のポインタ
 	GolemHand* m_pRightGolemHand;
+	//左腕のポインタ
+	GolemArm* m_pLeftGolemArm;
 	//左手のポインタ
 	GolemHand* m_pLeftGolemHand;
 
+	//腕の開始角度
+	DirectX::SimpleMath::Vector3 m_startAngle;
 	//拳の始まりの位置
 	DirectX::SimpleMath::Vector3 m_handStartPosition;
 	//拳の終わりの位置

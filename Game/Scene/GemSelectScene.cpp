@@ -11,7 +11,7 @@
 #include "pch.h"
 #include "GemSelectScene.h"
 #include "Game/Common/ResourceManager.h"
-#include"../Scene/GameScene.h"
+#include"../Scene/PlayScene.h"
 #include "../Scene/LoadScene.h"
 #include"Game/Scene/ResultScene.h"
 #include"Game/Factory/UIFactory.h"
@@ -99,7 +99,7 @@ void GemSelectScene::Update(float elapsedTime)
 			return;
 		}
 		//ゲームシーンへ遷移
-		ChangeScene<GameScene,LoadScene>();
+		ChangeScene<PlayScene,LoadScene>();
 	}
 
 	//UI更新

@@ -24,8 +24,8 @@ PlayerIdling::PlayerIdling(Player* pPlayer)
 {
 	//モーションを生成
 	m_idlingMotion = std::make_unique<PlayerIdlingMotion>
-		(dynamic_cast<Hand*>( Messenger::GetInstance()->GetObject(m_pPlayer->GetObjectNumber() + Player::RIGHT_HAND_OBJ_NUMBER)),
-		 dynamic_cast<Hand*>( Messenger::GetInstance()->GetObject(m_pPlayer->GetObjectNumber() + Player::LEFT_HAND_OBJ_NUMBER)));
+		(Messenger::GetInstance()->GetObject(m_pPlayer->GetObjectNumber() + Player::RIGHT_HAND_OBJ_NUMBER)->Cast<Hand>(),
+		 Messenger::GetInstance()->GetObject(m_pPlayer->GetObjectNumber() + Player::LEFT_HAND_OBJ_NUMBER)->Cast<Hand>());
 }
 /**
  * @brief デストラクタ

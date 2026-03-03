@@ -7,13 +7,10 @@
  *
  * @date   日付　2026/01/14
  */
-
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "UIManager.h"
-
 #include "Game/Common/ResourceManager.h"
-
 #include"Game/Factory/UIFactory.h"
 
 std::unique_ptr<UIManager> UIManager::s_uiManager = nullptr;

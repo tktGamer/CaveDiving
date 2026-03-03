@@ -15,6 +15,7 @@
 class Sound;
 class Golem;
 class GolemHand;
+class GolemArm;
 // クラスの定義 ===============================================================
 /**
   * @brief ゴーレムの攻撃のモーション
@@ -28,7 +29,22 @@ private:
 	//モーションの攻撃力補正値
 	static constexpr float GOLEM_PUNCH_MOTION_MODIFIER = 1.2f;
 	//拳の移動量
-	static constexpr DirectX::SimpleMath::Vector3 PUNCH_MOVE = { -3.2f,-1.8f,-13.0f };
+	static constexpr DirectX::SimpleMath::Vector3 PUNCH_MOVE = { -3.5f,-5.0f,-8.0f };
+	//モーション開始角度
+	static constexpr DirectX::SimpleMath::Vector3 START_MOTION_ANGLE =
+	{
+		DirectX::XMConvertToRadians(0.0f),
+		DirectX::XMConvertToRadians(0.0f),
+		DirectX::XMConvertToRadians(0.0f),
+	};
+	//モーション終了角度
+	static constexpr DirectX::SimpleMath::Vector3 END_MOTION_ANGLE =
+	{
+		DirectX::XMConvertToRadians(0.0f),
+		DirectX::XMConvertToRadians(0.0f),
+		DirectX::XMConvertToRadians(-10.0f),
+	};
+
 	//モーションスピード
 	static constexpr float PUNCH_MOTION_SPEED = 2.0f;
 	//クールタイム
@@ -38,7 +54,7 @@ private:
 public:
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	GolemPunchMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
+	GolemPunchMotion(const int& golemObjectID);
 	// デストラクタ
 	~GolemPunchMotion();
 // 操作
@@ -53,10 +69,14 @@ private:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	//ゴーレムのポインタ
+	//ゴーレム本体のポインタ
 	Golem* m_pGolem;
+	//右腕のポインタ
+	GolemArm* m_pRightGolemArm;
 	//右手のポインタ
 	GolemHand* m_pRightGolemHand;
+	//左腕のポインタ
+	GolemArm* m_pLeftGolemArm;
 	//左手のポインタ
 	GolemHand* m_pLeftGolemHand;
 	//パンチのスタート位置

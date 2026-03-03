@@ -22,12 +22,27 @@ class PartObject : public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//角度制限
+	struct RotationLimit
+	{
+		DirectX::SimpleMath::Vector3 min = DirectX::SimpleMath::Vector3::Zero;
+		DirectX::SimpleMath::Vector3 max = DirectX::SimpleMath::Vector3::Zero;
+		bool enable = false;
 
+		// staticメンバとしてOFFを定義
+		static const RotationLimit OFF;
+	};
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
 	//大元のキャラクターを取得
 	Character* GetRootCharacter();
+	//角度制限を考慮して角度を設定
+	void SetLocalRotationEuler(const DirectX::SimpleMath::Vector3& eulerAngle);
+	//ローカル角度を取得
+	const DirectX::SimpleMath::Vector3& GetLocalEuler();
+	//角度制限設定
+	void SetRotationLimit(const RotationLimit& rotationLimit);
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	PartObject(Character* root,
@@ -37,10 +52,19 @@ public:
 // 操作
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
+	//角度制限をオフ
+	void RotationLimitOFF();
+	//角度制限をオフ
+	void RotationLimitON();
 //　内部操作
 private:
 // データメンバの宣言 -----------------------------------------------
 private:
 	//所有者のキャラクター
 	Character* m_parentCharacter;
+
+	// 現在のローカル角度
+	DirectX::SimpleMath::Vector3 m_localEuler; 
+	//角度制限
+	RotationLimit m_rotationLimit;
 };

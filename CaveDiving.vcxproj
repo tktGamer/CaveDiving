@@ -197,6 +197,7 @@
     <ClInclude Include="Game\Factory\GemFactory.h" />
     <ClInclude Include="Game\Factory\UIFactory.h" />
     <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\Interface\IComponent.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\Interface\IObserver.h" />
     <ClInclude Include="Game\Interface\IState.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Game\Motion\GolemMotion\GolemPunchPreparingMotion.h" />
     <ClInclude Include="Game\Motion\GolemMotion\GolemSlammedDownMotion.h" />
     <ClInclude Include="Game\Motion\GolemMotion\GolemSlammedDownPreparingMotion.h" />
+    <ClInclude Include="Game\Motion\GolemMotion\GolemWalkMotion.h" />
     <ClInclude Include="Game\Motion\Motion.h" />
     <ClInclude Include="Game\Motion\MotionType.h" />
     <ClInclude Include="Game\Motion\PlayerMotion\PlayerAirSpenningMotion.h" />
@@ -231,6 +233,8 @@
     <ClInclude Include="Game\Object\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Object\Enemy\EnemyPart.h" />
     <ClInclude Include="Game\Object\Enemy\Golem\Golem.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\GolemArm.h" />
+    <ClInclude Include="Game\Object\Enemy\Golem\GolemFot.h" />
     <ClInclude Include="Game\Object\Enemy\Golem\GolemHand.h" />
     <ClInclude Include="Game\Object\Enemy\Golem\State\GolemAttack.h" />
     <ClInclude Include="Game\Object\Enemy\Golem\State\GolemAttackPreparing.h" />
@@ -287,7 +291,7 @@
     <ClInclude Include="Game\Particle\Vanish\ParticleVanish.h" />
     <ClInclude Include="Game\Particle\Vanish\ParticleVanishControl.h" />
     <ClInclude Include="Game\ResourcePath.h" />
-    <ClInclude Include="Game\Scene\GameScene.h" />
+    <ClInclude Include="Game\Scene\PlayScene.h" />
     <ClInclude Include="Game\Scene\GemSelectScene.h" />
     <ClInclude Include="Game\Scene\LoadScene.h" />
     <ClInclude Include="Game\Scene\LogoScene.h" />
@@ -296,6 +300,7 @@
     <ClInclude Include="Game\Shader\Animation2D\Animation2DShader.h" />
     <ClInclude Include="Game\Shader\Bloom.h" />
     <ClInclude Include="Game\Shader\Fade\FadeShader.h" />
+    <ClInclude Include="Game\Shader\KeyUI\KeyUIShader.h" />
     <ClInclude Include="Game\Shader\Model\ModelShader.h" />
     <ClInclude Include="Game\Shader\Model\WallShader.h" />
     <ClInclude Include="Game\Shader\Number\Number2DShader.h" />
@@ -363,6 +368,7 @@
     <ClCompile Include="Game\Motion\GolemMotion\GolemPunchPreparingMotion.cpp" />
     <ClCompile Include="Game\Motion\GolemMotion\GolemSlammedDownMotion.cpp" />
     <ClCompile Include="Game\Motion\GolemMotion\GolemSlammedDownPreparingMotion.cpp" />
+    <ClCompile Include="Game\Motion\GolemMotion\GolemWalkMotion.cpp" />
     <ClCompile Include="Game\Motion\Motion.cpp" />
     <ClCompile Include="Game\Motion\PlayerMotion\PlayerAirSpenningMotion.cpp" />
     <ClCompile Include="Game\Motion\PlayerMotion\PlayerFirstAttackMotion.cpp" />
@@ -383,6 +389,8 @@
     <ClCompile Include="Game\Object\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Object\Enemy\EnemyPart.cpp" />
     <ClCompile Include="Game\Object\Enemy\Golem\Golem.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\GolemArm.cpp" />
+    <ClCompile Include="Game\Object\Enemy\Golem\GolemFot.cpp" />
     <ClCompile Include="Game\Object\Enemy\Golem\GolemHand.cpp" />
     <ClCompile Include="Game\Object\Enemy\Golem\State\GolemAttack.cpp" />
     <ClCompile Include="Game\Object\Enemy\Golem\State\GolemAttackPreparing.cpp" />
@@ -438,7 +446,7 @@
     <ClCompile Include="Game\Particle\Shield\ParticleShieldControl.cpp" />
     <ClCompile Include="Game\Particle\Vanish\ParticleVanish.cpp" />
     <ClCompile Include="Game\Particle\Vanish\ParticleVanishControl.cpp" />
-    <ClCompile Include="Game\Scene\GameScene.cpp" />
+    <ClCompile Include="Game\Scene\PlayScene.cpp" />
     <ClCompile Include="Game\Scene\GemSelectScene.cpp" />
     <ClCompile Include="Game\Scene\LoadScene.cpp" />
     <ClCompile Include="Game\Scene\LogoScene.cpp" />
@@ -447,6 +455,7 @@
     <ClCompile Include="Game\Shader\Animation2D\Animation2DShader.cpp" />
     <ClCompile Include="Game\Shader\Bloom.cpp" />
     <ClCompile Include="Game\Shader\Fade\FadeShader.cpp" />
+    <ClCompile Include="Game\Shader\KeyUI\KeyUIShader.cpp" />
     <ClCompile Include="Game\Shader\Model\ModelShader.cpp" />
     <ClCompile Include="Game\Shader\Model\WallShader.cpp" />
     <ClCompile Include="Game\Shader\Number\Number2DShader.cpp" />
@@ -502,6 +511,7 @@
     <None Include="packages.config" />
     <None Include="Resources\Shaders\Animation2DShader\Animation2D.hlsli" />
     <None Include="Resources\Shaders\FadeShader\Fade.hlsli" />
+    <None Include="Resources\Shaders\KeyUIShader\KeyUI.hlsli" />
     <None Include="Resources\Shaders\LumiRockShader\LumiRockShader.hlsli" />
     <None Include="Resources\Shaders\ModelShader\ModelShader.hlsli" />
     <None Include="Resources\Shaders\NumberShader\3D\Number3D.hlsli" />
@@ -550,6 +560,26 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\FadeShader\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\FadeShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\KeyUIShader\KeyUIGS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\KeyUIShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\KeyUIShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\KeyUIShader\KeyUIPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\KeyUIShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\KeyUIShader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\KeyUIShader\KeyUIVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\KeyUIShader\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\KeyUIShader\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\LumiRockShader\LumiRockGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>

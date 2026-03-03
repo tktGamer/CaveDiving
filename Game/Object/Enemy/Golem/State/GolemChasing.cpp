@@ -18,9 +18,11 @@
  * @param[in] golem ゴーレムのポインタ
  */
 GolemChasing::GolemChasing(Golem* golem)
-	: m_golem{golem}
-	, m_pPlayer{ Messenger::GetInstance()->GetObject(0) }
+	: m_golem{golem},
+	  m_pPlayer{ Messenger::GetInstance()->GetObject(0) },
+	  m_walkMotion{}
 {
+	m_walkMotion = std::make_unique<GolemWalkMotion>(golem->GetObjectNumber());
 }
 /**
  * @brief デストラクタ
@@ -50,6 +52,8 @@ void GolemChasing::Initialize()
  */
 void GolemChasing::PreUpdate()
 {
+	//モーション初期化
+	m_walkMotion->Initialize();
 }
 
 /**
@@ -111,6 +115,10 @@ void GolemChasing::Update(const float& elapsedTime)
 
 	// 姿勢に回転を加える
 	m_golem->SetQuaternion(rotate);
+
+	//モーションを更新
+	m_walkMotion->Update();
+
 }
 
 /**
@@ -124,6 +132,8 @@ void GolemChasing::PostUpdate()
 {
 	//経過時間をリセット
 	m_golem->ResetFrameCount();
+	//モーションリセット
+	m_walkMotion->Reset();
 }
 
 /**

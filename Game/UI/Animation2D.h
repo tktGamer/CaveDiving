@@ -13,7 +13,6 @@
 #include"Game/UI/UserInterface.h"
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
-
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -35,7 +34,6 @@ public:
 		int frameHeight;
 
 	};
-
 
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
@@ -76,8 +74,9 @@ private:
 	//テクスチャの大きさ
 	DirectX::SimpleMath::Vector2 m_textureSize;
 	DirectX::SimpleMath::Vector2 m_frameSize;
-
+	//大きさ
 	DirectX::SimpleMath::Vector2 m_scale;
+	//座標
 	DirectX::SimpleMath::Vector2 m_position;
 
 	UserInterface::ANCHOR m_anchor;

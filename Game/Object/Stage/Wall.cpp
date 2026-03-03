@@ -24,7 +24,7 @@ Wall::Wall(const GameObject* parent, const DirectX::SimpleMath::Vector3& initial
 	: 
 	GameObject(Tag::ObjectType::Wall,parent,initialPosition,initialAngle),
 	m_messageID{},
-	m_sphere{ GetPosition(),60.0f}, // 初期位置とサイズを設定
+	m_sphere{ GetPosition(),SPHERE_SIZE}, // 初期位置とサイズを設定
 	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 {
@@ -68,6 +68,10 @@ void Wall::Initialize()
  */
 void Wall::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	//現在位置の更新
+	SetCurrentPosition(currentPosition + GetPosition());
+	//現在角度の更新
+	SetCurrentAngle(GetQuaternion() * currentAngle);
 	//当たり判定更新
 	m_sphere.SetCenter(currentPosition + GetPosition());
 }
@@ -112,20 +116,14 @@ void Wall::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
 				context->PSSetShaderResources(0, 1, GetTexture());
 			}
-
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthNone(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullNone());
 			//シェーダー設定

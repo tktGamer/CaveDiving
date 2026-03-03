@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  * 
- * @date   日付  2026/01/18
+ * @date   日付  2026/03/02
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
@@ -21,6 +21,8 @@
 #include"../Golem/State/GolemDamaged.h"
 #include"../EnemyPart.h"
 #include"../Golem/GolemHand.h"
+#include"../Golem/GolemArm.h"
+#include"../Golem/GolemFot.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -42,20 +44,39 @@ public:
 	static constexpr int GOLEM_BASE_ATTACK = 70;
 	//初期防御力
 	static constexpr int GOLEM_BASE_DIFFENCE = 20;
-	//球の当たり判定サイズ
-	static constexpr float GOLEM_SPHERE_SIZE = 4.0f;
 	//接触時のダメージ割りあい
 	static constexpr float CONTACT_DAMAGE_MODIFIRE = 0.1f;
 	//感知範囲
 	static constexpr  float CHASE_RANGE = 20.0f;
 
-	//左手の位置
-	static constexpr DirectX::SimpleMath::Vector3 LEFTHAND_INIT_POS = { -4.5f ,2.0f,0.0f };
-	//右手の位置
-	static constexpr DirectX::SimpleMath::Vector3 RIGHTHAND_INIT_POS = { 4.5f ,2.0f,0.0f };
+	//左腕の位置
+	static constexpr DirectX::SimpleMath::Vector3 GOLEM_LEFT_ARM_INIT_POS = { -4.5f ,3.0f,0.0f };
+	//右腕の位置
+	static constexpr DirectX::SimpleMath::Vector3 GOLEM_RIGHT_ARM_INIT_POS = { 4.5f ,3.0f,0.0f };
 	static constexpr float LEFT_HAND_INIT_ANGLE = DirectX::XMConvertToRadians(180.0f);
+	//足の向き
+	static constexpr float FOT_INIT_ANGLE = DirectX::XMConvertToRadians(90.0f);
+	//右足の位置
+	static constexpr DirectX::SimpleMath::Vector3 GOLEM_RIGHT_FOT_INIT_POS = { 2.0f,-4.6f,0.0f };
+	//左足の位置
+	static constexpr DirectX::SimpleMath::Vector3 GOLEM_LEFT_FOT_INIT_POS =  { -2.0f,-4.6f,0.0f };
+
+	//右腕のオブジェクト番号 ゴーレムの番号を基準に
+	static constexpr int RIGHT_ARM_OBJ_NUMBER  = 1;
+	//右手のオブジェクト番号 ゴーレムの番号を基準に
+	static constexpr int RIGHT_HAND_OBJ_NUMBER = 2;
+	//左腕のオブジェクト番号 ゴーレムの番号を基準に
+	static constexpr int LEFT_ARM_OBJ_NUMBER   = 3;
+	//左手のオブジェクト番号 ゴーレムの番号を基準に
+	static constexpr int LEFT_HAND_OBJ_NUMBER  = 4;
+	//右足のオブジェクト番号 ゴーレムの番号を基準に
+	static constexpr int RIGHT_FOT_OBJ_NUMBER  = 5;
+	//左足のオブジェクト番号 ゴーレムの番号を基準に
+	static constexpr int LEFT_FOT_OBJ_NUMBER  = 6;
 //非公開定数
 private:
+	//当たり判定サイズ
+	static constexpr DirectX::SimpleMath::Vector3 GOLEM_COLLISION_SIZE = { 2.5f,3.8f,2.5f };
 	//ゴーレムのアウトラインの太さ
 	static constexpr  float GOLEM_OUTLINE_THICKNESS = 0.04f;
 // メンバ関数の宣言 -------------------------------------------------
@@ -106,10 +127,6 @@ private:
 	std::unique_ptr<IState> m_chasingState; //追跡状態
 	std::unique_ptr<IState> m_attackPreaparing; //攻撃準備状態
 	std::unique_ptr<IState> m_damagedState;
-	//右手
-	std::unique_ptr<GolemHand> m_rightHand; 
-	//左手
-	std::unique_ptr<GolemHand> m_leftHand;
 	//経過時間
 	float m_frameCount = 0;
 
@@ -119,6 +136,7 @@ private:
 	Ito::DisplayCollision m_display;
 	//攻撃方法メッセージ
 	Message::AttackMesssage m_attackMessage;
-
+	//ゴーレムのパーツ配列
+	std::vector<std::unique_ptr<PartObject>> m_parts;
 };
 

@@ -312,7 +312,6 @@ void ParticleControl::SetShaderState() const
 	context->PSSetShaderResources(0, 1, GetTexture());
 	//	インプットレイアウトの登録
 	context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Particle));
-
 }
 
 /**

@@ -1,5 +1,16 @@
+/**
+ * @file   GameObjectFactory.cpp
+ *
+ * @brief  オブジェクト生成に関するソースファイル
+ *
+ * @author 制作者名　福地貴翔
+ *
+ * @date   日付　2026/01/19
+ */
+ // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GameObjectFactory.h"
+ // メンバ関数の定義 ===========================================================
 
 /**
  * @brief 「プレイヤー」の生成
@@ -48,8 +59,6 @@ std::unique_ptr<Hand> GameObjectFactory::CreateHand(
 	return std::move(hand);
 }
 
-
-
 /**
  * @brief 「ピッケル」の生成
  *
@@ -77,17 +86,18 @@ std::unique_ptr<Pikel> GameObjectFactory::CreatePikle(Character* owner, GameObje
 /**
  * @brief 「コウモリの敵」の生成
  *
- * @param[in] parent   親のポインタ
+ * @param[in] parent           親のポインタ
  * @param[in] initialPosition　初期位置
- * @param[in] initialAngle　　初期角度
+ * @param[in] initialAngle　　 初期角度
  *
  * @return コウモリの敵クラス
  */
-std::unique_ptr<Bat> GameObjectFactory::CreateBat(GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+std::unique_ptr<Bat> GameObjectFactory::CreateBat(GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「コウモリ」を宣言する
 	std::unique_ptr<Bat> bat;
-	//Pikelクラスのインスタンスを生成する
+	//Batクラスのインスタンスを生成する
 	bat = std::make_unique<Bat>(parent, initialPosition, initialAngle);
 	//初期化する
 	bat->Initialize();
@@ -95,8 +105,6 @@ std::unique_ptr<Bat> GameObjectFactory::CreateBat(GameObject* parent, const Dire
 	// Batクラスのインスタンスを返す
 	return std::move(bat);
 }
-
-
 
 /**
  * @brief 「コウモリの羽」の生成
@@ -119,7 +127,6 @@ std::unique_ptr<Wing> GameObjectFactory::CreateBatWing(Character* root, GameObje
 	// Wingクラスのインスタンスを返す
 	return std::move(wing);
 }
-
 
 /**
  * @brief 「ゴーレム」の生成
@@ -146,24 +153,78 @@ std::unique_ptr<Golem> GameObjectFactory::CreateGolem(GameObject* parent, const 
 /**
  * @brief 「ゴーレムの手」の生成
  *
- * @param[in] 大元のオブジェクトポインタ
+ * @param[in] root     大元のオブジェクトポインタ
  * @param[in] parent   親のポインタ
  * @param[in] initialPosition　初期位置
- * @param[in] initialAngle　　初期角度
+ * @param[in] initialAngle　　 初期角度
  *
  * @return ゴーレムの手クラス
  */
 std::unique_ptr<GolemHand> GameObjectFactory::CreateGolemHand(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 {
 	//「ゴーレムの手」を宣言する
-	std::unique_ptr<GolemHand> golem;
+	std::unique_ptr<GolemHand> golemHand;
 	//GolemHandクラスのインスタンスを生成する
-	golem = std::make_unique<GolemHand>(root, parent, initialPosition, initialAngle);
+	golemHand = std::make_unique<GolemHand>(root, parent, initialPosition, initialAngle);
 	//初期化する
-	golem->Initialize();
+	golemHand->Initialize();
 
 	// GolemHandクラスのインスタンスを返す
-	return std::move(golem);
+	return std::move(golemHand);
+}
+
+/**
+ * @brief 「ゴーレムの腕」の生成
+ *
+ * @param[in] root     大元のオブジェクトポインタ
+ * @param[in] parent   親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　 初期角度
+ * @param[in] rotationlimit　　角度制限
+ *
+ * @return ゴーレムの腕クラス
+ */
+std::unique_ptr<GolemArm> GameObjectFactory::CreateGolemArm(Character* root, GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle, const PartObject::RotationLimit& rotationlimit)
+{
+	//「ゴーレムの腕」を宣言する
+	std::unique_ptr<GolemArm> golemArm;
+	//GolemArmクラスのインスタンスを生成する
+	golemArm = std::make_unique<GolemArm>(root, parent, initialPosition, initialAngle);
+	//初期化する
+	golemArm->Initialize();
+	//角度制限を設定
+	golemArm->SetRotationLimit(rotationlimit);
+	// GolemArmクラスのインスタンスを返す
+	return std::move(golemArm);
+}
+
+/**
+ * @brief 「ゴーレムの足」の生成
+ *
+ * @param[in] root     大元のオブジェクトポインタ
+ * @param[in] parent   親のポインタ
+ * @param[in] initialPosition　初期位置
+ * @param[in] initialAngle　　 初期角度
+ * @param[in] rotationlimit　　角度制限
+ *
+ * @return ゴーレムの足クラス
+ */
+std::unique_ptr<GolemFot> GameObjectFactory::CreateGolemFot(Character* root, GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle, const PartObject::RotationLimit& rotationlimit)
+{
+	//「ゴーレムの腕」を宣言する
+	std::unique_ptr<GolemFot> golemFot;
+	//GolemFotクラスのインスタンスを生成する
+	golemFot = std::make_unique<GolemFot>(root, parent, initialPosition, initialAngle);
+	//初期化する
+	golemFot->Initialize();
+	//角度制限を設定
+	golemFot->SetRotationLimit(rotationlimit);
+	//ゴーレムに対してちょうどいい大きさ
+	golemFot->SetScale({ 1.5f,1.5f,1.5f });
+
+	// GolemFotクラスのインスタンスを返す
+	return std::move(golemFot);
 }
 
 /**
@@ -290,4 +351,3 @@ std::unique_ptr<OutlineItem> GameObjectFactory::CreateOutlineItem(const Item::It
 	// OutlineItemクラスのインスタンスを返す
 	return std::move(outlineItem);
 }
-

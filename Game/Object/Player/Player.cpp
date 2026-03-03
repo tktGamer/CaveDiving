@@ -132,9 +132,6 @@ void Player::Initialize()
 void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
-
-	//Œü‚«‚ğ•Ï‚¦‚é
-	ChangeDirection();
 	//ó‘Ô‚ÌXV
 	GetState()->Update(elapsedTime);
 	//Œ»İˆÊ’u‚ÌXV
@@ -348,8 +345,8 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 			GameObject::ChangeState(m_idlingState.get());
 			break;
 		case Message::MOVING:
-			//UŒ‚’†‚Å‚Í‚È‚¯‚ê‚Î
-			if (!IsAttacking()) 
+			//UŒ‚E‰ñ”ğ’†‚Å‚Í‚È‚¯‚ê‚Î
+			if (!IsAttacking() && !IsAvoidance()) 
 			{
 				GameObject::ChangeState(m_movingState.get());
 			}
@@ -648,6 +645,19 @@ const HolderGem& Player::GetHolderGem()
 	return *m_holderGem.get();
 }
 
+/**
+ * @brief ‰ñ”ğ’†‚©æ“¾
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return true  ‰ñ”ğ’†
+ * @return false ‰ñ”ğ‚µ‚Ä‚¢‚È‚¢
+ */
+bool Player::IsAvoidance()
+{
+	return (GetState() == m_avoidState.get());
+}
+
 
 /**
  * @brief UŒ‚’†‚©æ“¾
@@ -662,12 +672,19 @@ bool Player::IsAttacking()
 	return (GetState() == m_airAttackState.get() || GetState() == m_groundAttackState.get());
 }
 
+
+/**
+ * @brief UŒ‚“ü—Í‚ª‚ ‚Á‚½‚©
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return true  UŒ‚“ü—ÍƒAƒŠ
+ * @return false UŒ‚“ü—Í‚È‚µ
+ */
 bool Player::IsAttackBuffered() const
 {
 	return m_attackBuffered;
 }
-
-
 
 /**
  * @brief ƒWƒƒƒ“ƒv‚Å‚«‚éc‚è‰ñ”‚ğŒ¸‚ç‚·
@@ -730,36 +747,6 @@ void Player::UpdateGotItems()
 	m_gotItems.remove_if([](Item::ItemInfo& iteminfo) {return iteminfo.time < 0.0f; });
 }
 
-/**
- * @brief •ûŒü‚ğ•Ï‚¦‚é
- *
- * @param[in] ‚È‚µ
- *
- * @return ‚È‚µ
- */
-void Player::ChangeDirection()
-{
-	//ƒL[æ“¾
-	DirectX::Keyboard::KeyboardStateTracker* key = Graphics::GetInstance()->GetKeyboardTracker();
-	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
-	//‰ñ“]
-	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::Identity;
-
-	if (key->GetLastState().LeftShift)
-	{
-		//¶ù‰ñ
-		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, ROTATION_SPEED_Y_ANGLE*elapsedTime);
-	}
-	if (key->GetLastState().C)
-	{
-		//‰Eù‰ñ
-		rotate *= DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY,-ROTATION_SPEED_Y_ANGLE*elapsedTime);
-	}
-	
-	// p¨‚É‰ñ“]‚ğ‰Á‚¦‚é
-	SetQuaternion(GetQuaternion() * rotate);
-
-}
 
 /**
  * @brief •óÎ‚É‚æ‚é‹­‰»—Ê‚ğæ“¾

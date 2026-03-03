@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/29
+ * @date   日付　2026/02/10
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -28,7 +28,6 @@ ShaderManager::ShaderManager()
 	CreateShader();
 }
 
-
 /**
  * @brief クラスのインスタンスを取得する
  *
@@ -44,7 +43,6 @@ ShaderManager* const ShaderManager::GetInstance()
 	}
 	return s_shader.get();
 }
-
 
 /**
  * @brief シェーダー有効化
@@ -97,11 +95,7 @@ void ShaderManager::StartShader(const ShaderType& type)
 
 	//指定されたシェーダーを開始する
 	//m_shaderMap[type]->StartShader();
-
 }
-
-
-
 
 /**
  * @brief シェーダー無効化
@@ -124,8 +118,6 @@ void ShaderManager::EndShader()
 	context->PSSetConstantBuffers(0, 1, &nullBuffer);
 }
 
-
-
 /**
  * @brief 終了処理
  *
@@ -135,11 +127,7 @@ void ShaderManager::EndShader()
  */
 void ShaderManager::Finalize()
 {
-
 }
-
-
-
 
 /**
  * @brief インプットレイアウトの取得
@@ -150,42 +138,8 @@ void ShaderManager::Finalize()
  */
 ID3D11InputLayout* ShaderManager::GetInputLayout(ShaderType type)
 {
-	//switch (type)
-	//{
-	//case ShaderManager::Model:
-	//	return m_modelShader->GetInputLayout();
-	//	break;
-	//case ShaderManager::Item_Model:
-	//	return m_itemShader->GetInputLayout();
-	//	break;
-	//case ShaderManager::Rock_Model:
-	//	return m_rockShader->GetInputLayout();
-	//	break;
-	//case ShaderManager::UI:
-	//	return m_uiShader->GetInputLayout();
-	//	break;
-	//case ShaderManager::Number2D:
-	//	return m_number2DShader->GetInputLayout();
-	//	break;
-	//case ShaderManager::Number3D:
-	//	return m_number3DShader->GetInputLayout();
-	//	break;
-	//case ShaderManager::Particle:
-	//	return m_particleShader->GetInputLayout();
-	//	break;
-	//case ShaderManager::Fade:
-	//	return m_fadeShader->GetInputLayout();
-	//	break;
-	//case ShaderManager::Outline:
-	//	return m_outlineShader->GetInputLayout();
-	//	break;
-	//default:
-	//	break;
-	//}
-	//return nullptr;
 	//指定されたシェーダーのインプットレイアウトをかえす
 	return m_shaderMap[type]->GetInputLayout();
-
 }
 
 /**
@@ -197,43 +151,9 @@ ID3D11InputLayout* ShaderManager::GetInputLayout(ShaderType type)
  */
 ID3D11Buffer* ShaderManager::GetCBuffer(ShaderType type)
 {
-	//switch (type)
-	//{
-	//case ShaderManager::Model:
-	//	return m_modelShader->GetConstantBuffer();
-	//	break;
-	//case ShaderManager::Item_Model:
-	//	return m_itemShader->GetConstantBuffer();
-	//	break;
-	//case ShaderManager::Rock_Model:
-	//	return m_rockShader->GetConstantBuffer();
-	//	break;
-	//case ShaderManager::UI:
-	//	return m_uiShader->GetConstantBuffer();
-	//	break;
-	//case ShaderManager::Number2D:
-	//	return m_number2DShader->GetConstantBuffer();
-	//	break;
-	//case ShaderManager::Number3D:
-	//	return m_number3DShader->GetConstantBuffer();
-	//	break;
-	//case ShaderManager::Particle:
-	//	return m_particleShader->GetConstantBuffer();
-	//	break;
-	//case ShaderManager::Fade:
-	//	return m_fadeShader->GetConstantBuffer();
-	//	break;
-	//case ShaderManager::Outline:
-	//	return m_outlineShader->GetConstantBuffer();
-	//default:
-	//	break;
-	//}
-	//return nullptr;
-	
 	//指定されたシェーダーのコンスタントバッファをかえす
 	return m_shaderMap[type]->GetConstantBuffer();
 }
-
 
 /**
  * @brief シェーダーの作成
@@ -333,8 +253,8 @@ void ShaderManager::LoadFadeShader()
 {
 	Shader::ShaderPath path;
 	path.vsPath = ResourcePath::SHADER::FADE_VS;
-	path.psPath = L"Resources/Shaders/FadeShader/FadePS.cso";
-	path.gsPath = L"Resources/Shaders/FadeShader/FadeGS.cso";
+	path.psPath = ResourcePath::SHADER::FADE_PS;
+	path.gsPath = ResourcePath::SHADER::FADE_GS;
 	m_fadeShader = std::make_unique<FadeShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Fade, m_fadeShader.get()));
 
@@ -350,9 +270,9 @@ void ShaderManager::LoadFadeShader()
 void ShaderManager::LoadOutlineShader()
 {
 	Shader::ShaderPath path;
-	path.vsPath = L"Resources/Shaders/OutlineShader/OutlineVS.cso";
-	path.psPath = L"Resources/Shaders/OutlineShader/OutlinePS.cso";
-	path.gsPath = L"Resources/Shaders/OutlineShader/OutlineGS.cso";
+	path.vsPath = ResourcePath::SHADER::OUTLINE_VS;
+	path.psPath = ResourcePath::SHADER::OUTLINE_PS;
+	path.gsPath = ResourcePath::SHADER::OUTLINE_GS;
 	m_outlineShader = std::make_unique<OutlineShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Outline, m_outlineShader.get()));
 
@@ -368,9 +288,9 @@ void ShaderManager::LoadOutlineShader()
 void ShaderManager::LoadNumber2DShader()
 {
 	Shader::ShaderPath path;
-	path.vsPath = L"Resources/Shaders/NumberShader/NumberVS.cso";
-	path.psPath = L"Resources/Shaders/NumberShader/NumberPS.cso";
-	path.gsPath = L"Resources/Shaders/NumberShader/NumberGS.cso";
+	path.vsPath = ResourcePath::SHADER::NUMBER2D_VS;
+	path.psPath = ResourcePath::SHADER::NUMBER2D_PS;
+	path.gsPath = ResourcePath::SHADER::NUMBER2D_GS;
 	m_number2DShader = std::make_unique<Number2DShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Number2D, m_number2DShader.get()));
 
@@ -386,9 +306,9 @@ void ShaderManager::LoadNumber2DShader()
 void ShaderManager::LoadNumber3DShader()
 {
 	Shader::ShaderPath path;
-	path.vsPath = L"Resources/Shaders/NumberShader/3D/Number3DVS.cso";
-	path.psPath = L"Resources/Shaders/NumberShader/3D/Number3DPS.cso";
-	path.gsPath = L"Resources/Shaders/NumberShader/3D/Number3DGS.cso";
+	path.vsPath = ResourcePath::SHADER::NUMBER3D_VS;
+	path.psPath = ResourcePath::SHADER::NUMBER3D_PS;
+	path.gsPath = ResourcePath::SHADER::NUMBER3D_GS;
 	m_number3DShader = std::make_unique<ParticleShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::Number3D, m_number3DShader.get()));
 
@@ -421,9 +341,7 @@ void ShaderManager::LoadAnimation2DShader()
  */
 void ShaderManager::SetModelShader()
 {
-
 	m_modelShader->StartShader();
-
 }
 
 

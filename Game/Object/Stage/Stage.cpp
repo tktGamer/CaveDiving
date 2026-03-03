@@ -164,7 +164,7 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 {
 
 	//パスの生成
-	std::string path = "Resources/Data/LightPositionData.csv";
+	std::string path = ResourcePath::DATA::LIGHT;
 	//ファイルのオープン
 	std::ifstream ifs{ path };
 	if (!ifs.is_open())

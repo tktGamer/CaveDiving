@@ -1,13 +1,12 @@
 /**
  * @file   GolemHand.cpp
  *
- * @brief  プレイヤーの手に関するソースファイル
+ * @brief  ゴーレムの手に関するソースファイル
  *
  * @author 制作者名  福地貴翔
  *
  * @date   日付　2026/01/19
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GolemHand.h"
@@ -67,7 +66,7 @@ void GolemHand::Initialize()
  *
  * @return なし
  */
-void GolemHand::Update( const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void GolemHand::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//位置の更新
 	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform( GetPosition(), m_motionAngle * currentAngle) + currentPosition);
@@ -119,8 +118,6 @@ void GolemHand::Draw()
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
-
-
 			//	画像用サンプラーの登録
 			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
 			context->PSSetSamplers(0, 1, sampler);
@@ -144,9 +141,9 @@ void GolemHand::Draw()
 
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
-
+			//シェーダーセット
 			shader->StartShader(ShaderManager::Model);
-
+			//頂点情報設定
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
 
 		});

@@ -14,6 +14,7 @@
 #include"Game/Object/Enemy/Golem/GolemHand.h"
 // クラスの宣言 ===============================================================
 class Golem;
+class GolemArm;
 // クラスの定義 ===============================================================
 /**
   * @brief ゴーレムのパンチ攻撃の準備のモーション
@@ -25,7 +26,7 @@ public:
 //非公開定数
 private:
 	//拳をひく位置
-	static constexpr DirectX::SimpleMath::Vector3 HAND_GOAL_POS = { 0.0f,1.0f,6.0f };
+	static constexpr DirectX::SimpleMath::Vector3 HAND_GOAL_POS = { 0.0f,0.5f,6.0f };
 	//拳を正面に向ける
 	static constexpr float PUNCH_HAND_ANGLE = DirectX::XMConvertToRadians(90.0f);
 // メンバ関数の宣言 -------------------------------------------------
@@ -33,7 +34,7 @@ private:
 public:
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	GolemPunchPreparingMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
+	GolemPunchPreparingMotion(const int& golemObjectID);
 	// デストラクタ
 	~GolemPunchPreparingMotion();
 // 操作
@@ -50,8 +51,12 @@ private:
 private:
 	//ゴーレム本体のポインタ
 	Golem* m_pGolem;
+	//右腕のポインタ
+	GolemArm* m_pRightGolemArm;
 	//右手のポインタ
 	GolemHand* m_pRightGolemHand;
+	//左腕のポインタ
+	GolemArm* m_pLeftGolemArm;
 	//左手のポインタ
 	GolemHand* m_pLeftGolemHand;
 	//パンチのスタート位置

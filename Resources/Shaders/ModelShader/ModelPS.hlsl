@@ -68,7 +68,10 @@ float4 main(PS_IN input) : SV_TARGET
     
     //元の画像の色
     float4 output = tex.Sample(samLinear, input.Tex);
+    
+    //暗闇オフ
     //return output;
+    
     //すべてのライトからの距離を考慮した色
     float3 temTotal=0;
     for (int i = 0; i < onLightCount; i++)

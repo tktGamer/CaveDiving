@@ -16,21 +16,26 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] pGolem ゴーレムのポインタ
- * @param[in] pRightGolemHand 右手のポインタ
- * @param[in] pLeftGolemHand  左手のポインタ
+ * @param[in] golemObjectID　ゴーレムのオブジェクト番号
  */
-GolemPunchMotion::GolemPunchMotion(Golem* pGolem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand)
+GolemPunchMotion::GolemPunchMotion(const int& golemObjectID)
 	: 
 	AttackMotion{GOLEM_PUNCH_MOTION_MODIFIER},
-	m_pGolem{ pGolem },
-	m_pRightGolemHand{ pRightGolemHand },
-	m_pLeftGolemHand{ pLeftGolemHand },
+	m_pGolem{},
+	m_pRightGolemHand{},
+	m_pLeftGolemHand{},
 	m_startPosition{},
 	m_goalPosition{},
 	m_coolTime{},
 	m_attackSound{}
 {
+	Messenger* messenger = Messenger::GetInstance();
+	m_pGolem = messenger->GetObject(golemObjectID)->Cast<Golem>();
+	m_pRightGolemArm = messenger->GetObject(golemObjectID + Golem::RIGHT_ARM_OBJ_NUMBER)->Cast<GolemArm>();
+	m_pRightGolemHand = messenger->GetObject(golemObjectID + Golem::RIGHT_HAND_OBJ_NUMBER)->Cast<GolemHand>();
+	m_pLeftGolemArm = messenger->GetObject(golemObjectID + Golem::LEFT_ARM_OBJ_NUMBER)->Cast<GolemArm>();
+	m_pLeftGolemHand = messenger->GetObject(golemObjectID + Golem::LEFT_HAND_OBJ_NUMBER)->Cast<GolemHand>();
+
 	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GOLEM_PUNCH));
 }
 
@@ -54,7 +59,7 @@ GolemPunchMotion::~GolemPunchMotion()
 void GolemPunchMotion::Initialize()
 {
 	//スタート位置とゴール位置
-	m_startPosition = m_pRightGolemHand->GetPosition();
+	m_startPosition = m_pRightGolemArm->GetPosition();
 	m_goalPosition  = m_startPosition + PUNCH_MOVE;
 	//モーション値初期化
 	SetMotionLerp(0.0f);
@@ -79,8 +84,10 @@ bool GolemPunchMotion::Update()
 
 	//現在位置を求める
 	DirectX::SimpleMath::Vector3 currentPos = DirectX::SimpleMath::Vector3::Lerp(m_startPosition, m_goalPosition, motionLerp);
-	m_pRightGolemHand->SetPosition(currentPos);
-
+	m_pRightGolemArm->SetPosition(currentPos);
+	//手の角度を求める
+	DirectX::SimpleMath::Vector3 angle = DirectX::SimpleMath::Vector3::Lerp(START_MOTION_ANGLE, END_MOTION_ANGLE, motionLerp);
+	m_pRightGolemHand->SetLocalRotationEuler(angle);
 	//モーション進行
 	motionLerp +=  PUNCH_MOTION_SPEED * Messenger::GetInstance()->GetElapsedTime();
 	SetMotionLerp(std::min(motionLerp, Motion::MOTION_FINISH));
@@ -114,9 +121,10 @@ void GolemPunchMotion::Reset()
 {
 	//それぞれのオブジェクトを元の位置・角度に戻す
 	m_pGolem->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-	m_pRightGolemHand->SetPosition(Golem::RIGHTHAND_INIT_POS);
-	m_pLeftGolemHand->SetPosition(Golem::LEFTHAND_INIT_POS);
+	m_pRightGolemArm->SetPosition(Golem::GOLEM_RIGHT_ARM_INIT_POS);
+	m_pLeftGolemArm->SetPosition(Golem::GOLEM_LEFT_ARM_INIT_POS);
 	//前に向けていたのを下に向ける
+	m_pRightGolemArm->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
+	m_pLeftGolemArm->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 	m_pRightGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	m_pLeftGolemHand->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
 }

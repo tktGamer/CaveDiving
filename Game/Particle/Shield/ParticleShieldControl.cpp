@@ -131,7 +131,6 @@ void ParticleShieldControl::Render(const DirectX::SimpleMath::Vector3& target, c
 				AddVertex(vPCT);
 			}
 
-
 		});
 
 	//	’¸“_î•ñ‚ª‚È‚¢ê‡‚Í•`‰æ‚ğI‚í‚é

@@ -118,17 +118,10 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
 				m_groundCombo[m_currentAttack]->Initialize();
 				//モーションによる攻撃力補正をセット
 				m_pPlayer->SetMotionAttackRate(m_groundCombo[m_currentAttack]->GetAttackPowerModifier());
-
 			}
 		}
-
-
 		m_inputTime += elapsedTime;
-
 	}
-
-
-
 
 	//一連の攻撃を終わった　入力時間が過ぎたら
 	if (m_currentAttack >= m_groundCombo.size()|| m_inputTime >= INPUT_TIME)
@@ -145,8 +138,6 @@ void PlayerGroundAttack::Update(const float& elapsedTime)
 	velocity.y += World::GRAVITY * elapsedTime;
 
 	m_pPlayer->SetVelocity(velocity);
-
-
 
 	//回避キーが押されたら
 	if (key->pressed.X)

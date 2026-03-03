@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付　2026/01/18
+ * @date   日付　2026/03/02
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
@@ -13,6 +13,7 @@
 #define GOLEM_MOVING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
+#include"Game/Motion/GolemMotion/GolemWalkMotion.h"
 // クラスの宣言 ===============================================================
 class Golem;
 // クラスの定義 ===============================================================
@@ -55,5 +56,7 @@ private:
 private:
 	// ゴーレム
 	Golem* m_golem;
+	//移動モーション
+	std::unique_ptr<Motion> m_walkMotion;
 };
 #endif		// GOLEM_MOVING_DEFINED

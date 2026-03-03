@@ -32,7 +32,7 @@ public:
 public:
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	GolemAttack(Golem* golem, GolemHand* pRightGolemHand, GolemHand* pLeftGolemHand);
+	GolemAttack(Golem* golem);
 	// デストラクタ
 	~GolemAttack();
 //　操作
@@ -57,9 +57,6 @@ private:
 private:
 	// ゴーレムのポインタ
 	Golem* m_golem;
-	//手のポインタ
-	GolemHand* m_pRightHand;
-	GolemHand* m_pLeftHand;
 	//攻撃モーション
 	std::unique_ptr<AttackMotion> m_attackMotion;
 };
