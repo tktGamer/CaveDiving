@@ -21,7 +21,14 @@ class Gauge
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
+//非公開定数
+private:	
+	//アイコンテクスチャの位置
+	static constexpr DirectX::SimpleMath::Vector2 OFFSET = {5.0f,-1.0f};
+	//最小割合
+	static constexpr float MIN_RATIO = 0.0f;
+	//最大割合
+	static constexpr float MAX_RATIO = 1.0f;
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
@@ -29,22 +36,15 @@ public:
 	void SetValue(const int current, const int max);
 //コンテキスト・デストラクタ
 	//コンストラクタ
-	Gauge();
+	Gauge(const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor);
 	//デストラクタ
 	~Gauge();
 	//初期化
-	void Initialize(int width, int height);
+	void Initialize();
 	//更新
 	void Update();
 	//描画
 	void Render();
-
-	void Add(const wchar_t* path
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
-		, UserInterface::ANCHOR anchor);
-
-
 // データメンバの宣言 -----------------------------------------------
 private:
 
@@ -52,14 +52,6 @@ private:
 	std::unique_ptr<UserInterface> m_gauge;
 	//フレーム
 	std::unique_ptr<UserInterface> m_frame;
-
-
-	const wchar_t* m_baseTexturePath;
-
-	std::unique_ptr<UserInterface> m_baseWindow;
-
-	int m_windowWidth, m_windowHeight;
-
 	//ゲージの参照する値
 	int m_currentValue;
 	int m_maxValue;

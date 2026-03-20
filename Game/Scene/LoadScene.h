@@ -11,12 +11,11 @@
 #pragma once
 // ヘッダファイルの読み込み ===================================================
 #include"../Common/SceneManager.h"
-#include"Game/GameData.h"
 #include"math.h"
 #include"Game/UI/UserInterface.h"
 #include"../UI/Animation2D.h"
 // クラスの宣言 ===============================================================
-
+class GameData;
 // クラスの定義 ===============================================================
 /**
  * @brief ロゴシーン
@@ -35,7 +34,7 @@ private:
 	//縦の数
 	static constexpr int NOWLOADING_FRAME_HEIGHT = 4;
 	//アニメーション時間
-	static constexpr float NOWLOADING_ANIMATION_TIME = 8;
+	static constexpr float NOWLOADING_ANIMATION_TIME = 3.5f;
 	//位置
 	static constexpr DirectX::SimpleMath::Vector2 NOWLOADING_POSITON = { 800.0f,590.0f };
 	//サイズ

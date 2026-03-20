@@ -25,12 +25,12 @@ public:
 // コンストラクタ/デストラクタ
 public:
 	//コンストラクタ
-	Camera();
+	Camera(const DirectX::SimpleMath::Vector3& eyePosition);
 	//デストラクタ
 	~Camera();
 //　操作
 	//初期化
-	void Initialize(const DirectX::SimpleMath::Vector3& eyePosition);
+	void Initialize();
 	//更新
 	void Update(const float& elapsedTime);
 	//終了
@@ -44,9 +44,9 @@ public:
 	//カメラ位置取得
 	const DirectX::SimpleMath::Vector3& GetEyePos() const { return m_eyePos; }
 	//注視点設定
-	void SetTartet(const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Quaternion& rotate,
+	void SetTarget(const DirectX::SimpleMath::Vector3& targetPos,const DirectX::SimpleMath::Quaternion& rotate,
 		const DirectX::SimpleMath::Vector3& targetVelocity = DirectX::SimpleMath::Vector3::Zero);
-	//
+	//距離設定
 	void SetDistance(const DirectX::SimpleMath::Vector3& distance);
 	//ビュー行列取得
 	const DirectX::SimpleMath::Matrix& GetView() const;

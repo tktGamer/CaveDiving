@@ -16,6 +16,7 @@
 #include"../UI/GemSelectUIManager.h"
 #include"../UI/Menu/Menu.h"
 #include"../UI/Gauge/Gauge.h"
+#include"../UI/ClearConditions/ClearConditions.h"
 #include"../UI/HoldGem/HoldGem.h"
 #include"../UI/HoldGem/HoldGemInfoDraw.h"
 #include"../UI/GemSelect/GemSelect.h"
@@ -24,27 +25,38 @@
 #include"../UI/Number/NumberControl.h"
 #include"../UI/Number/CountUpNumber.h"
 #include"../UI/Animation2D.h"
+#include"../UI/Buff/Buff.h"
+#include"../UI/Result/Score/Score.h"
+#include"../UI/Key/Key.h"
+#include"../UI/Key/Operation.h"
 // ファクトリクラスを定義する
 class UIFactory 
 {
 public:
-
-
 	// 「UI」を生成する
 	static std::unique_ptr<UserInterface> CreateUserInterface(
-		  const wchar_t* path
-		, const DirectX::SimpleMath::Vector2& position
-		, const DirectX::SimpleMath::Vector2& scale
-		, const UserInterface::ANCHOR& anchor
+		  const wchar_t* path,
+		const DirectX::SimpleMath::Vector2& position,
+		const DirectX::SimpleMath::Vector2& scale,
+		const UserInterface::ANCHOR& anchor
 		);
 
 	// 「メニュー」を生成する
 	static std::unique_ptr<Menu> CreateMenu(
-		 DirectX::SoundEffect* cursolSound
+		 DirectX::SoundEffect* cursolSound,
+		 const std::vector<Menu::MunuUIInfo>& munuUIInfo
 	);
 
 	// 「ゲージ」を生成する
 	static std::unique_ptr<Gauge> CreateGauge(
+		const DirectX::SimpleMath::Vector2& position,
+		const DirectX::SimpleMath::Vector2& scale,
+		const UserInterface::ANCHOR& anchor
+	);
+
+	// 「クリア条件UI」を生成する
+	static std::unique_ptr<ClearConditions> CreateClearConditions(
+		const DirectX::SimpleMath::Vector2& pos
 	);
 
 	// 「宝石選択UI」を生成する
@@ -66,7 +78,9 @@ public:
 
 	// 「所持している宝石を表示するUI」を生成する
 	static std::unique_ptr<HoldGem> CreateHoldGem(
-		const std::vector<int>& gemID
+		const std::vector<int>& gemID, 
+		const DirectX::SimpleMath::Vector2& position,
+		const DirectX::SimpleMath::Vector2& scale = DirectX::SimpleMath::Vector2::One
 		);
 
 	// 「所持している宝石の内1つの情報を表示するUI」を生成する
@@ -101,6 +115,32 @@ public:
 		const bool& isLoop,
 		const DirectX::SimpleMath::Vector2& position,
 		const DirectX::SimpleMath::Vector2& scale = DirectX::SimpleMath::Vector2::One
+	);
+
+	// 「バフUI」を生成する
+	static std::unique_ptr<Buff> CreateBuffUI(
+		const float& time, const wchar_t* path,
+		const DirectX::SimpleMath::Vector2& position,
+		const DirectX::SimpleMath::Vector2& scale,
+		const UserInterface::ANCHOR& anchor
+	);
+
+	// 「操作UI」を生成する
+	static std::unique_ptr<Operation> CreateOperationUI(std::vector<std::unique_ptr<IUI>> uis);
+
+	// 「操作UI」を生成する
+	static std::unique_ptr<Key> CreateKeyUI(
+		const std::vector<DirectX::Keyboard::Keys>& respoceKey,
+		const wchar_t* path,
+		const DirectX::SimpleMath::Vector2& position,
+		const DirectX::SimpleMath::Vector2& scale,
+		const UserInterface::ANCHOR& anchor
+	);
+
+	// 「スコアUI」を生成する
+	static std::unique_ptr<Score> CreateScoreUI(
+		const Score::UIInfo& scoreUI,
+		const Score::UIInfo& referenceUI = Score::UIInfo{}
 	);
 };
 

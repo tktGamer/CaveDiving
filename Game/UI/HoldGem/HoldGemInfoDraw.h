@@ -24,6 +24,8 @@ class HoldGemInfoDraw : public IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+//非公開定数
+private:
 	//宝石の表示位置
 	static constexpr float GEM_POS_X[3] = {-46.0f, 0.0f ,46.0f};
 	static constexpr DirectX::SimpleMath::Vector2 GEM_SCALE = {0.13f,0.13f};
@@ -32,6 +34,12 @@ public:
 	static constexpr DirectX::SimpleMath::Vector2 CACDIDATE_GEM_UI_POS = { 350.0f,200.0f };
 	//カーソルUIの位置
 	static constexpr DirectX::SimpleMath::Vector2 CURSOL_UI_POS = { 650.0f,450.0f };
+	//カーソルUIのサイズ
+	static constexpr DirectX::SimpleMath::Vector2 CURSOL_UI_SCALE = { 2.0f,2.0f };
+	//所持宝石表示位置
+	static constexpr DirectX::SimpleMath::Vector2 HOLD_GEM_UI_POS = { 650.0f,450.0f };
+	//所持宝石表示大きさ
+	static constexpr DirectX::SimpleMath::Vector2 HOLD_GEM_UI_SCALE = { 2.0f, 2.0f };
 
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定

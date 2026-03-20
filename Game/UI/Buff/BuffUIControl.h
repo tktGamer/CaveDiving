@@ -32,7 +32,7 @@ public:
 	//バフUIの最初の位置
 	static constexpr DirectX::SimpleMath::Vector2 FIRST_BUFF_UI_POS = { 55.0f,130.0f };
 	//通常スケールのときのバフUIの間隔
-	static constexpr DirectX::SimpleMath::Vector2 NORMAL_SCALE_BUFF_UI_INTERVAL = { 100.0f,170.0f };
+	static constexpr DirectX::SimpleMath::Vector2 NORMAL_SCALE_BUFF_UI_INTERVAL = { 105.0f,150.0f };
 	//バフUIの列数
 	int ROW_NUM = 3;
 
@@ -45,7 +45,7 @@ public:
 	void SetBuffUITextureSize(const DirectX::SimpleMath::Vector2& size);
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	BuffUIControl(int width, int height);
+	BuffUIControl(const int& width,const int& height);
 	//デストラクタ
 	~BuffUIControl();
 // 操作

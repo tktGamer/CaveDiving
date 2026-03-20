@@ -32,7 +32,6 @@ TitleScene::TitleScene()
 	m_isLoadPlayerHoldGem{false},
 	m_skyModel{}
 {
-	m_camera = std::make_unique<Camera>();
 }
 
 
@@ -85,8 +84,9 @@ void TitleScene::Initialize()
 
 	m_length = 20.0f;
 	m_angle = 20.0f;
-	m_camera->Initialize({ 0,17.0f,10.0f });
-	m_camera->SetTartet(m_caveModelParams.GetPosition(), m_caveModelParams.GetQuaternion());
+	m_camera = std::make_unique<Camera>(CAMERA_INIT_POS);
+	m_camera->Initialize();
+	m_camera->SetTarget(m_caveModelParams.GetPosition(), m_caveModelParams.GetQuaternion());
 	//スカイドームモデル生成
 	m_skyModel = ResourceManager::GetInstance()->RequestModel(ResourcePath::MODEL::SKY_DOME);
 

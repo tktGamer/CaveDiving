@@ -14,6 +14,7 @@
 #include"../Shader/Model/ModelShader.h"
 #include"../Shader/Model/WallShader.h"
 #include"../Shader/UI/UIShader.h"
+#include"../Shader/KeyUI/KeyUIShader.h"
 #include"../Shader/Fade/FadeShader.h"
 #include"../Shader/Number/Number2DShader.h"
 #include"../Shader/Number/Number3DShader.h"
@@ -38,6 +39,7 @@ public:
 		Rock_Model,
 		Wall_Model,
 		UI,   //UIシェーダー
+		KeyUI,
 		Number2D,
 		Number3D,
 		Particle,//パーティクルシェーダー
@@ -92,6 +94,8 @@ private:
 	void LoadModelShader();
 	//UIシェーダー読み込み
 	void LoadUIShader();
+	//KeyUIシェーダー読み込み
+	void LoadKeyUIShader();
 	//Particleシェーダー読み込み
 	void LoadParticleShader();
 	//Fadeシェーダー読み込み
@@ -115,6 +119,8 @@ private:
 	void SetWallShader();
 	//UIシェーダー設定
 	void SetUIShader();
+	//KeyUIシェーダー設定
+	void SetKeyUIShader();
 	//Particleシェーダー設定
 	void SetParticleShader();
 	//Fadeシェーダー設定
@@ -147,6 +153,8 @@ private:
 	std::unique_ptr<WallShader> m_wallShader;
 	//UI用シェーダー
 	std::unique_ptr<UIShader> m_uiShader;
+	//キーUI用シェーダー
+	std::unique_ptr<KeyUIShader> m_keyUIShader;
 	//2D上の数字用シェーダー
 	std::unique_ptr<Number2DShader> m_number2DShader;
 	//カメラ情報バッファ

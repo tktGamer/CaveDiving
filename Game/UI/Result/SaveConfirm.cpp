@@ -51,11 +51,11 @@ void SaveConfirm::Initialize()
 {
     //セーブメッセージUI
     m_saveMessage = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::SAVE_MESSAGE, { 650.0f,200.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
-    //選択肢UI
-    m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::CURSOL_MOVE));
-    m_menu->Add(ResourcePath::TEXTURE::UI::YES, { 350.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-    m_menu->Add(ResourcePath::TEXTURE::UI::NO, { 950.0f,600.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
-
+    //選択肢生成
+    std::vector<Menu::MunuUIInfo> info;
+    info.push_back(Menu::MunuUIInfo{ ResourcePath::TEXTURE::UI::YES, YES_MESSAGE_POSITION, YES_MESSAGE_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER });
+    info.push_back(Menu::MunuUIInfo{ ResourcePath::TEXTURE::UI::NO, NO_MESSAGE_POSITION, NO_MESSAGE_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER });
+    m_menu = UIFactory::CreateMenu(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::CURSOL_MOVE), info);
 }
 
 /**

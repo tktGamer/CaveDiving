@@ -20,7 +20,7 @@
  * @param[in] width
  * @param[in] height
  */
-BuffUIControl::BuffUIControl(int width, int height)
+BuffUIControl::BuffUIControl(const int& width,const int& height)
     : 
     m_windowHeight{height},
     m_windowWidth{ width },
@@ -46,8 +46,6 @@ BuffUIControl::~BuffUIControl()
  */
 void BuffUIControl::Initialize()
 {
-
-
 }
 
 /**
@@ -79,8 +77,8 @@ void BuffUIControl::Update()
             int row = num % ROW_NUM;
             int col = num / ROW_NUM;
 
-            buffPos.x += row * 105;
-            buffPos.y += col * 110;
+            buffPos.x += row * NORMAL_SCALE_BUFF_UI_INTERVAL.x;
+            buffPos.y += col * NORMAL_SCALE_BUFF_UI_INTERVAL.y;
             (*it)->SetPosition(buffPos);
         }
 
@@ -140,7 +138,7 @@ void BuffUIControl::AddUI(const Item::EffectType& upStatus, const float& buffTim
     buffPos.x += row * NORMAL_SCALE_BUFF_UI_INTERVAL.x * m_textureScale.x;
     buffPos.y += col * NORMAL_SCALE_BUFF_UI_INTERVAL.y * m_textureScale.y;
 
-    m_buffUIs.emplace_back(std::make_unique<Buff>(buffTime,texturePath,buffPos,DirectX::SimpleMath::Vector2{1.0f,1.0f},UserInterface::ANCHOR::MIDDLE_CENTER));
+    m_buffUIs.emplace_back(UIFactory::CreateBuffUI(buffTime,texturePath,buffPos,DirectX::SimpleMath::Vector2::One,UserInterface::ANCHOR::MIDDLE_CENTER));
     m_nowBuff++;
 }
 

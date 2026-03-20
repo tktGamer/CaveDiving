@@ -29,6 +29,16 @@ public:
 		Yes = 0,
 		No
 	};
+
+	//「はい」のメッセージの位置
+	static constexpr DirectX::SimpleMath::Vector2 YES_MESSAGE_POSITION = { 350.0f,600.0f };
+	//「はい」のメッセージの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 YES_MESSAGE_SCALE = { 0.9f,0.9f };
+	//「いいえ」のメッセージの位置
+	static constexpr DirectX::SimpleMath::Vector2 NO_MESSAGE_POSITION = { 950.0f,600.0f };
+	//「いいえ」のメッセージの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 NO_MESSAGE_SCALE = { 0.9f,0.9f };
+
 // データメンバの宣言 -----------------------------------------------
 private:
 	//セーブするかのUI

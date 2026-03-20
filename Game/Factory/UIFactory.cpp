@@ -31,39 +31,63 @@ std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(
 	ui->Create(path, position, scale, anchor);
 	ui->Initialize();
 
-	return std::move(ui);
+	return ui;
 }
 
 /**
  * @brief 「メニューUI」の生成
  *
  * @param[in] cursolSound カーソル移動時の効果音
+ * @param[in] munuUIInfo  初期追加する選択肢
  *
  * @return メニューUIクラス
  */
-std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound)
+std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound, const std::vector<Menu::MunuUIInfo>& munuUIInfo)
 {
 	//「メニューUI」の生成
 	std::unique_ptr<Menu> menu = std::make_unique<Menu>(cursolSound);
 	menu->Initialize();
-
-	return std::move(menu);
+	//選択しの生成
+	for (auto& info : munuUIInfo)
+	{
+		menu->Add(info);
+	}
+	return menu;
 }
 
 /**
  * @brief 「ゲージUI」の生成
  *
- * @param[in] なし
+ * @param[in] position  描画座標
+ * @param[in] scale     拡大率
+ * @param[in] anchor    アンカー
  *
  * @return ゲージUIクラス
  */
-std::unique_ptr<Gauge> UIFactory::CreateGauge()
+std::unique_ptr<Gauge> UIFactory::CreateGauge(const DirectX::SimpleMath::Vector2& position,const DirectX::SimpleMath::Vector2& scale,
+	const UserInterface::ANCHOR& anchor)
 {
 	//ゲージUI生成
-	std::unique_ptr<Gauge> gauge = std::make_unique<Gauge>();
-	gauge->Initialize(UIManager::WINDOW_SIZE_X,UIManager::WINDOW_SIZE_Y);
+	std::unique_ptr<Gauge> gauge = std::make_unique<Gauge>(position,scale,anchor);
+	gauge->Initialize();
 
-	return std::move(gauge);
+	return gauge;
+}
+
+/**
+ * @brief 「クリア条件UI」の生成
+ *
+ * @param[in] pos  描画位置
+ *
+ * @return クリア条件UIクラス
+ */
+std::unique_ptr<ClearConditions> UIFactory::CreateClearConditions(const DirectX::SimpleMath::Vector2& pos)
+{
+	//クリア条件UI生成
+	std::unique_ptr<ClearConditions> clearConditions = std::make_unique<ClearConditions>(pos);
+	clearConditions->Initialize();
+
+	return clearConditions;
 }
 
 /**
@@ -76,11 +100,10 @@ std::unique_ptr<Gauge> UIFactory::CreateGauge()
  */
 std::unique_ptr<GemSelect> UIFactory::CreateGemSelect(GemSelectUIManager* pGemSelectUIManager, const std::vector<int>& gemID)
 {
-
 	//「宝石選択UI」の生成
 	std::unique_ptr<GemSelect> gemSelect = std::make_unique<GemSelect>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID,pGemSelectUIManager );
 	gemSelect->Initialize();
-	return std::move(gemSelect);
+	return gemSelect;
 }
 
 /**
@@ -97,7 +120,7 @@ std::unique_ptr<ChangeConfirm> UIFactory::CreateChangeConfirm(GemSelectUIManager
 	std::unique_ptr<ChangeConfirm> changeConfirm = std::make_unique<ChangeConfirm>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y, pGemSelectUIManager);
 	changeConfirm->Initialize();
 
-	return std::move(changeConfirm);
+	return changeConfirm;
 }
 
 /**
@@ -114,24 +137,27 @@ std::unique_ptr<ChangeGem> UIFactory::CreateChangeGem(GemSelectUIManager* pGemSe
 	std::unique_ptr<ChangeGem> changeGem = std::make_unique<ChangeGem>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID, pGemSelectUIManager);
 	changeGem->Initialize();
 
-	return std::move(changeGem);
+	return changeGem;
 }
 
 /**
  * @brief 「所持している宝石を表示するUI」の生成
  *
  * @param[in] gemID  宝石ID
+ * @param[in] position  描画位置
+ * @param[in] scale  　 大きさ
  *
  * @return 所持している宝石を表示するUIクラス
  */
-std::unique_ptr<HoldGem> UIFactory::CreateHoldGem(const std::vector<int>& gemID)
+std::unique_ptr<HoldGem> UIFactory::CreateHoldGem(const std::vector<int>& gemID,
+	const DirectX::SimpleMath::Vector2& position,const DirectX::SimpleMath::Vector2& scale)
 {
 	//「所持している宝石を表示するUI」の生成
-	std::unique_ptr<HoldGem> holdGem = std::make_unique<HoldGem>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID);
+	std::unique_ptr<HoldGem> holdGem = std::make_unique<HoldGem>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,position,scale);
 	holdGem->Initialize();
 	//表示する宝石を決める
 	holdGem->ChangeDrawGem(gemID);
-	return std::move(holdGem);
+	return holdGem;
 }
 
 /**
@@ -147,7 +173,7 @@ std::unique_ptr<HoldGemInfoDraw> UIFactory::CreateHoldGemInfoDraw(const std::vec
 	std::unique_ptr<HoldGemInfoDraw> holdGemInfo = std::make_unique<HoldGemInfoDraw>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,gemID);
 	holdGemInfo->Initialize();
 
-	return std::move(holdGemInfo);
+	return holdGemInfo;
 }
 
 /**
@@ -175,7 +201,7 @@ std::unique_ptr<NumberControl> UIFactory::CreateNumberUI(
 	numberControl->SetNumber(initNumber);
 	//最小表示桁数
 	numberControl->SetDrawMinDigit(minDigit);
-	return std::move(numberControl);
+	return numberControl;
 }
 
 /**
@@ -196,7 +222,7 @@ std::unique_ptr<CountUpNumber> UIFactory::CreateCountUpNumberUI(std::unique_ptr<
 	numberControl->Initialize();
 	numberControl->CreateNumberUI(std::move(numberUI));
 	numberControl->CreateInfoTextureUI(std::move(numberInfoUI));
-	return std::move(numberControl);
+	return numberControl;
 }
 
 /**
@@ -219,5 +245,91 @@ std::unique_ptr<Animation2D> UIFactory::CreateAnimation2DUI(const wchar_t* textu
 		isLoop,position,scale);
 	animation2D->Initialize();
 	animation2D->SetWindowSize(DirectX::SimpleMath::Vector2{ static_cast<float>(UIManager::WINDOW_SIZE_X),static_cast<float>(UIManager::WINDOW_SIZE_Y) });
-	return std::move(animation2D);
+	return animation2D;
+}
+
+/**
+ * @brief 「バフUI」の生成
+ *
+ * @param[in] time    表示時間
+ * @param[in] path  　画像情報
+ * @param[in] position　	 座標
+ * @param[in] scale			 拡大率
+ * @param[in] anchor		 表示基準
+ *
+ * @return バフUIクラス
+ */
+std::unique_ptr<Buff> UIFactory::CreateBuffUI(const float& time, const wchar_t* path,
+	const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
+{
+	//「バフUI」の生成
+	std::unique_ptr<Buff> buff = std::make_unique<Buff>(time, path, position, scale, anchor);
+	//初期化
+	buff->Initialize();
+	return buff;
+}
+
+
+/**
+ * @brief 「操作UI」の生成
+ *
+ * @param[in] uis  UI群
+ *
+ * @return 操作UIクラス
+ */
+std::unique_ptr<Operation> UIFactory::CreateOperationUI(std::vector<std::unique_ptr<IUI>> uis)
+{
+	//「操作UI」の生成
+	std::unique_ptr<Operation> operation = std::make_unique<Operation>();
+	//初期化
+	operation->Initialize();
+
+	for (auto& ui : uis) 
+	{
+		operation->AddUI(std::move(ui));
+	}
+
+	return operation;
+}
+
+/**
+ * @brief 「操作UI」の生成
+ *
+ * @param[in] respoceKey    対応キー
+ * @param[in] position  基準座標
+ * @param[in] scale		基準拡大率
+ * @param[in] anchor		表示基準
+ * @param[in] keyUI		 　 キーUI
+ * @param[in] actionUI	　　行動UI
+ *
+ * @return 操作UIクラス
+ */
+std::unique_ptr<Key> UIFactory::CreateKeyUI(const std::vector<DirectX::Keyboard::Keys>& respoceKey, const wchar_t* path, 
+	const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, 
+	const UserInterface::ANCHOR& anchor)
+{
+	//「操作UI」の生成
+	std::unique_ptr<Key> key = std::make_unique<Key>(respoceKey);
+	//初期化
+	key->Initialize();
+	key->Create(path,position,scale,anchor);
+	return key;
+}
+
+/**
+ * @brief 「スコアUI」の生成
+ *
+ * @param[in] referenceUI   情報
+ * @param[in] scoreUI  　   スコア
+ *
+ * @return スコアUIクラス
+ */
+std::unique_ptr<Score> UIFactory::CreateScoreUI( const Score::UIInfo& scoreUI,const Score::UIInfo& referenceUI)
+{
+	//「スコアUI」の生成
+	std::unique_ptr<Score> score = std::make_unique<Score>(scoreUI,referenceUI);
+	//初期化
+	score->Initialize();
+
+	return score;
 }

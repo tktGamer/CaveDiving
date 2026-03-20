@@ -16,14 +16,15 @@
  *
  * @param[in] なし
  */
-Camera::Camera()
+Camera::Camera(const DirectX::SimpleMath::Vector3& eyePosition)
     :
 	m_up{DirectX::SimpleMath::Vector3::Up},
 	m_view{},
-	m_eyePos{},
+	m_eyePos{eyePosition},
 	m_targetPos{},
 	m_targetRotate{},
-	m_distance{ DEFAULT_DISTANCE } // デフォルトの距離を設定
+	m_distance{ DEFAULT_DISTANCE }, // デフォルトの距離を設定
+	m_targetVelocity{}
 {
 }
 
@@ -41,10 +42,8 @@ Camera::~Camera()
  *
  * @return なし
  */
-void Camera::Initialize(const DirectX::SimpleMath::Vector3& eyePosition)
+void Camera::Initialize()
 {
-	m_eyePos = eyePosition;
-	m_up = DirectX::SimpleMath::Vector3::Up;
 }
 
 /**
@@ -141,7 +140,7 @@ void Camera::SetEyePosZ(const float& posZ)
  *
  * @return なし
  */
-void Camera::SetTartet(const DirectX::SimpleMath::Vector3& targetPos, const DirectX::SimpleMath::Quaternion& rotate,
+void Camera::SetTarget(const DirectX::SimpleMath::Vector3& targetPos, const DirectX::SimpleMath::Quaternion& rotate,
 	const DirectX::SimpleMath::Vector3& targetVelocity)
 {
 	m_targetPos = &targetPos;

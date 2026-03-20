@@ -13,7 +13,7 @@
 #include<fstream>
 #include<sstream>
 #include"Game/Factory/GemFactory.h"
-
+#include"Game/ResourcePath.h"
 // クラスの静的メンバ変数の初期化
 std::unique_ptr<GemManager> GemManager::s_gemManager = nullptr;
 
@@ -213,7 +213,7 @@ const Gem* GemManager::GetIDNumberedGem(const int& id)
 void GemManager::LoadGemData()
 {
 	// パスの生成
-	std::string path = "Resources/Data/GemData.csv";
+	std::string path = ResourcePath::DATA::GEM;
 
 	// ファイルのオープン
 	std::ifstream ifs{ path };

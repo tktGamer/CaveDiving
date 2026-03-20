@@ -36,6 +36,8 @@ public:
 		CHANGECOFIRM, //入れ替え確認
 		CHANGEGEM     //宝石入れ替え
 	};
+	//所持宝石表示位置
+	static constexpr DirectX::SimpleMath::Vector2 HOLD_GEM_UI_POS = { 80.0f,680.0f };
 // メンバ関数の宣言 -------------------------------------------------
 // 取得/設定
 public:

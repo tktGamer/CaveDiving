@@ -20,7 +20,7 @@ std::unordered_map<std::string, GemFactory::CreatorFunc> GemFactory::creators;
  * @param[in] gemAbility  　データ
  * @param[in] gemImagePath  選択UIのテクスチャパス
  *
- * @return 宝石選択UIクラス
+ * @return 宝石クラス
  */
 std::unique_ptr<Gem> GemFactory::CreateGem(const std::string& className, const Gem::GemAbility& gemAbility, const Gem::GemImagePath& gemImagePath)
 {

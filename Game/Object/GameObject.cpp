@@ -50,6 +50,7 @@ GameObject::GameObject(Tag::ObjectType objectType,const GameObject* parent,
  */
 GameObject::~GameObject()
 {
+	m_texture = nullptr;
 	// ƒƒbƒZƒ“ƒWƒƒ[‚©‚ç“o˜^‰ðœ
 	Messenger::GetInstance()->UnRegister(m_objectNumber);
 }

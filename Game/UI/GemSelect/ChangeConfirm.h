@@ -24,8 +24,20 @@ class ChangeConfirm : public IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
-
+//非公開定数
+private:
+	//「入れ替えるか」のメッセージの位置
+	static constexpr DirectX::SimpleMath::Vector2 CHANGE_MESSAGE_POSITION = { 650.0f,200.0f };
+	//「入れ替えるか」のメッセージの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 CHANGE_MESSAGE_SCALE = { 1.0f,1.0f };
+	//「はい」のメッセージの位置
+	static constexpr DirectX::SimpleMath::Vector2 YES_MESSAGE_POSITION = { 350.0f,500.0f };
+	//「はい」のメッセージの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 YES_MESSAGE_SCALE = { 1.0f,1.0f };
+	//「いいえ」のメッセージの位置
+	static constexpr DirectX::SimpleMath::Vector2 NO_MESSAGE_POSITION = { 950.0f,500.0f };
+	//「いいえ」のメッセージの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 NO_MESSAGE_SCALE = { 1.0f,1.0f };
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:

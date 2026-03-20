@@ -206,6 +206,9 @@
     <Filter Include="Game\Shader\KeyUI">
       <UniqueIdentifier>{b46d6367-7a6a-4ad9-8f2f-6db44299f88b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\UI\Key">
+      <UniqueIdentifier>{277c98ff-0b63-4da0-bd4d-de362d1be3a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -687,6 +690,15 @@
     <ClInclude Include="Game\Interface\IComponent.h">
       <Filter>Game\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Interface\IScene.h">
+      <Filter>Game\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Key\Key.h">
+      <Filter>Game\UI\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Key\Operation.h">
+      <Filter>Game\UI\Key</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1131,6 +1143,12 @@
     </ClCompile>
     <ClCompile Include="Game\Motion\GolemMotion\GolemWalkMotion.cpp">
       <Filter>Game\Motion\GolemMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Key\Key.cpp">
+      <Filter>Game\UI\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Key\Operation.cpp">
+      <Filter>Game\UI\Key</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

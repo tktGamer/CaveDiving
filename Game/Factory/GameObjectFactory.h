@@ -13,6 +13,7 @@
 #ifndef GAMEOBJECT_FACTORY_DEFINED
 #define GAMEOBJECT_FACTORY_DEFINED
 // ヘッダファイルの読み込み ===================================================
+#include"../Object/Camera.h"
 #include"../Object/Character.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Player/Hand.h"
@@ -24,12 +25,12 @@
 #include"../Object/Enemy/Golem/GolemArm.h"
 #include"../Object/Enemy/Golem/GolemFot.h"
 #include"../Object/Stage/Stage.h"
+#include"../Object/Stage/RumiRock.h"
 #include"../Object/Item/Item.h"
 #include"../Object/Item/UniquItem/OutlineItem.h"
 #include"Game/GameData.h"
 // クラスの宣言 ===============================================================
 class BuffUIControl;
-
 // クラスの定義 ===============================================================
 /**
   * @brief ゲームオブジェクトの生成
@@ -37,6 +38,13 @@ class BuffUIControl;
 class GameObjectFactory 
 {
 public:
+	// 「カメラ」を生成する
+	static std::unique_ptr<Camera> CreateCamera(
+		const DirectX::SimpleMath::Vector3& initialPosition,
+		const DirectX::SimpleMath::Vector3& initialDistance,
+		const Character* target
+	);
+
 	// 「プレイヤー」を生成する
 	static std::unique_ptr<Player> CreatePlayer(
 		BuffUIControl* pBuffUIControl,
@@ -49,7 +57,7 @@ public:
 	// 「プレイヤーの手」を生成する
 	static std::unique_ptr<Hand> CreateHand(
 		Character* root = nullptr,
-		GameObject* parent = nullptr,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
 	);
@@ -57,14 +65,14 @@ public:
 	// 「ピッケル」を生成する
 	static std::unique_ptr<Pikel> CreatePikle(
 		Character* owner = nullptr,
-		GameObject* parent = nullptr,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
 		);
 
 	// 「コウモリの敵」を生成する
 	static std::unique_ptr<Bat> CreateBat(
-		GameObject* parent = nullptr,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
 	);
@@ -72,14 +80,14 @@ public:
 	// 「コウモリの羽」を生成する
 	static std::unique_ptr<Wing> CreateBatWing(
 		Character* root = nullptr,
-		GameObject* parent = nullptr,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
 	);
 
 	// 「ゴーレム」を生成する
 	static std::unique_ptr<Golem> CreateGolem(
-		GameObject* parent = nullptr,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
 	);
@@ -87,7 +95,7 @@ public:
 	// 「ゴーレムの手」を生成する
 	static std::unique_ptr<GolemHand> CreateGolemHand(
 		Character* root,
-		GameObject* parent = nullptr,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
 	);
@@ -95,7 +103,7 @@ public:
 	// 「ゴーレムの腕」を生成する
 	static std::unique_ptr<GolemArm> CreateGolemArm(
 		Character* root,
-		GameObject* parent = nullptr,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity,
 		const PartObject::RotationLimit& rotationlimit = PartObject::RotationLimit::OFF
@@ -104,7 +112,7 @@ public:
 	// 「ゴーレムの足」を生成する
 	static std::unique_ptr<GolemFot> CreateGolemFot(
 		Character* root,
-		GameObject* parent = nullptr,
+		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
 		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity,
 		const PartObject::RotationLimit& rotationlimit = PartObject::RotationLimit::OFF
@@ -112,7 +120,7 @@ public:
 
 	// 「ステージ」を生成する
 	static std::unique_ptr<Stage> CreateStage(
-		GameObject* parent,
+		const GameObject* parent,
 		const DirectX::SimpleMath::Vector3& initialPosition ,
 		const DirectX::SimpleMath::Quaternion& initialAngle ,
 		bool* isOnLight,
@@ -121,7 +129,7 @@ public:
 
 	// 「地面」を生成する
 	static std::unique_ptr<Ground> CreateGround(
-		GameObject* parent,
+		const GameObject* parent,
 		const DirectX::SimpleMath::Vector3& initialPosition ,
 		const DirectX::SimpleMath::Quaternion& initialAngle ,
 		const DirectX::SimpleMath::Vector3& scale
@@ -129,10 +137,19 @@ public:
 
 	// 「壁」を生成する
 	static std::unique_ptr<Wall> CreateWall(
-		GameObject* parent,
+		const GameObject* parent,
 		const DirectX::SimpleMath::Vector3& initialPosition ,
 		const DirectX::SimpleMath::Quaternion& initialAngle,
 		const DirectX::SimpleMath::Vector3& scale
+	);
+
+	// 「光る石」を生成する
+	static std::unique_ptr<RumiRock> CreateRumiRock(
+		const GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition ,
+		const DirectX::SimpleMath::Quaternion& initialAngle,
+		const ModelShader::PointLightCB& lightData,
+		const bool& isOnLight
 	);
 
 	// 「アイテム」を生成する
@@ -152,6 +169,26 @@ public:
 
 	);
 
+private:
+	/**
+	 * @brief 指定した型のゲームオブジェクトを生成する
+	 *
+	 * コンストラクタ引数を受け取りオブジェクトを生成し、
+	 * 生成後に Initialize() を呼び出して初期化を行う。
+	 *
+	 * @tparam T        生成するオブジェクトの型
+	 * @tparam Args     コンストラクタに渡す引数の型
+	 * @param args      オブジェクト生成時に渡す引数
+	 *
+	 * @return 生成されたオブジェクト
+	 */
+	template<class T, class... Args>
+	static std::unique_ptr<T> CreateObject(Args&&... args)
+	{
+		auto obj = std::make_unique<T>(std::forward<Args>(args)...);
+		obj->Initialize();
+		return obj;
+	}
 };
 
-#endif		// CHARACTER_FACTORY_DEFINED
+#endif		// GAMEOBJECT_FACTORY_DEFINED

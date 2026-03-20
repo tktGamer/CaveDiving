@@ -28,10 +28,29 @@ class ChangeGem : public IUI
 public:
 	enum MOVE_UI 
 	{
-		HOLDGEM = 0,
-		IS_CHANGI_MENU = 1,
+		IS_CHANGI_MENU = 0,
+		HOLDGEM = 1,
 
 	};
+	//非公開定数
+private:
+	//矢印UIの位置
+	static constexpr DirectX::SimpleMath::Vector2 ARROW_POSITION = { 650.0f,200.0f };
+	//矢印UIの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 ARROW_SCALE = { 0.8f,0.8f };
+	//「入れ替える」のメッセージの位置
+	static constexpr DirectX::SimpleMath::Vector2 CHANGE_MESSAGE_POSITION = { 500.0f,600.0f };
+	//「入れ替える」のメッセージの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 CHANGE_MESSAGE_SCALE = { 0.8f,0.8f };
+	//「戻る」のメッセージの位置
+	static constexpr DirectX::SimpleMath::Vector2 RETURN_MESSAGE_POSITION = { 850.0f,600.0f };
+	//「戻る」のメッセージの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 RETURN_MESSAGE_SCALE = { 0.8f,0.8f };
+	//入れ替え先宝石UIの位置
+	static constexpr DirectX::SimpleMath::Vector2 REPLACE_GEM_UI_POSITION = { 950.0f,200.0f };
+	//入れ替え先宝石UIの大きさ
+	static constexpr DirectX::SimpleMath::Vector2 REPLACE_GEM_UI_SCALE = { 1.0f,1.0f };
+
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
@@ -53,7 +72,7 @@ private:
 // データメンバの宣言 -----------------------------------------------
 private:
 	GemSelectUIManager* m_pUIManager;
-
+	
 	std::unique_ptr<UserInterface> m_arrow;
 	
 	std::unique_ptr<Menu> m_menu;

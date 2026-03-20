@@ -4,7 +4,8 @@ cbuffer ConstBuffer : register(b0)
     matrix matWorld;
     matrix matView;
     matrix matProj;
-    float OutlineThickness; // ‰Ÿ‚µo‚µ‚Ì—Ê
+    // ‰Ÿ‚µo‚µ‚Ì—Ê
+    float OutlineThickness; 
     float3 dummy;
 };
 

@@ -62,16 +62,12 @@ RumiRock::~RumiRock()
 /**
  * @brief 初期化処理
  *
- * @param[in] isOnLight ライトのオン・オフ
+ * @param[in] 
  *
  * @return なし
  */
-void RumiRock::Initialize(bool isOnLight)
+void RumiRock::Initialize()
 {
-	if (isOnLight)
-	{
-		OnLight();
-	}
 }
 
 /**
@@ -226,7 +222,7 @@ void RumiRock::OnLight()
 	m_LightOnSound->Play(false);
 	//明かりを点ける
 	m_light->LightOn();
-	m_color = { 1,1,1,1 };
+	m_color = DEFAULT_COLOR;
 }
 
 /**

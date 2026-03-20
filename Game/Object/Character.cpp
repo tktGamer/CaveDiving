@@ -114,7 +114,8 @@ int Character::TakeDamage(const Character* attacker)
  *
  * @param[in] ‚È‚µ
  *
- * @return ‚È‚µ
+ * @return true  “_–Å’†
+ * @return false ‚È‚µ
  */
 bool Character::DamageFlashUpdate()
 {

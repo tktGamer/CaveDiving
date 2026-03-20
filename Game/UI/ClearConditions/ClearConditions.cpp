@@ -11,6 +11,7 @@
 #include "pch.h"
 #include "ClearConditions.h"
 #include"Game/Common/ResourceManager.h"
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -19,12 +20,9 @@
  */
 ClearConditions::ClearConditions(const DirectX::SimpleMath::Vector2& pos)
     : 
-    m_windowHeight(0),
-    m_windowWidth(0),
-    m_restEnemy(nullptr),
-    m_enemyIcon(nullptr),
-    m_position{pos},
-    m_iconTexureWidth{}
+    m_restEnemy{nullptr},
+    m_enemyIcon{nullptr},
+    m_position{pos}
 {
 }
 
@@ -35,7 +33,6 @@ ClearConditions::~ClearConditions()
 {
 }
 
-
 /**
  * @brief 初期化処理
  *
@@ -44,33 +41,15 @@ ClearConditions::~ClearConditions()
  *
  * @return なし
  */
-void ClearConditions::Initialize(int width, int height)
+void ClearConditions::Initialize()
 {
-
-    m_windowWidth = width;
-    m_windowHeight = height;
-
-
-    m_enemyIcon = std::make_unique<UserInterface>();
-    m_enemyIcon->Create(
-        L"enemyIcon.png"
-        ,DirectX::SimpleMath::Vector2{ m_position.x -100,150 }
-        ,DirectX::SimpleMath::Vector2{ 0.05f,0.05f }
-        ,UserInterface::ANCHOR::MIDDLE_CENTER);
-    m_enemyIcon->SetWindowSize(width, height);
-    int texHeight;
-    ResourceManager::GetInstance()->GetTextureSize(L"enemyIcon.png", m_iconTexureWidth, texHeight);
-
+    //アイコン生成
+    m_enemyIcon = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::ENEMY_ICON, DirectX::SimpleMath::Vector2{ m_position.x + OFFSET_X,m_position.y },
+        ICON_SIZE, UserInterface::ANCHOR::MIDDLE_CENTER);
+    //数字生成
     NumberControl::NumberTextureData nTData;
     nTData.texturePath =TKTLib::WcharToString( ResourcePath::TEXTURE::UI::NUMBER);
-    nTData.col = 10;
-    nTData.raw = 1;
-
-    m_restEnemy = std::make_unique<NumberControl>(nTData,m_position,DirectX::SimpleMath::Vector4(1,1,1,1));
-    m_restEnemy->Initialize();
-    m_restEnemy->SetScale(DirectX::SimpleMath::Vector2(0.3f, 0.3f));
-    m_restEnemy->SetDrawMinDigit(2);
-    
+    m_restEnemy = UIFactory::CreateNumberUI(nTData,m_position,NUMBER_SIZE,NUMBER_COLOR,0,NUMBER_DIGIT);    
 }
 
 
@@ -97,9 +76,6 @@ void ClearConditions::Update(const int& drawNumber)
 void ClearConditions::Render()
 {
     m_restEnemy->Render();
-    //DirectX::SimpleMath::Vector2 drawPos = ;
-    //drawPos.x -= m_iconTexureWidth * m_enemyIcon->GetScale().x;
-    //m_enemyIcon->SetPosition(drawPos);
     m_enemyIcon->Render();
 }
 

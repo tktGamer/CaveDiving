@@ -10,22 +10,25 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Gauge.h"
+#include"Game/ResourcePath.h"
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] pos  描画座標（右端）
+ * @param[in] position  描画座標（右端）
+ * @param[in] scale  拡大率
+ * @param[in] anchor  アンカー
  */
-Gauge::Gauge()
+Gauge::Gauge(const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
     :
-    m_windowHeight(0),
-    m_windowWidth(0),
-    m_baseTexturePath(nullptr),
-    m_gauge(nullptr),
-    m_frame(nullptr),
+    m_gauge{nullptr},
+    m_frame{nullptr},
     m_currentValue{},
     m_maxValue{}
 {
+    m_frame = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::HPGAUGE_FRAME, position, scale, anchor);
+    m_gauge = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::HPGAUGE, position + OFFSET, scale, anchor);
 }
 
 /**
@@ -38,27 +41,13 @@ Gauge::~Gauge()
 /**
  * @brief 初期化処理
  *
- * @param[in] width　幅
- * @param[in] height 高さ
+ * @param[in]  なし
  *
  * @return なし
  */
-void Gauge::Initialize(int width,int height)
+void Gauge::Initialize()
 {
-
-    m_windowWidth = width;
-    m_windowHeight = height;
-
-    m_baseTexturePath = L"hpgaugeframe.png";
-
-
-    Add(L"hpgauge.png"
-        , DirectX::SimpleMath::Vector2(45, 50)
-        , DirectX::SimpleMath::Vector2(1.0f,1.0f)
-        ,UserInterface::ANCHOR::MIDDLE_LEFT);
-
 }
-
 
 /**
  * @brief 更新
@@ -69,13 +58,12 @@ void Gauge::Initialize(int width,int height)
  */
 void Gauge::Update()
 {
-
-    float ratio =(float)m_currentValue / (float)m_maxValue;
-
-    ratio = TKTLib::Clamp(ratio, 0.0f, 1.0f);
+    //割合を計算
+    float ratioX =(float)m_currentValue / (float)m_maxValue;
+    ratioX = TKTLib::Clamp(ratioX, MIN_RATIO, MAX_RATIO);
    
     //ゲージの大きさを設定
-    m_gauge->SetScale({ ratio ,1.0f});
+    m_gauge->SetScale(DirectX::SimpleMath::Vector2{ ratioX ,MAX_RATIO});
 }
 
 
@@ -93,37 +81,6 @@ void Gauge::Render()
 }
 
 /**
- * @brief ゲージの追加
- *
- * @param[in] path
- * @param[in] position
- * @param[in] scale
- * @param[in] anchor
- *
- * @return なし
- */
-void Gauge::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale,UserInterface::ANCHOR anchor)
-{
-
-    m_frame = std::make_unique<UserInterface>();
-    m_frame->Create(
-          m_baseTexturePath
-        , position
-        , scale
-        , anchor);
-    m_frame->SetWindowSize(m_windowWidth, m_windowHeight);
-
-    m_gauge = std::make_unique<UserInterface>();
-    m_gauge->Create(
-          path
-        , position+DirectX::SimpleMath::Vector2{5,-1}
-        , scale
-        , anchor);
-    m_gauge->SetWindowSize(m_windowWidth, m_windowHeight);
-
-}
-
-/**
  * @brief ゲージの参照する値
  *
  * @param[in] current 変化する値
@@ -136,5 +93,3 @@ void Gauge::SetValue(const int current, const int max)
     m_currentValue = current;
     m_maxValue = max;
 }
-
-

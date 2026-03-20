@@ -41,6 +41,10 @@ public:
 	//スコアがでるまでの時間
 	static constexpr int TIME_LIMIT = 300;
 	static constexpr int TIME_PER_POINT = 10;
+	//数字の色
+	static constexpr DirectX::SimpleMath::Vector4 NUMBER_COLOR = { 0.0f,0.0f,0.0f,1.0f };
+	//各スコアの桁
+	static constexpr int SCORE_DIGIT = 5;
 // メンバ関数の宣言 -------------------------------------------------
 // 取得/設定
 public:
@@ -67,9 +71,9 @@ private:
 	//スコアを計算
 	int CalculationScore();
 	//ダメージスコアを計算
-	int TotalDamageScore();
+	int TotalDamageScore() const;
 	//残りHPスコアを計算
-	int HPScore();
+	int HPScore() const;
 	//タイムスコアを計算
 	int TimeScore();
 // データメンバの宣言 -----------------------------------------------

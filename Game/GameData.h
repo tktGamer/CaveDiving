@@ -18,6 +18,7 @@ class GameData
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//ステージ番号
 	enum  Stage :int
 	{
 		NONE = -1,
@@ -107,13 +108,27 @@ public:
 		m_enemyData.insert(std::make_pair(GameData::Stage::BOSS, ResourcePath::DATA::ENEMY_SPAWN::BOSS));
 	}
 
-
+	/**
+	 * @brief ゲームクリアか
+	 *
+	 * @param[in] なし
+	 *
+	 * @return true  ゲームクリア
+	 * @return false　まだ
+	 */
 	const bool IsGameClear() const  
 	{
 		return m_isGameClear;
 	}
 
-	void SetIsGameClear(const bool& isGameClear) 
+	/**
+	 * @brief ゲームクリアを設定
+	 *
+	 * @param[in] isGameClear  ゲームクリアか
+	 *
+	 * @return なし
+	 */
+	void SetIsGameClear(const bool& isGameClear)
 	{
 		m_isGameClear = isGameClear;
 
@@ -123,18 +138,41 @@ public:
 			m_isOnLights[i] = false;
 		}
 	}
-	const bool IsStageClear() const  
+
+	/**
+	 * @brief ステージクリアか
+	 *
+	 * @param[in] なし
+	 *
+	 * @return true  ステージクリア
+	 * @return false　未クリア
+	 */
+	const bool IsStageClear() const
 	{
 		return m_isStageClear;
 	}
 
-	void SetIsStageClear(const bool& isStageClear) 
+	/**
+	 * @brief ステージクリアを設定
+	 *
+	 * @param[in] isStageClear  ステージクリアか
+	 *
+	 * @return なし
+	 */
+	void SetIsStageClear(const bool& isStageClear)
 	{
 		m_isStageClear = isStageClear;
 
 	}
 
-	void SetNextStage(const GameData::Stage& nextStage = GameData::Stage::NONE) 
+	/**
+	 * @brief 次のステージを設定
+	 *
+	 * @param[in] nextStage  次のステージ
+	 *
+	 * @return なし
+	 */
+	void SetNextStage(const GameData::Stage& nextStage = GameData::Stage::NONE)
 	{
 		if (nextStage == GameData::Stage::NONE) 
 		{
@@ -147,59 +185,138 @@ public:
 		}
 	}
 
+	/**
+	 * @brief プレイヤーの情報を取得
+	 *
+	 * @param[in] なし
+	 *
+	 * @return プレイヤーの情報
+	 */
 	const PlayerData& GetPlayerData() const
 	{
 		return m_playerData;
 	}
 
-	void SetPlayerData(const PlayerData& data) 
+	/**
+	 * @brief プレイヤーの情報を設定
+	 *
+	 * @param[in] data  プレイヤーの情報
+	 *
+	 * @return なし
+	 */
+	void SetPlayerData(const PlayerData& data)
 	{
+		//現在HP
 		m_playerData.currentHP = data.currentHP;
+		//最大HP
 		m_playerData.maxHP = data.maxHP;
+		//所持宝石ID
 		m_playerData.gemID = data.gemID;
 	}
-	const Stage GetNextStage() const
+	/**
+	 * @brief 次のステージを取得
+	 *
+	 * @param[in] なし
+	 *
+	 * @return 次のステージ
+	 */
+	const GameData::Stage& GetNextStage() const
 	{
 		return m_nextStage;
 	}
 
+	/**
+	 * @brief ライトの状態を設定
+	 *
+	 * @param[in] isOn  オンか
+	 * @param[in] number  ライト番号
+	 *
+	 * @return なし
+	 */
 	void SetIsOnLightNumber(bool isOn, int number)
 	{
-
 		m_isOnLights[number] = isOn;
 	}
 
 
-
-	bool* GetIsOnLights()
+	/**
+	 * @brief ライトの状態配列を取得
+	 *
+	 * @param[in] なし
+	 *
+	 * @return ライトの状態配列
+	 */
+	bool* GetIsOnLights() 
 	{
 		return m_isOnLights;
 	}
 
+	/**
+	* @brief スコアに必要な情報を取得
+	*
+	* @param[in] なし
+	*
+	* @return スコアに必要な情報
+	*/
 	const ScoreInfo& GetScoreInfo() const
 	{
 		return m_scoreInfo;
 	}
 
-	void SetTotalDamage(const int& totalDamage) 
+	/**
+	 * @brief 合計ダメージを設定
+	 *
+	 * @param[in] totalDamage  合計ダメージ
+	 *
+	 * @return なし
+	 */
+	void SetTotalDamage(const int& totalDamage)
 	{
 		m_scoreInfo.totalDamage = totalDamage;
 	}
-	void SetPlayerCurrentHP(const int& currentHp) 
+	/**
+	 * @brief プレイヤーの現在HPを設定
+	 *
+	 * @param[in] currentHp  現在HP
+	 *
+	 * @return なし
+	 */
+	void SetPlayerCurrentHP(const int& currentHp)
 	{
 		m_scoreInfo.playerCurrentHp = currentHp;
 	}
-	void SetTotalTime(const float& totalTime) 
+	/**
+	 * @brief 経過時間を設定
+	 *
+	 * @param[in] totalTime  合計時間
+	 *
+	 * @return なし
+	 */
+	void SetTotalTime(const float& totalTime)
 	{
 		m_scoreInfo.totalTime = totalTime;
 	}
 
-	void AddTime(const float& elapsedTime) 
+	/**
+	 * @brief 時間経過
+	 *
+	 * @param[in] elapsedTime  フレーム間時間
+	 *
+	 * @return なし
+	 */
+	void AddTime(const float& elapsedTime)
 	{
 		m_scoreInfo.totalTime += elapsedTime;
 	}
 
-	const std::string& GetEnemySpawnDataPath() 
+	/**
+	 * @brief 敵データの取得
+	 *
+	 * @param[in] なし
+	 *
+	 * @return 敵データ
+	 */
+	const std::string& GetEnemySpawnDataPath()
 	{
 		return m_enemyData[m_nextStage];
 	}

@@ -198,6 +198,7 @@
     <ClInclude Include="Game\Factory\UIFactory.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Interface\IComponent.h" />
+    <ClInclude Include="Game\Interface\IScene.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\Interface\IObserver.h" />
     <ClInclude Include="Game\Interface\IState.h" />
@@ -324,6 +325,8 @@
     <ClInclude Include="Game\UI\GemSelect\GemSelect.h" />
     <ClInclude Include="Game\UI\HoldGem\HoldGem.h" />
     <ClInclude Include="Game\UI\HoldGem\HoldGemInfoDraw.h" />
+    <ClInclude Include="Game\UI\Key\Key.h" />
+    <ClInclude Include="Game\UI\Key\Operation.h" />
     <ClInclude Include="Game\UI\Menu\Menu.h" />
     <ClInclude Include="Game\UI\Number\CountUpNumber.h" />
     <ClInclude Include="Game\UI\Number\Number.h" />
@@ -478,6 +481,8 @@
     <ClCompile Include="Game\UI\GemSelect\GemSelect.cpp" />
     <ClCompile Include="Game\UI\HoldGem\HoldGem.cpp" />
     <ClCompile Include="Game\UI\HoldGem\HoldGemInfoDraw.cpp" />
+    <ClCompile Include="Game\UI\Key\Key.cpp" />
+    <ClCompile Include="Game\UI\Key\Operation.cpp" />
     <ClCompile Include="Game\UI\Menu\Menu.cpp" />
     <ClCompile Include="Game\UI\Number\CountUpNumber.cpp" />
     <ClCompile Include="Game\UI\Number\Number.cpp" />

@@ -38,23 +38,23 @@ public:
 	//テクスチャの設定
 	void SetTexture(ID3D11ShaderResourceView** tex) { m_texture = tex; };
 	//テクスチャの取得
-	ID3D11ShaderResourceView** GetTexture() { return m_texture; };
+	ID3D11ShaderResourceView** GetTexture() const { return m_texture; };
 	//モデルの設定
 	void SetModel(DirectX::Model* model) { m_model = model; };
 	// モデルデータの取得
-	DirectX::Model* GetModel() { return m_model; }
+	DirectX::Model* GetModel() const { return m_model; }
 	//座標の設定
 	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_position = position; }
 	// モデルの位置の取得
-	const DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
+	const DirectX::SimpleMath::Vector3& GetPosition() const { return m_position; }
 	//回転の設定
 	void SetQuaternion(const DirectX::SimpleMath::Quaternion& q) { m_quaternion = q; }
 	// モデルの回転の取得
-	const DirectX::SimpleMath::Quaternion& GetQuaternion() { return m_quaternion; }
+	const DirectX::SimpleMath::Quaternion& GetQuaternion() const { return m_quaternion; }
 	//拡大率の設定
 	void SetScale(const DirectX::SimpleMath::Vector3& scale) { m_scale = scale; }
 	// モデルの拡大率の取得
-	const DirectX::SimpleMath::Vector3& GetScale() { return m_scale; }
+	const DirectX::SimpleMath::Vector3& GetScale() const { return m_scale; }
 	//現在位置の設定
 	void SetCurrentPosition(const DirectX::SimpleMath::Vector3& currentPosition) { m_currentPosition = currentPosition; };
 	//現在位置の取得
@@ -72,7 +72,7 @@ public:
 	// オブジェクトの種類を取得する
 	Tag::ObjectType GetObjectType() const;
 	// 状態を取得する
-	IState* GetState() { return m_pCurrentState; }
+	IState* GetState() const { return m_pCurrentState; }
 	// 状態を設定する
 	void SetState(IState* state) { m_pCurrentState = state; }
 	// 現在の状態を変更する

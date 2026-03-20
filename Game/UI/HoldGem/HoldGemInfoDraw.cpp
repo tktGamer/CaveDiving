@@ -49,14 +49,10 @@ HoldGemInfoDraw::~HoldGemInfoDraw()
 void HoldGemInfoDraw::Initialize()
 {
 
-    
-    m_holdGem = UIFactory::CreateHoldGem(m_gemID);
-    m_holdGem->ChangePositon({ 650.0f,450.0f });
-    m_holdGem->ChangeScale({ 2.0f, 2.0f });
-    m_holdGem->Initialize();
-    m_holdGem->ChangeDrawGem(m_gemID);
-
-    m_cursol = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::RED_CURSOL, CURSOL_UI_POS, { 2.0f,2.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+    //所持宝石UI生成
+    m_holdGem = UIFactory::CreateHoldGem(m_gemID, HOLD_GEM_UI_POS,HOLD_GEM_UI_SCALE);
+    //カーソルUI生成
+    m_cursol = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::RED_CURSOL, CURSOL_UI_POS, CURSOL_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
 
     //入れ替え候補宝石UI
     m_candidateGemUI = UIFactory::CreateUserInterface(
@@ -105,7 +101,7 @@ void HoldGemInfoDraw::Update()
     m_candidateGemUI->SetTexture(GemManager::GetInstance()->GetIDNumberedGem(m_gemID[m_menuIndex])->GetImagePath().panel);
 
     m_cursol->SetPosition({ CURSOL_UI_POS.x + HoldGem::GEM_POS_X[m_menuIndex]*2.0f ,CURSOL_UI_POS.y });
-    float scale=abs(std::sin(time)) + 1.0f;
+    float scale = abs(std::sin(time)) + 1.0f;
     m_cursol->SetScale({ scale,scale });
 }
 
@@ -149,7 +145,13 @@ void HoldGemInfoDraw::SetScale(const DirectX::SimpleMath::Vector2& scale)
 {
     m_scale = scale;
 }
-
+/**
+ * @brief 選択さえれているものの番号
+ *
+ * @param[in] scale
+ *
+ * @return なし
+ */
 int HoldGemInfoDraw::GetMunuIndex() const
 {
     return m_menuIndex;

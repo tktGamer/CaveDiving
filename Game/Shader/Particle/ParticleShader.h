@@ -51,7 +51,6 @@ public:
 // 操作
 	//シェーダー開始
 	void StartShader(const CameraCB& cameraCB);
-
 //　内部操作
 private:
 	

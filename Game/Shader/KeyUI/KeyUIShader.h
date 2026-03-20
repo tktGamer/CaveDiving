@@ -26,7 +26,7 @@ public:
 	{
 		DirectX::SimpleMath::Vector2	windowSize;
 		float AlphaData = 0.0f;
-		float dammy = 0.0f;
+		int isPressed = false;
 	};
 // ƒƒ“ƒoŠÖ”‚ÌéŒ¾ -------------------------------------------------
 //@æ“¾Eİ’è

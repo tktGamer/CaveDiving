@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2026/01/30
+ * @date   日付  2026/03/05
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
@@ -13,6 +13,7 @@
 #include "../UserInterface.h"
 #include"Game/Object/Gem/GemManager.h"
 #include"Game/Interface/IUI.h"
+#include<unordered_map>
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
@@ -23,9 +24,13 @@ class HoldGem : public IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//宝石の抽選数
+	static constexpr int GEM_NUM = 3;
 	//宝石の表示位置
-	static constexpr float GEM_POS_X[3] = {-46.0f, 0.0f ,46.0f};
+	static constexpr float GEM_POS_X[GEM_NUM] = {-46.0f, 0.0f ,46.0f};
+	//宝石のサイズ
 	static constexpr DirectX::SimpleMath::Vector2 GEM_SCALE = {0.13f,0.13f};
+
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
@@ -35,7 +40,7 @@ public:
 	void ChangeScale(const DirectX::SimpleMath::Vector2& scale);
 // コンストラクタ/デストラクタ
 	//コンストラクタ
-	HoldGem(int width, int height, const std::vector<int>& gemID);
+	HoldGem(int width, int height, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale);
 	//デストラクタ
 	~HoldGem();
 // 操作
@@ -47,28 +52,27 @@ public:
 	//描画
 	void Render();
 
-	void Add(const wchar_t* path
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
-		, UserInterface::ANCHOR anchor);
 	//表示する宝石を変更
 	void ChangeDrawGem(const std::vector<int>& gemID);
-	void ChangeDrawGem(const std::vector<Gem*>& gems);
 
 //　内部操作
 private:
-
+	//UI生成
+	void Add(const wchar_t* path,
+		const DirectX::SimpleMath::Vector2& position,
+		const DirectX::SimpleMath::Vector2& scale,
+		const UserInterface::ANCHOR& anchor);
+	//マップ情報設定
+	void SetTextureMap();
 // データメンバの宣言 -----------------------------------------------
 private:
+	//対応する宝石を入れるマップ
+	std::unordered_map<std::string,const wchar_t*> m_gemTextureMap;
 
 	unsigned int m_menuIndex;
-	const wchar_t* m_gemTexturePath;
 
-	std::unique_ptr<UserInterface> m_gemUI[3];
+	std::unique_ptr<UserInterface> m_gemUI[GEM_NUM];
 	std::unique_ptr<UserInterface> m_base;
-
-
-	std::unique_ptr<UserInterface> m_baseWindow;
 
 	int m_windowWidth, m_windowHeight;
 

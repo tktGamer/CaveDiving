@@ -47,7 +47,7 @@ void LogoScene::Initialize()
 	CreateWindowSizeDependentResources();
 
 	m_logoAnimation = UIFactory::CreateAnimation2DUI(ResourcePath::TEXTURE::UI::LOGO,
-		Animation2D::AnimationTexture{ 18,6,3 }, 2.0f, false, DirectX::SimpleMath::Vector2{ 640.0f,360.0f }, DirectX::SimpleMath::Vector2{ 1.9f,1.9f });
+		LOGO_ANIMATION, ANIMATION_TIME, false, LOGO_POSITON,LOGO_SCALE);
 	PreUpdate();
 }
 

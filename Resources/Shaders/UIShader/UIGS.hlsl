@@ -12,6 +12,8 @@ static const float4 offset_array[vnum] =
 
 };
 
+
+
 [maxvertexcount(vnum)]
 void main(
 	point PS_INPUT input[1],
@@ -39,12 +41,13 @@ void main(
 		anchor.y = (size.y) * (anc / 3u) * scale.y;
 
 		//	頂点座標等から配置を決める
-		element.pos.xy = pos + scale * size * offset_array[i].xy * 2.0f - float2(1.0f, 1.0f);
+        element.pos.xy = pos + scale * size * offset_array[i].xy * 2.0f - float2(1.0f, 1.0f);
 		//	アンカーの情報分だけ位置をずらす
-		element.pos.xy -= anchor;
+        element.pos.xy -= anchor;
 		//	DirectXは-1がスクリーン一番下なので、Y情報を反転する
-		element.pos.y *= -1;
+        element.pos.y *= -1;
 
+		
 		//	XY平面なので zは0、wは1
 		element.pos.z = 0.0f;
 		element.pos.w = 1.0f;

@@ -25,7 +25,7 @@ public:
 //非公開定数
 private:
 	//ノックバックの力
-	static constexpr float KNOCKBACK_POWER = 25.0f;
+	static constexpr float KNOCKBACK_POWER = 20.0f;
 	//ノックバックの時間
 	static constexpr float KNOCKBACK_TIME = 0.5f;
 

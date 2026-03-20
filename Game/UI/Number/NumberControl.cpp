@@ -22,7 +22,7 @@
 NumberControl::NumberControl(const NumberTextureData& data, const DirectX::SimpleMath::Vector2& pos, const DirectX::SimpleMath::Vector4& color)
 	:
 	m_drawDigit{ 1 },
-	m_scale{1.0f,1.0f},
+	m_scale{DirectX::SimpleMath::Vector2::One},
 	m_number{},
 	m_position{pos},
 	m_color{color}

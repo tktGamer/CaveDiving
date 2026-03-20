@@ -3,32 +3,35 @@
  *
  * @brief  所持している宝石を表示するUIに関するソースファイル
  *
- * @author 制作者名
+ * @author 制作者名　福地貴翔
  *
- * @date   日付
+ * @date   日付　2026/03/05
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include"HoldGem.h"
 #include"../CaveDiving/Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
+#include"Game/Factory/UIFactory.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] width
- * @param[in] height
+ * @param[in] width  画面幅
+ * @param[in] height 画面高さ
+ * @param[in] position  描画位置
+ * @param[in] scale 　　大きさ
  */
-HoldGem::HoldGem(int width, int height, const std::vector<int>& gemID)
+HoldGem::HoldGem(int width, int height,const DirectX::SimpleMath::Vector2& position,const DirectX::SimpleMath::Vector2& scale)
     : 
-    m_menuIndex(0),
-    m_windowHeight(height),
-    m_windowWidth(width),
-    m_position{80,680},
-    m_scale{1.0f,1.0f},
-    m_gemTexturePath{},
+    m_menuIndex{0},
+    m_windowHeight{ height },
+    m_windowWidth{width},
+    m_position{position},
+    m_scale{scale},
     m_gemUI{}
 {
+    SetTextureMap();
 }
 
 HoldGem::~HoldGem()
@@ -44,15 +47,10 @@ HoldGem::~HoldGem()
  */
 void HoldGem::Initialize()
 {
-   
-    m_gemTexturePath = L"minigem.png";
-
     m_base.reset();
     m_gemUI->reset();
 
-    Add(L"slot.png",m_position ,m_scale, UserInterface::MIDDLE_CENTER);
-
-
+    Add(ResourcePath::TEXTURE::UI::GEM_SLOT,m_position ,m_scale, UserInterface::MIDDLE_CENTER);
 }
 
 /**
@@ -77,159 +75,116 @@ void HoldGem::Render()
 {
     m_base->Render();
      
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < GEM_NUM; i++)
     {
-         //  実際に表示したいアイテム画像を表示
+         //  宝石を表示
          m_gemUI[i]->Render();
     }
 }
 
-void HoldGem::Add(const wchar_t* path, DirectX::SimpleMath::Vector2 position, DirectX::SimpleMath::Vector2 scale, UserInterface::ANCHOR anchor)
+
+/**
+ * @brief UI設定
+ *
+ * @param[in] path　　  ファイルパス
+ * @param[in] position　座標
+ * @param[in] scale　　 拡大率
+ * @param[in] anchor    アンカー位置
+ *
+ * @return なし
+ */
+void HoldGem::Add(const wchar_t* path,const DirectX::SimpleMath::Vector2& position,const DirectX::SimpleMath::Vector2& scale,const UserInterface::ANCHOR& anchor)
 {
-
-    //  
-    std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
-    base->Create(
-        path
-        , position
-        , scale
-        , anchor
-    );
-
-    base->SetWindowSize(m_windowWidth, m_windowHeight);
-
-    //  背景用のアイテムも新しく追加する
+    //スロットの画像生成
+    std::unique_ptr<UserInterface> base = UIFactory::CreateUserInterface(path,position,scale,anchor);
     m_base = std::move(base);
-
-    for (int i = 0; i < 3; i++)
+    //表示する宝石UI生成
+    for (int i = 0; i < GEM_NUM; i++)
     {
-        //  
-        std::unique_ptr<UserInterface> gem = std::make_unique<UserInterface>();
-        gem->Create(
-            L"Gem/blankgem.png"
-            , { position.x + GEM_POS_X[i] * scale.x,m_position.y }
-            , GEM_SCALE * scale
-            , anchor
-        );
+        //大きさを考慮して位置設定
+        std::unique_ptr<UserInterface> gem = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::GEM::BLANK_GEM,
+            { position.x + GEM_POS_X[i] * scale.x,m_position.y } , GEM_SCALE * scale, anchor);
 
-        gem->SetWindowSize(m_windowWidth, m_windowHeight);
-
-        //  
         m_gemUI[i] = std::move(gem);
-
-
     }
-    
 }
 
+/**
+ * @brief マップ情報設定
+ *
+ * @param[in]　なし
+ *
+ * @return なし
+ */
+void HoldGem::SetTextureMap()
+{
+    m_gemTextureMap.insert(std::make_pair("エメラルド"  , ResourcePath::TEXTURE::GEM::EMERALD));
+    m_gemTextureMap.insert(std::make_pair("ルビー"      , ResourcePath::TEXTURE::GEM::RUBY));
+    m_gemTextureMap.insert(std::make_pair("サファイア"  , ResourcePath::TEXTURE::GEM::SAPPHIRE));
+    m_gemTextureMap.insert(std::make_pair("トパーズ"    , ResourcePath::TEXTURE::GEM::TOPAZ));
+    m_gemTextureMap.insert(std::make_pair("アメジスト"  , ResourcePath::TEXTURE::GEM::AMETHYST));
+    m_gemTextureMap.insert(std::make_pair("アクアマリン", ResourcePath::TEXTURE::GEM::AQUAMARINE));
+    m_gemTextureMap.insert(std::make_pair("モルガナイト", ResourcePath::TEXTURE::GEM::MORGANITE));
+    m_gemTextureMap.insert(std::make_pair("スピネル"    , ResourcePath::TEXTURE::GEM::SPINEL));
+}
+
+/**
+ * @brief 表示する宝石の変更
+ *
+ * @param[in] gemID  表示する宝石
+ *
+ * @return なし
+ */
 void HoldGem::ChangeDrawGem(const std::vector<int>& gemID)
 {
     for (int i = 0; i < gemID.size(); i++)
     {
         const Gem* pGem = GemManager::GetInstance()->GetIDNumberedGem(gemID[i]);
-        if (pGem)
+        if (!pGem)
         {
-            if (pGem->GetAbility().type == "エメラルド")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/emerald.png");
-
-            }
-            else if (pGem->GetAbility().type == "ルビー")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/ruby.png");
-
-            }
-            else if (pGem->GetAbility().type == "サファイア")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/sapphire.png");
-
-            }
-            else if (pGem->GetAbility().type == "トパーズ")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/topaz.png");
-
-            }
-            else if (pGem->GetAbility().type == "アメジスト")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/amethyst.png");
-
-            }
-            else if (pGem->GetAbility().type == "アクアマリン")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/Aquamarine.png");
-
-            }
-            else if (pGem->GetAbility().type == "モルガナイト")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/morganite.png");
-
-            }
-            else if (pGem->GetAbility().type == "スピネル")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/Spinel.png");
-
-            }
-
+            //もし宝石がなかったら 空用の画像を入れる
+            m_gemUI[i]->SetTexture(ResourcePath::TEXTURE::GEM::BLANK_GEM);
+            continue;
         }
+        //マップから必要なものを取得して設定
+        m_gemUI[i]->SetTexture(m_gemTextureMap[pGem->GetAbility().type]);
     }
 
 }
 
-void HoldGem::ChangeDrawGem(const std::vector<Gem*>& gems)
-{
 
-    for (int i = 0; i < 3; i++)
-    {
-        if (gems[i])
-        {
-            if (gems[i]->GetAbility().type == "エメラルド")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/emerald.png");
-
-            }
-            else if (gems[i]->GetAbility().type == "ルビー")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/ruby.png");
-
-            }
-            else if (gems[i]->GetAbility().type == "サファイア")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/sapphire.png");
-
-            }
-            else if (gems[i]->GetAbility().type == "トパーズ")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/topaz.png");
-
-            }
-            else if (gems[i]->GetAbility().type == "アメジスト")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/amethyst.png");
-
-            }
-            else if (gems[i]->GetAbility().type == "アクアマリン")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/ aquamarine.png");
-
-            }
-            else if (gems[i]->GetAbility().type == "モルガナイト")
-            {
-                m_gemUI[i]->SetTexture(L"Gem/morganite.png");
-
-            }
-        }
-    }
-
-}
-
+/**
+ * @brief 表示位置の変更
+ *
+ * @param[in] pos  新しい表示位置
+ *
+ * @return なし
+ */
 void HoldGem::ChangePositon(const DirectX::SimpleMath::Vector2& pos)
 {
     m_position = pos;
+    //それぞれのUIの位置を変える
+    //スロット
+    m_base->SetPosition(m_position);
+    //宝石
+    for (int i = 0; i < GEM_NUM; i++) 
+    {
+        m_gemUI[i]->SetPosition({ m_position.x + GEM_POS_X[i] * m_scale.x, m_position.y });
+    }
 }
 
 void HoldGem::ChangeScale(const DirectX::SimpleMath::Vector2& scale)
 {
     m_scale = scale;
-
+    //それぞれのUIの位置を変える
+    //スロット
+    m_base->SetScale(m_scale);
+    //宝石
+    for (auto& ui: m_gemUI) 
+    {
+        ui->SetScale(GEM_SCALE * m_scale);
+    }
+    //サイズに合わせて位置を調整する
+    ChangePositon(m_position);
 }
 

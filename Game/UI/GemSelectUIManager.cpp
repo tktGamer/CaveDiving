@@ -52,7 +52,7 @@ void GemSelectUIManager::Initialize()
 {
 
 	//èâä˙èÛë‘ÇÃUIí«â¡
-	m_uiStack.emplace_back(std::move(UIFactory::CreateHoldGem(m_gemID)));
+	m_uiStack.emplace_back(std::move(UIFactory::CreateHoldGem(m_gemID,HOLD_GEM_UI_POS,DirectX::SimpleMath::Vector2::One)));
 	m_uiStack.emplace_back(std::move(UIFactory::CreateGemSelect(this,m_gemID)));
 
 }

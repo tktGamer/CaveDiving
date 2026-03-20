@@ -30,9 +30,7 @@ UserInterface::UserInterface()
 	m_position{DirectX::SimpleMath::Vector2::Zero},
 	m_anchor{ ANCHOR::TOP_LEFT },
 	m_renderRatio{1.0f},
-	m_renderRatioOffset{ 0.0f },
-	m_states{}
-
+	m_renderRatioOffset{ 0.0f }
 {
 }
 
@@ -41,6 +39,7 @@ UserInterface::UserInterface()
  */
 UserInterface::~UserInterface()
 {
+	m_texture = nullptr;
 }
 
 /**
@@ -75,7 +74,7 @@ void UserInterface::Update()
 void UserInterface::Render()
 {
 	ShaderManager* shader = ShaderManager::GetInstance();
-
+	DirectX::CommonStates* states = Graphics::GetInstance()->GetCommonStates();
 	ID3D11DeviceContext1* context = Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext();
 	//	頂点情報
 	//	Position.xy	:拡縮用スケール
@@ -105,16 +104,16 @@ void UserInterface::Render()
 
 
 	//	画像用サンプラーの登録
-	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
+	ID3D11SamplerState* sampler[1] = { states->LinearWrap() };
 	context->PSSetSamplers(0, 1, sampler);
 	//	半透明描画指定
-	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
+	ID3D11BlendState* blendstate = states->NonPremultiplied();
 	//	透明判定処理
 	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
 	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(m_states->DepthDefault(), 0);
+	context->OMSetDepthStencilState(states->DepthDefault(), 0);
 	//	カリングは左周り
-	context->RSSetState(m_states->CullNone());
+	context->RSSetState(states->CullNone());
 	//	ピクセルシェーダにテクスチャを登録する。
 	context->PSSetShaderResources(0, 1, m_texture);
 	//	インプットレイアウトの登録
@@ -160,8 +159,6 @@ void UserInterface::Create(const wchar_t* path, const DirectX::SimpleMath::Vecto
 	SetTexture(path);
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
-
-	m_states = Graphics::GetInstance()->GetCommonStates();
 
 	//テクスチャサイズを取得
 	ResourceManager::GetInstance()->GetTextureSize(path, m_textureWidth, m_textureHeight);

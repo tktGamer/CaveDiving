@@ -10,6 +10,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "LoadScene.h"
+#include"Game/GameData.h"
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
 #include"Game/Factory/UIFactory.h"

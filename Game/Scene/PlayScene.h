@@ -22,6 +22,7 @@
 #include"../UI/ClearConditions/ClearConditions.h"
 #include"../UI/Number/CountUpNumber.h"
 #include"../UI/HoldGem/HoldGem.h"
+#include"../UI/Key/Operation.h"
 #include"../UI/Buff/BuffUIControl.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
@@ -44,6 +45,77 @@ public:
 	static constexpr DirectX::SimpleMath::Vector3 CAMERA_INIT_POSITION = { 0.0f, 7.0f, 25.0f };
 	//カメラ初期距離
 	static constexpr DirectX::SimpleMath::Vector3 CAMERA_INIT_DISTANCE = { 0.0f, 7.0f, 25.0f };
+	//プレイヤー初期位置
+	static constexpr DirectX::SimpleMath::Vector3 PLAYER_INIT_POSITION = { 0.0f, 0.8f, 0.0f };
+	//ステージ中心位置
+	static constexpr DirectX::SimpleMath::Vector3 STAGE_CENTER_POS = { 0.0f, 0.8f, 0.0f };
+	//石の数
+	static constexpr int ROCK_NUM = 10;
+	//クリア条件UIの位置
+	static constexpr DirectX::SimpleMath::Vector2 CLEAR_CONDITION_UI_POS = { 1240.0f,150.0f };
+	//HPゲージUIの位置
+	static constexpr DirectX::SimpleMath::Vector2 HP_GAUGE_UI_POS = { 45.0f,50.0f };
+	//所持宝石表示位置
+	static constexpr DirectX::SimpleMath::Vector2 HOLD_GEM_UI_POS = { 80.0f,680.0f };
+
+	//操作方法表示UI
+	//攻撃方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 ATTACK_KEY_UI_POS = { 650.0f,680.0f };
+	//攻撃方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 ATTACK_KEY_UI_SCALE = { 0.3f,0.3f };
+	//攻撃動作UI位置
+	static constexpr DirectX::SimpleMath::Vector2 ATTACK_ACTION_UI_POS = { 650.0f,615.0f };
+	//攻撃動作UIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 ATTACK_ACTION_UI_SCALE = { 0.2f,0.2f };
+	//回避方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 AVOID_KEY_UI_POS = { 760.0f,680.0f };
+	//回避方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 AVOID_KEY_UI_SCALE = { 0.3f,0.3f };
+	//回避動作UI位置
+	static constexpr DirectX::SimpleMath::Vector2 AVOID_ACTION_UI_POS = { 760.0f,615.0f };
+	//回避動作UIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 AVOID_ACTION_UI_SCALE = { 0.2f,0.18f };
+	//ジャンプ方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 JUMP_KEY_UI_POS = { 860.0f,680.0f };
+	//ジャンプ方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 JUMP_KEY_UI_SCALE = { 0.3f,0.3f };
+	//ジャンプ動作UI位置
+	static constexpr DirectX::SimpleMath::Vector2 JUMP_ACTION_UI_POS = { 870.0f,620.0f };
+	//ジャンプ動作UIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 JUMP_ACTION_UI_SCALE = { 0.2f,0.18f };
+	//視点左回転方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 LEFT_ROTATION_KEY_UI_POS = { 990.0f,680.0f };
+	//視点左回転方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 LEFT_ROTATION_KEY_UI_SCALE = { 0.3f,0.3f };
+	//視点右回転方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 RIGHT_ROTATION_KEY_UI_POS = { 1060.0f,680.0f };
+	//視点右回転方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 RIGHT_ROTATION_KEY_UI_SCALE = { 0.3f,0.3f };
+	//視点回転動作UI位置
+	static constexpr DirectX::SimpleMath::Vector2 ROTATION_ACTION_UI_POS = { 1040.0f,620.0f };
+	//視点回転動作UIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 ROTATION_ACTION_UI_SCALE = { 0.25f,0.25f };
+	//左移動方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 LEFT_MOVE_KEY_UI_POS = { 1138.0f,700.0f };
+	//左移動方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 LEFT_MOVE_KEY_UI_SCALE = { 0.2f,0.2f };
+	//前移動方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 FRONT_MOVE_KEY_UI_POS = { 1170.0f,668.0f };
+	//前移動方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 FRONT_MOVE_KEY_UI_SCALE = { 0.2f,0.2f };
+	//右移動方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 RIGHT_MOVE_KEY_UI_POS = { 1202.0f,700.0f };
+	//右移動方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 RIGHT_MOVE_KEY_UI_SCALE = { 0.2f,0.2f };
+	//後ろ移動方法キーUI位置
+	static constexpr DirectX::SimpleMath::Vector2 BACK_MOVE_KEY_UI_POS = { 1170.0f,700.0f };
+	//後ろ移動方法キーUIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 BACK_MOVE_KEY_UI_SCALE = { 0.2f,0.2f };
+	//移動動作UI位置
+	static constexpr DirectX::SimpleMath::Vector2 MOVE_ACTION_UI_POS = { 1175.0f,620.0f };
+	//移動動作UIサイズ
+	static constexpr DirectX::SimpleMath::Vector2 MOVE_ACTION_UI_SCALE = { 0.25f,0.25f };
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // 取得/設定
@@ -134,4 +206,6 @@ private:
 	//残りの敵数UI
 	std::unique_ptr<ClearConditions> m_clearConditionsUI;
 	//std::unique_ptr<NumberControl> m_clearConditionsUI;
+	//操作表示UI
+	std::unique_ptr<Operation> m_operationUI;
 };

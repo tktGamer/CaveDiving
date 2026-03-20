@@ -5,7 +5,7 @@
  *
  * @author 制作者名  福地貴翔
  *
- * @date   日付  2026/01/30
+ * @date   日付  2026/03/05
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -14,6 +14,7 @@
 #include"Game/Message/Messenger.h"
 #include"Game/UI/GemSelectUIManager.h"
 #include"Game/Common/Sound.h"
+#include"Game/Factory/UIFactory.h"
 #include<set>
 // メンバ関数の定義 ===========================================================
 /**
@@ -28,7 +29,6 @@ GemSelect::GemSelect(int width, int height,const std::vector<int>& gemID, GemSel
     m_menuIndex(0),
     m_windowHeight(height),
     m_windowWidth(width),
-    m_pGemManager{GemManager::GetInstance()},
     m_pUIManager{pUIManager},
     m_pGems{},
     m_gemID{gemID}
@@ -175,28 +175,19 @@ void GemSelect::Render()
 /**
  * @brief UI追加
  *
- * @param[in] なし
+ * @param[in] gemImagePath  表示する宝石のパス
+ * @param[in] position  描画位置
+ * @param[in] scale  　大きさ
+ * @param[in] anchor  アンカー位置
  *
  * @return なし
  */
 void GemSelect::Add(const Gem::GemImagePath& gemImagePath,const DirectX::SimpleMath::Vector2& position,
     const DirectX::SimpleMath::Vector2& scale,const UserInterface::ANCHOR& anchor)
 {
-
-    //  背景用のウィンドウ画像も追加する
-    std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
-    base->Create(
-         gemImagePath.panel
-        , position
-		, { 1.0f, 1.0f }
-        , anchor
-        );
-
-    base->SetWindowSize(m_windowWidth, m_windowHeight);
-
-    //  背景用のアイテムも新しく追加する
+    //表示するUIを追加する
+    std::unique_ptr<UserInterface> base = UIFactory::CreateUserInterface(gemImagePath.panel,position,scale,anchor);
     m_userInterface.push_back(std::move(base));
-
 }
 
 /**
@@ -215,9 +206,9 @@ void GemSelect::Randomize()
     //試行回数
     int tryCount = 0;
     //３つの宝石を選出する  iが毎回増えるわけではないので念のためループに制限
-    for (int i = 0; i < 3 && tryCount < MAX_TRY;)
+    for (int i = 0; i < GEM_ELECTION_NUM && tryCount < MAX_TRY;)
     {
-        const Gem* gem = m_pGemManager->RandomSelection();
+        const Gem* gem = GemManager::GetInstance()->RandomSelection();
         //まだ選ばれていない宝石なら
         if (selectedGems.insert(gem).second)
         {
@@ -225,8 +216,8 @@ void GemSelect::Randomize()
             //UI生成
             Gem::GemImagePath imagePath = gem->GetImagePath();
             Add(imagePath,
-                { PANNEL_X + PANNEL_X * i, 310.0f },
-                { 0.35f, 0.35f },
+                { PANNEL_X_POS + PANNEL_X_POS * i, PANNEL_Y_POS },
+                GEM_SIZE,
                 UserInterface::ANCHOR::MIDDLE_CENTER);
 
             //次に進む
@@ -234,10 +225,8 @@ void GemSelect::Randomize()
         }
         
     }
-
-
     //試行回数が限度に達したときのため 
-    for (int i = 0; i < 3; i++) 
+    for (int i = 0; i < GEM_ELECTION_NUM; i++) 
     {
         //空のとき
         if (!m_pGems[i]) 
@@ -248,17 +237,8 @@ void GemSelect::Randomize()
 
     }
 
-
     // 取得しないメニュー
-    std::unique_ptr<UserInterface> base = std::make_unique<UserInterface>();
-    base->Create(
-        ResourcePath::TEXTURE::UI::NOT_CHOOSE_MESSAGE
-        , { 650.0f,625.0f }
-        , { 1.0f, 1.0f }
-        , UserInterface::ANCHOR::MIDDLE_CENTER
-    );
-
-    base->SetWindowSize(m_windowWidth, m_windowHeight);
-    //  背景用のアイテムも新しく追加する
+    std::unique_ptr<UserInterface> base = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::NOT_CHOOSE_MESSAGE,
+        NOT_GET_MESSAGE_POSITION,NOT_GET_MESSAGE_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
     m_userInterface.push_back(std::move(base));
 }

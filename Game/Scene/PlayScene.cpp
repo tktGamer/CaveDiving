@@ -13,7 +13,7 @@
 #include"../Scene/TitleScene.h"
 #include"../Scene/GemSelectScene.h"
 #include"Game/Scene/ResultScene.h"
-
+#include"Game/UI/UIManager.h"
 #include "Game/Common/ResourceManager.h"
 #include "Game/Common/SceneManager.h"
 #include"Game/Shader/ShaderManager.h"
@@ -68,36 +68,21 @@ void PlayScene::Initialize()
 
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
-
-	GameData* gameData = GetGameData();
-
-
-
-	int width, height;
-	Graphics::GetInstance()->GetScreenSize(width, height);
-
 	//バフUI管理クラスの生成
-	m_buffUI = std::make_unique<BuffUIControl>(width, height);
+	m_buffUI = std::make_unique<BuffUIControl>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y);
 	m_buffUI->Initialize();
-
-
 	//オブジェクトの生成--
 	//プレイヤーの生成
-	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), gameData->GetPlayerData(), nullptr,DirectX::SimpleMath::Vector3{ 0.0f,1.0f,0.0f });
+	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), GetGameData()->GetPlayerData(), nullptr,PLAYER_INIT_POSITION);
 	m_collsionManager->Register(m_player.get());
-
 	//ステージの生成
-	m_stage = GameObjectFactory::CreateStage(nullptr, DirectX::SimpleMath::Vector3{ 0.0f,-2.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity
-		, GetGameData()->GetIsOnLights(), 10);
-
+	m_stage = GameObjectFactory::CreateStage(nullptr, DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity,
+		GetGameData()->GetIsOnLights(), ROCK_NUM);
 	//敵の生成
 	SpawnEnemy();
 
 	//カメラの生成
-	m_camera = std::make_unique<Camera>();
-	m_camera->Initialize(CAMERA_INIT_POSITION);
-	m_camera->SetDistance(CAMERA_INIT_DISTANCE);
-	m_camera->SetTartet(m_player->GetCurrentPosition(), m_player->GetQuaternion(), m_player->GetVelocity());
+	m_camera = GameObjectFactory::CreateCamera(CAMERA_INIT_POSITION,CAMERA_INIT_DISTANCE,m_player.get());
 	//アイテム管理クラスの生成
 	m_itemManager = std::make_unique<ItemManager>();
 	m_itemManager->Initialize();
@@ -105,12 +90,12 @@ void PlayScene::Initialize()
 	CreateUI();
 	//パーティクルマネージャーにカメラをセット
 	ParticleManager::GetInstance()->SetCamera(m_camera.get());
-
-	m_bloomEffect = std::make_unique<Bloom>();
-	m_bloomEffect->Initialize();
-
 	//操作するオブジェクトを設定する
 	Messenger::GetInstance()->SetOperateObject(m_player->GetObjectNumber());
+
+	//m_bloomEffect = std::make_unique<Bloom>();
+	//m_bloomEffect->Initialize();
+
 
 	PreUpdate();
 }
@@ -187,6 +172,7 @@ void PlayScene::Update(float elapsedTime)
 	m_hpGauge->Update();
 	m_holdGem->Update();
 	m_buffUI->Update();
+	m_operationUI->Update();
 	//HPゲージの更新
 	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
 
@@ -376,7 +362,7 @@ void PlayScene::Render()
 	m_holdGem->Render();
 	m_buffUI->Render();
 	m_clearConditionsUI->Render();
-
+	m_operationUI->Render();
 	//パーティクル描画
 	ParticleManager::GetInstance()->Render();
 }
@@ -606,22 +592,55 @@ void PlayScene::CreateUI()
 {
 	GameData* gameData = GetGameData();
 	//HPゲージUIの生成
-	m_hpGauge = UIFactory::CreateGauge();
+	m_hpGauge = UIFactory::CreateGauge(HP_GAUGE_UI_POS,DirectX::SimpleMath::Vector2::One,UserInterface::ANCHOR::MIDDLE_LEFT);
 	m_hpGauge->SetValue(m_player->GetCurrentHP(), m_player->GetMaxHP());
 	//所持宝石UIの生成
-	m_holdGem = UIFactory::CreateHoldGem(gameData->GetPlayerData().gemID);
+	m_holdGem = UIFactory::CreateHoldGem(gameData->GetPlayerData().gemID,HOLD_GEM_UI_POS);
 	//クリア条件UI
-	//NumberControl::NumberTextureData data;
-	//data.texturePath = TKTLib::WcharToString(ResourcePath::TEXTURE::UI::NUMBER);
-	//data.col = 1;
-	//data.raw = 10;
-	//const std::list<std::unique_ptr<Character>>& enemies = m_enemyManager->GetEnemies();
-	//m_clearConditionsUI = UIFactory::CreateNumberUI(data, DirectX::SimpleMath::Vector2{ 1240,150 }, DirectX::SimpleMath::Vector2{0.1f,0.1f},
-	//	DirectX::SimpleMath::Vector4::One, enemies.size(), 2);
+	m_clearConditionsUI = UIFactory::CreateClearConditions(CLEAR_CONDITION_UI_POS);
+	
 
-	m_clearConditionsUI = std::make_unique<ClearConditions>(DirectX::SimpleMath::Vector2{ 1240,150 });
-	m_clearConditionsUI->Initialize(1280, 720);
+	std::vector<std::unique_ptr<IUI>> uis;
+	//攻撃操作方法
+	std::vector<DirectX::Keyboard::Keys> key;
+	key.push_back(DirectX::Keyboard::Keys::Z);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::Z, ATTACK_KEY_UI_POS, ATTACK_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	uis.emplace_back(UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::ATTACK_ACTION,ATTACK_ACTION_UI_POS,ATTACK_ACTION_UI_SCALE,UserInterface::ANCHOR::MIDDLE_CENTER));
+	//回避操作方法
+	key.clear();
+	key.push_back(DirectX::Keyboard::Keys::X);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::X, AVOID_KEY_UI_POS, AVOID_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	uis.emplace_back(UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::AVOID_ACTION,AVOID_ACTION_UI_POS,AVOID_ACTION_UI_SCALE,UserInterface::ANCHOR::MIDDLE_CENTER));
+	//ジャンプ操作方法
+	key.clear();
+	key.push_back(DirectX::Keyboard::Keys::Space);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::SPACE, JUMP_KEY_UI_POS, JUMP_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	uis.emplace_back(UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::JUMP_ACTION,JUMP_ACTION_UI_POS,JUMP_ACTION_UI_SCALE,UserInterface::ANCHOR::MIDDLE_CENTER));
+	//視点回転操作方法
+	key.clear();
+	key.push_back(DirectX::Keyboard::Keys::LeftShift);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::SHIFT,LEFT_ROTATION_KEY_UI_POS, LEFT_ROTATION_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	key.clear();
+	key.push_back(DirectX::Keyboard::Keys::C);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::C, RIGHT_ROTATION_KEY_UI_POS ,RIGHT_ROTATION_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	uis.emplace_back(UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::ROTATION_ACTION,ROTATION_ACTION_UI_POS,ROTATION_ACTION_UI_SCALE,UserInterface::ANCHOR::MIDDLE_CENTER));
+	//移動操作方法
+	key.clear();
+	key.push_back(DirectX::Keyboard::Keys::Left);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::LEFT_ARROW, LEFT_MOVE_KEY_UI_POS,LEFT_MOVE_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	key.clear();
+	key.push_back(DirectX::Keyboard::Keys::Up);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::UP_ARROW,FRONT_MOVE_KEY_UI_POS,FRONT_MOVE_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	key.clear();
+	key.push_back(DirectX::Keyboard::Keys::Right);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::RIGHT_ARROW, RIGHT_MOVE_KEY_UI_POS, RIGHT_MOVE_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	key.clear();
+	key.push_back(DirectX::Keyboard::Keys::Down);
+	uis.emplace_back(UIFactory::CreateKeyUI(key,ResourcePath::TEXTURE::UI::Key::DOWN_ARROW, BACK_MOVE_KEY_UI_POS, BACK_MOVE_KEY_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	uis.emplace_back(UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::MOVE_ACTION,MOVE_ACTION_UI_POS,MOVE_ACTION_UI_SCALE,UserInterface::ANCHOR::MIDDLE_CENTER));
 
+	m_operationUI = UIFactory::CreateOperationUI(std::move(uis));
+	
 }
 
 /**

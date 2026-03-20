@@ -71,6 +71,9 @@ void ShaderManager::StartShader(const ShaderType& type)
 	case ShaderManager::UI:
 		SetUIShader();
 		break;
+	case ShaderManager::KeyUI:
+		SetKeyUIShader();
+		break;
 	case ShaderManager::Particle:
 		SetParticleShader();
 		break;
@@ -166,6 +169,7 @@ void ShaderManager::CreateShader()
 {
 	LoadModelShader();
 	LoadUIShader();
+	LoadKeyUIShader();
 	LoadParticleShader();
 	LoadFadeShader();
 	LoadOutlineShader();
@@ -221,6 +225,23 @@ void ShaderManager::LoadUIShader()
 	m_uiShader = std::make_unique<UIShader>(path);
 	m_shaderMap.insert(std::make_pair(ShaderType::UI, m_uiShader.get()));
 
+}
+
+/**
+ * @brief KeyUIシェーダーの作成
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void ShaderManager::LoadKeyUIShader()
+{
+	Shader::ShaderPath path{};
+	path.vsPath = ResourcePath::SHADER::KEY_UI_VS;
+	path.psPath = ResourcePath::SHADER::KEY_UI_PS;
+	path.gsPath = ResourcePath::SHADER::KEY_UI_GS;
+	m_keyUIShader = std::make_unique<KeyUIShader>(path);
+	m_shaderMap.insert(std::make_pair(ShaderType::KeyUI, m_keyUIShader.get()));
 }
 
 /**
@@ -392,6 +413,11 @@ void ShaderManager::SetWallShader()
 void ShaderManager::SetUIShader()
 {
 	m_uiShader->StartShader();
+}
+
+void ShaderManager::SetKeyUIShader()
+{
+	m_keyUIShader->StartShader();
 }
 
 /**

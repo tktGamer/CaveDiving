@@ -44,7 +44,6 @@ public:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> NUMBER_2D_INPUT_LAYOUT;
 	// コンストラクタ
 	Number2DShader(const ShaderPath& pathes);
-
 	// デストラクタ
 	~Number2DShader();
 // 操作

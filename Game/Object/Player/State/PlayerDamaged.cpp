@@ -55,7 +55,7 @@ void PlayerDamaged::PreUpdate()
 	m_knockbackTime = 0.0f;
 
 	//当たった攻撃の方向を考慮してノックバック
-	m_pPlayer->SetVelocity(m_pPlayer->GetDamageDirection());
+	m_pPlayer->SetVelocity(m_pPlayer->GetDamageDirection() * KNOCKBACK_POWER);
 	m_pPlayer->SetDamageFlash();
 }
 
@@ -84,7 +84,7 @@ void PlayerDamaged::Update(const float& elapsedTime)
 
 	m_pPlayer->SetVelocity(velocity);
 	//ノックバックさせる
-	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity()* KNOCKBACK_POWER*elapsedTime);
+	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity()*elapsedTime);
 }
 
 /**
@@ -96,7 +96,8 @@ void PlayerDamaged::Update(const float& elapsedTime)
  */
 void PlayerDamaged::PostUpdate()
 {
-	m_pPlayer->SetInvincible(false);
+	//m_pPlayer->SetInvincible(false);
+	//m_pPlayer->SetVelocity(DirectX::SimpleMath::Vector3::Zero);
 }
 
 /**

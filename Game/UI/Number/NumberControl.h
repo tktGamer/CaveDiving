@@ -26,9 +26,10 @@ public:
 	struct NumberTextureData 
 	{
 		std::string texturePath; //画像パス
-		int col = 0;//縦列数
-		int raw = 0;//横列数
+		int col = 10;//縦列数
+		int raw = 1;//横列数
 	};
+
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:

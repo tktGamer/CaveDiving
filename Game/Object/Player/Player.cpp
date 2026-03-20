@@ -152,7 +152,10 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 	//取得アイテムの更新
 	UpdateGotItems();
 	//ダメージ演出
-	DamageFlashUpdate();
+	if (!DamageFlashUpdate()) 
+	{
+		SetInvincible(false);
+	}
 
 	//HP自動回復の宝石をもっているか
 	const std::vector<HPAutoRecoveryGem*> gems = GetHolderGem().FindHasGem<HPAutoRecoveryGem>();
@@ -345,14 +348,18 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 			GameObject::ChangeState(m_idlingState.get());
 			break;
 		case Message::MOVING:
-			//攻撃・回避中ではなければ
-			if (!IsAttacking() && !IsAvoidance()) 
+			//攻撃・回避中・ダメージ中ではなければ
+			if (!IsAttacking() && !IsAvoidance() && !(GetState() == m_damagedState.get())) 
 			{
 				GameObject::ChangeState(m_movingState.get());
 			}
 			break;
 		case Message::ATTACK:
-			if (IsAttacking()) 
+			if ((GetState() == m_damagedState.get())) 
+			{
+				break;
+			}
+			if (IsAttacking())
 			{
 				//攻撃入力があったことを記録 コンボするため
 				m_attackBuffered = true;

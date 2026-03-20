@@ -72,6 +72,12 @@ public:
 	//テクスチャの設定
 	void SetTexture(const wchar_t* path);
 	void SetTexture(ID3D11ShaderResourceView** texture);
+	//テクスチャの取得
+	ID3D11ShaderResourceView* const* GetTexture() { return m_texture; };
+	//テクスチャサイズ取得
+	const DirectX::SimpleMath::Vector2& GetTextureSize() const { return { static_cast<float>(m_textureWidth),static_cast<float>(m_textureHeight)}; };
+	//プリミティブバッチの取得
+	DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>& GetBatch() { return *m_batch.get(); };
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	UserInterface();
@@ -97,31 +103,16 @@ private:
 	
 // データメンバの宣言 -----------------------------------------------
 private:
-
-
-	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
-
-	// 入力レイアウト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-
 	// プリミティブバッチ
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-	//コモンステート
-	DirectX::CommonStates* m_states;
 	// テクスチャハンドル
 	ID3D11ShaderResourceView** m_texture;
 	//Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 	Microsoft::WRL::ComPtr<ID3D11Resource> m_res;
-	// 頂点シェーダ
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
-	// ピクセルシェーダ
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
-	// ジオメトリシェーダ
-	Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
 
 	int m_windowWidth, m_windowHeight;
 	int m_textureWidth, m_textureHeight;
-
+	//大きさ
 	DirectX::SimpleMath::Vector2 m_scale;
 	DirectX::SimpleMath::Vector2 m_baseScale;
 	DirectX::SimpleMath::Vector2 m_position;
@@ -131,6 +122,4 @@ private:
 	float m_renderRatio;
 	float m_renderRatioOffset;
 
-
 };
-

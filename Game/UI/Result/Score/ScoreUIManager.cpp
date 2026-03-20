@@ -7,15 +7,11 @@
  *
  * @date   日付　2025/12/10
  */
-
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ScoreUIManager.h"
-
 #include "Game/Common/ResourceManager.h"
-
 #include"Game/Factory/UIFactory.h"
-
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -28,8 +24,6 @@ ScoreUIManager::ScoreUIManager(const GameData::ScoreInfo& scoreInfo)
 	,m_updateUI{}
 {
 }
-
-
 
 /**
  * @brief デストラクタ
@@ -54,34 +48,30 @@ void ScoreUIManager::Initialize()
 	int w, h;
 	Graphics::GetInstance()->GetScreenSize(w, h);
 	NumberControl::NumberTextureData nTData;
-	nTData.texturePath = "number.png";
-	nTData.col = 10;
-	nTData.raw = 1;
+	nTData.texturePath = TKTLib::WcharToString(ResourcePath::TEXTURE::UI::NUMBER);
 
 
-
-	 //スコアUIデータ
-	 Score::UIInfo score;
-	 score.ntData = nTData;
-	 score.pos = DirectX::SimpleMath::Vector2{ 1100,420 };
-	 score.color = DirectX::SimpleMath::Vector4{ 0,0,0,1 };
-	 score.infoOffset = DirectX::SimpleMath::Vector2{ 400,0 };
-	 score.infoTexturePath = L"UI/score.png";
-	 score.initNumber = TKTLib::INT_ZERO;
-	 score.finishNumber = CalculationScore();
-	 score.stepNumber = 5000;
-	 score.minDigit = 7;
-
-
-	m_scoreUI = std::make_unique<Score>(score);
+	//総合スコア＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+	//スコアUIデータ
+	Score::UIInfo score;
+	score.ntData = nTData;
+	score.pos = DirectX::SimpleMath::Vector2{ 1100,420 };
+	score.color = NUMBER_COLOR;
+	score.infoOffset = DirectX::SimpleMath::Vector2{ 400,0 };
+	score.infoTexturePath = ResourcePath::TEXTURE::UI::SCORE;
+	score.initNumber = TKTLib::INT_ZERO;
+	score.finishNumber = CalculationScore();
+	score.stepNumber = 5000;
+	score.minDigit = SCORE_DIGIT;
+	m_scoreUI = UIFactory::CreateScoreUI(score);
 
 	//情報UIデータ
 	Score::UIInfo referenceUI;
 	referenceUI.ntData = nTData;
 	referenceUI.pos				= DirectX::SimpleMath::Vector2{ 600,220 };
-	referenceUI.color			= DirectX::SimpleMath::Vector4{ 0,0,0,1 };
+	referenceUI.color			= NUMBER_COLOR;
 	referenceUI.infoOffset		= DirectX::SimpleMath::Vector2{ 400,0 };
-	referenceUI.infoTexturePath = L"UI/currenthp.png";
+	referenceUI.infoTexturePath = ResourcePath::TEXTURE::UI::CURRENT_HP;
 	referenceUI.initNumber		= m_scoreInfo.playerCurrentHp;
 	referenceUI.finishNumber	= TKTLib::INT_ZERO;
 	referenceUI.stepNumber		= HP_STEP_SECOND;
@@ -91,48 +81,37 @@ void ScoreUIManager::Initialize()
 	Score::UIInfo scoreUI;
 	scoreUI.ntData = nTData;
 	scoreUI.pos = DirectX::SimpleMath::Vector2{ 1100,220 };
-	scoreUI.color = DirectX::SimpleMath::Vector4{ 0,0,0,1 };
+	scoreUI.color = NUMBER_COLOR;
 	scoreUI.infoOffset = DirectX::SimpleMath::Vector2{ 400,0 };
-	scoreUI.infoTexturePath = L"UI/colon.png";
+	scoreUI.infoTexturePath = ResourcePath::TEXTURE::UI::COLON;
 	scoreUI.initNumber = TKTLib::INT_ZERO;
 	scoreUI.finishNumber = HPScore();
 	scoreUI.stepNumber = HP_STEP_SECOND*HP_PER_POINT;
 	scoreUI.minDigit = 5;
 
-	m_hpScoreUI = std::make_unique<Score>(scoreUI, referenceUI);
+	m_hpScoreUI = UIFactory::CreateScoreUI(scoreUI, referenceUI);
 	m_hpScoreUI->Initialize();
-
-	//情報UIデータ
-	referenceUI.ntData = nTData;
-	referenceUI.pos				= DirectX::SimpleMath::Vector2{ 600,120 };
-	referenceUI.color			= DirectX::SimpleMath::Vector4{ 0,0,0,1 };
-	referenceUI.infoOffset		= DirectX::SimpleMath::Vector2{ 400,0 };
-	referenceUI.infoTexturePath = L"UI/totaldamage.png";
-	referenceUI.initNumber		= 0;
-	referenceUI.finishNumber	= TKTLib::INT_ZERO;
-	referenceUI.stepNumber		= HP_STEP_SECOND;
-	referenceUI.minDigit		= 3;
 
 	//スコアUIデータ
 	scoreUI.ntData				= nTData;
 	scoreUI.pos					= DirectX::SimpleMath::Vector2{ 1100,120 };
-	scoreUI.color				= DirectX::SimpleMath::Vector4{ 0,0,0,1 };
+	scoreUI.color				= NUMBER_COLOR;
 	scoreUI.infoOffset			= DirectX::SimpleMath::Vector2{ 500,0 };
-	scoreUI.infoTexturePath		= L"UI/totaldamage.png";
+	scoreUI.infoTexturePath		= ResourcePath::TEXTURE::UI::TOTAL_DAMAGE;
 	scoreUI.initNumber			= TKTLib::INT_ZERO;
 	scoreUI.finishNumber		= TotalDamageScore();
 	scoreUI.stepNumber			= 300;
-	scoreUI.minDigit			= 5;
+	scoreUI.minDigit			= SCORE_DIGIT;
 
-	m_totalDamageScoreUI = std::make_unique<Score>(scoreUI);
+	m_totalDamageScoreUI = UIFactory::CreateScoreUI(scoreUI);
 	m_totalDamageScoreUI->Initialize();
 
 	//情報UIデータ
 	referenceUI.ntData = nTData;
 	referenceUI.pos				= DirectX::SimpleMath::Vector2{ 600,320 };
-	referenceUI.color			= DirectX::SimpleMath::Vector4{ 0,0,0,1 };
+	referenceUI.color			= NUMBER_COLOR;
 	referenceUI.infoOffset		= DirectX::SimpleMath::Vector2{ 400,0 };
-	referenceUI.infoTexturePath = L"UI/totaltime.png";
+	referenceUI.infoTexturePath = ResourcePath::TEXTURE::UI::TOTAL_TIME;
 	referenceUI.initNumber		= static_cast<int>(m_scoreInfo.totalTime);
 	referenceUI.finishNumber	= static_cast<int>(m_scoreInfo.totalTime);
 	referenceUI.stepNumber		= HP_STEP_SECOND;
@@ -141,15 +120,15 @@ void ScoreUIManager::Initialize()
 	//スコアUIデータ
 	scoreUI.ntData				= nTData;
 	scoreUI.pos					= DirectX::SimpleMath::Vector2{ 1100,320 };
-	scoreUI.color				= DirectX::SimpleMath::Vector4{ 0,0,0,1 };
+	scoreUI.color				= NUMBER_COLOR;
 	scoreUI.infoOffset			= DirectX::SimpleMath::Vector2{ 400,0 };
-	scoreUI.infoTexturePath		= L"UI/colon.png";
+	scoreUI.infoTexturePath		= ResourcePath::TEXTURE::UI::COLON;
 	scoreUI.initNumber			= TKTLib::INT_ZERO;
 	scoreUI.finishNumber		= TimeScore();
 	scoreUI.stepNumber			= 100*TIME_PER_POINT;
-	scoreUI.minDigit			= 5;
+	scoreUI.minDigit			= SCORE_DIGIT;
 
-	m_timeScoreUI = std::make_unique<Score>(scoreUI, referenceUI);
+	m_timeScoreUI = UIFactory::CreateScoreUI(scoreUI, referenceUI);
 	m_timeScoreUI->Initialize();
 
 	SetNextUpdateUI();
@@ -208,8 +187,6 @@ void ScoreUIManager::Render()
 	m_timeScoreUI->Render();
 
 	m_scoreUI->Render();
-
-
 }
 
 
@@ -290,7 +267,7 @@ int ScoreUIManager::CalculationScore()
  *
  * @return トータルダメージスコア
  */
-int ScoreUIManager::TotalDamageScore()
+int ScoreUIManager::TotalDamageScore() const
 {
 	return m_scoreInfo.totalDamage;
 }
@@ -303,7 +280,7 @@ int ScoreUIManager::TotalDamageScore()
  *
  * @return HPスコア
  */
-int ScoreUIManager::HPScore()
+int ScoreUIManager::HPScore() const
 {
 	return m_scoreInfo.playerCurrentHp * HP_PER_POINT;
 }

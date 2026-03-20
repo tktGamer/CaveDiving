@@ -179,7 +179,7 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 	while (ifs)
 	{
 		int id = 0;
-		//敵の種類を読み込む
+		//ライトの番号を読み込む
 		ifs >> id;
 		ifs.ignore(); //カンマを読み飛ばす
 
@@ -216,14 +216,9 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 		ModelShader::PointLightCB lightdata;
 		lightdata.LightColor = color;
 		lightdata.LightIntensity = intensity;
-
-		m_rocks.emplace_back(std::make_unique<RumiRock>(lightdata,nullptr, spawnPos, DirectX::SimpleMath::Quaternion::Identity));
-		m_rocks.back()->Initialize(isOnLight[id-1]);
-
+		//石生成
+		m_rocks.emplace_back(GameObjectFactory::CreateRumiRock(nullptr,spawnPos, DirectX::SimpleMath::Quaternion::Identity,lightdata,isOnLight[id-1]));
 		CollisionManager::GetInstance()->Register(m_rocks.back().get());
-
-
-		//ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	}
 	ifs.close();

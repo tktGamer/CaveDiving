@@ -29,6 +29,8 @@ class TitleScene : public Scene<GameData>
 public:
 //非公開定数
 private:
+	//カメラの初期位置
+	static constexpr DirectX::SimpleMath::Vector3 CAMERA_INIT_POS = { 0,17.0f,10.0f };
 	//宝石ロード確認UIの位置
 	static constexpr DirectX::SimpleMath::Vector2 LOAD_CHECK_UI_POS = { 200.0f,400.0f };
 	//宝石ロード確認UIのサイズ

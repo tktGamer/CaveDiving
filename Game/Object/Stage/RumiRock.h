@@ -28,6 +28,7 @@ public:
 private:
 	//AABB当たり判定サイズ
 	static constexpr DirectX::SimpleMath::Vector3 BOX_COLLISION_SIZE = { 1.3f,1.3f,1.3f };
+	static constexpr DirectX::SimpleMath::Vector4 DEFAULT_COLOR = { 1.0f,1.0f,1.0f,1.0f };
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -39,7 +40,7 @@ private:
 	Box m_box;
 	//ライト
 	std::unique_ptr<Light> m_light;
-	DirectX::SimpleMath::Vector4 m_color = { 1.0f,1.0f,1.0f,1.0f };
+	DirectX::SimpleMath::Vector4 m_color = DEFAULT_COLOR;
 	//ライトがオンになるときの音
 	std::unique_ptr<Sound> m_LightOnSound;
 	Ito::DisplayCollision m_display;
@@ -56,7 +57,7 @@ public:
 	~RumiRock();
 // 操作
 	//初期化
-	void Initialize(bool isOnlight);
+	void Initialize();
 	//更新
 	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
 	//描画

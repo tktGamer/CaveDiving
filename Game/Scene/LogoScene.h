@@ -26,7 +26,16 @@ class LogoScene : public Scene<GameData>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
+//非公開定数
+private:
+	//ロゴのアニメーション画像の情報
+	static constexpr Animation2D::AnimationTexture LOGO_ANIMATION = { 18,6,3 };
+	//アニメーション時間
+	static constexpr float ANIMATION_TIME = 1.5f;
+	//ロゴの表示位置
+	static constexpr DirectX::SimpleMath::Vector2 LOGO_POSITON = { 640.0f,360.0f };
+	//ロゴのサイズ
+	static constexpr DirectX::SimpleMath::Vector2 LOGO_SCALE = { 1.9f,1.9f };
 // メンバ関数の宣言 -------------------------------------------------
 // 取得/設定
 public:

@@ -8,7 +8,7 @@
 #include<mutex>
 #include<future>
 #include<vector>
-
+#include"Game/Interface/IScene.h"
 #include"Game/Transitor/Transitor.h"
 // クラスの宣言 ===============================================================
 template <typename T>
@@ -19,7 +19,7 @@ class SceneManager;
   * @brief シーンの基底クラス
   */
 template <typename T>
-class Scene
+class Scene : public IScene
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -32,21 +32,9 @@ public:
 //コンストラクタ・デストラクタ
 	// コンストラクタ
 	Scene() : m_sceneManager(nullptr) {}
-	//-----IScene
 	// デストラクタ
 	virtual ~Scene() = default;
 //操作
-	// 初期化
-	virtual void Initialize() = 0;
-	//更新前準備
-	virtual void PreUpdate() = 0;
-	// 更新
-	virtual void Update(float elapsedTime) = 0;
-	// 描画
-	virtual void Render() = 0;
-	// 終了処理
-	virtual void Finalize() = 0;
-	//--------
 	// デバイスに依存するリソースを作成する関数
 	virtual void CreateDeviceDependentResources() {}
 	// ウインドウサイズに依存するリソースを作成する関数

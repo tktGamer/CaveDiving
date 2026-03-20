@@ -1,7 +1,7 @@
 /**
  * @file   Menu.cpp
  *
- * @brief  宝石選択UIに関するソースファイル
+ * @brief  選択UIに関するソースファイル
  *
  * @author 制作者名　福地貴翔
  *
@@ -48,7 +48,7 @@ Menu::~Menu()
 void Menu::Initialize()
 {
     //  背景となるウィンドウ画像を読み込む
-    m_baseTexturePath = L"UI/buttonframe.png";
+    m_baseTexturePath = ResourcePath::TEXTURE::UI::MENU_FRAME;
 }
 
 /**
@@ -117,13 +117,13 @@ void Menu::Update()
  */
 void Menu::Render()
 {
-       for (int i = 0; i < m_userInterface.size(); i++)
-        {
-            //  アイテム用ウィンドウ背景を表示
-            m_base[i]->Render();
-            //  実際に表示したいアイテム画像を表示
-            m_userInterface[i]->Render();
-        }
+    for (int i = 0; i < m_userInterface.size(); i++)
+    {
+        //  アイテム用ウィンドウ背景を表示
+        m_base[i]->Render();
+        //  実際に表示したいアイテム画像を表示
+        m_userInterface[i]->Render();
+    }
 }
 
 /**
@@ -147,4 +147,24 @@ void Menu::Add(const wchar_t* path, const DirectX::SimpleMath::Vector2& position
     std::unique_ptr<UserInterface> base = UIFactory::CreateUserInterface(m_baseTexturePath,position,scale,anchor);
     //  背景用のアイテムも新しく追加する
     m_base.push_back(std::move(base));
+}
+/**
+ * @brief メニュー追加
+ *
+ * @param[in] info  追加するメニューの情報
+ *
+ * @return なし
+ */
+void Menu::Add(const MunuUIInfo& info)
+{
+    //  メニューとしてアイテムを追加する
+    std::unique_ptr<UserInterface> userInterface = UIFactory::CreateUserInterface(info.path, info.position, info.scale, info.anchor);
+    //  アイテムを新しく追加
+    m_userInterface.push_back(std::move(userInterface));
+
+    //  背景用のウィンドウ画像も追加する
+    std::unique_ptr<UserInterface> base = UIFactory::CreateUserInterface(m_baseTexturePath, info.position, info.scale, info.anchor);
+    //  背景用のアイテムも新しく追加する
+    m_base.push_back(std::move(base));
+
 }
