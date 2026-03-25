@@ -17,7 +17,7 @@
 /**
   * @brief ゲージUI
   */
-class Gauge
+class Gauge :public IUI
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -33,7 +33,8 @@ private:
 //　取得・設定
 public:
 	//ゲージの参照数値の設定
-	void SetValue(const int current, const int max);
+	void SetCurrentValue(const int& current);
+	void SetMaxValue(const int max);
 //コンテキスト・デストラクタ
 	//コンストラクタ
 	Gauge(const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor);
@@ -53,6 +54,6 @@ private:
 	//フレーム
 	std::unique_ptr<UserInterface> m_frame;
 	//ゲージの参照する値
-	int m_currentValue;
+	const int* m_currentValue;
 	int m_maxValue;
 };

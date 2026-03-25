@@ -135,6 +135,19 @@ void PartObject::SetRotationLimit(const RotationLimit& rotationLimit)
 }
 
 /**
+ * @brief 生きているか
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+bool PartObject::IsAlive() const
+{
+    //親のキャラが生きていれば
+    return m_parentCharacter->IsAlive();
+}
+
+/**
  * @brief 部品をもつキャラクターの取得
  *
  * @param[in] なし

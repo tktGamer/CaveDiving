@@ -16,6 +16,7 @@
 #include"../Scene/TitleScene.h"
 #include"../Common/DamageSystem.h"
 #include"../Factory/UIFactory.h"
+#include"Game/UI/UIManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -57,25 +58,26 @@ void ResultScene::Initialize()
 	//クリア音再生
 	m_clearSound->Play(false);
 
-	m_saveUI = std::make_unique<SaveConfirm>(1280, 720,GetGameData()->GetPlayerData().gemID);
+	m_saveUI = std::make_unique<SaveConfirm>(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y,GetGameData()->GetPlayerData().gemID);
 	m_saveUI->Initialize();
 
 	//ゲームクリア・ゲームオーバー文字
 	if (GetGameData()->IsGameClear()) 
 	{
-		m_gameover = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GAME_CLEAR, { 650.0f,100.0f }, { 1.0f,1.0f }, UserInterface::MIDDLE_CENTER);
+		m_gameover = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GAME_CLEAR,GAME_OVER_POS, GAME_OVER_SCALE, UserInterface::MIDDLE_CENTER);
 	}
 	else
 	{
-		m_gameover = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GAME_CLEAR,{ 650.0f,100.0f }, { 0.5f,0.5f }, UserInterface::MIDDLE_CENTER);
+		m_gameover = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GAME_OVER,GAME_OVER_POS, GAME_OVER_SCALE, UserInterface::MIDDLE_CENTER);
 
 	}
+	
 	//スコア管理UIの生成
 	m_scoreUI = std::make_unique<ScoreUIManager>(GetGameData()->GetScoreInfo());
 	m_scoreUI->Initialize();
 
 	//背景画像
-	m_backTexture = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GEM_BACK, { 650.0f, 360.0f }, { 1.0f,1.0f }, UserInterface::ANCHOR::MIDDLE_CENTER);
+	m_backTexture = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::GEM_BACK,BACK_POS, BACK_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
@@ -140,7 +142,7 @@ void ResultScene::Update(float elapsedTime)
 void ResultScene::Render()
 {
 	m_backTexture->Render();
-	//m_gameover->Render();
+	m_gameover->Render();
 
 	m_scoreUI->Render();
 

@@ -103,9 +103,9 @@ void UIManager::Update()
 
 	
 	//UIçXêV
-	if (!m_uiStack.empty()) 
+	for (std::unique_ptr<IUI>& ui : m_uiStack)
 	{
-		m_uiStack.back()->Update();
+		ui->Update();
 	}
 
 }
@@ -160,11 +160,10 @@ void UIManager::Finalize()
  *
  * @return Ç»Çµ
  */
-void UIManager::RequestPushUI(std::unique_ptr<IUI> ui, bool onlyDraw)
+void UIManager::RequestAddUI(std::unique_ptr<IUI> ui, bool isOnlyDraw)
 {
 	m_uiStack.push_back(std::move(ui));
-	m_isDrawOnlyCurrentUI = onlyDraw;
-
+	m_isDrawOnlyCurrentUI = isOnlyDraw;
 }
 
 /**

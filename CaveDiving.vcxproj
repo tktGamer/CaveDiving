@@ -181,6 +181,15 @@
   <ItemGroup>
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="DeviceResources.h" />
+    <ClInclude Include="Game\Command\Attack\AttackCommand.h" />
+    <ClInclude Include="Game\Command\Avoid\AvoidCommand.h" />
+    <ClInclude Include="Game\Command\InputHandler.h" />
+    <ClInclude Include="Game\Command\Move\JumpCommand.h" />
+    <ClInclude Include="Game\Command\Move\MoveBackCommand.h" />
+    <ClInclude Include="Game\Command\Move\MoveFrontCommand.h" />
+    <ClInclude Include="Game\Command\Move\MoveLeftCommand.h" />
+    <ClInclude Include="Game\Command\Move\MoveRightCommand.h" />
+    <ClInclude Include="Game\Command\Move\RotationCommand.h" />
     <ClInclude Include="Game\Common\BinaryFile.h" />
     <ClInclude Include="Game\Common\Collision\Box.h" />
     <ClInclude Include="Game\Common\Collision\CollisionManager.h" />
@@ -197,6 +206,7 @@
     <ClInclude Include="Game\Factory\GemFactory.h" />
     <ClInclude Include="Game\Factory\UIFactory.h" />
     <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\Interface\ICommand.h" />
     <ClInclude Include="Game\Interface\IComponent.h" />
     <ClInclude Include="Game\Interface\IScene.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
@@ -291,6 +301,7 @@
     <ClInclude Include="Game\Particle\Shield\ParticleShieldControl.h" />
     <ClInclude Include="Game\Particle\Vanish\ParticleVanish.h" />
     <ClInclude Include="Game\Particle\Vanish\ParticleVanishControl.h" />
+    <ClInclude Include="Game\RenderPipeLine.h" />
     <ClInclude Include="Game\ResourcePath.h" />
     <ClInclude Include="Game\Scene\PlayScene.h" />
     <ClInclude Include="Game\Scene\GemSelectScene.h" />
@@ -326,7 +337,6 @@
     <ClInclude Include="Game\UI\HoldGem\HoldGem.h" />
     <ClInclude Include="Game\UI\HoldGem\HoldGemInfoDraw.h" />
     <ClInclude Include="Game\UI\Key\Key.h" />
-    <ClInclude Include="Game\UI\Key\Operation.h" />
     <ClInclude Include="Game\UI\Menu\Menu.h" />
     <ClInclude Include="Game\UI\Number\CountUpNumber.h" />
     <ClInclude Include="Game\UI\Number\Number.h" />
@@ -347,6 +357,15 @@
   <ItemGroup>
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
+    <ClCompile Include="Game\Command\Attack\AttackCommand.cpp" />
+    <ClCompile Include="Game\Command\Avoid\AvoidCommand.cpp" />
+    <ClCompile Include="Game\Command\InputHandler.cpp" />
+    <ClCompile Include="Game\Command\Move\JumpCommand.cpp" />
+    <ClCompile Include="Game\Command\Move\MoveBackCommand.cpp" />
+    <ClCompile Include="Game\Command\Move\MoveFrontCommand.cpp" />
+    <ClCompile Include="Game\Command\Move\MoveLeftCommand.cpp" />
+    <ClCompile Include="Game\Command\Move\MoveRightCommand.cpp" />
+    <ClCompile Include="Game\Command\Move\RotationCommand.cpp" />
     <ClCompile Include="Game\Common\BinaryFile.cpp" />
     <ClCompile Include="Game\Common\Collision\Box.cpp" />
     <ClCompile Include="Game\Common\Collision\CollisionManager.cpp" />
@@ -449,6 +468,7 @@
     <ClCompile Include="Game\Particle\Shield\ParticleShieldControl.cpp" />
     <ClCompile Include="Game\Particle\Vanish\ParticleVanish.cpp" />
     <ClCompile Include="Game\Particle\Vanish\ParticleVanishControl.cpp" />
+    <ClCompile Include="Game\RenderPipeLine.cpp" />
     <ClCompile Include="Game\Scene\PlayScene.cpp" />
     <ClCompile Include="Game\Scene\GemSelectScene.cpp" />
     <ClCompile Include="Game\Scene\LoadScene.cpp" />
@@ -482,7 +502,6 @@
     <ClCompile Include="Game\UI\HoldGem\HoldGem.cpp" />
     <ClCompile Include="Game\UI\HoldGem\HoldGemInfoDraw.cpp" />
     <ClCompile Include="Game\UI\Key\Key.cpp" />
-    <ClCompile Include="Game\UI\Key\Operation.cpp" />
     <ClCompile Include="Game\UI\Menu\Menu.cpp" />
     <ClCompile Include="Game\UI\Number\CountUpNumber.cpp" />
     <ClCompile Include="Game\UI\Number\Number.cpp" />

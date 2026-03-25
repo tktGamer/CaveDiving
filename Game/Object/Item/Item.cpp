@@ -12,6 +12,7 @@
 #include "Item.h"
 #include"Game/Common/Collision/CollisionManager.h"
 #include"Game/Shader/ShaderManager.h"
+#include"Game/Particle/ParticleManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -63,6 +64,11 @@ Item::~Item()
  */
 void Item::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	//アイテムが取られたら更新しない
+	if(!IsAlive())
+	{
+		 return;
+	}
 	//位置の更新
 	SetCurrentPosition( currentPosition + GetPosition());
 	//角度の更新
@@ -80,6 +86,12 @@ void Item::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dir
  */
 void Item::Draw()
 {
+	//アイテムが取られたら描画しない
+	if (!IsAlive()) 
+	{
+		return;
+	}
+
 	Graphics* graphics = Graphics::GetInstance();
 	ID3D11DeviceContext* context = graphics->GetDeviceResources()->GetD3DDeviceContext();
 	DirectX::DX11::CommonStates* states = graphics->GetCommonStates();
@@ -179,6 +191,8 @@ void Item::CollisionResponce(GameObject* other)
 		SetItemGetObjectPos(other->GetCurrentPosition());
 		//派生クラスの追加処理
 		OnItemGetExtra(other);
+		ParticleManager::GetInstance()->RequestItemGetParticle(GetCurrentPosition(),GetItemGetObjectPos(),GetColor());
+
 	}
 	break;
 	default:
@@ -256,9 +270,9 @@ const float& Item::GetTime() const
  * @return  true  取得された
  * @return  false 取得されていない
  */
-const bool& Item::IsGet() const
+bool Item::IsAlive() const
 {
-	return m_isGet;
+	return !m_isGet;
 }
 
 

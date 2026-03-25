@@ -61,16 +61,20 @@ std::unique_ptr<Menu> UIFactory::CreateMenu(DirectX::SoundEffect* cursolSound, c
  * @param[in] position  描画座標
  * @param[in] scale     拡大率
  * @param[in] anchor    アンカー
+ * @param[in] currentValue    現在値
+ * @param[in] maxValue    　　　最大値
  *
  * @return ゲージUIクラス
  */
 std::unique_ptr<Gauge> UIFactory::CreateGauge(const DirectX::SimpleMath::Vector2& position,const DirectX::SimpleMath::Vector2& scale,
-	const UserInterface::ANCHOR& anchor)
+	const UserInterface::ANCHOR& anchor, const int& currentValue, const int maxValue)
 {
 	//ゲージUI生成
 	std::unique_ptr<Gauge> gauge = std::make_unique<Gauge>(position,scale,anchor);
 	gauge->Initialize();
-
+	//値を設定
+	gauge->SetCurrentValue(currentValue);
+	gauge->SetMaxValue(maxValue);
 	return gauge;
 }
 
@@ -267,29 +271,6 @@ std::unique_ptr<Buff> UIFactory::CreateBuffUI(const float& time, const wchar_t* 
 	//初期化
 	buff->Initialize();
 	return buff;
-}
-
-
-/**
- * @brief 「操作UI」の生成
- *
- * @param[in] uis  UI群
- *
- * @return 操作UIクラス
- */
-std::unique_ptr<Operation> UIFactory::CreateOperationUI(std::vector<std::unique_ptr<IUI>> uis)
-{
-	//「操作UI」の生成
-	std::unique_ptr<Operation> operation = std::make_unique<Operation>();
-	//初期化
-	operation->Initialize();
-
-	for (auto& ui : uis) 
-	{
-		operation->AddUI(std::move(ui));
-	}
-
-	return operation;
 }
 
 /**

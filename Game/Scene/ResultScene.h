@@ -29,7 +29,18 @@ class ResultScene : public Scene<GameData>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
+	//背景の位置
+	static constexpr DirectX::SimpleMath::Vector2 BACK_POS = { 650.0f, 360.0f };
+	//背景のサイズ
+	static constexpr DirectX::SimpleMath::Vector2 BACK_SCALE = { 1.0f,1.0f};
+	//ゲームオーバーの位置
+	static constexpr DirectX::SimpleMath::Vector2 GAME_OVER_POS = { 650.0f,50.0f };
+	//ゲームオーバーのサイズ
+	static constexpr DirectX::SimpleMath::Vector2 GAME_OVER_SCALE = { 0.5f,0.5f};
+	//セーブの位置
+	static constexpr DirectX::SimpleMath::Vector2 SAVE_POS = { 1280.0f,720.0f };
+	//セーブのサイズ
+	static constexpr DirectX::SimpleMath::Vector2 SAVE_SCALE = { 0.5f,0.5f};
 // メンバ関数の宣言 -------------------------------------------------
 // 取得/設定
 public:

@@ -91,8 +91,9 @@ float4 main(PS_IN input) : SV_TARGET
     
     //元の色より明るくしないようにする
     output.xyz = min(temTotal, output.xyz);
-    //透明度は固定
-    output.w = 1.0f;
+    //ライトが当たっていなかったら透明にする
+    output.w = output.w * step(0.0f, output.x + output.y + output.z);
+    
     
     return lerp( output,float4(1,1,1,1), color.x);
     

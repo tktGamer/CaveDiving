@@ -15,7 +15,7 @@
 #include"Game/Particle/ParticleManager.h"
 #include<fstream>
 #include<sstream>
- // メンバ関数の定義 ===========================================================
+// メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
@@ -169,26 +169,26 @@ void EnemyManager::Spawn(const std::string& spawnData)
  */
 void EnemyManager::DeleteEnemy()
 {
-    for (std::list<std::unique_ptr<Character>>::iterator it = m_enemies.begin(); it != m_enemies.end(); )
-    {
-		//生きているか確認
-        if (!(*it)->IsAlive() || IsOutOfStage((*it).get()))
-        {
-            // 死亡している場合はリストから削除
-            CollisionManager::GetInstance()->UnRegister(it->get());
+  //  for (std::list<std::unique_ptr<Character>>::iterator it = m_enemies.begin(); it != m_enemies.end(); )
+  //  {
+		////生きているか確認
+  //      if (!(*it)->IsAlive() || IsOutOfStage((*it).get()))
+  //      {
+  // //         // 死亡している場合はリストから削除
+  // //         CollisionManager::GetInstance()->UnRegister(it->get());
 
-			//消滅音再生
-			m_vanishSound->Play(false);
-			//消滅パーティクル生成をリクエスト
-			ParticleManager::GetInstance()->RequestVanishParticle((*it)->GetCurrentPosition());
+		//	////消滅音再生
+		//	//m_vanishSound->Play(false);
+		//	////消滅パーティクル生成をリクエスト
+		//	//ParticleManager::GetInstance()->RequestVanishParticle((*it)->GetCurrentPosition());
 
-            it = m_enemies.erase(it);
-        }
-        else
-        {
-            ++it;
-        }
-    }
+  // //         it = m_enemies.erase(it);
+  //      }
+  //      else
+  //      {
+  //          ++it;
+  //      }
+  //  }
 }
 
 /**
@@ -202,4 +202,18 @@ void EnemyManager::DeleteEnemy()
 bool EnemyManager::IsOutOfStage(const Character* enemy)
 {
 	return (enemy->GetCurrentPosition().y < DEAD_LINE);
+}
+
+
+const int EnemyManager::GetEnemyCount() const
+{
+	int count = 0;
+	for (const std::unique_ptr<Character>& enemy : m_enemies)
+	{
+		if (enemy->IsAlive())
+		{
+			count++;
+		}
+	}
+	return count;
 }

@@ -49,6 +49,8 @@ private:
 public:
 	//ライトがオンか
 	bool IsOnLight();
+	//ブルーム処理するか
+	bool IsBloom() override;
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	RumiRock(const ModelShader::PointLightCB& lightData,const GameObject* parent,

@@ -237,3 +237,8 @@ bool RumiRock::IsOnLight()
 {
 	return m_light->IsOn();
 }
+
+bool RumiRock::IsBloom()
+{
+	return IsOnLight();
+}

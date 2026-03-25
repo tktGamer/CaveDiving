@@ -85,7 +85,7 @@ public:
 	//‘¬“x‚Ìİ’è
 	void SetVelocity(const DirectX::SimpleMath::Vector3& velocity);
 	//¶‚«‚Ä‚¢‚é‚©
-	bool IsAlive() const;
+	bool IsAlive() const override;
 	//’nã‚É‚¢‚é‚©
 	bool IsOnGround() const;
 	//’nã‚É‚¢‚é‚©‚Ìİ’è

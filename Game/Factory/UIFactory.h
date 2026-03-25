@@ -28,7 +28,6 @@
 #include"../UI/Buff/Buff.h"
 #include"../UI/Result/Score/Score.h"
 #include"../UI/Key/Key.h"
-#include"../UI/Key/Operation.h"
 // ファクトリクラスを定義する
 class UIFactory 
 {
@@ -51,7 +50,9 @@ public:
 	static std::unique_ptr<Gauge> CreateGauge(
 		const DirectX::SimpleMath::Vector2& position,
 		const DirectX::SimpleMath::Vector2& scale,
-		const UserInterface::ANCHOR& anchor
+		const UserInterface::ANCHOR& anchor,
+		const int& currentValue,
+		const int maxValue
 	);
 
 	// 「クリア条件UI」を生成する
@@ -125,8 +126,6 @@ public:
 		const UserInterface::ANCHOR& anchor
 	);
 
-	// 「操作UI」を生成する
-	static std::unique_ptr<Operation> CreateOperationUI(std::vector<std::unique_ptr<IUI>> uis);
 
 	// 「操作UI」を生成する
 	static std::unique_ptr<Key> CreateKeyUI(

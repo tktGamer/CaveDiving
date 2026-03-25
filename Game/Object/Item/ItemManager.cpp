@@ -7,7 +7,6 @@
  *
  * @date   日付　2026/01/17
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ItemManager.h"
@@ -148,23 +147,23 @@ void ItemManager::GenerateItem()
  */
 void ItemManager::DeleteItem()
 {
-    for (std::list<std::unique_ptr<Item>>::iterator it = m_items.begin(); it != m_items.end(); )
-    {
-		//生きているか確認
-        if ((*it)->IsGet())
-        {
-            // 死亡している場合はリストから削除
-            CollisionManager::GetInstance()->UnRegister(it->get());
+  //  for (std::list<std::unique_ptr<Item>>::iterator it = m_items.begin(); it != m_items.end(); )
+  //  {
+		////生きているか確認
+  //      if ((*it)->IsAlive())
+  //      {
+  //          // 死亡している場合はリストから削除
+  // //         CollisionManager::GetInstance()->UnRegister(it->get());
 
 
-			ParticleManager::GetInstance()->RequestItemGetParticle((*it)->GetCurrentPosition(),(*it)->GetItemGetObjectPos(),(*it)->GetColor());
-            it = m_items.erase(it);
-        }
-        else
-        {
-            ++it;
-        }
-    }
+		//	//ParticleManager::GetInstance()->RequestItemGetParticle((*it)->GetCurrentPosition(),(*it)->GetItemGetObjectPos(),(*it)->GetColor());
+  // //         it = m_items.erase(it);
+  //      }
+  //      else
+  //      {
+  //          ++it;
+  //      }
+  //  }
 }
 
 /**
@@ -176,7 +175,7 @@ void ItemManager::DeleteItem()
  */
 void ItemManager::LoadItemData()
 {
-	std::string path = ResourcePath::DATA::ITEM;
+	std::string path = ResourcePath::DATA::ITEM_DATA;
 	//ファイルのオープン
 	std::ifstream ifs{ path};
 	if (!ifs.is_open())

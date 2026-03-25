@@ -34,6 +34,8 @@ public:
 public:
 	//親オブジェクトを取得
 	const GameObject* GetParentObject() const { return m_parent; };
+	//生きているか
+	virtual bool IsAlive() const { return true; };
 
 	//テクスチャの設定
 	void SetTexture(ID3D11ShaderResourceView** tex) { m_texture = tex; };
@@ -97,6 +99,8 @@ public:
 	//オブジェクトの番号を取得
 	const int GetObjectNumber() const;
 
+	//ブルーム処理するか
+	virtual bool IsBloom() { return false; };
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	GameObject(Tag::ObjectType objectType,const GameObject* parent,

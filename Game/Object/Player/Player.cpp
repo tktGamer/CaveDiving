@@ -132,6 +132,7 @@ void Player::Initialize()
 void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
+	
 	//状態の更新
 	GetState()->Update(elapsedTime);
 	//現在位置の更新
@@ -199,6 +200,8 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 
 	SetIsOnGround(false);
 	m_attackBuffered = false;
+	//移動フラグをリセット
+	SetMoveFlags(0);
 }
 
 
@@ -388,29 +391,17 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 				GameObject::ChangeState(m_jumpingState.get());
 			}
 			break;
-		case Message::MOVE_FRONT_ON:
+		case Message::MOVE_FRONT:
 			moveFlag |= Character::MoveFlag::MOVE_FRONT;
 			break;
-		case Message::MOVE_FRONT_OFF:
-			moveFlag &= ~Character::MoveFlag::MOVE_FRONT;
-			break;
-		case Message::MOVE_LEFT_ON:
+		case Message::MOVE_LEFT:
 			moveFlag |= Character::MoveFlag::MOVE_LEFT;
 			break;
-		case Message::MOVE_LEFT_OFF:
-			moveFlag &= ~Character::MoveFlag::MOVE_LEFT;
-			break;
-		case Message::MOVE_RIGHT_ON:
+		case Message::MOVE_RIGHT:
 			moveFlag |= Character::MoveFlag::MOVE_RIGHT;
 			break;
-		case Message::MOVE_RIGHT_OFF:
-			moveFlag &= ~Character::MoveFlag::MOVE_RIGHT;
-			break;
-		case Message::MOVE_BACK_ON:
+		case Message::MOVE_BACK:
 			moveFlag |= Character::MoveFlag::MOVE_BACK;
-			break;
-		case Message::MOVE_BACK_OFF:
-			moveFlag &= ~Character::MoveFlag::MOVE_BACK;
 			break;
 		default:
 			break;

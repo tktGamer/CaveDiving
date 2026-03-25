@@ -15,6 +15,7 @@
 #include"Game/Common/DamageSystem.h"
 #include"Game/Object/Weapon.h"
 #include"Game/Shader/ShaderManager.h"
+#include"Game/Particle/ParticleManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -320,6 +321,27 @@ void Golem::CollisionResponce(GameObject* other)
 		}
 	default:
 		break;
+	}
+
+}
+
+
+/**
+ * @brief ダメージを受けたときの処理
+ *
+ * @param[in] other  ダメージを与えたオブジェクト
+ *
+ * @return なし
+ */
+void Golem::OnDamage(GameObject* other)
+{
+	Character::OnDamage(other);
+	//死んでいたらエフェクトを出す
+	if (!IsAlive())
+	{
+		//消滅パーティクル生成をリクエスト
+		ParticleManager::GetInstance()->RequestVanishParticle(GetCurrentPosition());
+
 	}
 }
 

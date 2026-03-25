@@ -43,6 +43,9 @@ public:
 	const DirectX::SimpleMath::Vector3& GetLocalEuler();
 	//角度制限設定
 	void SetRotationLimit(const RotationLimit& rotationLimit);
+	//生きているか
+	bool IsAlive() const override;
+
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	PartObject(Character* root,

@@ -59,7 +59,7 @@ void Gauge::Initialize()
 void Gauge::Update()
 {
     //割合を計算
-    float ratioX =(float)m_currentValue / (float)m_maxValue;
+    float ratioX =(float)*m_currentValue / (float)m_maxValue;
     ratioX = TKTLib::Clamp(ratioX, MIN_RATIO, MAX_RATIO);
    
     //ゲージの大きさを設定
@@ -84,12 +84,21 @@ void Gauge::Render()
  * @brief ゲージの参照する値
  *
  * @param[in] current 変化する値
+ *
+ * @return なし
+ */
+void Gauge::SetCurrentValue(const int& current)
+{
+    m_currentValue = &current;
+}
+/**
+ * @brief ゲージの参照する値
+ *
  * @param[in] max     最大値
  *
  * @return なし
  */
-void Gauge::SetValue(const int current, const int max)
+void Gauge::SetMaxValue(const int max)
 {
-    m_currentValue = current;
     m_maxValue = max;
 }

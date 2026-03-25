@@ -32,14 +32,10 @@ public:
 		// 状態
 		IDLING,							// 「アイドリング」状態
 		MOVING,							// 「移動」状態
-		MOVE_FRONT_ON,//前
-		MOVE_FRONT_OFF,
-		MOVE_BACK_ON,//後ろ
-		MOVE_BACK_OFF,
-		MOVE_LEFT_ON,//左
-		MOVE_LEFT_OFF,
-		MOVE_RIGHT_ON,//右
-		MOVE_RIGHT_OFF,
+		MOVE_FRONT,//前
+		MOVE_BACK,//後ろ
+		MOVE_LEFT,//左
+		MOVE_RIGHT,//右
 		ATTACK,						    // 「攻撃」状態
 		AVOIDANCE,						// 「回避」状態
 		DAMAGED,						// 「ダメージ」状態

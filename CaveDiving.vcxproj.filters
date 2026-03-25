@@ -209,6 +209,21 @@
     <Filter Include="Game\UI\Key">
       <UniqueIdentifier>{277c98ff-0b63-4da0-bd4d-de362d1be3a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Command">
+      <UniqueIdentifier>{e6d2f4f5-e81e-4f35-a7c5-65ac0a6a6320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Command\Move">
+      <UniqueIdentifier>{2854e69e-4ff1-4cbb-947a-24cb68fe3f89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Command\Attack">
+      <UniqueIdentifier>{a2db07fa-e0fe-41f5-a573-9a748502102f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Command\Avoid">
+      <UniqueIdentifier>{c0b58b11-2d8c-452c-917b-71c2d58b2272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Command\Chosie">
+      <UniqueIdentifier>{1224a011-5e46-4b26-9313-3be6a6f9e462}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -696,8 +711,38 @@
     <ClInclude Include="Game\UI\Key\Key.h">
       <Filter>Game\UI\Key</Filter>
     </ClInclude>
-    <ClInclude Include="Game\UI\Key\Operation.h">
-      <Filter>Game\UI\Key</Filter>
+    <ClInclude Include="Game\Interface\ICommand.h">
+      <Filter>Game\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\InputHandler.h">
+      <Filter>Game\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\Move\MoveFrontCommand.h">
+      <Filter>Game\Command\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\Move\MoveLeftCommand.h">
+      <Filter>Game\Command\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\Move\MoveRightCommand.h">
+      <Filter>Game\Command\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\Move\MoveBackCommand.h">
+      <Filter>Game\Command\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\Move\JumpCommand.h">
+      <Filter>Game\Command\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\Attack\AttackCommand.h">
+      <Filter>Game\Command\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\Avoid\AvoidCommand.h">
+      <Filter>Game\Command\Avoid</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Command\Move\RotationCommand.h">
+      <Filter>Game\Command\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\RenderPipeLine.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1147,8 +1192,35 @@
     <ClCompile Include="Game\UI\Key\Key.cpp">
       <Filter>Game\UI\Key</Filter>
     </ClCompile>
-    <ClCompile Include="Game\UI\Key\Operation.cpp">
-      <Filter>Game\UI\Key</Filter>
+    <ClCompile Include="Game\Command\InputHandler.cpp">
+      <Filter>Game\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Command\Move\MoveFrontCommand.cpp">
+      <Filter>Game\Command\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Command\Move\MoveLeftCommand.cpp">
+      <Filter>Game\Command\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Command\Move\MoveRightCommand.cpp">
+      <Filter>Game\Command\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Command\Move\MoveBackCommand.cpp">
+      <Filter>Game\Command\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Command\Move\JumpCommand.cpp">
+      <Filter>Game\Command\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Command\Attack\AttackCommand.cpp">
+      <Filter>Game\Command\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Command\Avoid\AvoidCommand.cpp">
+      <Filter>Game\Command\Avoid</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Command\Move\RotationCommand.cpp">
+      <Filter>Game\Command\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\RenderPipeLine.cpp">
+      <Filter>Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

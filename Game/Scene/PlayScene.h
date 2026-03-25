@@ -12,6 +12,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include"RenderTexture.h"
 #include<unordered_map>
+#include"Game/Command/InputHandler.h"
 #include"../Common/SceneManager.h"
 #include"../GameData.h"
 #include"../Common/Sound.h"
@@ -22,13 +23,12 @@
 #include"../UI/ClearConditions/ClearConditions.h"
 #include"../UI/Number/CountUpNumber.h"
 #include"../UI/HoldGem/HoldGem.h"
-#include"../UI/Key/Operation.h"
 #include"../UI/Buff/BuffUIControl.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 #include"../Object/Enemy/EnemyManager.h"
 #include"../Object/Item/ItemManager.h"
-#include"../Shader/Bloom.h"
+#include"Game/RenderPipeLine.h"
 // クラスの宣言 ===============================================================
 class ResourceManager;
 // クラスの定義 ===============================================================
@@ -49,6 +49,14 @@ public:
 	static constexpr DirectX::SimpleMath::Vector3 PLAYER_INIT_POSITION = { 0.0f, 0.8f, 0.0f };
 	//ステージ中心位置
 	static constexpr DirectX::SimpleMath::Vector3 STAGE_CENTER_POS = { 0.0f, 0.8f, 0.0f };
+	//地面の初期位置
+	static constexpr DirectX::SimpleMath::Vector3 INITIAL_GROUND_POS = { 0.0f, -1.5f, 0.0f };
+	//地面の初期サイズ
+	static constexpr DirectX::SimpleMath::Vector3 INITIAL_GROUND_SCALE = { 70.0f, 1.0f, 70.0f };
+	//壁の初期位置
+	static constexpr DirectX::SimpleMath::Vector3 INITIAL_WALL_POS = { 0.0f, 0.0f, 0.0f };
+	//壁の初期サイズ
+	static constexpr DirectX::SimpleMath::Vector3 INITIAL_WALL_SCALE = { 60.0f, 50.0f, 60.0f };
 	//石の数
 	static constexpr int ROCK_NUM = 10;
 	//クリア条件UIの位置
@@ -114,7 +122,7 @@ public:
 	//移動動作UI位置
 	static constexpr DirectX::SimpleMath::Vector2 MOVE_ACTION_UI_POS = { 1175.0f,620.0f };
 	//移動動作UIサイズ
-	static constexpr DirectX::SimpleMath::Vector2 MOVE_ACTION_UI_SCALE = { 0.25f,0.25f };
+	static constexpr DirectX::SimpleMath::Vector2 MOVE_ACTION_UI_SCALE = { 0.2f,0.2f };
 
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -145,16 +153,16 @@ public:
 
 // 内部実装
 private:
-	//キーボード入力
-	void PressKeyBoard();
-	//移動メッセージ
-	void MovingMessage(const int& operateObjectID);
-	//視点回転
-	void RotateDirection(const int& operateObjectID, const bool& isRotateRight);
+	//入力処理生成
+	void CreateInputCommand();
+	//オブジェクト生成
+	void CreateObjects();
 	//UI生成
 	void CreateUI();
 	//敵の生成
 	void SpawnEnemy();
+	//石生成
+	void GenerateIlumiRock(bool* isOnLight, int size);
 
 	//ステージ終了判定
 	const bool IsFinish();
@@ -165,6 +173,8 @@ private:
 
 // データメンバの宣言 -----------------------------------------------
 private:
+	//キー入力管理
+	std::unique_ptr<InputHandler> m_inputHandler;
 	//衝突表示オブジェクト
 	std::unique_ptr<Ito::DisplayCollision> m_displayCollision;
 	//当たり判定管理
@@ -172,29 +182,23 @@ private:
 	//ゲーム音楽
 	std::unique_ptr<Sound> m_gameBGM;
 
-	//
-	std::unique_ptr<Bloom> m_bloomEffect;
-	//レンダーテクスチャ
-	std::unique_ptr<DX::RenderTexture> m_renderTexture;
-	//レンダーテクスチャ （シーン全体）
-	std::unique_ptr<DX::RenderTexture> m_offScreenRT;
-	//レンダーテクスチャ（ブラー）
-	std::unique_ptr<DX::RenderTexture> m_blur1RT;
-	std::unique_ptr<DX::RenderTexture> m_blur2RT;
-	//ポストプロセス
-	std::unique_ptr<DirectX::BasicPostProcess> m_basicPostProcess;
-	//デュアルポストプロセス
-	std::unique_ptr<DirectX::DualPostProcess> m_dualPostProcess;
+	std::unique_ptr<RenderPipeLine> m_renderPipeLine;
 
-
+	//オブジェクトリスト
+	std::list<IComponent*> m_objects;
 	//敵管理オブジェクト
 	std::unique_ptr<EnemyManager> m_enemyManager; 
 	// カメラオブジェクト
 	std::unique_ptr<Camera> m_camera;    
 	// プレイヤーオブジェクト
 	std::unique_ptr<Player> m_player;    
-	// ステージオブジェクト
-	std::unique_ptr<Stage> m_stage;    
+	//外壁
+	std::unique_ptr<Wall> m_wall;
+	//地面
+	std::unique_ptr<Ground> m_ground;
+	//発光する岩
+	std::list<std::unique_ptr<RumiRock>> m_rocks;
+
 	//アイテム管理
 	std::unique_ptr<ItemManager> m_itemManager;
 	//プレイヤーのHPゲージUI
@@ -206,6 +210,4 @@ private:
 	//残りの敵数UI
 	std::unique_ptr<ClearConditions> m_clearConditionsUI;
 	//std::unique_ptr<NumberControl> m_clearConditionsUI;
-	//操作表示UI
-	std::unique_ptr<Operation> m_operationUI;
 };

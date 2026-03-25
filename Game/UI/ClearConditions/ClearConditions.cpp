@@ -12,7 +12,7 @@
 #include "ClearConditions.h"
 #include"Game/Common/ResourceManager.h"
 #include"Game/Factory/UIFactory.h"
-// メンバ関数の定義 ===========================================================
+ // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
@@ -51,6 +51,7 @@ void ClearConditions::Initialize()
     nTData.texturePath =TKTLib::WcharToString( ResourcePath::TEXTURE::UI::NUMBER);
     m_restEnemy = UIFactory::CreateNumberUI(nTData,m_position,NUMBER_SIZE,NUMBER_COLOR,0,NUMBER_DIGIT);    
 }
+
 
 
 /**

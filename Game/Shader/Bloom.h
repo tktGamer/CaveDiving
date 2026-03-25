@@ -13,9 +13,9 @@
 #include"Game/Common/Graphics.h"
 #include"RenderTexture.h"
 #include "PostProcess.h"
-
+#include"list"
 // クラスの宣言 ===============================================================
-
+class GameObject;
 // クラスの定義 ===============================================================
 /**
   * @brief DirectXのBloom機能
@@ -24,7 +24,16 @@ class Bloom
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
+	//非公開定数
+private:
+	//光らせる閾値（小さいほど多くの部分が光る）
+	static constexpr float BLOOM_EXTRACT_THRESHOLD = 0.25f;
+	//ブラーの広がり量
+	static constexpr float BLOOM_BLUR_AMOUNT = 5.0f;
+	//ブラーの明るさ
+	static constexpr float BLOOM_INTENSITY = 1.0f;
+	//解像度低下度
+	static constexpr float BLOOM_DOWNSAMPLE = 2.0f;
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
@@ -36,19 +45,15 @@ public:
 // 操作
 	//初期化
 	void Initialize();
-	//更新
-	void Update();
 	//描画
-	void Draw();
-	//終了処理
-	void Finalize();
+	void ExecuteBloom(std::list<GameObject*> objects,std::unique_ptr<DX::RenderTexture>& bloomRT);
 //　内部操作
 private:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	//レンダーテクスチャ （シーン全体）
-	std::unique_ptr<DX::RenderTexture> m_offScreenRT;
+	//レンダーテクスチャ
+	std::unique_ptr<DX::RenderTexture> m_bloomRT;
 
 	//レンダーテクスチャ（ブラー）
 	std::unique_ptr<DX::RenderTexture> m_blur1RT;

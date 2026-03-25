@@ -117,7 +117,7 @@ void CollisionManager::CollisionCheck()
 	for (std::list<GameObject*>::iterator it1 = m_objects.begin(); it1 != m_objects.end(); ++it1)
 	{
 		//当たり判定が有効ではなかったらスキップ
-		if (!(*it1)->GetShape()->IsEnabled()) 
+		if (!(*it1)->GetShape()->IsEnabled() || !(*it1)->IsAlive()) 
 		{
 			continue;
 		}
@@ -126,7 +126,7 @@ void CollisionManager::CollisionCheck()
 		for (std::list<GameObject*>::iterator it2 = std::next(it1); it2 != m_objects.end(); ++it2)
 		{
 			//当たり判定が有効ではなかったらスキップ
-			if (!(*it2)->GetShape()->IsEnabled())
+			if (!(*it2)->GetShape()->IsEnabled() || !(*it2)->IsAlive())
 			{
 				continue;
 			}

@@ -23,7 +23,7 @@
 class ResourceManager;    ///< リソースマネージャ
 // クラスの定義 ===============================================================
 /**
- * @brief ロゴシーン
+ * @brief UI管理クラス
  */
 class UIManager
 {
@@ -50,7 +50,7 @@ public:
 	void PushUI();
 
 	//UIの追加リクエスト
-	void RequestPushUI(std::unique_ptr<IUI> ui, bool isOnlyDraw);
+	void RequestAddUI(std::unique_ptr<IUI> ui, bool isOnlyDraw = false);
 	//UIの消去リクエスト
 	void RequestPopUI();
 	//UIの全消去リクエスト
@@ -63,16 +63,12 @@ public:
 public:
 	// 初期化処理
 	void Initialize();
-
 	// 更新処理
 	void Update();
-
 	// 描画処理
 	void Render();
-
 	// 終了処理
 	void Finalize();
-
 	//UI全消去
 	void ClearUI();
 

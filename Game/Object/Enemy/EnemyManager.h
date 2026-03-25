@@ -33,8 +33,10 @@ private:
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
-	//敵を取得
-	const std::list<std::unique_ptr<Character>>& GetEnemies() { return m_enemies; }
+	//残りの敵の数を取得
+	const int GetEnemyCount() const;
+	//敵リストの取得
+	const std::list<std::unique_ptr<Character>>& GetEnemies() const { return m_enemies; }
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	EnemyManager();

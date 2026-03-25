@@ -54,7 +54,7 @@ public:
 	//効果時間
 	const float& GetTime() const;
 	//取得されたか
-	const bool& IsGet() const;
+	bool IsAlive() const override;
 	//取得状態のセット
 	void SetIsGet(const bool& isGet);
 	//オブジェクトが取られた位置

@@ -111,6 +111,8 @@ public:
 	void OnMessegeAccepted(Message::MessageID messageID);
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other);
+	//ダメージを受けたとき
+	void OnDamage(GameObject* other) override;
 //　内部操作
 private:
 

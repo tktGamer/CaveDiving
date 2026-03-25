@@ -465,9 +465,12 @@ public:
 			static constexpr char PLAYER_GEM[]  = "Resources/Data/HolderGem/PlayerHoldGems.txt";
 
 		};
-		//アイテム
-		static constexpr char ITEM[] = "Resources/Data/ItemData.csv";
-
+		//アイテムデータ
+		static constexpr char ITEM_DATA[] = "Resources/Data/ItemData.csv";
+		
+		//アイテム配置データ
+		static constexpr char ITEM_POSTION[] = "Resources/Data/ItemData.csv";
+		
 		//ライト情報
 		static constexpr char LIGHT[] = "Resources/Data/LightPositionData.csv";
 
