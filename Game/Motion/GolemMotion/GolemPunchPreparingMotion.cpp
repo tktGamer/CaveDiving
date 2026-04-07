@@ -11,6 +11,7 @@
 #include "pch.h"
 #include "GolemPunchPreparingMotion.h"
 #include"Game/Object/Enemy/Golem/Golem.h"
+#include"Game/Object/Enemy/Golem/GolemArm.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

@@ -16,12 +16,17 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] なし
+ * @param[in] lightData　ライトの情報
+ * @param[in] id　　　　石の番号
+ * @param[in] parent　親のオブジェクトポインタ
+ * @param[in] initialPosition
+ * @param[in] initialAngle
  */
-RumiRock::RumiRock(const ModelShader::PointLightCB& lightData,const GameObject* parent,
+RumiRock::RumiRock(const ModelShader::PointLightCB& lightData, const int& id, const GameObject* parent,
 	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:
-	GameObject{ Tag::ObjectType::Light,parent,initialPosition,initialAngle },
+	GameObject{ Tag::ObjectType::Rock,parent,initialPosition,initialAngle },
+	m_id{id},
 	m_box{ GetPosition(),BOX_COLLISION_SIZE },
 	m_color{},
 	m_messageID{},
@@ -223,6 +228,18 @@ void RumiRock::OnLight()
 	//明かりを点ける
 	m_light->LightOn();
 	m_color = DEFAULT_COLOR;
+}
+
+/**
+ * @brief IDを取得する
+ *
+ * @param[in] なし
+ *
+ * @return ID
+ */
+const int& RumiRock::GetID() const
+{
+	return m_id;
 }
 
 /**

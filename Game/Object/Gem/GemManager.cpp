@@ -133,7 +133,7 @@ bool GemManager::LoadHoldGem(const std::string& loadPath, std::vector<int>& gemI
 	while (std::getline(infile, line)) 
 	{
 		//•óÎ‚Ìƒf[ƒ^“o˜^”Ô†
-		int id = -1;
+		int id = Gem::BLANK_ID;
 		try 
 		{
 			id = std::stoi(line);
@@ -163,15 +163,15 @@ bool GemManager::LoadHoldGem(const std::string& loadPath, std::vector<int>& gemI
  */
 Gem::Type GemManager::DecisinType(const std::string& type)
 {
-	if (type == "‘Ì—Í")
+	if (type == HP)
 	{
 		return Gem::Type::HP;
 	}
-	else if (type == "UŒ‚—Í")
+	else if (type == ATTACK)
 	{
 		return Gem::Type::STR;
 	}
-	else if (type == "–hŒä—Í")
+	else if (type == DIFFENCE)
 	{
 		return Gem::Type::DEF;
 	}

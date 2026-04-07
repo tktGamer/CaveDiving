@@ -10,61 +10,55 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
-#include"../Item/UniquItem/OutlineItem.h"
+#include"Game/Object/Item/Item.h"
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
-  * @brief 敵管理
+  * @brief アイテム管理
   */
 class ItemManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
 	static  std::unordered_map<Item::EffectType, DirectX::SimpleMath::Vector3> ITEM_COLOR;
-	//アイテムデータのリスト
-	using  ItemMap = std::unordered_map<int, Item::ItemInfo>;
-	
-	static constexpr char ATTACK[] = "攻撃力";
-	static constexpr char DIFFENCE[] = "防御力";
-	static constexpr char OUTLINE[] = "アウトライン";
 
+private:
+	static constexpr char ATTACK[]   = "攻撃力";
+	static constexpr char DIFFENCE[] = "防御力";
+	static constexpr char OUTLINE[]  = "アウトライン";
+	//アイテムデータのリスト
+	using  ItemMap = std::unordered_map<int,Item::ItemInfo>;
+	//生成関数定義
+	using ItemFactory =std::function<std::unique_ptr<Item>(const Item::ItemInfo& itemInfo, const GameObject* parent,
+		const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)>;
+	//種類と生成関数を結びつける
+	using ItemCreaterMap = std::unordered_map<Item::EffectType, ItemFactory>;
 // メンバ関数の宣言 -------------------------------------------------
 	
 //　取得・設定
 public:
-	//アイテムを取得
-	std::list<std::unique_ptr<Item>>& GetItems() { return m_items; }
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	ItemManager();
-
 	// デストラクタ
 	~ItemManager();
 // 操作
 	//初期化処理
 	void Initialize();
-	//更新処理
-	void Update();
-	//描画処理
-	void Draw();
 	//終了処理
 	void Finalize();
-	//敵生成
-	void GenerateItem();
+	//アイテム生成
+	std::vector<std::unique_ptr<Item>> GenerateItem(const std::string& spawnData);
 //　内部操作
 private:
-	//アイテムを消去
-	void DeleteItem();
-
+	//アイテムデータ読み込み
 	void LoadItemData();
 // データメンバの宣言 -----------------------------------------------
 private:
 	//アイテムのデータ
 	ItemMap m_itemInfoList;
-
-	//アイテムリスト
-	std::list<std::unique_ptr<Item>> m_items;
+	//アイテム生成マップ
+	ItemCreaterMap m_itemCreater;
 };
 

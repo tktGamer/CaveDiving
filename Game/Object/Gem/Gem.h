@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2026/01/19
+ * @date   日付  2026/03/28
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
@@ -13,7 +13,7 @@
 #include <string>
 #include<memory>
 // クラスの宣言 ===============================================================
-
+class Character;
 // クラスの定義 ===============================================================
 /**
   * @brief 宝石
@@ -65,6 +65,16 @@ public:
 //操作
 	//宝石のコピー
 	virtual std::unique_ptr<Gem> Clone() const = 0;
+	//初期化
+	virtual void Initialize();
+	//毎フレーム効果
+	virtual void OnUpdate(Character& owner) { owner; };
+	// ステータス補正
+	virtual int ModifyStatus(const Gem::Type& type, const Character& owner) const { type; owner; return 0; };
+	// ダメージ時
+	virtual int OnTakeDamage(Character& owner, int damage) { owner; return damage; }
+	//終了処理
+	virtual void Finalize();
 //内部操作
 private:
 

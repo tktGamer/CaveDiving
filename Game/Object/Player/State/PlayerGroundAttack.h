@@ -12,12 +12,10 @@
 #ifndef PLAYER_GOURND_ATTACK_DEFINED
 #define PLAYER_GROUND_ATTACK_DEFINED
 #include "Game/Interface/IState.h"
-#include"Game/Motion/PlayerMotion/PlayerFirstAttackMotion.h"
-#include"Game/Motion/PlayerMotion/PlayerSecondAttackMotion.h"
-#include"Game/Motion/PlayerMotion/PlayerThirdAttackMotion.h"
 // クラスの宣言 ===============================================================
 class Player;
 class Hand;
+class AttackMotion;
 // クラスの定義 ===============================================================
 /**
   * @brief 地上攻撃状態

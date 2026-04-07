@@ -25,6 +25,8 @@
 #include"../Object/Enemy/Golem/GolemArm.h"
 #include"../Object/Enemy/Golem/GolemFot.h"
 #include"../Object/Stage/Stage.h"
+#include"../Object/Stage/Ground.h"
+#include"../Object/Stage/Wall.h"
 #include"../Object/Stage/RumiRock.h"
 #include"../Object/Item/Item.h"
 #include"../Object/Item/UniquItem/OutlineItem.h"
@@ -72,9 +74,11 @@ public:
 
 	// 「コウモリの敵」を生成する
 	static std::unique_ptr<Bat> CreateBat(
+		EnemyManager* enemyManager,
 		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
-		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
+		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity,
+		const std::vector<int>& gemID = std::vector<int>(HolderGem::MAX_GEM, Gem::BLANK_ID)
 	);
 
 	// 「コウモリの羽」を生成する
@@ -87,9 +91,11 @@ public:
 
 	// 「ゴーレム」を生成する
 	static std::unique_ptr<Golem> CreateGolem(
+		EnemyManager* enemyManager,
 		const GameObject* parent = nullptr,
 		const DirectX::SimpleMath::Vector3& initialPosition = DirectX::SimpleMath::Vector3::Zero,
-		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity
+		const DirectX::SimpleMath::Quaternion& initialAngle = DirectX::SimpleMath::Quaternion::Identity,
+		const std::vector<int>& gemID = std::vector<int>(HolderGem::MAX_GEM, Gem::BLANK_ID)
 	);
 
 	// 「ゴーレムの手」を生成する
@@ -146,6 +152,7 @@ public:
 	// 「光る石」を生成する
 	static std::unique_ptr<RumiRock> CreateRumiRock(
 		const GameObject* parent,
+		const int& id,
 		const DirectX::SimpleMath::Vector3& initialPosition ,
 		const DirectX::SimpleMath::Quaternion& initialAngle,
 		const ModelShader::PointLightCB& lightData,

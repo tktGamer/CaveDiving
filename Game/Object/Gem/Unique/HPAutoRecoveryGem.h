@@ -45,6 +45,9 @@ public:
 	std::unique_ptr<Gem> Clone()const override;
 	//‰Šú‰»
 	void Initialize();
+	//–ˆƒtƒŒ[ƒ€Œø‰Ê
+	void OnUpdate(Character& owner) override;
+
 	//HP‰ñ•œ
 	int RecoveryHP();
 	//I—¹

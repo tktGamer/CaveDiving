@@ -13,9 +13,9 @@
 #define BAT_ATTACK_PREPARING_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-#include"Game/Motion/BatMotion/BatAttackPreparingMotion.h"
 // クラスの宣言 ===============================================================
 class Bat;
+class Motion;
 // クラスの定義 ===============================================================
 /**
   * @brief コウモリの攻撃状態

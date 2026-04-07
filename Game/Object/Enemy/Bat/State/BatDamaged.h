@@ -13,9 +13,9 @@
 #define BAT_DAMAGED_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-#include"Game/Motion/BatMotion/BatDamageMotion.h"
 // クラスの宣言 ===============================================================
 class Bat;
+class Motion;
 // クラスの定義 ===============================================================
 /**
   * @brief コウモリのダメージをくらった状態

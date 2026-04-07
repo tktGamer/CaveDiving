@@ -10,24 +10,21 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
-#include "Game/Object/Character.h"
+#include"Game/Object/Enemy/Enemy.h"
 #include"Game/Common/Collision/Sphere.h"
 #include "../Bat/Wing.h"
-#include"../Bat/State/BatIdling.h"
-#include"../Bat/State/BatAttack.h"
-#include"../Bat/State/BatMoving.h"
-#include"../Bat/State/BatChasing.h"
-#include"../Bat/State/BatAttackPreparing.h"
-#include"../Bat/State/BatDamaged.h"
-#include"Game/Shader/Outline/OutlineRenderer.h"
 // クラスの宣言 ===============================================================
-
+class BatIdling;
+class BatAttack;
+class BatMoving;
+class BatChasing;
+class BatAttackPreparing;
+class BatDamaged;
 // クラスの定義 ===============================================================
 /**
   * @brief コウモリの敵
   */
-class Bat :public Character
+class Bat :public Enemy
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -45,7 +42,6 @@ public:
 	static constexpr  float CHASE_RANGE = 15.0f;
 	//コウモリのアウトラインの太さ
 	static constexpr  float BAT_OUTLINE_THICKNESS = 0.04f;
-
 	//左羽の位置
 	static constexpr DirectX::SimpleMath::Vector3 LEFTWING_INIT_POS  = { -0.5f,0.0f,0.0f };
 	//右羽の位置
@@ -65,7 +61,8 @@ public:
 	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	Bat(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Bat(EnemyManager* enemyManager, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+		const std::vector<int>& gemID);
 	// デストラクタ
 	~Bat();
 //　操作

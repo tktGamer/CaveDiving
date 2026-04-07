@@ -14,6 +14,7 @@
 #include"../Common/Collision/CollisionManager.h"
 #include"Game/Particle/ParticleManager.h"
 #include"../Common/Collision/Sphere.h"
+#include"../Common/Sound.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -26,7 +27,9 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Character::Character(int hp, int attack, int diffence, Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Character::Character(int hp, int attack, int diffence, Tag::ObjectType type,
+	const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const std::vector<int>& gemID)
 	:
 	GameObject{type,parent,initialPosition,initialAngle},
 	m_hp{hp},
@@ -36,7 +39,8 @@ Character::Character(int hp, int attack, int diffence, Tag::ObjectType type,cons
 	m_isInvincible{false},
 	m_motionAttackRate{ 0.0f },
 	m_damageFlash{ NO_DAMAGE_FLASH },
-	m_isOnGround{ false }
+	m_isOnGround{ false },
+	m_holderGem{std::make_unique<HolderGem>(gemID)}
 {
 	//ダメージ時の音　　
 	m_damageSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound( ResourcePath::SOUND::ATTACK_HIT));
@@ -221,7 +225,7 @@ void Character::SetMaxHP(const int& hp)
  */
 const int Character::GetMaxHP() const
 {
-	return m_hp;
+	return  m_holderGem->ApplyStatus(Gem::Type::HP, *this) + m_hp;
 }
 
 /**
@@ -245,7 +249,7 @@ void Character::SetAttackPower(const int& attack)
  */
 const int Character::GetAttackPower() const
 {
-	return m_attackPower;
+	return m_holderGem->ApplyStatus(Gem::Type::STR, *this) + m_attackPower;
 }
 
 /**
@@ -267,9 +271,9 @@ void Character::SetDiffence(const int& diffence)
  *
  * @return 防御力
  */
-const int Character::GetDiffence()
+const int Character::GetDiffence() const
 {
-	return m_diffence;
+	return m_holderGem->ApplyStatus(Gem::Type::DEF, *this) +  m_diffence;
 }
 
 /**
@@ -383,6 +387,30 @@ void Character::SetInvincible(const bool& isInvinccible)
 	m_isInvincible = isInvinccible;
 }
 
+/**
+ * @brief ダメージ無効回数の追加
+ *
+ * @param[in] addCount　追加回数  
+ *
+ * @return なし
+ */
+void Character::AddInvincibleCount(const int& addCount)
+{
+	m_invincibleCount += addCount;
+}
+
+/**
+ * @brief ダメージ無効回数の取得
+ *
+ * @param[in] なし
+ *
+ * @return ダメージ無効回数
+ */
+const int Character::GetInvincibleCount() const
+{
+	return m_invincibleCount;
+}
+
 
 /**
  * @brief ダメージを受けた方向を取得
@@ -454,4 +482,15 @@ void Character::SetMoveFlags(const uint32_t& moveFlags)
 const uint32_t& Character::GetMoveFlags() const
 {
 	return m_moveFlags;
+}
+/**
+ * @brief 所持宝石を取得
+ *
+ * @param[in] なし
+ *
+ * @return 所持宝石リスト
+ */
+const HolderGem& Character::GetHolderGem() const
+{
+	return *m_holderGem;
 }

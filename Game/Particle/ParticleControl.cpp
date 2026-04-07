@@ -147,7 +147,8 @@ void ParticleControl::ClearParticles()
  *
  * @return@‚È‚µ
  */
-void ParticleControl::CreateVertex(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const std::function<void()>& customCreate)
+void ParticleControl::CreateVertex(const DirectX::SimpleMath::Vector3& target
+	, const DirectX::SimpleMath::Vector3& cameraPos, const std::function<void()>& customCreate)
 {
 	//ŠÖ”‚ª“n‚³‚ê‚Ä‚«‚½‚çÀs‚·‚é
 	if (customCreate)

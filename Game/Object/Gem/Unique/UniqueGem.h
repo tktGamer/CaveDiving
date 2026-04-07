@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/04
+ * @date   日付  2026/01/04
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
 
@@ -52,12 +51,10 @@ public:
 public:
 	//多態コピー
 	std::unique_ptr<Gem> Clone()const override;
-
-	void Initialize();
-
-	virtual void ApplyEffect();
-
-	void Finalize();
+	//初期化
+	void Initialize() override;
+	//終了処理
+	void Finalize() override;
 //取得・設定
 public:
 

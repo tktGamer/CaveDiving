@@ -18,12 +18,12 @@
  * @brief コンストラクタ
  *
  * @param[in] itemInfo  アイテムの情報
- * @param[in] type　オブジェクトの種類
  * @param[in] parent　親クラスのポインタ
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Item::Item(const ItemInfo& itemInfo, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Item::Item(const ItemInfo& itemInfo, const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:
 	GameObject{ Tag::ObjectType::Item,parent,initialPosition,initialAngle },
 	m_itemInfomation{itemInfo},
@@ -57,8 +57,8 @@ Item::~Item()
 /**
  * @brief 更新
  *
- * @param[in] currentPosition
- * @param[in] currentAngle
+ * @param[in] currentPosition  親の位置
+ * @param[in] currentAngle　　 親の角度
  *
  * @return なし
  */
@@ -124,19 +124,15 @@ void Item::Draw()
 				//	t0がメインで使われていると勝手に想定。
 				context->PSSetShaderResources(0, 1, GetTexture());
 			}
-
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
-
+			//シェーダー設定
 			shader->StartShader(ShaderManager::Item_Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Item_Model));

@@ -13,10 +13,10 @@
 #define BAT_ATTACK_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Interface/IState.h"
-#include"Game/Motion/BatMotion/BatAttackMotion.h"
 // クラスの宣言 ===============================================================
 class Bat;
 class Sound;
+class AttackMotion;
 // クラスの定義 ===============================================================
 /**
   * @brief コウモリの攻撃状態

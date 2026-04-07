@@ -22,7 +22,6 @@ class FullHPStatusUpGem :public StatusUpGem
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-
 // メンバ関数の宣言 -------------------------------------------------
 //取得・設定
 public:
@@ -39,6 +38,8 @@ public:
 	std::unique_ptr<Gem> Clone()const override;
 	//初期化
 	void Initialize();
+	// ステータス補正
+	int ModifyStatus(const Gem::Type& type, const Character& owner) const override;
 	//効果を適用するか
 	const bool IsApplicable(const int& currentHP, const int& maxHP) const;
 	//終了

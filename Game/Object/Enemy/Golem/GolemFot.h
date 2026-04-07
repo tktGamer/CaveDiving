@@ -11,7 +11,6 @@
 #pragma once
 // ヘッダファイルの読み込み ===================================================
 #include"../EnemyPart.h"
-#include"Game/Object/Weapon.h"
 #include"Game/Common/Collision/Box.h"
 // クラスの宣言 ===============================================================
 
@@ -21,9 +20,9 @@
   */
 class GolemFot : public EnemyPart
 {
-// クラス定数の宣言 -------------------------------------------------
+	// クラス定数の宣言 -------------------------------------------------
 public:
-//非公開定数
+	//非公開定数
 private:
 	//非公開定数
 private:
@@ -32,19 +31,19 @@ private:
 	//ゴーレムのアウトラインの太さ
 	static constexpr  float GOLEM_FOT_OUTLINE_THICKNESS = 0.04f;
 
-// メンバ関数の宣言 -------------------------------------------------
-//　取得・設定
+	// メンバ関数の宣言 -------------------------------------------------
+	//　取得・設定
 public:
 
 	const DirectX::SimpleMath::Quaternion& GetMotionAngle() const;
 	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
-// コンストラクタ/デストラクタ
-	// コンストラクタ
-	GolemFot(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	// コンストラクタ/デストラクタ
+		// コンストラクタ
+	GolemFot(Character* root, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 	// デストラクタ
 	~GolemFot();
-// 操作
-	//初期化
+	// 操作
+		//初期化
 	void Initialize() override;
 	//更新
 	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
@@ -56,10 +55,10 @@ public:
 	void OnMessegeAccepted(Message::MessageID messageID);
 	//衝突応答分岐
 	void CollisionResponce(GameObject* other) override;
-//　内部操作
+	//　内部操作
 private:
 
-// データメンバの宣言 -----------------------------------------------
+	// データメンバの宣言 -----------------------------------------------
 private:
 	//当たり判定
 	Box m_box;

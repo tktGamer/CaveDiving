@@ -25,8 +25,27 @@
 ItemManager::ItemManager()
 	:
 	m_itemInfoList{},
-	m_items{}
+	m_itemCreater{}
 {
+	ItemFactory createItemFunction = [&]
+	(const Item::ItemInfo& info, const GameObject* parent, const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Quaternion& angle)
+	{ return GameObjectFactory::CreateItem(info, parent, pos, angle); };
+	
+	//攻撃力アップアイテムの定義
+	m_itemCreater.insert(std::make_pair(Item::EffectType::Attack,
+		createItemFunction));
+	//防御力アップアイテムの定義
+	m_itemCreater.insert(std::make_pair(Item::EffectType::Diffece,
+		createItemFunction));
+	//速度アップアイテムの定義
+	m_itemCreater.insert(std::make_pair(Item::EffectType::Speed,
+		createItemFunction));
+	//アウトラインアイテムの定義
+	m_itemCreater.insert(std::make_pair(Item::EffectType::Outline,
+		[&]
+		(const Item::ItemInfo& info, const GameObject* parent, const DirectX::SimpleMath::Vector3& pos, const DirectX::SimpleMath::Quaternion& angle)
+		{ return GameObjectFactory::CreateOutlineItem(info, parent, pos, angle); }));
+
 }
 
 
@@ -50,53 +69,10 @@ ItemManager::~ItemManager()
  */
 void ItemManager::Initialize()
 {
-	GenerateItem();
+
+	//GenerateItem(ResourcePath::DATA::ITEM_POSTION);
 	LoadItemData();
 }
-
-
-
-/**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void ItemManager::Update()
-{
-
-	//アイテムの消去
-	DeleteItem();
-
-	//アイテムの更新
-	for (std::unique_ptr<Item>& item : m_items)
-	{
-		item->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);	
-	}
-}
-
-
-
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void ItemManager::Draw()
-{
-
-	//アイテムの描画
-	for (std::unique_ptr<Item>& item : m_items)
-	{
-		item->Draw();
-	}
-
-}
-
-
 
 /**
  * @brief 終了処理
@@ -117,55 +93,50 @@ void ItemManager::Finalize()
  *
  * @return なし
  */
-void ItemManager::GenerateItem()
+std::vector<std::unique_ptr<Item>> ItemManager::GenerateItem(const std::string& spawnData)
 {
-	Item::ItemInfo info;
-	info.type = Item::EffectType::Attack;
-	info.increase = 10;
-	info.time = 10;
-	m_items.emplace_back(GameObjectFactory::CreateItem(info, nullptr, DirectX::SimpleMath::Vector3{ -10.0f,2.0f,0.0f }, DirectX::SimpleMath::Quaternion::Identity));
-	m_items.emplace_back(GameObjectFactory::CreateItem(info, nullptr, DirectX::SimpleMath::Vector3{ 45.0f,2.0f,-25.0f }, DirectX::SimpleMath::Quaternion::Identity));
+	std::vector<std::unique_ptr<Item>> itemList;
 
-	info.type = Item::EffectType::Diffece;
-	info.increase = 10;
-	info.time = 10;
-	m_items.emplace_back(GameObjectFactory::CreateItem(info, nullptr, DirectX::SimpleMath::Vector3{ -20.0f,2.0f,20.0f }, DirectX::SimpleMath::Quaternion::Identity));
+	//ファイルのオープン
+	std::ifstream ifs{ spawnData };
+	if (!ifs.is_open())
+	{
+		//読み込み失敗
+		return itemList;
+	}
+	//読み込んだ文字列を入れる
+	std::string line;
+	//一行飛ばす
+	std::getline(ifs, line);
 
-	info.type = Item::EffectType::Outline;
-	info.increase = 0;
-	info.time = 10;
-	m_items.emplace_back(GameObjectFactory::CreateOutlineItem(info, nullptr, DirectX::SimpleMath::Vector3{ 0.0f,2.0f,30.0f }, DirectX::SimpleMath::Quaternion::Identity));
+	while (std::getline(ifs, line))
+	{
+		std::stringstream ss(line);
+		//アイテムの種類
+		std::string id;
+		std::getline(ss, id, ',');
+		//座標
+		std::string x, y, z;
+		std::getline(ss, x, ',');
+		std::getline(ss, y, ',');
+		std::getline(ss, z, ',');
+
+		//数値に変換
+		DirectX::SimpleMath::Vector3 spawnPos;
+		spawnPos.x = std::stof(x);
+		spawnPos.y = std::stof(y);
+		spawnPos.z = std::stof(z);
+
+		//読み込んだ種類を生成
+		itemList.push_back(m_itemCreater[m_itemInfoList[std::stoi(id)].type]
+		(m_itemInfoList[std::stoi(id)],nullptr, spawnPos, DirectX::SimpleMath::Quaternion::Identity));
+
+	}
+	//ファイルを閉じる
+	ifs.close();
+	return (itemList); 
+
 }
-
-
-/**
- * @brief アイテムの消去
- *
- * @param[in] なし
- *
- * @return なし
- */
-void ItemManager::DeleteItem()
-{
-  //  for (std::list<std::unique_ptr<Item>>::iterator it = m_items.begin(); it != m_items.end(); )
-  //  {
-		////生きているか確認
-  //      if ((*it)->IsAlive())
-  //      {
-  //          // 死亡している場合はリストから削除
-  // //         CollisionManager::GetInstance()->UnRegister(it->get());
-
-
-		//	//ParticleManager::GetInstance()->RequestItemGetParticle((*it)->GetCurrentPosition(),(*it)->GetItemGetObjectPos(),(*it)->GetColor());
-  // //         it = m_items.erase(it);
-  //      }
-  //      else
-  //      {
-  //          ++it;
-  //      }
-  //  }
-}
-
 /**
  * @brief アイテムデータの読み込み
  *
@@ -231,11 +202,9 @@ void ItemManager::LoadItemData()
 		// 効果量
 		std::getline(ss, token, ',');
 		itemInfo.increase = std::stoi(token);
-
 		// 効果時間
 		std::getline(ss, token, ',');
 		itemInfo.time =static_cast<float>(std::stoi(token));
-
 
 		//リストに登録
 		m_itemInfoList.insert(std::make_pair(id, itemInfo));
@@ -246,4 +215,3 @@ void ItemManager::LoadItemData()
 	return;
 
 }
-

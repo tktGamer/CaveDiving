@@ -16,6 +16,13 @@
 #include"Game/Object/Weapon.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Particle/ParticleManager.h"
+#include"../Bat/State/BatIdling.h"
+#include"../Bat/State/BatAttack.h"
+#include"../Bat/State/BatMoving.h"
+#include"../Bat/State/BatChasing.h"
+#include"../Bat/State/BatAttackPreparing.h"
+#include"../Bat/State/BatDamaged.h"
+#include"Game/Shader/Outline/OutlineRenderer.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,10 +31,11 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Bat::Bat(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Bat::Bat(EnemyManager* enemyManager, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const std::vector<int>& gemID)
 	: 
-	Character(BAT_BASE_HP,BAT_BASE_ATTACK,BAT_BASE_DIFFENCE
-				,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle),
+	Enemy(enemyManager,BAT_BASE_HP,BAT_BASE_ATTACK,BAT_BASE_DIFFENCE
+				, parent, initialPosition, initialAngle,gemID),
 	m_sphere{ GetPosition(), BAT_SPHERE_SIZE },
 	m_messageID{},
 	m_frameCount{},
@@ -171,29 +179,22 @@ void Bat::Draw()
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
-
 			//	画像用サンプラーの登録
 			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
 			context->PSSetSamplers(0, 1, sampler);
-
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
 				context->PSSetShaderResources(0, 1, GetTexture());
 			}
-
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
-
 			//シェーダーセット
 			shader->StartShader(ShaderManager::Model);
 			//インプットレイアウトセット
@@ -207,8 +208,6 @@ void Bat::Draw()
 	m_leftWing->Draw();
 	m_rightWing->Draw();
 }
-
-
 
 /**
  * @brief 終了処理
@@ -313,8 +312,6 @@ void Bat::CollisionResponce(GameObject* other)
 			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere, dynamic_cast<Sphere*>(other->GetShape())));
 			
 			m_sphere.SetCenter(GetPosition());
-
-
 		}
 		break;
 		//武器と
@@ -330,7 +327,6 @@ void Bat::CollisionResponce(GameObject* other)
 		{
 			//ライトオブジェクトとの衝突応答　押し出し
 			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
-
 		}
 	default:
 		break;
@@ -339,11 +335,8 @@ void Bat::CollisionResponce(GameObject* other)
 	//死んでいたらエフェクトを出す
 	if (!IsAlive())
 	{
-		//消滅パーティクル生成をリクエスト
-		ParticleManager::GetInstance()->RequestVanishParticle(GetCurrentPosition());
-
+		OnDead();
 	}
-
 }
 
 /**

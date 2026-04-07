@@ -10,6 +10,9 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GolemWalkMotion.h"
+#include"Game/Object/Enemy/Golem/Golem.h"
+#include"Game/Object/Enemy/Golem/GolemFot.h"
+#include"Game/Object/Enemy/Golem/GolemArm.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -27,8 +30,7 @@ GolemWalkMotion::GolemWalkMotion(const int& golemObjectID)
 	m_handStartPosition{},
 	m_handGoalPosition{},
 	m_coolTime{},
-	m_operate{1},
-	m_attackSound{}
+	m_operate{1}
 {
 	Messenger* messenger = Messenger::GetInstance();
 	m_pGolem = messenger->GetObject(golemObjectID)->Cast<Golem>();
@@ -36,8 +38,6 @@ GolemWalkMotion::GolemWalkMotion(const int& golemObjectID)
 	m_pRightGolemFot = messenger->GetObject(golemObjectID + Golem::RIGHT_FOT_OBJ_NUMBER)->Cast<GolemFot>();
 	m_pLeftGolemArm = messenger->GetObject(golemObjectID + Golem::LEFT_ARM_OBJ_NUMBER)->Cast<GolemArm>();
 	m_pLeftGolemFot = messenger->GetObject(golemObjectID + Golem::LEFT_FOT_OBJ_NUMBER)->Cast<GolemFot>();
-
-	m_attackSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GOLEM_SLAMMED_DOWN));
 }
 
 /**
@@ -57,10 +57,6 @@ GolemWalkMotion::~GolemWalkMotion()
  */
 void GolemWalkMotion::Initialize()
 {
-	//スタート位置とゴール位置
-	//m_handStartPosition = m_pRightGolemArm->GetPosition();
-	//m_handGoalPosition = m_handStartPosition + SLAMMED_DOWN_MOVE;
-	//m_startAngle = m_pRightGolemArm->GetLocalEuler();
 	m_coolTime = TKTLib::FLOAT_ZERO;
 
 	SetMotionLerp(TKTLib::FLOAT_ZERO);
@@ -115,10 +111,4 @@ bool GolemWalkMotion::Update()
  */
 void GolemWalkMotion::Reset()
 {
-	//それぞれのオブジェクトを元の位置・角度に戻す
-	//m_pGolem->SetMotionAngle(DirectX::SimpleMath::Quaternion::Identity);
-	//m_pRightGolemArm->SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	//m_pRightGolemArm->SetPosition(Golem::GOLEM_RIGHT_ARM_INIT_POS);
-	//m_pLeftGolemArm->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, Golem::LEFT_HAND_INIT_ANGLE));
-	//m_pLeftGolemArm->SetPosition(Golem::GOLEM_LEFT_ARM_INIT_POS);
 }

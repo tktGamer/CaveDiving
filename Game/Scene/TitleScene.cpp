@@ -12,6 +12,7 @@
 #include "TitleScene.h"
 #include "Game/Common/ResourceManager.h"
 #include"Game/Common/Sound.h"
+#include"Game/UI/UIManager.h"
 #include"../Scene/PlayScene.h"
 #include "../Scene/LoadScene.h"
 #include"../Scene/LogoScene.h"
@@ -41,7 +42,6 @@ TitleScene::TitleScene()
  */
 TitleScene::~TitleScene()
 {
-
 }
 
 
@@ -55,6 +55,7 @@ TitleScene::~TitleScene()
  */
 void TitleScene::Initialize()
 {
+	UIManager::GetInstance()->ClearUI();
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
@@ -91,14 +92,15 @@ void TitleScene::Initialize()
 	m_skyModel = ResourceManager::GetInstance()->RequestModel(ResourcePath::MODEL::SKY_DOME);
 
 	//UI生成
+	UIManager* uiManager = UIManager::GetInstance();
 	m_loadCheckUI = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::LOAD_GEM_CHECK,
 		LOAD_CHECK_UI_POS, LOAD_CHECK_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
 	m_checkUI     = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::CHECK,
 		CHECK_MARK_UI_POS, CHECK_MARK_UI_SCALE,UserInterface::ANCHOR::MIDDLE_CENTER);
-	m_title       = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::TITLE,
-		TITLE_UI_POS, TITLE_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
-	m_pressSpace  = UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::PRESS_SPACE,
-		PRESS_SPACE_UI_POS, PRESS_SPACE_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER);
+	uiManager->RequestAddUI( UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::TITLE,
+		TITLE_UI_POS, TITLE_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
+	uiManager->RequestAddUI( UIFactory::CreateUserInterface(ResourcePath::TEXTURE::UI::PRESS_SPACE,
+		PRESS_SPACE_UI_POS, PRESS_SPACE_UI_SCALE, UserInterface::ANCHOR::MIDDLE_CENTER));
 
 	//プレイヤーのデータを初期化
 	GetGameData()->SetPlayerData(GameData::PlayerData{});
@@ -241,8 +243,7 @@ void TitleScene::Render()
 	{
 		m_checkUI->Render();
 	}
-	m_title->Render();
-	m_pressSpace->Render();
+	UIManager::GetInstance()->Render();
 }
 
 /**

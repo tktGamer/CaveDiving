@@ -11,6 +11,7 @@
 #include "pch.h"
 #include "PlayerFirstAttackMotion.h"
 #include"Game/Object/Player/Hand.h"
+#include"Game/Common/Sound.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -33,7 +34,6 @@ PlayerFirstAttackMotion::PlayerFirstAttackMotion(Hand* pRightHand, Hand* pLeftHa
  */
 PlayerFirstAttackMotion::~PlayerFirstAttackMotion()
 {
-
 }
 
 /**

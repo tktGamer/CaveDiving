@@ -9,9 +9,10 @@
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
+#include "Game/Common/Sound.h"
 #include "PlayerAirSpenningMotion.h"
-#include"Game/Object/Player/Hand.h"
 #include"Game/Object/Player/Player.h"
+#include"Game/Object/Player/Hand.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

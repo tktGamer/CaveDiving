@@ -10,12 +10,9 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
-#include"../Stage/Ground.h"
-#include"../Stage/Wall.h"
 #include"../Stage/RumiRock.h"
 // クラスの宣言 ===============================================================
-
+class RumiRock;
 // クラスの定義 ===============================================================
 /**
   * @brief ステージ
@@ -46,12 +43,6 @@ public:
 // 操作
 	//初期化
 	void Initialize(bool* isOnLight, int size);
-	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle);
-	//描画
-	void Draw();
-	//ブルーム描画
-	void BloomDraw();
 	//終了
 	void Finalize();
 	// メッセージを取得する
@@ -63,11 +54,6 @@ private:
 private:
 	// メッセージID
 	Message::MessageID m_messageID;
-
-	//外壁
-	std::unique_ptr<Wall> m_wall;
-	//地面
-	std::unique_ptr<Ground> m_ground;
 	//発光する岩
 	std::list<std::unique_ptr<RumiRock>> m_rocks;
 };

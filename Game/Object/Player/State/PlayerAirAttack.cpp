@@ -13,8 +13,9 @@
 #include "Game/Object/Player/Player.h"
 #include"Game/Object/Player/Hand.h"
 #include"Game/Motion/PlayerMotion/PlayerAirSpenningMotion.h"
-#include"Game/Object/Gem/GemManager.h"
+#include"Game/Motion/PlayerMotion/PlayerSlamAttackMotion.h"
 #include"Game/Object/Gem/Unique/AllSpenningAttackGem.h"
+#include"Game/Common/Graphics.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

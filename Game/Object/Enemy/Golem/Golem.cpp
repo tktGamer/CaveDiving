@@ -16,6 +16,14 @@
 #include"Game/Object/Weapon.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Particle/ParticleManager.h"
+#include"Game/Shader/Outline/OutlineRenderer.h"
+#include"../Golem/State/GolemIdling.h"
+#include"../Golem/State/GolemAttack.h"
+#include"../Golem/State/GolemMoving.h"
+#include"../Golem/State/GolemChasing.h"
+#include"../Golem/State/GolemAttackPreparing.h"
+#include"../Golem/State/GolemDamaged.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -24,8 +32,10 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Golem::Golem(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	:Character(GOLEM_BASE_HP,GOLEM_BASE_ATTACK,GOLEM_BASE_DIFFENCE,Tag::ObjectType::Enemy, parent, initialPosition, initialAngle),
+Golem::Golem(EnemyManager* enemyManager, 
+	const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const std::vector<int>& gemID)
+	:Enemy{ enemyManager,GOLEM_BASE_HP,GOLEM_BASE_ATTACK,GOLEM_BASE_DIFFENCE,parent, initialPosition, initialAngle,gemID },
 	m_box{ GetPosition(), GOLEM_COLLISION_SIZE }, // 初期位置とサイズを設定
 	m_frameCount{},
 	m_messageID{},
@@ -321,6 +331,11 @@ void Golem::CollisionResponce(GameObject* other)
 		}
 	default:
 		break;
+	}
+	//死んでいたらエフェクトを出す
+	if (!IsAlive())
+	{
+		OnDead();
 	}
 
 }

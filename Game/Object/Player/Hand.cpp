@@ -15,6 +15,8 @@
 #include"Game/Object/Player/Pikel.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Factory/GameObjectFactory.h"
+#include"Game/Shader/Outline/OutlineRenderer.h"
+#include"Game/Object/Weapon.h"
  // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -75,11 +77,8 @@ void Hand::Initialize()
 void Hand::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	//現在位置の更新
-	//プレイヤーの周囲のトランスフォームさせ、親の位置分移動
-	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetInitialPosition() + GetPosition(), m_motionAngle * currentAngle)+ currentPosition );
 	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle)+ currentPosition );
 	//現在角度の更新
-	//SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle * GetInitialQuaternion());
 	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle );
 	
 	//武器を持っていたら更新
@@ -113,7 +112,6 @@ void Hand::Draw()
 	if (Messenger::GetInstance()->IsOutLineActive()) 
 	{
 		OutlineRenderer::Draw(*GetModel(), world, PLAYER_HAND_OUTLINE_THICKNESS);
-		// モデル描画（アウトライン専用）
 	}
 
 	//	シェーダーに渡す追加のバッファを作成する。

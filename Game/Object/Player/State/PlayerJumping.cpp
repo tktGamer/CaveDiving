@@ -13,6 +13,7 @@
 #include "Game/Object/Player/Player.h"
 #include "Game/Common/Graphics.h"
 #include"Game/Particle/ParticleManager.h"
+#include"Game/Common/Sound.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -43,7 +44,6 @@ PlayerJumping::~PlayerJumping()
  */
 void PlayerJumping::Initialize()
 {
-	
 	PreUpdate();
 }
 

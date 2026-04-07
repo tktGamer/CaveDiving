@@ -9,6 +9,7 @@
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
+#include"Game/Common/Graphics.h"
 #include "Game/Object/Player/State/PlayerAvoidance.h"
 #include "Game/Object/Player/Player.h"
 // メンバ関数の定義 ===========================================================
@@ -57,28 +58,7 @@ void PlayerAvoidance::PreUpdate()
 
 	m_dodgeTime = 0;
 	//回避方向
-	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3::Zero;
-
-	//回避方向を決定する
-	if (key->GetLastState().Up)
-	{
-		direction += Character::MOVE::FRONT;
-	}
-	else if (key->GetLastState().Down)
-	{
-		direction += Character::MOVE::BACK;
-
-	}
-	if (key->GetLastState().Left)
-	{
-		direction += Character::MOVE::LEFT;
-
-	}
-	else if (key->GetLastState().Right)
-	{
-		direction += Character::MOVE::RIGHT;
-
-	}
+	DirectX::SimpleMath::Vector3 direction = m_pPlayer->CalcMoveDirection();
 
 	//移動キーの入力がなかったら
 	if (direction == DirectX::SimpleMath::Vector3::Zero) 

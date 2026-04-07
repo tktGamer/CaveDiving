@@ -39,6 +39,8 @@ class PlayScene : public Scene<GameData>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	//BGM音量
+	static constexpr float BGM_VOLUME = 0.8f;
 	//１秒あたりの回転量
 	static constexpr  float ROTATION_SPEED_Y_ANGLE = DirectX::XMConvertToRadians(180.0f);
 	//カメラ初期位置
@@ -124,7 +126,8 @@ public:
 	//移動動作UIサイズ
 	static constexpr DirectX::SimpleMath::Vector2 MOVE_ACTION_UI_SCALE = { 0.2f,0.2f };
 
-
+	static constexpr float FADE_RADIUS = 10.0f;
+	static constexpr float FADE_STRENGTH = 0.1f;
 // メンバ関数の宣言 -------------------------------------------------
 // 取得/設定
 public:
@@ -185,26 +188,16 @@ private:
 	std::unique_ptr<RenderPipeLine> m_renderPipeLine;
 
 	//オブジェクトリスト
-	std::list<IComponent*> m_objects;
+	std::unordered_map<int, std::unique_ptr<GameObject>> m_objectList;
+
 	//敵管理オブジェクト
 	std::unique_ptr<EnemyManager> m_enemyManager; 
-	// カメラオブジェクト
-	std::unique_ptr<Camera> m_camera;    
-	// プレイヤーオブジェクト
-	std::unique_ptr<Player> m_player;    
-	//外壁
-	std::unique_ptr<Wall> m_wall;
-	//地面
-	std::unique_ptr<Ground> m_ground;
-	//発光する岩
-	std::list<std::unique_ptr<RumiRock>> m_rocks;
-
 	//アイテム管理
 	std::unique_ptr<ItemManager> m_itemManager;
-	//プレイヤーのHPゲージUI
-	std::unique_ptr<Gauge> m_hpGauge;
-	//所持宝石UI
-	std::unique_ptr<HoldGem> m_holdGem;
+	// カメラオブジェクト
+	std::unique_ptr<Camera> m_camera;    
+	//プレイヤーのオブジェクト番号
+	int m_playerObjectID;
 	//バフ表示UI
 	std::unique_ptr<BuffUIControl> m_buffUI;
 	//残りの敵数UI

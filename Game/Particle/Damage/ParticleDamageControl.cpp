@@ -52,11 +52,14 @@ void ParticleDamageControl::Update()
 /**
  * @brief 描画処理
  *
- * @param[in] なし
+ * @param[in] target  　 カメラの注視点
+ * @param[in] cameraPos　カメラの座標
+ * @param[in] cameraUp　 カメラの上ベクトル
  *
  * @return なし
  */
-void ParticleDamageControl::Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
+void ParticleDamageControl::Render(const DirectX::SimpleMath::Vector3& target,
+	const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
 {
 	for (std::unique_ptr<ParticleDamageNumber>& damageNumber : m_particleDamage)
 	{

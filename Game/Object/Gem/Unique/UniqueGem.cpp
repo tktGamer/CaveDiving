@@ -5,9 +5,8 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2025/01/04
+ * @date   日付  2026/01/04
  */
-
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "UniqueGem.h"
@@ -62,12 +61,6 @@ void UniqueGem::Initialize()
 {
 
 }
-
-void UniqueGem::ApplyEffect()
-{
-}
-
-
 
 /**
  * @brief 終了処理

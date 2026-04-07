@@ -98,11 +98,12 @@ std::unique_ptr<Pikel> GameObjectFactory::CreatePikle(Character* owner, const Ga
  *
  * @return コウモリの敵クラス
  */
-std::unique_ptr<Bat> GameObjectFactory::CreateBat(const GameObject* parent,
-	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+std::unique_ptr<Bat> GameObjectFactory::CreateBat(EnemyManager* enemyManager, const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const std::vector<int>& gemID)
 {
 	//Batクラスのインスタンスを生成する
-	std::unique_ptr<Bat> bat = CreateObject<Bat>(parent, initialPosition, initialAngle);
+	std::unique_ptr<Bat> bat = CreateObject<Bat>(enemyManager, parent, initialPosition, initialAngle,gemID);
 	// Batクラスのインスタンスを返す
 	return bat;
 }
@@ -133,10 +134,12 @@ std::unique_ptr<Wing> GameObjectFactory::CreateBatWing(Character* root, const Ga
  *
  * @return ゴーレムクラス
  */
-std::unique_ptr<Golem> GameObjectFactory::CreateGolem(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+std::unique_ptr<Golem> GameObjectFactory::CreateGolem(EnemyManager* enemyManager, const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const std::vector<int>& gemID)
 {
 	//Golemクラスのインスタンスを生成する
-	std::unique_ptr<Golem> golem = CreateObject<Golem>(parent, initialPosition, initialAngle);
+	std::unique_ptr<Golem> golem = CreateObject<Golem>(enemyManager, parent, initialPosition, initialAngle, gemID);
 	// Golemクラスのインスタンスを返す
 	return golem;
 }
@@ -276,6 +279,7 @@ std::unique_ptr<Wall> GameObjectFactory::CreateWall(const GameObject* parent,
  * @brief 「光る石」の生成
  *
  * @param[in] parent   親のポインタ
+ * @param[in] id      石の番号
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　　初期角度
  * @param[in] lightData　　   ライト情報
@@ -283,12 +287,11 @@ std::unique_ptr<Wall> GameObjectFactory::CreateWall(const GameObject* parent,
  *
  * @return 光る石クラス
  */
-
-std::unique_ptr<RumiRock> GameObjectFactory::CreateRumiRock(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition,
+std::unique_ptr<RumiRock> GameObjectFactory::CreateRumiRock(const GameObject* parent, const int& id, const DirectX::SimpleMath::Vector3& initialPosition,
 	const DirectX::SimpleMath::Quaternion& initialAngle, const ModelShader::PointLightCB& lightData, const bool& isOnLight)
 {
 	//RumiRockクラスのインスタンスを生成する
-	std::unique_ptr<RumiRock> rock = CreateObject<RumiRock>(lightData, parent, initialPosition, initialAngle);
+	std::unique_ptr<RumiRock> rock = CreateObject<RumiRock>(lightData,id, parent, initialPosition, initialAngle);
 	if (isOnLight) 
 	{
 		rock->OnLight();

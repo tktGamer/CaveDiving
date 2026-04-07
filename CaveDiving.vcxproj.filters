@@ -744,6 +744,9 @@
     <ClInclude Include="Game\RenderPipeLine.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Object\Enemy\Enemy.h">
+      <Filter>Game\Object\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1221,6 +1224,9 @@
     </ClCompile>
     <ClCompile Include="Game\RenderPipeLine.cpp">
       <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Enemy\Enemy.cpp">
+      <Filter>Game\Object\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

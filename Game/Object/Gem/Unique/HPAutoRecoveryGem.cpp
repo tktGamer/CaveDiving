@@ -13,6 +13,7 @@
 #include"Game/Message/Messenger.h"
 #include"Game/Factory/GemFactory.h"
 #include"Game/Particle/ParticleManager.h"
+#include"Game/Object/Character.h"
 //ファクトリクラスへの登録
 REGISTER_GEM_CLASS("HPAutoRecoveryGem", HPAutoRecoveryGem);
 
@@ -59,6 +60,24 @@ void HPAutoRecoveryGem::Initialize()
 {
 	//タイマーリセット
 	m_recoveryIntervalTimer = RESET;
+}
+
+
+/**
+ * @brief 毎フレーム更新効果
+ *
+ * @param[in] owner  宝石の所有者
+ *
+ * @return なし
+ */
+void HPAutoRecoveryGem::OnUpdate(Character& owner)
+{
+	int heal = RecoveryHP();
+	if (heal <= NO_HEAL) return;
+	//所有者を回復させる
+	owner.SetCurrentHP(std::min(owner.GetCurrentHP() + heal, owner.GetMaxHP()));
+	//回復エフェクトを出す
+	ParticleManager::GetInstance()->RequestHPHealParticle(owner.GetCurrentPosition());
 }
 
 /**

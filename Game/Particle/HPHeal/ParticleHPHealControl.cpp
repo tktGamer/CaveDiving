@@ -10,7 +10,6 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleHPHealControl.h"
-#include"Game/Common/ResourceManager.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
 // メンバ関数の定義 ===========================================================
@@ -111,7 +110,7 @@ void ParticleHPHealControl::Render(const DirectX::SimpleMath::Vector3& target, c
 					continue;
 				}
 
-				DirectX::VertexPositionColorTexture vPCT;
+				DirectX::VertexPositionColorTexture vPCT{};
 				//---カスタム部分---//
 				//	表示するパーティクルの中心座標のみを入れる。
 				vPCT.position = DirectX::XMFLOAT3(particle.get()->GetPosition() + *m_centerPos);

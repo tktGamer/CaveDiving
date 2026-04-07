@@ -21,7 +21,7 @@ class GenerateShieldGem :public Gem
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
+	static constexpr int NO_SHILD = 0;
 // メンバ関数の宣言 -------------------------------------------------
 //取得・設定
 public:
@@ -37,6 +37,8 @@ public:
 	std::unique_ptr<Gem> Clone()const override;
 	//初期化
 	void Initialize();
+	//毎フレーム効果
+	void OnUpdate(Character& owner) override;
 	//盾生成
 	int GenerateShield();
 	//終了
@@ -48,4 +50,5 @@ private:
 private:
 	//盾生成間隔タイマー
 	float m_generateIntervalTimer = 0.0f;
+	
 };

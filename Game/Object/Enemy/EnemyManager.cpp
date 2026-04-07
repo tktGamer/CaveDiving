@@ -10,11 +10,10 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "EnemyManager.h"
-#include"Game/Common/Collision/CollisionManager.h"
 #include"Game/Factory/GameObjectFactory.h"
-#include"Game/Particle/ParticleManager.h"
 #include<fstream>
 #include<sstream>
+#include"Game/Common/Sound.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,7 +22,7 @@
  */
 EnemyManager::EnemyManager()
 	:
-	m_enemies{},
+	m_enemyCount{},
 	m_vanishSound{}
 {
 	m_vanishSound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::ENEMY_VANISH));
@@ -48,42 +47,6 @@ void EnemyManager::Initialize()
 }
 
 /**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void EnemyManager::Update()
-{
-
-	//敵の消去
-	DeleteEnemy();
-
-	//敵の更新
-	for (std::unique_ptr<Character>& enemy : m_enemies)
-	{
-		enemy->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);	
-	}
-}
-
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void EnemyManager::Draw()
-{
-	//敵の描画
-	for (std::unique_ptr<Character>& enemy : m_enemies)
-	{
-		enemy->Draw();
-	}
-}
-
-/**
  * @brief 終了処理
  *
  * @param[in] なし
@@ -99,22 +62,24 @@ void EnemyManager::Finalize()
  *
  * @param[in] spawnData 敵生成データのパス
  *
- * @return なし
+ * @return 敵リスト
  */
-void EnemyManager::Spawn(const std::string& spawnData)
+std::vector<std::unique_ptr<Character>> EnemyManager::Spawn(const std::string& spawnData)
 {
+	std::vector<std::unique_ptr<Character>> enemies;
 
 	//ファイルのオープン
 	std::ifstream ifs{ spawnData };
 	if (!ifs.is_open())
 	{
 		//読み込み失敗
-		return;
+		return enemies;
 	}
 	//読み込んだ文字列を入れる
 	std::string line;
 	//一行飛ばす
 	std::getline(ifs, line);
+
 
 	while (std::getline(ifs,line))
 	{
@@ -127,69 +92,41 @@ void EnemyManager::Spawn(const std::string& spawnData)
 		std::getline(ss, x, ',');
 		std::getline(ss, y, ',');
 		std::getline(ss, z, ',');
+		//宝石の番号
+		std::string gemID1, gemID2, gemID3;
+		std::getline(ss, gemID1, ',');
+		std::getline(ss, gemID2, ',');
+		std::getline(ss, gemID3, ',');
 
 		//数値に変換
 		DirectX::SimpleMath::Vector3 spawnPos;
 		spawnPos.x = std::stof(x);
 		spawnPos.y = std::stof(y);
 		spawnPos.z = std::stof(z);
+		std::vector<int> gemID;
+		gemID.push_back(std::stoi(gemID1));
+		gemID.push_back(std::stoi(gemID2));
+		gemID.push_back(std::stoi(gemID3));
 
 		//読み込んだ種類を生成
 		if (type == BAT)
 		{
 			//生成
-			m_enemies.emplace_back(GameObjectFactory::CreateBat(nullptr,spawnPos));
+			enemies.emplace_back(GameObjectFactory::CreateBat(this,nullptr,spawnPos,DirectX::SimpleMath::Quaternion::Identity,gemID));
 		}
 		//読み込んだ種類を生成
 		else if (type == GOLEM)
 		{
 			//生成
-			m_enemies.emplace_back(GameObjectFactory::CreateGolem(nullptr,spawnPos));
+			enemies.emplace_back(GameObjectFactory::CreateGolem(this,nullptr,spawnPos,DirectX::SimpleMath::Quaternion::Identity, gemID));
 		}
 
-		//当たり判定クラスに登録
-		CollisionManager::GetInstance()->Register(m_enemies.back().get());
-		//メッセンジャークラスに登録
-		Messenger::GetInstance()->Register(m_enemies.back()->GetObjectNumber(), m_enemies.back().get());
-
-		//残りを飛ばす
-		//ifs.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	}
 	//ファイルを閉じる
 	ifs.close();
-	return;
+	return enemies;
 }
 
-/**
- * @brief 敵の消去
- *
- * @param[in] なし
- *
- * @return なし
- */
-void EnemyManager::DeleteEnemy()
-{
-  //  for (std::list<std::unique_ptr<Character>>::iterator it = m_enemies.begin(); it != m_enemies.end(); )
-  //  {
-		////生きているか確認
-  //      if (!(*it)->IsAlive() || IsOutOfStage((*it).get()))
-  //      {
-  // //         // 死亡している場合はリストから削除
-  // //         CollisionManager::GetInstance()->UnRegister(it->get());
-
-		//	////消滅音再生
-		//	//m_vanishSound->Play(false);
-		//	////消滅パーティクル生成をリクエスト
-		//	//ParticleManager::GetInstance()->RequestVanishParticle((*it)->GetCurrentPosition());
-
-  // //         it = m_enemies.erase(it);
-  //      }
-  //      else
-  //      {
-  //          ++it;
-  //      }
-  //  }
-}
 
 /**
  * @brief 敵がステージ外にいるか
@@ -205,15 +142,37 @@ bool EnemyManager::IsOutOfStage(const Character* enemy)
 }
 
 
+
+/**
+ * @brief 敵の数取得
+ *
+ * @param[in] なし
+ *
+ * @return 敵の数
+ */
 const int EnemyManager::GetEnemyCount() const
 {
-	int count = 0;
-	for (const std::unique_ptr<Character>& enemy : m_enemies)
-	{
-		if (enemy->IsAlive())
-		{
-			count++;
-		}
-	}
-	return count;
+	return m_enemyCount;
+}
+/**
+ * @brief 敵の数設定
+ *
+ * @param[in] count  敵の数
+ *
+ * @return なし
+ */
+void EnemyManager::SetEnemyCount(const int& count)
+{
+	m_enemyCount = count;
+}
+/**
+ * @brief 敵の数を減らす
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void EnemyManager::DecreaseEnemyCount()
+{
+	m_enemyCount--;
 }

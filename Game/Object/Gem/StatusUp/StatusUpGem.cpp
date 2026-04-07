@@ -57,6 +57,24 @@ void StatusUpGem::Initialize()
 }
 
 /**
+ * @brief ステータス補正
+ *
+ * @param[in] type  補正するステータス
+ * @param[in] owner 所有者
+ *
+ * @return 補正値
+ */
+int StatusUpGem::ModifyStatus(const Gem::Type& type, const Character& owner) const
+{
+	//宝石の補正するステータスが引数で指定されたものと同じなら
+	if (GetAbility().powerUp == type) 
+	{
+		return GetAbility().value;
+	}
+	return STATUS_MODIFIER_NONE;
+}
+
+/**
  * @brief 終了処理
  *
  * @param[in] なし

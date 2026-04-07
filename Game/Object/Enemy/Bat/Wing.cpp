@@ -10,9 +10,9 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Wing.h"
-#include"../Bat/Bat.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Shader/Outline/OutlineRenderer.h"
+#include"Game/Object/Character.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -191,11 +191,25 @@ void Wing::CollisionResponce(GameObject* other)
 	UNREFERENCED_PARAMETER(other);
 }
 
+/**
+ * @brief モーション角度を取得
+ *
+ * @param[in] なし
+ *
+ * @return モーション角度
+ */
 DirectX::SimpleMath::Quaternion Wing::GetMotionAngle() const
 {
 	return m_motionAngle;
 }
 
+/**
+ * @brief モーション角度を設定
+ *
+ * @param[in] angle  モーション角度
+ *
+ * @return なし
+ */
 void Wing::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 {
 	m_motionAngle = angle;

@@ -10,7 +10,6 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleVanishControl.h"
-#include"Game/Common/ResourceManager.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Message/Messenger.h"
 // メンバ関数の定義 ===========================================================
@@ -87,7 +86,8 @@ void ParticleVanishControl::Update()
  *
  * @return なし
  */
-void ParticleVanishControl::Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
+void ParticleVanishControl::Render(const DirectX::SimpleMath::Vector3& target,
+	const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
 {
 	ShaderManager* shader = ShaderManager::GetInstance();
 

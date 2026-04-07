@@ -11,9 +11,9 @@
 #pragma once
 // ヘッダファイルの読み込み ===================================================
 #include "../Object/GameObject.h"
-#include"../Common/Sound.h"
+#include"Game/Object/Gem/HolderGem.h"
 // クラスの宣言 ===============================================================
-
+class Sound;
 // クラスの定義 ===============================================================
 /**
   * @brief キャラクター
@@ -47,7 +47,8 @@ public:
 	};
 
 	static constexpr float NO_DAMAGE_FLASH = 0.0f;
-
+	//ダメージ無効回数減少
+	static constexpr int INVINCIBLE_COUNT_DECREASE = -1;
 	//移動フラグ
 	enum MoveFlag
 	{
@@ -75,7 +76,7 @@ public:
 	// 防御力の設定
 	void SetDiffence(const int& diffence);
 	// 防御力の取得
-	virtual const int GetDiffence();
+	virtual const int GetDiffence() const;
 	//モーションによる攻撃力補正の設定
 	void SetMotionAttackRate(const float& rate);
 	//モーションによる攻撃力補正の取得
@@ -98,6 +99,9 @@ public:
 	const bool IsInvincible() const;
 	//無敵の設定
 	void SetInvincible(const bool& isInvinccible);
+	//ダメージ無効回数追加
+	void AddInvincibleCount(const int& addCount);
+	const int GetInvincibleCount() const;
 	//ダメージフラッシュ
 	void SetDamageFlash(const float& flash = 1.0f);
 	//ダメージフラッシュ取得
@@ -106,10 +110,14 @@ public:
 	void SetMoveFlags(const uint32_t& moveFlags);
 	//移動方向取得
 	const uint32_t& GetMoveFlags() const;
+	//所持宝石を取得
+	const HolderGem& GetHolderGem() const;
+
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	Character(int hp,int attack, int diffence,
-		Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+		Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+		const std::vector<int>& gemID = std::vector<int>(HolderGem::MAX_GEM, Gem::BLANK_ID));
 	// デストラクタ
 	virtual ~Character();
 // 操作
@@ -149,8 +157,14 @@ private:
 	bool m_isOnGround = false;
 	//無敵状態か
 	bool m_isInvincible;
+	//ダメージを無効化できる回数
+	int m_invincibleCount = 0;
 	//攻撃をくらった方向
 	DirectX::SimpleMath::Vector3 m_damageDirection;
 	//ダメージ時の音
 	std::unique_ptr<Sound> m_damageSound;
+
+	//所持する宝石
+	std::unique_ptr<HolderGem> m_holderGem;
+
 };

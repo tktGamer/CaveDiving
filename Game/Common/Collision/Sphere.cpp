@@ -181,7 +181,6 @@ bool Sphere::IntersectBox(const Box* other) const
 
 	// ‹——£‚Ì“ñæ‚ª‹…‚Ì”¼Œa‚Ì“ñæˆÈ‰º‚Å‚ ‚ê‚Î“–‚½‚è
 	return distanceSquared <= (m_radius * m_radius);
-
 }
 
 /**

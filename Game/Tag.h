@@ -26,6 +26,7 @@ public:
 		Enemy,		// 敵
 		EnemyPart,	// 敵の部品
 		Item,		// アイテム
+		Rock,		// 石
 		Light,      // ライト
 		Wall,	    // 壁
 		Ground,		// 床

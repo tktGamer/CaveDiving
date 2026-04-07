@@ -10,10 +10,10 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"../Enemy/Bat/Bat.h"
-#include"../Enemy/Golem/Golem.h"
-// クラスの宣言 ===============================================================
 
+// クラスの宣言 ===============================================================
+class Character;
+class Sound;
 // クラスの定義 ===============================================================
 /**
   * @brief 敵管理
@@ -35,8 +35,10 @@ private:
 public:
 	//残りの敵の数を取得
 	const int GetEnemyCount() const;
-	//敵リストの取得
-	const std::list<std::unique_ptr<Character>>& GetEnemies() const { return m_enemies; }
+	//残りの敵の数を設定
+	void SetEnemyCount(const int& count);
+	//敵残数減少
+	void DecreaseEnemyCount();
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	EnemyManager();
@@ -45,24 +47,18 @@ public:
 // 操作
 	//初期化処理
 	void Initialize();
-	//更新処理
-	void Update();
-	//描画処理
-	void Draw();
 	//終了処理
 	void Finalize();
 	//敵生成
-	void Spawn(const std::string& spawnData);
+	std::vector<std::unique_ptr<Character>> Spawn(const std::string& spawnData);
 //　内部操作
 private:
-	//敵を消去
-	void DeleteEnemy();
 	//敵が範囲外にいるか
 	bool IsOutOfStage(const Character* enemy);
 // データメンバの宣言 -----------------------------------------------
 private:
-	//敵リスト
-	std::list<std::unique_ptr<Character>> m_enemies;
+	//敵残数
+	int m_enemyCount;
 	//消滅音
 	std::unique_ptr<Sound> m_vanishSound;
 };

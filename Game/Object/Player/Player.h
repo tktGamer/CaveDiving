@@ -13,17 +13,8 @@
 #include"Game/GameData.h"
 #include"Game/Object/Character.h"
 #include"Game/Common/Collision/Sphere.h"
-#include "Game/Object/Player/Hand.h"
-#include"Game/Object/Gem/HolderGem.h"
 #include "Game/Object/Light.h"
 #include"../Item/Item.h"
-#include"../Player/State/PlayerIdling.h"
-#include"../Player/State/PlayerMoving.h"
-#include"../Player/State/PlayerGroundAttack.h"
-#include"../Player/State/PlayerAirAttack.h"
-#include"../Player/State/PlayerJumping.h"
-#include"../Player/State/PlayerAvoidance.h"
-#include"../Player/State/PlayerDamaged.h"
 // クラスの宣言 ===============================================================
 class IState;
 class Sound;
@@ -72,6 +63,8 @@ private:
 	static constexpr  float PLAYER_OUTLINE_THICKNESS = 0.04f;
 	//１秒あたりの回転量
 	static constexpr  float ROTATION_SPEED_Y_ANGLE = DirectX::XMConvertToRadians(180.0f);
+	//ステージ外へ行った判定
+	static constexpr  float OUT_STAGE = -100.0f;
 	
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
@@ -81,7 +74,7 @@ public:
 	// 攻撃力の取得
 	const int GetAttackPower() const override;
 	// 防御力の取得
-	const int GetDiffence() override;
+	const int GetDiffence() const override;
 
 	//ジャンプ出来る残り回数取得
 	const int GetRemainingJumpCount() const;
@@ -92,8 +85,6 @@ public:
 	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
 	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
 
-	//所持宝石を取得
-	const HolderGem& GetHolderGem();
 	//回避中か
 	bool IsAvoidance();
 	//攻撃中か
@@ -128,8 +119,6 @@ public:
 private:
 	//アイテムの強化制限時間経過
 	void UpdateGotItems();
-	//宝石で強化された分のステータスを取得
-	int GemPlusStatus(const Gem::Type& type) const;
 	//アイテムで強化された分のステータスを取得
 	int ItemBuff(const Item::EffectType& effectType) const;
 // データメンバの宣言 -----------------------------------------------
@@ -155,8 +144,6 @@ private:
 	std::vector<std::unique_ptr<GameObject>> m_bodyParts;
 	//ジャンプできる残り回数
 	int m_remainingJumpCount = REMAINING_JUMP;
-	//ダメージを無効化できる回数
-	int m_invincibleCount = 0;
 
 
 	//手に入れたアイテム
@@ -167,8 +154,6 @@ private:
 	//バフを表示するクラスのポインタ
 	BuffUIControl* m_pBuffUIControl;
 
-	//プレイヤーの持つジェム
-	std::unique_ptr<HolderGem> m_holderGem;
 	//攻撃入力の有無
 	bool m_attackBuffered = false;
 

@@ -39,12 +39,12 @@
  */
 PlayScene::PlayScene()
 	:
-	m_objects{},
+	m_objectList{},
 	m_renderPipeLine{},
-	m_player{},
 	m_camera{},
 	m_enemyManager{},
-	m_itemManager{}
+	m_itemManager{},
+	m_playerObjectID{}
 
 {
 	//当たり判定表示クラス
@@ -62,7 +62,6 @@ PlayScene::PlayScene()
  */
 PlayScene::~PlayScene()
 {
-	UIManager::GetInstance()->ClearUI();
 }
 
 
@@ -76,10 +75,12 @@ PlayScene::~PlayScene()
  */
 void PlayScene::Initialize()
 {
+	UIManager::GetInstance()->ClearUI();
+
 	//メッセンジャーリセット
 	Messenger::GetInstance()->DestroyInstance();
-	m_objects.clear();
 	m_renderPipeLine = std::make_unique<RenderPipeLine>();
+	m_objectList.clear();
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 	//キー入力管理生成
@@ -94,7 +95,7 @@ void PlayScene::Initialize()
 	//パーティクルマネージャーにカメラをセット
 	ParticleManager::GetInstance()->SetCamera(m_camera.get());
 	//操作するオブジェクトを設定する
-	Messenger::GetInstance()->SetOperateObject(m_player->GetObjectNumber());
+	Messenger::GetInstance()->SetOperateObject(m_playerObjectID);
 
 	//初期時更新処理
 	PreUpdate();
@@ -117,9 +118,9 @@ void PlayScene::PreUpdate()
 	UIManager::GetInstance()->Update();
 	
 	//オブジェクトの更新--
-	for (auto& object : m_objects)
+	for (auto& object : m_objectList)
 	{
-		object->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+		object.second->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	}
 
 	m_camera->Update(elapsedTime);
@@ -130,7 +131,7 @@ void PlayScene::PreUpdate()
 
 	//ゲーム中のBGM再生
 	m_gameBGM = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::GAME_BGM));
-	m_gameBGM->SetVolume(0.8f);
+	m_gameBGM->SetVolume(BGM_VOLUME);
 	m_gameBGM->Play(true);
 }
 
@@ -152,9 +153,9 @@ void PlayScene::Update(float elapsedTime)
 	//キーボード入力処理
 	m_inputHandler->Update(Messenger::GetInstance()->GetOperateObjectID());
 	//オブジェクトの更新--
-	for(auto& object : m_objects)
+	for(auto& object : m_objectList)
 	{
-		object->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
+		object.second->Update(DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
 	}
 	m_camera->Update(elapsedTime);
 
@@ -184,9 +185,9 @@ void PlayScene::Render()
 
 	WallShader::CameraToPlayerCB cameraToPlayerCB;
 	cameraToPlayerCB.cameraPos = m_camera->GetEyePos();
-	cameraToPlayerCB.fadeRadius = 10.0f;
-	cameraToPlayerCB.playerPos = m_player->GetCurrentPosition();
-	cameraToPlayerCB.fadestrength = 0.1f;
+	cameraToPlayerCB.fadeRadius = FADE_RADIUS;
+	cameraToPlayerCB.playerPos =  m_objectList[m_playerObjectID].get()->Cast<Character>()->GetCurrentPosition();
+	cameraToPlayerCB.fadestrength = FADE_STRENGTH;
 
 	ShaderManager::GetInstance()->SetCameraToPlayerCB(cameraToPlayerCB);
 
@@ -212,14 +213,14 @@ void PlayScene::Render()
 void PlayScene::Finalize()
 {
 	//プレイヤーのデータ保存
-	GetGameData()->SetPlayerCurrentHP(m_player->GetCurrentHP());
+	GetGameData()->SetPlayerCurrentHP(m_objectList[m_playerObjectID].get()->Cast<Character>()->GetCurrentHP());
 	SavePlayer();
 	//当たり判定登録解除
 	m_collsionManager->AllRelease();
 	//終了処理
-	for (auto object : m_objects) 
+	for (auto& object : m_objectList) 
 	{
-		object->Finalize();
+		object.second->Finalize();
 	}
 	m_camera->Finalize();
 	//BGMストップ
@@ -280,48 +281,47 @@ void PlayScene::CreateInputCommand()
 
 }
 
+
+/**
+ * @brief オブジェクト生成
+ *
+ * @param[in] なし
+ *
+ * @return  なし
+ */
 void PlayScene::CreateObjects()
 {
 	//プレイヤーの生成
-	m_player = GameObjectFactory::CreatePlayer(m_buffUI.get(), GetGameData()->GetPlayerData(), nullptr, PLAYER_INIT_POSITION);
-	m_collsionManager->Register(m_player.get());
-	m_objects.push_back(m_player.get());
+	std::unique_ptr<Player> player = GameObjectFactory::CreatePlayer(m_buffUI.get(), GetGameData()->GetPlayerData(), nullptr, PLAYER_INIT_POSITION);
+	m_collsionManager->Register(player.get());
+	m_playerObjectID = player->GetObjectNumber();
 	//ステージの生成
-	m_ground = GameObjectFactory::CreateGround(nullptr, INITIAL_GROUND_POS, DirectX::SimpleMath::Quaternion::Identity, INITIAL_GROUND_SCALE);
-	m_wall = GameObjectFactory::CreateWall(nullptr, INITIAL_WALL_POS, DirectX::SimpleMath::Quaternion::Identity, INITIAL_WALL_SCALE);
-	m_objects.push_back(m_ground.get());
-	m_objects.push_back(m_wall.get());
-	m_collsionManager->Register(m_ground.get());
-	GenerateIlumiRock(GetGameData()->GetIsOnLights(), ROCK_NUM);
+	auto ground = GameObjectFactory::CreateGround(nullptr, INITIAL_GROUND_POS, DirectX::SimpleMath::Quaternion::Identity, INITIAL_GROUND_SCALE);
+	auto wall = GameObjectFactory::CreateWall(nullptr, INITIAL_WALL_POS, DirectX::SimpleMath::Quaternion::Identity, INITIAL_WALL_SCALE);
+	m_collsionManager->Register(ground.get());
+	m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Stage, ground.get());
+	m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Stage, wall.get());
+	//カメラの生成
+	m_camera = GameObjectFactory::CreateCamera(CAMERA_INIT_POSITION, CAMERA_INIT_DISTANCE,player.get());
+	//レンダーパイプラインに登録
+	m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Character, player.get());
+	//リストに登録
+	m_objectList.insert(std::make_pair(ground->GetObjectNumber(), std::move(ground)));
+	m_objectList.insert(std::make_pair(wall->GetObjectNumber(),std::move(wall)));
+	m_objectList.insert(std::make_pair(player->GetObjectNumber(),std::move(player)));
 	//敵の生成
 	SpawnEnemy();
-	//カメラの生成
-	m_camera = GameObjectFactory::CreateCamera(CAMERA_INIT_POSITION, CAMERA_INIT_DISTANCE, m_player.get());
+	//石の生成
+	GenerateIlumiRock(GetGameData()->GetIsOnLights(), ROCK_NUM);
 	//アイテム管理クラスの生成
 	m_itemManager = std::make_unique<ItemManager>();
 	m_itemManager->Initialize();
-
-	//レンダーパイプラインに登録
-	m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Stage, m_ground.get());
-	m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Stage, m_wall.get());
-	m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Character, m_player.get());
-	//石の登録
-	for (std::unique_ptr<RumiRock>& rock : m_rocks)
-	{
-		m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Stage, rock.get());
-	}
-	//敵の登録
-	for (const std::unique_ptr<Character>& enemy : m_enemyManager->GetEnemies())
-	{
-		m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Character, enemy.get());
-		m_objects.push_back(enemy.get());
-
-	}
+	auto items = m_itemManager->GenerateItem(ResourcePath::DATA::ITEM_POSTION);
 	//アイテムの登録
-	for (const std::unique_ptr<Item>& item : m_itemManager->GetItems())
+	for (std::unique_ptr<Item>& item : items)
 	{
 		m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Item, item.get());
-		m_objects.push_back(item.get());
+		m_objectList.insert(std::make_pair(item->GetObjectNumber(), std::move(item)));
 	}
 
 }
@@ -338,8 +338,9 @@ void PlayScene::CreateUI()
 	GameData* gameData = GetGameData();
 	auto uiManager = UIManager::GetInstance();
 	//HPゲージUIの生成
+	const Character* pCharacter = m_objectList[m_playerObjectID].get()->Cast<Character>();
 	uiManager->RequestAddUI(UIFactory::CreateGauge(HP_GAUGE_UI_POS,DirectX::SimpleMath::Vector2::One,UserInterface::ANCHOR::MIDDLE_LEFT,
-										m_player->GetCurrentHP(),m_player->GetMaxHP()));
+										pCharacter->GetCurrentHP(),pCharacter->GetMaxHP()));
 	//所持宝石UIの生成
 	uiManager->RequestAddUI(UIFactory::CreateHoldGem(gameData->GetPlayerData().gemID,HOLD_GEM_UI_POS));
 	//クリア条件UI
@@ -422,7 +423,6 @@ void PlayScene::GenerateIlumiRock(bool* isOnLight, int size)
 		{
 			break;
 		}
-
 		//スポーン位置
 		DirectX::SimpleMath::Vector3 spawnPos = DirectX::SimpleMath::Vector3::Zero;
 		DirectX::SimpleMath::Vector3 color = DirectX::SimpleMath::Vector3::One;
@@ -452,10 +452,11 @@ void PlayScene::GenerateIlumiRock(bool* isOnLight, int size)
 		lightdata.LightColor = color;
 		lightdata.LightIntensity = intensity;
 		//石生成
-		m_rocks.emplace_back(GameObjectFactory::CreateRumiRock(nullptr, spawnPos, DirectX::SimpleMath::Quaternion::Identity, lightdata, isOnLight[id - 1]));
-		CollisionManager::GetInstance()->Register(m_rocks.back().get());
-		m_objects.push_back(m_rocks.back().get());
-
+		std::unique_ptr<RumiRock> rock = GameObjectFactory::CreateRumiRock(nullptr, id, spawnPos, DirectX::SimpleMath::Quaternion::Identity, lightdata, isOnLight[id]);
+		CollisionManager::GetInstance()->Register(rock.get());
+		m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Stage, rock.get());
+		//登録
+		m_objectList.insert(std::make_pair(rock->GetObjectNumber(), std::move(rock)));
 	}
 	ifs.close();
 }
@@ -478,8 +479,9 @@ const bool PlayScene::IsFinish()
 		GameData* gameData = GetGameData();
 		GameData::PlayerData playerData = gameData->GetPlayerData();
 		//HP設定
-		playerData.currentHP = m_player->GetCurrentHP();
-		playerData.maxHP = m_player->GetMaxHP();
+		const Character* pCharacter = m_objectList[m_playerObjectID].get()->Cast<Character>();
+		playerData.currentHP = pCharacter->GetCurrentHP();
+		playerData.maxHP = pCharacter->GetMaxHP();
 		//プレイヤーの情報を設定
 		gameData->SetPlayerData(playerData);
 
@@ -488,7 +490,7 @@ const bool PlayScene::IsFinish()
 		{
 			//SaveLight();
 			gameData->SetIsGameClear(true);
-			gameData->SetPlayerCurrentHP(m_player->GetCurrentHP());
+			gameData->SetPlayerCurrentHP(pCharacter->GetCurrentHP());
 			ChangeScene<GemSelectScene>();
 			return true;
 		}
@@ -500,10 +502,12 @@ const bool PlayScene::IsFinish()
 		ChangeScene<GemSelectScene>();
 	}
 	//プレイヤーが死んだら
-	else if (!m_player->IsAlive())
+	else if (!m_objectList[m_playerObjectID].get()->IsAlive())
 	{
+		const Character* pCharacter = m_objectList[m_playerObjectID].get()->Cast<Character>();
+
 		GetGameData()->SetIsGameClear(false);
-		GetGameData()->SetPlayerCurrentHP(m_player->GetCurrentHP());
+		GetGameData()->SetPlayerCurrentHP(pCharacter->GetCurrentHP());
 
 		ChangeScene<ResultScene>();
 		return true;
@@ -520,14 +524,15 @@ const bool PlayScene::IsFinish()
  */
 void PlayScene::SavePlayer()
 {
+	const Character* pCharacter = m_objectList[m_playerObjectID].get()->Cast<Character>();
 
-	const HolderGem& playerHolderGem = m_player->GetHolderGem();
+	const HolderGem& playerHolderGem = pCharacter->GetHolderGem();
 	//プレイヤーの状態を保存する型
 	GameData::PlayerData saveData;
 	//現在HP
-	saveData.currentHP = m_player->GetCurrentHP();
+	saveData.currentHP = pCharacter->GetCurrentHP();
 	//最大HP
-	saveData.maxHP = m_player->GetMaxHP();
+	saveData.maxHP = pCharacter->GetMaxHP();
 	//所持宝石
 	auto& gems = playerHolderGem.GetGems();
 	//所持数分要素を確保
@@ -558,16 +563,21 @@ void PlayScene::SavePlayer()
  */
 void PlayScene::SaveLight()
 {
-	////ステージのライトを取得
-	//auto& rock = m_stage->GetRocks();
-	//配列番号
-	int index = 0;
-	for (std::list<std::unique_ptr<RumiRock>>::iterator it =m_rocks.begin(); it != m_rocks.end(); ++it)
+	for (auto it = m_objectList.begin(); it != m_objectList.end(); ++it)
 	{
-
-		//ライトのオン・オフを記録
-		GetGameData()->SetIsOnLightNumber(it->get()->IsOnLight(), index);
-		index++;
+		//GameObjectクラスか判定
+		auto object = dynamic_cast<GameObject*>(it->second.get());
+		if (!object)
+		{
+			continue;
+		}
+		//RumiRockクラスか判定
+		RumiRock* rock = object->Cast<RumiRock>();
+		if (rock)
+		{
+			//ライトのオン・オフを記録
+			GetGameData()->SetIsOnLightNumber(rock->IsOnLight(), rock->GetID());
+		}
 	}
 }
 
@@ -584,11 +594,22 @@ void PlayScene::SpawnEnemy()
 	GameData* gameData = GetGameData();
 	//敵管理クラスの生成
 	m_enemyManager = std::make_unique<EnemyManager>();
-
-	
 	//敵生成
-	m_enemyManager->Spawn(gameData->GetEnemySpawnDataPath());
+	auto enemies = m_enemyManager->Spawn(gameData->GetEnemySpawnDataPath());
+	m_enemyManager->SetEnemyCount(enemies.size());
 	//クリアフラグを偽に
 	gameData->SetIsStageClear(false);
-}
+	//敵の登録
+	for (std::unique_ptr<Character>& enemy : enemies)
+	{
+		m_renderPipeLine->Register(RenderPipeLine::RenderLayer::Character, enemy.get());
 
+		//当たり判定クラスに登録
+		CollisionManager::GetInstance()->Register(enemy.get());
+		//メッセンジャークラスに登録
+		Messenger::GetInstance()->Register(enemy->GetObjectNumber(), enemy.get());
+
+		m_objectList.insert(std::make_pair(enemy->GetObjectNumber(),std::move(enemy)));
+
+	}
+}

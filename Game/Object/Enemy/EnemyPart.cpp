@@ -19,7 +19,8 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-EnemyPart::EnemyPart(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+EnemyPart::EnemyPart(Character* root,const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:
 	PartObject{root,parent,initialPosition,initialAngle}
 {
@@ -41,4 +42,5 @@ EnemyPart::~EnemyPart()
  */
 void EnemyPart::OnMessegeAccepted(Message::MessageID messageID)
 {
+	messageID;
 }

@@ -77,7 +77,8 @@ void ParticlePowerUpControl::Update()
  *
  * @return ‚È‚µ
  */
-void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target, const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
+void ParticlePowerUpControl::Render(const DirectX::SimpleMath::Vector3& target,
+	const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::SimpleMath::Vector3& cameraUp)
 {
 
 	ShaderManager* shader = ShaderManager::GetInstance();

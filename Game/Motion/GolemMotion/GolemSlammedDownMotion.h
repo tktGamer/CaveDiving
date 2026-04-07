@@ -11,10 +11,9 @@
 #pragma once
 // ヘッダファイルの読み込み ===================================================
 #include"../AttackMotion.h"
-#include"Game/Object/Enemy/Golem/Golem.h"
-#include"Game/Object/Enemy/Golem/GolemHand.h"
 // クラスの宣言 ===============================================================
 class Sound;
+class Golem;
 class GolemHand;
 class GolemArm;
 // クラスの定義 ===============================================================

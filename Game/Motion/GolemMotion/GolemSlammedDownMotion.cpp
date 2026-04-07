@@ -10,6 +10,11 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GolemSlammedDownMotion.h"
+#include "Game/Object/Enemy/Golem/Golem.h"
+#include "Game/Object/Enemy/Golem/GolemArm.h"
+#include"Game/Object/Enemy/Golem/GolemHand.h"
+#include"Game/Common/Sound.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

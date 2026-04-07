@@ -10,7 +10,6 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ParticleNumber3D.h"
-#include"Game/Common/ResourceManager.h"
 #include"Game/Shader/Shader.h"
 #include"Game/Message/Messenger.h"
  // メンバ関数の定義 ===========================================================

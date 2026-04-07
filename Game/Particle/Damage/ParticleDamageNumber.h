@@ -22,6 +22,11 @@ class ParticleDamageNumber : public ParticleControl
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+private:
+	//速度
+	static constexpr DirectX::SimpleMath::Vector3 VELOCITY = { 0.0f,2.5f,0.0f };
+	//加速度
+	static constexpr DirectX::SimpleMath::Vector3 ACCELE = { 0.0f,-3.0f,0.0f };
 
 // メンバ関数の宣言 -------------------------------------------------
 //取得・設定

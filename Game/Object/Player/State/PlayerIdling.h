@@ -12,10 +12,9 @@
 #ifndef PLAYER_IDLING_DEFINED
 #define PLAYER_IDLING_DEFINED
 #include "Game/Interface/IState.h"
-#include"Game/Motion/PlayerMotion/PlayerIdlingMotion.h"
 // クラスの宣言 ===============================================================
 class Player;
-
+class Motion;
 // クラスの定義 ===============================================================
 /**
   * @brief 待機状態

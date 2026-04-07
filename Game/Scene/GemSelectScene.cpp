@@ -15,6 +15,7 @@
 #include "../Scene/LoadScene.h"
 #include"Game/Scene/ResultScene.h"
 #include"Game/Factory/UIFactory.h"
+#include"Game/UI/UIManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -44,6 +45,7 @@ GemSelectScene::~GemSelectScene()
  */
 void GemSelectScene::Initialize()
 {
+	UIManager::GetInstance()->ClearUI();
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 	//宝石選択UI管理クラス生成

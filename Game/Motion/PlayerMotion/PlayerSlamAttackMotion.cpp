@@ -12,6 +12,7 @@
 #include "PlayerSlamAttackMotion.h"
 #include"Game/Object/Player/Hand.h"
 #include"Game/Object/Player/Player.h"
+#include"Game/Common/Sound.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -29,7 +30,6 @@ PlayerSlamAttackMotion::PlayerSlamAttackMotion(Player* pPlayer, Hand* pRightHand
 	m_pLeftHand{pLeftHand},
 	m_sound{}
 {
-	//m_sound = std::make_unique<Sound>(ResourceManager::GetInstance()->RequestSound(ResourcePath::SOUND::));
 }
 
 /**

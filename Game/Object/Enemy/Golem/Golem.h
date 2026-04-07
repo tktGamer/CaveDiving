@@ -10,26 +10,19 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
-#include "Game/Object/Character.h"
+#include "Game/Object/Enemy/Enemy.h"
 #include"Game/Common/Collision/Box.h"
-#include"../Golem/State/GolemIdling.h"
-#include"../Golem/State/GolemAttack.h"
-#include"../Golem/State/GolemMoving.h"
-#include"../Golem/State/GolemChasing.h"
-#include"../Golem/State/GolemAttackPreparing.h"
-#include"../Golem/State/GolemDamaged.h"
 #include"../EnemyPart.h"
-#include"../Golem/GolemHand.h"
-#include"../Golem/GolemArm.h"
-#include"../Golem/GolemFot.h"
 // クラスの宣言 ===============================================================
-
+class IState;
+class GolemHand;
+class GolemArm;
+class GolemFot;
 // クラスの定義 ===============================================================
 /**
   * @brief ゴーレムボス敵
   */
-class Golem :public Character
+class Golem :public Enemy
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -95,7 +88,9 @@ public:
 	void SetAttackMessage(const Message::AttackMesssage& message);
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	Golem(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Golem(EnemyManager* enemyManager, 
+		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+		const std::vector<int>& gemID);
 	// デストラクタ
 	~Golem();
 //　操作

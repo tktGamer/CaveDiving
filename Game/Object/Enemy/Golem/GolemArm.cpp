@@ -14,6 +14,7 @@
 #include"Game/Factory/GameObjectFactory.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Common/Collision/CollisionManager.h"
+#include"Game/Shader/Outline/OutlineRenderer.h"
  // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

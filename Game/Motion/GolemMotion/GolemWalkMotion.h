@@ -11,10 +11,10 @@
 #pragma once
 // ヘッダファイルの読み込み ===================================================
 #include"../Motion.h"
-#include"Game/Object/Enemy/Golem/Golem.h"
 // クラスの宣言 ===============================================================
 class Sound;
 class GolemArm;
+class Golem;
 class GolemFot;
 // クラスの定義 ===============================================================
 /**
@@ -77,7 +77,5 @@ private:
 	DirectX::SimpleMath::Vector3 m_handGoalPosition;
 	//攻撃後の隙の時間
 	float m_coolTime = 0.0f;
-	//攻撃音
-	std::unique_ptr<Sound> m_attackSound;
 };
 

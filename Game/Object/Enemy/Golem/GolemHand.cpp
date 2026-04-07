@@ -13,6 +13,8 @@
 #include"../Golem/Golem.h"
 #include"Game/Factory/GameObjectFactory.h"
 #include"Game/Shader/ShaderManager.h"
+#include"Game/Shader/Outline/OutlineRenderer.h"
+#include"Game/Object/Weapon.h"
  // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -22,7 +24,8 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　   初期角度
  */
-GolemHand::GolemHand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+GolemHand::GolemHand(Character* root,const GameObject* parent,
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:
 	EnemyPart(root,parent,initialPosition,initialAngle),
 	m_motionAngle{},

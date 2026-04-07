@@ -14,6 +14,7 @@
 #include"Game/Factory/GameObjectFactory.h"
 #include"Game/Shader/ShaderManager.h"
 #include"Game/Common/Collision/CollisionManager.h"
+#include"Game/Shader/Outline/OutlineRenderer.h"
  // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -23,7 +24,8 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　   初期角度
  */
-GolemFot::GolemFot(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+GolemFot::GolemFot(Character* root,const GameObject* parent, 
+	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	:
 	EnemyPart(root,parent,initialPosition,initialAngle),
 	m_motionAngle{},
@@ -129,16 +131,12 @@ void GolemFot::Draw()
 				//	t0がメインで使われていると勝手に想定。
 				context->PSSetShaderResources(0, 1, GetTexture());
 			}
-
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
 			//シェーダーセット
@@ -151,8 +149,8 @@ void GolemFot::Draw()
 
 
 	//m_box.AddDisplayCollision(&m_display);
-	m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
-		, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
+	//m_display.DrawCollision(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext(), Graphics::GetInstance()->GetCommonStates()
+	//	, Graphics::GetInstance()->GetViewMatrix(), Graphics::GetInstance()->GetProjectionMatrix());
 }
 
 /**

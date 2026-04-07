@@ -91,10 +91,10 @@ private:
 	// カメラオブジェクト
 	std::unique_ptr<Camera> m_camera;    
 
-	//タイトル画像
-	std::unique_ptr<UserInterface> m_title;
-	//PRESS SPACE画像
-	std::unique_ptr<UserInterface> m_pressSpace;
+	////タイトル画像
+	//std::unique_ptr<UserInterface> m_title;
+	////PRESS SPACE画像
+	//std::unique_ptr<UserInterface> m_pressSpace;
 
 
 	TKTLib::ModelParams m_caveModelParams;    ///< 洞窟モデルパラメータ

@@ -32,6 +32,17 @@ Gem::~Gem()
 }
 
 /**
+ * @brief ‰Šú‰»ˆ—
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
+void Gem::Initialize()
+{
+}
+
+/**
  * @brief •óÎ‚Ì«”\‚ğæ“¾
  *
  * @param[in] ‚È‚µ
@@ -53,4 +64,15 @@ const Gem::GemAbility& Gem::GetAbility() const
 const Gem::GemImagePath& Gem::GetImagePath() const
 {
 	return m_gemImage;
+}
+
+/**
+ * @brief I—¹ˆ—
+ *
+ * @param[in] ‚È‚µ
+ *
+ * @return ‚È‚µ
+ */
+void Gem::Finalize()
+{
 }

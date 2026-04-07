@@ -11,6 +11,7 @@
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerDamaged.h"
 #include "Game/Object/Player/Player.h"
+#include"Game/Common/Graphics.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

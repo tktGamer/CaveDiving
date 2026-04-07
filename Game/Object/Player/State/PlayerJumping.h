@@ -12,9 +12,9 @@
 #ifndef PLAYER_JUMPING_DEFINED
 #define PLAYER_JUMPING_DEFINED
 #include "Game/Interface/IState.h"
-#include"Game/Common/Sound.h"
 // クラスの宣言 ===============================================================
 class Player;
+class Sound;
 // クラスの定義 ===============================================================
 /**
   * @brief ジャンプ状態

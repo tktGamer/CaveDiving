@@ -21,8 +21,8 @@ class StatusUpGem : public Gem
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-
-
+	//補正無し
+	static constexpr int STATUS_MODIFIER_NONE = 0;
 // メンバ関数の宣言 -------------------------------------------------
 //取得・設定
 public:
@@ -40,6 +40,8 @@ public:
 	std::unique_ptr<Gem> Clone()const override;
 	//初期化
 	void Initialize();
+	// ステータス補正
+	int ModifyStatus(const Gem::Type& type, const Character& owner) const override;
 	//終了
 	void Finalize();
 //内部操作

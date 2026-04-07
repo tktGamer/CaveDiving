@@ -13,6 +13,7 @@
 #include"Game/Message/Messenger.h"
 #include"Game/Factory/GemFactory.h"
 #include"Game/Particle/ParticleManager.h"
+#include"Game/Object/Character.h"
 //ファクトリクラスへの登録
 REGISTER_GEM_CLASS("GenerateShieldGem", GenerateShieldGem);
 
@@ -57,6 +58,27 @@ std::unique_ptr<Gem> GenerateShieldGem::Clone() const
  */
 void GenerateShieldGem::Initialize()
 {
+}
+
+/**
+ * @brief 毎フレーム更新効果
+ *
+ * @param[in] owner  宝石の所有者
+ *
+ * @return なし
+ */
+void GenerateShieldGem::OnUpdate(Character& owner)
+{
+	//盾を生成
+	int shield = GenerateShield();
+	if (shield == NO_SHILD)
+	{
+		return;
+	}
+	owner.AddInvincibleCount(shield);
+	//盾エフェクト生成
+	ParticleManager::GetInstance()->RequestShieldParticle(owner.GetObjectNumber());
+
 }
 
 /**

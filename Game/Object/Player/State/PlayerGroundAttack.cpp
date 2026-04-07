@@ -9,11 +9,15 @@
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
+#include"Game/Motion/MotionType.h"
 #include "Game/Object/Player/State/PlayerGroundAttack.h"
 #include "Game/Object/Player/Player.h"
 #include"Game/Object/Player/Hand.h"
-#include"Game//Object//Gem/GemManager.h"
 #include"Game/Object/Gem/Unique/AllSpenningAttackGem.h"
+#include"Game/Motion/PlayerMotion/PlayerFirstAttackMotion.h"
+#include"Game/Motion/PlayerMotion/PlayerSecondAttackMotion.h"
+#include"Game/Motion/PlayerMotion/PlayerThirdAttackMotion.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

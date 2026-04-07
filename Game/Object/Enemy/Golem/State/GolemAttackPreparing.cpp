@@ -12,6 +12,8 @@
 #include "Game/Object/Enemy/Golem/State/GolemAttackPreparing.h"
 #include "Game/Object/Enemy/Golem/Golem.h"
 #include"Game//Object/Player/Player.h"
+#include"Game/Motion/GolemMotion/GolemPunchPreparingMotion.h"
+#include"Game/Motion/GolemMotion/GolemSlammedDownPreparingMotion.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

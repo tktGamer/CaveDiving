@@ -26,8 +26,6 @@
 Stage::Stage(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: 
 	m_messageID{},
-	m_ground{},
-	m_wall{},
 	m_rocks{}
 {
 	UNREFERENCED_PARAMETER(parent);
@@ -52,73 +50,8 @@ Stage::~Stage()
  */
 void Stage::Initialize(bool* isOnLight, int size)
 {
-	//地面の生成
-	m_ground = GameObjectFactory::CreateGround(nullptr, INITIAL_GROUND_POS, DirectX::SimpleMath::Quaternion::Identity,INITIAL_GROUND_SCALE);
-	//壁の生成
-	m_wall = GameObjectFactory::CreateWall(nullptr, INITIAL_WALL_POS, DirectX::SimpleMath::Quaternion::Identity, INITIAL_WALL_SCALE);
 	//石の生成
 	GenerateIlumiRock(isOnLight, size);
-
-	CollisionManager* pCM = CollisionManager::GetInstance();
-	pCM->Register(m_ground.get());
-}
-
-/**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Stage::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
-{
-	UNREFERENCED_PARAMETER(currentPosition);
-	UNREFERENCED_PARAMETER(currentAngle);
-	//地面更新
-	m_ground->Update(DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
-	//壁更新
-	m_wall->Update(DirectX::SimpleMath::Vector3::Zero,DirectX::SimpleMath::Quaternion::Identity);
-	//石更新
-	for (std::unique_ptr<RumiRock>& rock : m_rocks)
-	{
-		rock->Update( DirectX::SimpleMath::Vector3::Zero, DirectX::SimpleMath::Quaternion::Identity);
-	}
-}
-
-
-
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Stage::Draw()
-{
-
-	for (std::unique_ptr<RumiRock>& rock : m_rocks)
-	{
-		if (!rock->IsOnLight()) 
-		{
-			rock->Draw();
-		}
-	}
-}
-
-void Stage::BloomDraw()
-{
-	m_ground->Draw();
-	m_wall->Draw();
-	for (std::unique_ptr<RumiRock>& rock : m_rocks)
-	{
-		if(rock->IsOnLight())
-		{
-			rock->Draw();
-
-		}
-	}
-
 }
 
 
@@ -217,7 +150,7 @@ void Stage::GenerateIlumiRock(bool* isOnLight, int size)
 		lightdata.LightColor = color;
 		lightdata.LightIntensity = intensity;
 		//石生成
-		m_rocks.emplace_back(GameObjectFactory::CreateRumiRock(nullptr,spawnPos, DirectX::SimpleMath::Quaternion::Identity,lightdata,isOnLight[id-1]));
+		m_rocks.emplace_back(GameObjectFactory::CreateRumiRock(nullptr,id,spawnPos, DirectX::SimpleMath::Quaternion::Identity,lightdata,isOnLight[id]));
 		CollisionManager::GetInstance()->Register(m_rocks.back().get());
 
 	}

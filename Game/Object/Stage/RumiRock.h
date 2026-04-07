@@ -30,30 +30,18 @@ private:
 	static constexpr DirectX::SimpleMath::Vector3 BOX_COLLISION_SIZE = { 1.3f,1.3f,1.3f };
 	static constexpr DirectX::SimpleMath::Vector4 DEFAULT_COLOR = { 1.0f,1.0f,1.0f,1.0f };
 
-// データメンバの宣言 -----------------------------------------------
-private:
-	// メッセージID
-	Message::MessageID m_messageID;
-	//ライトのオンオフ状態
-	bool m_isOn = false;
-	//AABB当たり判定
-	Box m_box;
-	//ライト
-	std::unique_ptr<Light> m_light;
-	DirectX::SimpleMath::Vector4 m_color = DEFAULT_COLOR;
-	//ライトがオンになるときの音
-	std::unique_ptr<Sound> m_LightOnSound;
-	Ito::DisplayCollision m_display;
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
+	//IDの取得
+	const int& GetID() const;
 	//ライトがオンか
 	bool IsOnLight();
 	//ブルーム処理するか
 	bool IsBloom() override;
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	RumiRock(const ModelShader::PointLightCB& lightData,const GameObject* parent,
+	RumiRock(const ModelShader::PointLightCB& lightData,const int& id,const GameObject* parent,
 		const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
 	// デストラクタ
 	~RumiRock();
@@ -75,4 +63,20 @@ public:
 //　内部操作
 private:
 
+// データメンバの宣言 -----------------------------------------------
+private:
+	//ID
+	int m_id;
+	// メッセージID
+	Message::MessageID m_messageID;
+	//ライトのオンオフ状態
+	bool m_isOn = false;
+	//AABB当たり判定
+	Box m_box;
+	//ライト
+	std::unique_ptr<Light> m_light;
+	DirectX::SimpleMath::Vector4 m_color = DEFAULT_COLOR;
+	//ライトがオンになるときの音
+	std::unique_ptr<Sound> m_LightOnSound;
+	Ito::DisplayCollision m_display;
 };

@@ -94,6 +94,13 @@ void RenderPipeLine::Render()
 	BlendPass();
 }
 
+/**
+ * @brief 画面サイズが変更されたときに呼び出す
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
 void RenderPipeLine::ReSize()
 {
 	m_bloom->Initialize();
@@ -102,7 +109,6 @@ void RenderPipeLine::ReSize()
     m_offScreenRT->SetWindow(rect);
     rect = Graphics::GetInstance()->GetDeviceResources()->GetOutputSize();
     m_bloomRT->SetWindow(rect);
-
     //レンダーテクスチャの作成
     //画面サイズを半分にする
     rect.right /= static_cast<LONG>(DOWNSAMPLE);

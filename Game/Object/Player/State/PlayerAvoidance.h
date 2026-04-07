@@ -12,7 +12,6 @@
 #ifndef PLAYER_AVOID_DEFINED
 #define PLAYER_AVOID_DEFINED
 #include "Game/Interface/IState.h"
-#include "Game/Common/Graphics.h"
 // クラスの宣言 ===============================================================
 class Player;
 // クラスの定義 ===============================================================

@@ -108,7 +108,6 @@ void Bloom::ExecuteBloom(std::list<GameObject*> objects, std::unique_ptr<DX::Ren
 
 	auto blur2RTV = m_blur2RT->GetRenderTargetView();
 	auto blur2SRV = m_blur2RT->GetShaderResourceView();
-
 	// =========================
     // 明るい部分を抽出
     // =========================
@@ -141,6 +140,17 @@ void Bloom::ExecuteBloom(std::list<GameObject*> objects, std::unique_ptr<DX::Ren
 	// =========================
 	// 縦方向ブラー
 	// =========================
+	// 元のビューポートに戻す
+	D3D11_VIEWPORT vp_full = {
+		0.0f,
+		0.0f,
+		(float)rect.right,
+		(float)rect.bottom,
+		0.0f,
+		1.0f
+	};
+	context->RSSetViewports(1, &vp_full);
+
 	//blur2RTからbloomRT(引数)に書き込む
 	ID3D11RenderTargetView* bloomRTV_forOM = bloomRT->GetRenderTargetView();
 	context->OMSetRenderTargets(1, &bloomRTV_forOM, nullptr);

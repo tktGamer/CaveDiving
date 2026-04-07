@@ -126,7 +126,7 @@ void ResourceManager::GetTextureSize(wchar_t const* filename, int& width, int& h
 	}
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> resource;
-	//画像データのハンドルを取得
+	//テクスチャの窓口を介して画像データのハンドルを取得
 	m_texture[stringFilename]->GetResource(&resource);
 	//リソースをID3D11Texture2Dに変換
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;
@@ -134,7 +134,7 @@ void ResourceManager::GetTextureSize(wchar_t const* filename, int& width, int& h
 	//画像サイズ取得
 	D3D11_TEXTURE2D_DESC desc;
 	tex->GetDesc(&desc);
-
+	//取得した情報を返す
 	width = desc.Width;
 	hight = desc.Height;
 

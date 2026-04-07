@@ -60,7 +60,7 @@ bool ParticleItemGet::Update()
 
 	DirectX::SimpleMath::Vector3 toTarget = *m_targetPos - GetPosition();
 	//オブジェクトとの位置が近づいたら消える
-	if (toTarget.Length() < 1.5f)
+	if (toTarget.Length() < DELETE_DISTANCE)
 	{
 		return false;
 	}

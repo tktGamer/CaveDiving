@@ -466,10 +466,10 @@ public:
 
 		};
 		//アイテムデータ
-		static constexpr char ITEM_DATA[] = "Resources/Data/ItemData.csv";
+		static constexpr char ITEM_DATA[] = "Resources/Data/Item/ItemData.csv";
 		
 		//アイテム配置データ
-		static constexpr char ITEM_POSTION[] = "Resources/Data/ItemData.csv";
+		static constexpr char ITEM_POSTION[] = "Resources/Data/Item/ItemSpawnData.csv";
 		
 		//ライト情報
 		static constexpr char LIGHT[] = "Resources/Data/LightPositionData.csv";

@@ -10,7 +10,6 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
 #include"Game/Object/Gem/Gem.h"
 // クラスの宣言 ===============================================================
 
@@ -49,6 +48,11 @@ public:
 	};
 
 	static constexpr int PLAYER_HOLD_GEM_NUM = 3;
+private:
+	static constexpr char ATTACK[] = "攻撃力";
+	static constexpr char DIFFENCE[] = "防御力";
+	static constexpr char HP[] = "体力";
+
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:

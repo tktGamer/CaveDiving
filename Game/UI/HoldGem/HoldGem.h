@@ -11,7 +11,6 @@
 #pragma once
 // ヘッダファイルの読み込み ===================================================
 #include "../UserInterface.h"
-#include"Game/Object/Gem/GemManager.h"
 #include"Game/Interface/IUI.h"
 #include<unordered_map>
 // クラスの宣言 ===============================================================

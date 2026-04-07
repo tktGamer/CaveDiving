@@ -25,7 +25,7 @@ public:
 //非公開定数
 private:
 	// パーティクルの数
-	static constexpr int HPHEAL_PARTICLE_NUM = 4;
+	static constexpr int HPHEAL_PARTICLE_NUM = 8;
 	//生成したパーティクルの進む方向
 	static constexpr DirectX::SimpleMath::Vector3 HPHEAL_PARTICLE_POSITION[HPHEAL_PARTICLE_NUM] =
 	{
@@ -33,6 +33,10 @@ private:
 		{ -1.0f, -1.0f,  0.0f }, 
 		{  1.5f, -0.5f, -1.0f }, 
 		{  0.5f, -0.5f,  1.0f }, 
+		{  0.5f, -1.0f, -2.5f }, 
+		{ -1.0f, -1.0f,  0.0f }, 
+		{  1.5f,  0.5f, -1.0f }, 
+		{  1.5f, -1.5f,  1.0f }, 
 	};
 	//パーティクルの速度
 	static constexpr DirectX::SimpleMath::Vector3 HPHEAL_PARTICLE_VELOCITY = { 0.0f,9.0f,0.0f };

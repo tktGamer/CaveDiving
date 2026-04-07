@@ -12,10 +12,10 @@
 #ifndef PLAYER_AIR_ATTACK_DEFINED
 #define PLAYER_AIR_ATTACK_DEFINED
 #include "Game/Interface/IState.h"
-#include"Game/Motion/PlayerMotion/PlayerSlamAttackMotion.h"
 // クラスの宣言 ===============================================================
 class Player;
 class Hand;
+class AttackMotion;
 // クラスの定義 ===============================================================
 /**
   * @brief 攻撃状態

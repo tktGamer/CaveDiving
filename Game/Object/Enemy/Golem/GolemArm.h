@@ -12,9 +12,8 @@
 // ヘッダファイルの読み込み ===================================================
 #include"../EnemyPart.h"
 #include"Game/Common/Collision/Sphere.h"
-#include"Game/Object/Enemy/Golem/GolemHand.h"
 // クラスの宣言 ===============================================================
-
+class GolemHand;
 // クラスの定義 ===============================================================
 /**
   * @brief ゴーレムの腕
@@ -65,6 +64,6 @@ private:
 
 	DirectX::SimpleMath::Quaternion m_motionAngle;
 
-	//手オブジェクト
-	std::unique_ptr<GolemHand> m_hand;
+	//子オブジェクト
+	std::unique_ptr<PartObject> m_hand;
 };

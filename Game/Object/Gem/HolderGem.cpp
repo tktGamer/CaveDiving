@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2025/01/18
+ * @date   日付　2026/03/29
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -39,6 +39,76 @@ HolderGem::HolderGem(const std::vector<int>& gemID)
 HolderGem::~HolderGem()
 {
 
+}
+
+/**
+ * @brief 更新
+ *
+ * @param[in] owner  所有者のアドレス
+ *
+ * @return なし
+ */
+void HolderGem::Update(Character& owner) const
+{
+    for (const std::unique_ptr<Gem>& gem : m_holdGems)
+    {
+        //スロットが空なら
+        if (!gem)
+        {
+            continue;
+        }
+        //各宝石のフレーム更新処理を実行
+        gem->OnUpdate(owner);
+    }
+}
+
+/**
+ * @brief 宝石によるステータス補正値の合計を取得
+ *
+ * @param[in] type  強化するステータスの項目（攻撃力・防御力など）
+ *
+ * @return 補正値
+ */
+int HolderGem::ApplyStatus(const Gem::Type& type, const Character& owner) const
+{
+    //補正値の合計
+    int total = 0;
+    //
+    for (const std::unique_ptr<Gem>& gem : m_holdGems)
+    {
+        //スロットが空なら
+        if (!gem) 
+        {
+            continue;
+        }
+        // 各宝石のステータス補正を加算
+        total += gem->ModifyStatus(type, owner);
+    }
+    return total;
+}
+
+/**
+ * @brief 宝石による被弾時の処理
+ *
+ * @param[in] owner   所有者
+ * @param[in] damage  受けたダメージ
+ *
+ * @return 最終的なダメージ量
+ */
+int HolderGem::OnTakeDamage(Character& owner, int damage)
+{
+    for (std::unique_ptr<Gem>& gem : m_holdGems)
+    {
+        //スロットが空なら
+        if (!gem)
+        {
+            continue;
+        }
+        // 各宝石の被弾時の処理
+        damage += gem->OnTakeDamage(owner,damage);
+    }
+
+    return damage;
 }
 
 /**

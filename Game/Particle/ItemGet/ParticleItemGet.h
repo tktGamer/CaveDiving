@@ -21,7 +21,8 @@ class ParticleItemGet : public Particle
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	
+	//消去する距離
+	static constexpr float DELETE_DISTANCE = 1.5f;
 // メンバ関数の宣言 -------------------------------------------------
 //　操作
 public:

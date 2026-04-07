@@ -22,6 +22,17 @@
 #include"Game/Object/Gem/Unique/HPAutoRecoveryGem.h"
 #include"Game/Object/Gem/StatusUp/FullHPStatusUpGem.h"
 #include"Game/Object/Gem/Unique/GenerateShieldGem.h"
+#include"Game/Shader/Outline/OutlineRenderer.h"
+#include "Game/Object/Player/Hand.h"
+
+#include"../Player/State/PlayerIdling.h"
+#include"../Player/State/PlayerMoving.h"
+#include"../Player/State/PlayerGroundAttack.h"
+#include"../Player/State/PlayerAirAttack.h"
+#include"../Player/State/PlayerJumping.h"
+#include"../Player/State/PlayerAvoidance.h"
+#include"../Player/State/PlayerDamaged.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -34,7 +45,7 @@
 Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,const GameObject* parent,
 	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
 	: 
-	Character(data.maxHP,PLAYER_BASE_ATTACK,PLAYER_BASE_DIFFENCE,Tag::ObjectType::Player,parent,initialPosition,initialAngle),
+	Character(data.maxHP,PLAYER_BASE_ATTACK,PLAYER_BASE_DIFFENCE,Tag::ObjectType::Player,parent,initialPosition,initialAngle,data.gemID),
 	m_messageID{},
 	m_sphere{ GetPosition(), PLAYER_SPHERE_SIZE },
 	m_motionAngle{},
@@ -48,8 +59,6 @@ Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,c
 
 	//メッセンジャークラスに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
-	//所持宝石クラスを生成
-	m_holderGem = std::make_unique<HolderGem>(data.gemID);
 
 	//HP調整
  	if (data.maxHP < GetMaxHP()) 
@@ -158,50 +167,17 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 		SetInvincible(false);
 	}
 
-	//HP自動回復の宝石をもっているか
-	const std::vector<HPAutoRecoveryGem*> gems = GetHolderGem().FindHasGem<HPAutoRecoveryGem>();
-	for(HPAutoRecoveryGem* gem : gems)
-	{ 
-		//回復値を取得
-		int healValue = gem->RecoveryHP();
-		if (healValue == TKTLib::INT_ZERO) 
-		{
-			continue;
-		}
-
-		//HPを回復
-		int currentHp = GetCurrentHP() + healValue;
-		//HPの最大値を超えていたら修正
-		if (currentHp > GetMaxHP()) 
-		{
-			currentHp = GetMaxHP();
-		}
-		//回復したHPをセット
-		SetCurrentHP(currentHp);
-
-		//回復パーティクル生成
-		ParticleManager::GetInstance()->RequestHPHealParticle(GetCurrentPosition());
-	}
-
-	//盾生成の宝石をもっているか
-	const std::vector<GenerateShieldGem*> shieldGems = GetHolderGem().FindHasGem<GenerateShieldGem>();
-	for (GenerateShieldGem* shieldGem : shieldGems)
-	{
-		//盾を生成
-		int shield = shieldGem->GenerateShield();
-		if (shield == 0) 
-		{
-			continue;
-		}
-		m_invincibleCount += shield;
-		//盾エフェクト生成
-		ParticleManager::GetInstance()->RequestShieldParticle(GetObjectNumber());
-	}
+	GetHolderGem().Update(*this);
 
 	SetIsOnGround(false);
 	m_attackBuffered = false;
 	//移動フラグをリセット
 	SetMoveFlags(0);
+
+	if (GetCurrentPosition().y < OUT_STAGE) 
+	{
+		SetPosition(DirectX::SimpleMath::Vector3::Zero);
+	}
 }
 
 
@@ -315,7 +291,7 @@ void Player::Draw()
 	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetVelocity().z)), DirectX::SimpleMath::Vector2(60.0f, 450.0f));
 	//ダメージ無効化回数
 	debugFont->AddString(L"InvisibleCount", DirectX::SimpleMath::Vector2(0.0f, 480.0f));
-	debugFont->AddString(TKTLib::StringToWchar(std::to_string(m_invincibleCount)), DirectX::SimpleMath::Vector2(180.0f, 480.0f));
+	debugFont->AddString(TKTLib::StringToWchar(std::to_string(GetInvincibleCount())), DirectX::SimpleMath::Vector2(180.0f, 480.0f));
 #endif // DEBUG
 
 }
@@ -518,9 +494,9 @@ void Player::CollisionResponce(GameObject* other)
 		}
 		break;
 
-		case Tag::ObjectType::Light: 
+		case Tag::ObjectType::Rock: 
 		{
-			//ライトオブジェクトとの衝突応答　押し出し
+			//石オブジェクトとの衝突応答　押し出し
 			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 			
 			ResetJumpCount();
@@ -542,10 +518,10 @@ void Player::CollisionResponce(GameObject* other)
 int Player::TakeDamage(const Character* attacker)
 {	
 	//ダメージを無効化できる回数があるなら無効化
-	if (m_invincibleCount > 0)
+	if (GetInvincibleCount() > 0)
 	{
 		//回数減少
-		m_invincibleCount--;
+		AddInvincibleCount(INVINCIBLE_COUNT_DECREASE);
 		//盾エフェクト消去
 		ParticleManager::GetInstance()->DeleteShieldParticle(GetObjectNumber());
 
@@ -565,7 +541,7 @@ int Player::TakeDamage(const Character* attacker)
  */
 const int Player::GetMaxHP() const
 {
-	return  GemPlusStatus(Gem::Type::HP)+/*ItemBuff(Item::EffectType::HP) +*/ Character::GetMaxHP();
+	return  Character::GetMaxHP();
 }
 
 /**
@@ -577,7 +553,7 @@ const int Player::GetMaxHP() const
  */
 const int Player::GetAttackPower() const
 {
-	return GemPlusStatus(Gem::Type::STR) + ItemBuff(Item::EffectType::Attack) + Character::GetAttackPower();
+	return ItemBuff(Item::EffectType::Attack) + Character::GetAttackPower();
 }
 
 /**
@@ -587,9 +563,9 @@ const int Player::GetAttackPower() const
  *
  * @return 防御力
  */
-const int Player::GetDiffence()
+const int Player::GetDiffence() const
 {
-	return GemPlusStatus(Gem::Type::DEF) + ItemBuff(Item::EffectType::Diffece) + Character::GetDiffence();
+	return ItemBuff(Item::EffectType::Diffece) + Character::GetDiffence();
 }
 
 
@@ -631,17 +607,6 @@ void Player::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 	m_motionAngle = angle;
 }
 
-/**
- * @brief 所持宝石を取得
- *
- * @param[in] なし
- *
- * @return 所持宝石リスト
- */
-const HolderGem& Player::GetHolderGem()
-{
-	return *m_holderGem.get();
-}
 
 /**
  * @brief 回避中か取得
@@ -744,55 +709,6 @@ void Player::UpdateGotItems()
 	//効果時間が0になったものを消す
 	m_gotItems.remove_if([](Item::ItemInfo& iteminfo) {return iteminfo.time < 0.0f; });
 }
-
-
-/**
- * @brief 宝石による強化量を取得
- *
- * @param[in] type 取得するステータス
- *
- * @return 強化量
- */
-int Player::GemPlusStatus(const Gem::Type& type) const
-{
-	//プレイヤーの持つ宝石を管理クラスから取得
-	auto& holdGems = m_holderGem->GetGems();
-	//強化値の合計
-	int total = 0;
-
-	//所持できる数だけ処理する（３回）
-	for (int i = 0; i < holdGems.size(); i++)
-	{
-		//空なら飛ばす
-		if (!holdGems[i])
-		{
-			continue;
-		}
-
-		//所持している宝石が指定されたステータスを強化するものか
-		if (holdGems[i]->GetAbility().powerUp == type)
-		{
-			//HPが満タンのときに効果を適用する宝石か
-			if (const FullHPStatusUpGem* gem = dynamic_cast<const FullHPStatusUpGem*>(holdGems[i].get())) 
-			{
-				//効果を適用していいか判断
-				if (gem->IsApplicable(GetCurrentHP(), GetMaxHP())) 
-				{
-					//効果を適用
-					total += gem->GetAbility().value;
-				}
-				//加算したの次
-				continue;
-			}
-			//普通のステータス強化の宝石なので普通に加算
-			total += holdGems[i]->GetAbility().value;
-
-		}
-	}
-
-	return total;
-}
-
 
 /**
  * @brief アイテムによる強化量を取得

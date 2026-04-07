@@ -10,8 +10,10 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GolemSlammedDownPreparingMotion.h"
-#include"Game/Object/Enemy/Golem/GolemHand.h"
 #include"Game/Object/Enemy/Golem/Golem.h"
+#include"Game/Object/Enemy/Golem/GolemArm.h"
+#include"Game/Object/Enemy/Golem/GolemHand.h"
+#include"Game/Common/Sound.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -41,7 +43,6 @@ GolemSlammedDownPreparingMotion::GolemSlammedDownPreparingMotion(const int& gole
  */
 GolemSlammedDownPreparingMotion::~GolemSlammedDownPreparingMotion()
 {
-
 }
 
 /**
@@ -81,14 +82,12 @@ bool GolemSlammedDownPreparingMotion::Update()
 	//左手位置設定
 	m_pLeftGolemArm->SetPosition(currentPos);
 
-
 	//今回の角度を計算
 	float handAngle = TKTLib::Lerp(ARM_START_MOTION_X_ANGLE, ARM_END_MOTION_X_ANGLE, motionLerp);
 
 	//モーション角度設定
 	m_pRightGolemArm->SetLocalRotationEuler({ handAngle,0.0f,0.0f });
 	m_pLeftGolemArm->SetLocalRotationEuler({handAngle,0.0f,0.0f});
-
 
 	//モーション値進行
 	motionLerp +=  Messenger::GetInstance()->GetElapsedTime();

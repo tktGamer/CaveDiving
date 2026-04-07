@@ -10,6 +10,7 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "PartObject.h"
+#include"../Object/Character.h"
 
 
 // RotationLimit::OFFの定義

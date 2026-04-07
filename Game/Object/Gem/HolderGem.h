@@ -13,7 +13,7 @@
 #include"Game/Object/Gem/Gem.h"
 #include<vector>
 // クラスの宣言 ===============================================================
-
+class Character;
 // クラスの定義 ===============================================================
 /**
   * @brief 所持宝石の管理
@@ -41,6 +41,12 @@ public:
 	// デストラクタ
 	~HolderGem();
 // 操作
+	//更新
+	void Update(Character& owner) const;
+	//ステータス補正取得
+	int ApplyStatus(const Gem::Type& type, const Character& owner) const;
+	//被弾時の処理
+	int OnTakeDamage(Character& owner,int damage);
 	//リストクリア
     void Clear();
 	//リストに空きがあるか

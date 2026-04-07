@@ -10,14 +10,11 @@
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "OutlineItem.h"
-#include"Game/Common/Collision/CollisionManager.h"
-#include"Game/Shader/ShaderManager.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
  *
- * @param[in] effect  アイテム効果
- * @param[in] increase　効果量
+ * @param[in] info  アイテム情報
  * @param[in] parent　親クラスのポインタ
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）

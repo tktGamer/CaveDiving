@@ -12,6 +12,7 @@
 #include "FullHPStatusUpGem.h"
 #include"Game/Message/Messenger.h"
 #include"Game/Factory/GemFactory.h"
+#include"Game/Object/Character.h"
 //ファクトリクラスへの登録
 REGISTER_GEM_CLASS("FullHPStatusUpGem", FullHPStatusUpGem);
 
@@ -58,6 +59,30 @@ std::unique_ptr<Gem> FullHPStatusUpGem::Clone() const
  */
 void FullHPStatusUpGem::Initialize()
 {
+}
+
+/**
+ * @brief ステータス補正
+ *
+ * @param[in] type  補正するステータス
+ * @param[in] owner 所有者
+ *
+ * @return 補正値
+ */
+int FullHPStatusUpGem::ModifyStatus(const Gem::Type& type, const Character& owner) const
+{
+	const GemAbility ability = GetAbility();
+	//補正するステータスが一致してなかったら
+	if (ability.powerUp != type) 
+	{
+		return STATUS_MODIFIER_NONE;
+	}
+	//HPがMAXなら
+	if (IsApplicable(owner.GetCurrentHP(), owner.GetMaxHP())) 
+	{
+		return ability.value;
+	}
+	return STATUS_MODIFIER_NONE;
 }
 
 /**

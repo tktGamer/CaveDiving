@@ -11,6 +11,9 @@
 #include "pch.h"
 #include "Game/Object/Player/State/PlayerIdling.h"
 #include "Game/Object/Player/Player.h"
+#include"Game/Motion/PlayerMotion/PlayerIdlingMotion.h"
+#include"Game/Common/Graphics.h"
+#include"Game/Object/Player/Hand.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

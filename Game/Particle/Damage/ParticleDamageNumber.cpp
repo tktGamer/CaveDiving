@@ -31,7 +31,7 @@ ParticleDamageNumber::ParticleDamageNumber(const wchar_t* texturePsth, const Dir
 	int digit = CheckDigit(number);
 	//”’l‚ğ‚¢‚¶‚é‚Ì‚Å•Ê‚Ì•Ï”‚É‘ã“ü
 	int numbers = number;
-	DirectX::SimpleMath::Vector3 numberPos = {0,0,0};
+	DirectX::SimpleMath::Vector3 numberPos = DirectX::SimpleMath::Vector3::Zero;
 	
 	for (int i = 0; i < digit; i++) 
 	{
@@ -45,8 +45,8 @@ ParticleDamageNumber::ParticleDamageNumber(const wchar_t* texturePsth, const Dir
 			(
 			2.0f,
 			numberPos,
-			DirectX::SimpleMath::Vector3{ 0.0f,2.5f,0.0f },
-			DirectX::SimpleMath::Vector3{ 0.0f,-3.0f,0.0f },
+			VELOCITY,
+			ACCELE,
 			DirectX::SimpleMath::Vector3::One,
 			DirectX::SimpleMath::Vector3::One,
 			DirectX::SimpleMath::Color{1.0f,1.0f,0.0f,1.0f},
