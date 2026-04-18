@@ -67,7 +67,7 @@ ResourceManager* const ResourceManager::GetInstance()
  *
  * @return 　画像データのハンドル
  */
-ID3D11ShaderResourceView** ResourceManager::RequestTexture(wchar_t const* filename)
+const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& ResourceManager::RequestTexture(wchar_t const* filename)
 {
 	//wchar_t型からString型へ変換
 	std::string stringFilename = TKTLib::WcharToString(filename);
@@ -80,7 +80,7 @@ ID3D11ShaderResourceView** ResourceManager::RequestTexture(wchar_t const* filena
 	}
 
 	//登録してある画像データのハンドルを返却
-	return m_texture[stringFilename].GetAddressOf();
+	return m_texture[stringFilename];
 }
 
 /**
@@ -90,7 +90,7 @@ ID3D11ShaderResourceView** ResourceManager::RequestTexture(wchar_t const* filena
  *
  * @return 　画像データのハンドル
  */
-ID3D11ShaderResourceView** ResourceManager::RequestTexture(const std::string& filename)
+const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& ResourceManager::RequestTexture(const std::string& filename)
 {
 	//未登録の場合
 	if (m_texture.count(filename) == 0)
@@ -101,7 +101,7 @@ ID3D11ShaderResourceView** ResourceManager::RequestTexture(const std::string& fi
 	}
 
 	////登録してある画像データのハンドルを返却
-	return m_texture[filename].GetAddressOf();
+	return m_texture[filename];
 
 }
 
@@ -201,7 +201,7 @@ DirectX::Model* ResourceManager::RequestModel(wchar_t const* filename)
 	}
 
 	//モデルデータのポインタを返す
-	return m_models[stringFilename].get();
+	return *m_models[stringFilename].get();
 }
 
 /**
@@ -221,7 +221,7 @@ DirectX::Model* ResourceManager::RequestModel(const std::string& filename)
    }
 
    //モデルデータのポインタを返す
-   return m_models[filename].get();
+   return *m_models[filename].get();
 }
 
 

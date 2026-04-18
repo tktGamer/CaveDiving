@@ -30,6 +30,7 @@ public:
 		Light,      // ÉâÉCÉg
 		Wall,	    // ï«
 		Ground,		// è∞
+		UI
 	};
 };
 

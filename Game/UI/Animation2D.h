@@ -68,7 +68,7 @@ private:
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
 
 	//アニメーションするテクスチャハンドルのポインタ
-	ID3D11ShaderResourceView** m_pAnimation2DTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pAnimation2DTexture;
 	//テクスチャの情報
 	AnimationTexture m_textureInfo;
 	//テクスチャの大きさ

@@ -25,28 +25,33 @@ void main(
 		//	ジオメトリ出力
 		PS_INPUT element;
 		
-		//	頂点に入れていた諸々を受け取る
-		float2 window = windowSize;
-		float4 rect = input[0].color;
-		//	rect(input[0].color)のxyには、アンカー座標が入っている(UserInterface.cppのRender関数冒頭より)
-		float2 pos = (rect.xy / window.xy) * 2.0f;
-		//	rect(input[0].color)のzwには、画像サイズが入っている(同じくUserInterface.cppのRender関数冒頭より)
-		float2 size = (rect.zw / window.xy);
+		////	頂点に入れていた諸々を受け取る
+		//float2 window = windowSize;
+		//float4 rect = input[0].color;
+		////	rect(input[0].color)のxyには、アンカー座標が入っている(UserInterface.cppのRender関数冒頭より)
+		//float2 pos = (rect.xy / window.xy) * 2.0f;
+		////	rect(input[0].color)のzwには、画像サイズが入っている(同じくUserInterface.cppのRender関数冒頭より)
+		//float2 size = (rect.zw / window.xy);
 
-		float2 scale = input[0].pos.xy;
-		//	アンカータイプごとに補正する座標を決定する
-		uint anc = input[0].pos.z;
-		float2 anchor;
-		anchor.x = (size.x) * (anc % 3u) * scale.x;
-		anchor.y = (size.y) * (anc / 3u) * scale.y;
+		//float2 scale = input[0].pos.xy;
+		////	アンカータイプごとに補正する座標を決定する
+		//uint anc = input[0].pos.z;
+		//float2 anchor;
+		//anchor.x = (size.x) * (anc % 3u) * scale.x;
+		//anchor.y = (size.y) * (anc / 3u) * scale.y;
+		
+		////	頂点座標等から配置を決める
+  //      element.pos.xy = pos + scale * size * offset_array[i].xy * 2.0f - float2(1.0f, 1.0f);
+		////	アンカーの情報分だけ位置をずらす
+  //      element.pos.xy -= anchor;
+		////	DirectXは-1がスクリーン一番下なので、Y情報を反転する
+  //      element.pos.y *= -1;
 
-		//	頂点座標等から配置を決める
-        element.pos.xy = pos + scale * size * offset_array[i].xy * 2.0f - float2(1.0f, 1.0f);
-		//	アンカーの情報分だけ位置をずらす
-        element.pos.xy -= anchor;
-		//	DirectXは-1がスクリーン一番下なので、Y情報を反転する
+        float2 local = offset_array[i].xy * input[0].color.zw;
+        float2 screenPos = input[0].pos.xy + local;
+        element.pos.xy = (screenPos / windowSize) * 2.0f - 1.0f;
+		//DirectXは-1がスクリーン一番下なので、Y情報を反転する
         element.pos.y *= -1;
-
 		
 		//	XY平面なので zは0、wは1
 		element.pos.z = 0.0f;

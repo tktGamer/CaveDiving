@@ -37,7 +37,7 @@ public:
 	// 事前更新する
 	virtual void PreUpdate() = 0;
 	// 処理を実行する
-	virtual void Update(const float& elapsedTime) = 0;
+	virtual void Update() = 0;
 	// 事後更新する
 	virtual void PostUpdate() = 0;
 	// テクスチャを描画する

@@ -22,11 +22,11 @@
  * @param[in] initialPosition　初期座標
  * @param[in] initialAngle　　　初期角度
  */
-Pikel::Pikel(Character* owner, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Pikel::Pikel(Character* owner, const GameObject3D* parent, const Transform& transform)
 	: 
-	Weapon(owner,Tag::ObjectType::Weapon,parent,initialPosition,initialAngle),
+	Weapon(owner,Tag::ObjectType::Weapon,parent,transform),
 	m_messageID{},
-	m_sphere{ GetPosition(), PIKEL_SPHERE_SIZE},
+	m_sphere{ GetLocalPosition(), PIKEL_SPHERE_SIZE},
 	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 		Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext()}
 {
@@ -67,17 +67,14 @@ void Pikel::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] currentPosition 親の座標
- * @param[in] currentAngle    親の角度
+ * @param[in] なし
  *
  * @return なし
  */
-void Pikel::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Pikel::Update()
 {
-	//位置の更新
-	SetCurrentPosition( currentPosition + GetPosition());
-	//角度の更新
-	SetCurrentAngle(GetQuaternion() * currentAngle);
+	CalculationWorldMatrix();
+	DecomposeMatrix();
 	//当たり判定の更新
 	//位置を調整する
 	m_sphere.SetCenter(GetCurrentPosition() + DirectX::SimpleMath::Vector3::Transform(PIKEL_COLLSION_POS_OFFSET, GetCurrentQuaternion()));
@@ -99,7 +96,7 @@ void Pikel::Draw()
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
@@ -124,7 +121,7 @@ void Pikel::Draw()
 				//	読み込んだ画像をピクセルシェーダに伝える
 				//	自作VSはt0を使っているため、
 				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 
 			//	半透明描画指定
@@ -192,7 +189,7 @@ void Pikel::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void Pikel::CollisionResponce(GameObject* other)
+void Pikel::CollisionResponce(GameObject3D* other)
 {
 	switch (other->GetObjectType()) 
 	{

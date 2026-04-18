@@ -69,7 +69,7 @@ bool ParticleControl::HasVertex() const
  * 
  * @return テクスチャハンドル
  */
-ID3D11ShaderResourceView** ParticleControl::GetTexture() const
+const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& ParticleControl::GetTexture() const
 {
 	return m_texture;
 }

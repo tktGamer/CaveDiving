@@ -10,14 +10,14 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Object/GameObject.h"
+#include "Game/Object/GameObject3D.h"
 // クラスの宣言 ===============================================================
 class Character;
 // クラスの定義 ===============================================================
 /**
   * @brief オブジェクトを構成する体の一部
   */
-class PartObject : public GameObject
+class PartObject : public GameObject3D
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -47,8 +47,7 @@ public:
 
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	PartObject(Character* root,
-		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	PartObject(Character* root,const GameObject3D* parent, const Transform& transform);
 	// デストラクタ
 	virtual ~PartObject();
 // 操作

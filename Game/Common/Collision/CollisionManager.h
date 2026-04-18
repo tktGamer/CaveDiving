@@ -12,7 +12,7 @@
 #pragma once
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/Graphics.h"
-#include "Game/Object/GameObject.h"
+#include "Game/Object/GameObject3D.h"
 #include "../Collision/Sphere.h"
 #include "../Collision/Box.h"
 // クラスの宣言 ===============================================================
@@ -37,9 +37,9 @@ public:
 	// CollisionManagerクラスのインスタンスを取得する
 	static CollisionManager* const GetInstance();
 	//オブジェクトの登録
-	void Register(GameObject* obj);
+	void Register(GameObject3D* obj);
 	//オブジェクトの解除
-	void UnRegister(GameObject* obj);
+	void UnRegister(GameObject3D* obj);
 	//オブジェクトの削除
 	void AllRelease();
 	//衝突総判定
@@ -83,5 +83,5 @@ private:
 	// CollisionManagerクラスのインスタンスへのユニークポインタ「シングルトン化する」
 	static std::unique_ptr<CollisionManager> s_collisionManager;
 	//当たり判定するオブジェクトのリスト
-	std::list<GameObject*> m_objects;
+	std::list<GameObject3D*> m_objects;
 };

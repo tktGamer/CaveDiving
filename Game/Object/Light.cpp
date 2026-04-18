@@ -18,15 +18,11 @@
  * @param[in] initialPosition　初期座標 
  * @param[in] initialAngle　　 初期角度 
  */
-Light::Light(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Light::Light()
 	:
-	GameObject{Tag::ObjectType::Light,parent,initialPosition,initialAngle},
 	m_isOn{},
-	m_color{DirectX::Colors::White},
-	m_messageID{}
+	m_color{DirectX::Colors::White}
 {
-	//メッセンジャーに登録
-	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 }
 
 /**
@@ -50,36 +46,19 @@ void Light::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] なし
+ * @param[in] positon  座標
  *
  * @return なし
  */
-void Light::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Light::Update(const DirectX::SimpleMath::Vector3& positon)
 {
-	//位置の更新
-	SetCurrentPosition(currentPosition + GetPosition());
-	//角度の更新
-	SetCurrentAngle(GetQuaternion() * currentAngle );
 	//ライト情報の更新
-	m_pointLight.LightPosition = GetCurrentPosition();
+	m_pointLight.LightPosition = positon;
 	m_pointLight.LightInvSqrRadius = 1.0f / (5 * 5); //ライトが届く距離（２乗の逆数）
 	m_pointLight.LightColor = m_color;
 	m_pointLight.LightIntensity = 1.0f;
 	m_pointLight.Attenuation = DirectX::SimpleMath::Vector4(1.0f, 0.1f, 0.006f, 0.0f); // デフォルトの減衰
 }
-
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Light::Draw()
-{
-}
-
-
 
 /**
  * @brief 終了処理
@@ -90,30 +69,6 @@ void Light::Draw()
  */
 void Light::Finalize()
 {
-}
-
-/**
- * @brief メッセージを取得する
- *
- * @param[in] messageID　メッセージID
- *
- * @return なし
- */
-void Light::OnMessegeAccepted(Message::MessageID messageID)
-{
-	messageID;
-}
-
-/**
- * @brief 衝突応答分岐
- *
- * @param[in] other　衝突相手のオブジェクトポインタ
- *
- * @return なし
- */
-void Light::CollisionResponce(GameObject* other)
-{
-	other;
 }
 
 /**

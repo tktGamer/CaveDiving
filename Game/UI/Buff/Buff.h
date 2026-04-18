@@ -17,7 +17,7 @@
 /**
   * @brief 適用中のバフ表示UI
   */
-class Buff : public IUI
+class Buff : public GameObject2D
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -43,13 +43,7 @@ public:
 	//更新
 	void Update() override;
 	//描画
-	void Render() override;
-	//バフUIの追加
-	void Add(const wchar_t* path
-		, DirectX::SimpleMath::Vector2 position
-		, DirectX::SimpleMath::Vector2 scale
-		, UserInterface::ANCHOR anchor);
-	
+	void Draw() override;	
 //内部処理
 private:
 

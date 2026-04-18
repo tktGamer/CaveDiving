@@ -702,7 +702,7 @@
     <ClInclude Include="Game\Motion\GolemMotion\GolemWalkMotion.h">
       <Filter>Game\Motion\GolemMotion</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Interface\IComponent.h">
+    <ClInclude Include="Game\Interface\IGameObject.h">
       <Filter>Game\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Game\Interface\IScene.h">
@@ -746,6 +746,15 @@
     </ClInclude>
     <ClInclude Include="Game\Object\Enemy\Enemy.h">
       <Filter>Game\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\GameObject3D.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\GameObject2D.h">
+      <Filter>Game\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Object\Transform.h">
+      <Filter>Game\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1227,6 +1236,15 @@
     </ClCompile>
     <ClCompile Include="Game\Object\Enemy\Enemy.cpp">
       <Filter>Game\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\GameObject3D.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\GameObject2D.cpp">
+      <Filter>Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object\Transform.cpp">
+      <Filter>Game\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

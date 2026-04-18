@@ -207,7 +207,7 @@
     <ClInclude Include="Game\Factory\UIFactory.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\Interface\ICommand.h" />
-    <ClInclude Include="Game\Interface\IComponent.h" />
+    <ClInclude Include="Game\Interface\IGameObject.h" />
     <ClInclude Include="Game\Interface\IScene.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\Interface\IObserver.h" />
@@ -255,6 +255,8 @@
     <ClInclude Include="Game\Object\Enemy\Golem\State\GolemIdling.h" />
     <ClInclude Include="Game\Object\Enemy\Golem\State\GolemMoving.h" />
     <ClInclude Include="Game\Object\GameObject.h" />
+    <ClInclude Include="Game\Object\GameObject2D.h" />
+    <ClInclude Include="Game\Object\GameObject3D.h" />
     <ClInclude Include="Game\Object\Gem\Gem.h" />
     <ClInclude Include="Game\Object\Gem\GemManager.h" />
     <ClInclude Include="Game\Object\Gem\HolderGem.h" />
@@ -283,6 +285,7 @@
     <ClInclude Include="Game\Object\Stage\Ground.h" />
     <ClInclude Include="Game\Object\Stage\Stage.h" />
     <ClInclude Include="Game\Object\Stage\Wall.h" />
+    <ClInclude Include="Game\Object\Transform.h" />
     <ClInclude Include="Game\Object\Weapon.h" />
     <ClInclude Include="Game\Particle\Damage\ParticleNumber3D.h" />
     <ClInclude Include="Game\Particle\Damage\ParticleDamageNumber.h" />
@@ -423,6 +426,8 @@
     <ClCompile Include="Game\Object\Enemy\Golem\State\GolemIdling.cpp" />
     <ClCompile Include="Game\Object\Enemy\Golem\State\GolemMoving.cpp" />
     <ClCompile Include="Game\Object\GameObject.cpp" />
+    <ClCompile Include="Game\Object\GameObject2D.cpp" />
+    <ClCompile Include="Game\Object\GameObject3D.cpp" />
     <ClCompile Include="Game\Object\Gem\Gem.cpp" />
     <ClCompile Include="Game\Object\Gem\GemManager.cpp" />
     <ClCompile Include="Game\Object\Gem\HolderGem.cpp" />
@@ -451,6 +456,7 @@
     <ClCompile Include="Game\Object\Stage\Ground.cpp" />
     <ClCompile Include="Game\Object\Stage\Stage.cpp" />
     <ClCompile Include="Game\Object\Stage\Wall.cpp" />
+    <ClCompile Include="Game\Object\Transform.cpp" />
     <ClCompile Include="Game\Object\Weapon.cpp" />
     <ClCompile Include="Game\Particle\Damage\ParticleNumber3D.cpp" />
     <ClCompile Include="Game\Particle\Damage\ParticleDamageNumber.cpp" />

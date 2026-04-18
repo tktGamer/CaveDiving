@@ -24,6 +24,7 @@
 Buff::Buff(const float& time, const wchar_t* path,
     const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
 	:
+	GameObject2D{ Tag::ObjectType::UI,nullptr,position,scale },
     m_remainingTime{ &time },
     m_upType{}
 {
@@ -66,9 +67,9 @@ void Buff::Update()
  *
  * @return ‚È‚µ
  */
-void Buff::Render()
+void Buff::Draw()
 {
-    m_upType->Render();
+    m_upType->Draw();
 }
 
 /**

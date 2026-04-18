@@ -42,20 +42,21 @@
  * @param[in] initialPositon 初期座標
  * @param[in] initialAngle 　初期角度
  */
-Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,const GameObject* parent,
-	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Player::Player(BuffUIControl* pBuffUIControl, const GameData::PlayerData& data,const GameObject3D* parent,
+	const Transform& transform)
 	: 
-	Character(data.maxHP,PLAYER_BASE_ATTACK,PLAYER_BASE_DIFFENCE,Tag::ObjectType::Player,parent,initialPosition,initialAngle,data.gemID),
+	Character{ data.maxHP,PLAYER_BASE_ATTACK,PLAYER_BASE_DIFFENCE,Tag::ObjectType::Player,parent,transform,data.gemID },
 	m_messageID{},
-	m_sphere{ GetPosition(), PLAYER_SPHERE_SIZE },
+	m_sphere{ GetLocalPosition(), PLAYER_SPHERE_SIZE },
 	m_motionAngle{},
-	m_pBuffUIControl{pBuffUIControl}
+	m_pBuffUIControl{pBuffUIControl},
+	m_animTransform{}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	//テクスチャ設定
 	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::PLAYER));
 	//モデル設定
-	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::PLAYER));
+	SetModel(*resourceManager->RequestModel(ResourcePath::MODEL::PLAYER));
 
 	//メッセンジャークラスに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
@@ -89,7 +90,7 @@ void Player::Initialize()
 {
 	//右手の生成
 	std::unique_ptr<Hand> handR = GameObjectFactory::CreateHand(this, this,RIGHT_HAND_INIT_POS);
-	handR->SetQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, RIGHT_HAND_Z_ANGLE));
+	handR->SetLocalQuaternion(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitZ, RIGHT_HAND_Z_ANGLE));
 	//左手の生成
 	std::unique_ptr<Hand> handL = GameObjectFactory::CreateHand(this, this,LEFT_HAND_INIT_POS);
 	//右手にピッケルを持たせる
@@ -111,9 +112,6 @@ void Player::Initialize()
 	//初期状態を設定
 	SetState(m_idlingState.get());
 
-	//初期設定
-	SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	SetScale(DirectX::SimpleMath::Vector3::One);
 	//当たり判定セット
 	SetShape(&m_sphere);
 	//ライト生成
@@ -138,25 +136,23 @@ void Player::Initialize()
  *
  * @return なし
  */
-void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Player::Update()
 {
-	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 	
 	//状態の更新
-	GetState()->Update(elapsedTime);
-	//現在位置の更新
-	SetCurrentPosition(currentPosition + GetPosition());
-	//現在角度の更新
-	SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle);
+	GetState()->Update();
+	CalculationWorldMatrix();
+	DecomposeMatrix();
+	
 	
 	//パーツの更新
 	for (std::unique_ptr<GameObject>& part : m_bodyParts)
 	{
-		part->Update(GetCurrentPosition(), GetCurrentQuaternion());
+		part->Update();
 	}
 
 	//ライトの更新
-	m_light->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	m_light->Update(GetCurrentPosition());
 	//当たり判定の更新
 	m_sphere.SetCenter(GetCurrentPosition());
 	//取得アイテムの更新
@@ -176,8 +172,9 @@ void Player::Update(const DirectX::SimpleMath::Vector3& currentPosition, const D
 
 	if (GetCurrentPosition().y < OUT_STAGE) 
 	{
-		SetPosition(DirectX::SimpleMath::Vector3::Zero);
+		SetLocalPosition(DirectX::SimpleMath::Vector3::Zero);
 	}
+
 }
 
 
@@ -201,7 +198,7 @@ void Player::Draw()
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
@@ -231,7 +228,8 @@ void Player::Draw()
 				//	読み込んだ画像をピクセルシェーダに伝える
 				//	自作VSはt0を使っているため、
 				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
+				ID3D11ShaderResourceView* const* a{};
+				context->PSSetShaderResources(0, 1, a);
 			}
 
 			//	半透明描画指定
@@ -324,17 +322,17 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 	switch (messageID)
 	{
 		case Message::IDLING:
-			GameObject::ChangeState(m_idlingState.get());
+			GameObject3D::RequestChangeState(m_idlingState.get());
 			break;
 		case Message::MOVING:
 			//攻撃・回避中・ダメージ中ではなければ
 			if (!IsAttacking() && !IsAvoidance() && !(GetState() == m_damagedState.get())) 
 			{
-				GameObject::ChangeState(m_movingState.get());
+				GameObject3D::RequestChangeState(m_movingState.get());
 			}
 			break;
 		case Message::ATTACK:
-			if ((GetState() == m_damagedState.get())) 
+			if ((GetState() == m_damagedState.get()))
 			{
 				break;
 			}
@@ -342,29 +340,29 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
 			{
 				//攻撃入力があったことを記録 コンボするため
 				m_attackBuffered = true;
-				
+
 			}
 			else
 			{
 				//攻撃状態になかったら地上か空中攻撃状態へ遷移
-				if (IsOnGround()) 
+				if (IsOnGround())
 				{
-					GameObject::ChangeState(m_groundAttackState.get());
+					GameObject3D::RequestChangeState(m_groundAttackState.get());
 					break;
 				}
-				GameObject::ChangeState(m_airAttackState.get());
+				GameObject3D::RequestChangeState(m_airAttackState.get());
 			}
 			break;
 		case Message::AVOIDANCE:
-			GameObject::ChangeState(m_avoidState.get());
+			GameObject3D::RequestChangeState(m_avoidState.get());
 			break;
 		case Message::DAMAGED:
-			GameObject::ChangeState(m_damagedState.get());
+			GameObject3D::RequestChangeState(m_damagedState.get());
 			break;
 		case Message::JUMPING:
-			if (ReduceJumpCount()) 
+			if (ReduceJumpCount())
 			{
-				GameObject::ChangeState(m_jumpingState.get());
+				GameObject3D::RequestChangeState(m_jumpingState.get());
 			}
 			break;
 		case Message::MOVE_FRONT:
@@ -393,7 +391,7 @@ void Player::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void Player::CollisionResponce(GameObject* other)
+void Player::CollisionResponce(GameObject3D* other)
 {
 	switch (other->GetObjectType())
 	{
@@ -417,7 +415,7 @@ void Player::CollisionResponce(GameObject* other)
 			}
 
 			//HPをもつオブジェクトを取得
-			GameObject* root = dynamic_cast<EnemyPart*>(other)->GetRootCharacter();
+			GameObject3D* root = dynamic_cast<EnemyPart*>(other)->GetRootCharacter();
 			OnDamage(root);
 		}
 		break;
@@ -427,7 +425,7 @@ void Player::CollisionResponce(GameObject* other)
 			//ステージとの衝突応答　押し出し
 			DirectX::SimpleMath::Vector3 newPosition = CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere);
 
-			SetPosition(newPosition);
+			SetLocalPosition(newPosition);
 			SetIsOnGround(true);
 			//Yの速度をリセット
 			DirectX::SimpleMath::Vector3 velocity = GetVelocity();
@@ -461,9 +459,9 @@ void Player::CollisionResponce(GameObject* other)
 
 
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere ,dynamic_cast<Sphere*>(other->GetShape())));
+			SetLocalPosition(CollisionManager::GetInstance()->PushBack(&m_sphere ,dynamic_cast<Sphere*>(other->GetShape())));
 			//座標更新
-			m_sphere.SetCenter(GetPosition());
+			m_sphere.SetCenter(GetLocalPosition());
 
 			//ジャンプ状態・空中攻撃状態なら待機状態へ移行
 			if (GetState() == m_jumpingState.get() || GetState() == m_airAttackState.get()) 
@@ -497,7 +495,7 @@ void Player::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Rock: 
 		{
 			//石オブジェクトとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
+			SetLocalPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 			
 			ResetJumpCount();
 
@@ -607,6 +605,30 @@ void Player::SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle)
 	m_motionAngle = angle;
 }
 
+/**
+ * @brief アニメーションの変換行列を取得
+ *
+ * @param[in] なし
+ *
+ * @return アニメーションの変換行列
+ */ 
+const Transform& Player::GetAnimTransform() const
+{
+	return m_animTransform;
+}
+
+ /**
+ * @brief アニメーションの変換行列の設定
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void Player::SetAnimTransform(const Transform& transform)
+{
+	m_animTransform = transform;
+}
+
 
 /**
  * @brief 回避中か取得
@@ -668,6 +690,19 @@ bool Player::ReduceJumpCount()
 	m_remainingJumpCount--;
 
 	return true;
+}
+
+void Player::CalculationWorldMatrix()
+{
+	//親オブジェクトがあるなら
+	const GameObject3D* parent = GetParentObject();
+	if (parent)
+	{
+		//親のマトリックスとかける
+		parent->GetWorldMatrix() *(m_animTransform.GetLocalMatrix() * GetLocalTransform().GetLocalMatrix());
+		return;
+	}
+	GetLocalTransform().GetLocalMatrix();
 }
 
 

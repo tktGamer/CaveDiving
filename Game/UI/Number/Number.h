@@ -56,7 +56,7 @@ private:
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
 
 	//数字のテクスチャハンドルのポインタ
-	ID3D11ShaderResourceView** m_pNumberTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pNumberTexture;
 	int m_windowWidth, m_windowHeight;
 	DirectX::SimpleMath::Vector2 m_textureSize;
 

@@ -22,16 +22,16 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Wing::Wing(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Wing::Wing(Character* root,const GameObject3D* parent, const Transform& transform)
 	:
-	EnemyPart(root,parent,initialPosition,initialAngle),
+	EnemyPart(root,parent,transform),
 	m_motionAngle{}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	//テクスチャ設定
 	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::BAT_WING));
 	//モデル設定
-	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::BAT_WING));
+	SetModel(*resourceManager->RequestModel(ResourcePath::MODEL::BAT_WING));
 	//メッセンジャーに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 }
@@ -62,13 +62,17 @@ void Wing::Initialize()
  *
  * @return なし
  */
-void Wing::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Wing::Update()
 {
-	//位置の更新
-	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition );
-	//角度の更新
-	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
+	////位置の更新
+	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition );
+	////角度の更新
+	//SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
+
+	CalculationWorldMatrix();
+	DecomposeMatrix();
 }
+
 
 /**
  * @brief 描画処理
@@ -86,7 +90,7 @@ void Wing::Draw()
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 	//ワールド行列を計算
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 	//アウトライン描画
 	if (Messenger::GetInstance()->IsOutLineActive())
 	{
@@ -113,7 +117,7 @@ void Wing::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
@@ -186,7 +190,7 @@ void Wing::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void Wing::CollisionResponce(GameObject* other)
+void Wing::CollisionResponce(GameObject3D* other)
 {
 	UNREFERENCED_PARAMETER(other);
 }

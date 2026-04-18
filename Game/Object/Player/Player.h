@@ -84,6 +84,10 @@ public:
 
 	DirectX::SimpleMath::Quaternion GetMotionAngle() const;
 	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
+	//アニメーション用トランスフォームの取得
+	const Transform& GetAnimTransform() const;
+	//アニメーション用トランスフォームの設定
+	void SetAnimTransform(const Transform& transform);
 
 	//回避中か
 	bool IsAvoidance();
@@ -93,15 +97,15 @@ public:
 	bool IsAttackBuffered() const;
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	Player(BuffUIControl* pBuffUIControl,const GameData::PlayerData& data,const GameObject* parent,
-		const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Player(BuffUIControl* pBuffUIControl,const GameData::PlayerData& data,const GameObject3D* parent,
+		const Transform& transform);
 	// デストラクタ
 	~Player();
 // 操作
 	//初期化
 	void Initialize();
 	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	void Update() override;
 	//描画
 	void Draw() override;
 	//終了
@@ -109,12 +113,13 @@ public:
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 	//衝突応答分岐
-	void CollisionResponce(GameObject* other) override;
+	void CollisionResponce(GameObject3D* other) override;
 	//ダメージ処理
 	int TakeDamage(const Character* attacker) override;
 	//ジャンプ出来る残り回数減少
 	bool ReduceJumpCount();
-
+	//ワールド行列計算
+	void CalculationWorldMatrix() override;
 //　内部操作
 private:
 	//アイテムの強化制限時間経過
@@ -136,15 +141,17 @@ private:
 	std::unique_ptr<IState> m_movingState; // 移動状態
 	std::unique_ptr<IState> m_groundAttackState; // 地上攻撃状態
 	std::unique_ptr<IState> m_airAttackState; // 空中攻撃状態
-	std::unique_ptr<IState> m_jumpingState; // ジャンプ状態
-	std::unique_ptr<IState> m_avoidState;   // 回避状態
-	std::unique_ptr<IState> m_damagedState; // ダメージ状態
+	std::unique_ptr<IState> m_jumpingState;   // ジャンプ状態
+	std::unique_ptr<IState> m_avoidState;     // 回避状態
+	std::unique_ptr<IState> m_damagedState;   // ダメージ状態
 
 	// プレイヤーの体のパーツ
 	std::vector<std::unique_ptr<GameObject>> m_bodyParts;
 	//ジャンプできる残り回数
 	int m_remainingJumpCount = REMAINING_JUMP;
 
+	//アニメーション用トランスフォーム
+	Transform m_animTransform;
 
 	//手に入れたアイテム
 	std::list<Item::ItemInfo> m_gotItems;

@@ -45,8 +45,8 @@ public:
 	// ResourceManagerクラスのインスタンスを取得する
 	static ResourceManager* const GetInstance();
 	//画像データ要求
-	ID3D11ShaderResourceView** RequestTexture(wchar_t const* filename);
-	ID3D11ShaderResourceView** RequestTexture(const std::string& filename);
+	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& RequestTexture(wchar_t const* filename);
+	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& RequestTexture(const std::string& filename);
 	//画像サイズ取得
 	void GetTextureSize(wchar_t const* filename, int& width, int& hight);
 

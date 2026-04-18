@@ -10,7 +10,7 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include "../Object/GameObject.h"
+#include "../Object/GameObject3D.h"
 #include"Game/Object/Gem/HolderGem.h"
 // クラスの宣言 ===============================================================
 class Sound;
@@ -18,7 +18,7 @@ class Sound;
 /**
   * @brief キャラクター
   */
-class Character : public GameObject
+class Character : public GameObject3D
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -115,14 +115,14 @@ public:
 
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	Character(int hp,int attack, int diffence,
-		Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	Character(const int& hp,const int& attack,const int& diffence,
+		const Tag::ObjectType& type,const GameObject3D* parent, const Transform& transform,
 		const std::vector<int>& gemID = std::vector<int>(HolderGem::MAX_GEM, Gem::BLANK_ID));
 	// デストラクタ
 	virtual ~Character();
 // 操作
 	//ダメージを受けたときの処理
-	virtual void OnDamage(GameObject* other);
+	virtual void OnDamage(GameObject3D* other);
 	//ダメージを受ける
 	virtual int TakeDamage(const Character* attacker);
 	//ダメージフラッシュ更新

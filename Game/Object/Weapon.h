@@ -10,14 +10,14 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"../Object/GameObject.h"
+#include"../Object/GameObject3D.h"
 // クラスの宣言 ===============================================================
 class Character;
 // クラスの定義 ===============================================================
 /**
   * @brief 武器の基底
   */
-class Weapon : public GameObject
+class Weapon : public GameObject3D
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -31,8 +31,7 @@ public:
 	Character* GetOwner() const;
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	Weapon(Character* owner,
-		Tag::ObjectType type,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Weapon(Character* owner, const Tag::ObjectType& type,const GameObject3D* parent, const Transform& transform);
 	// デストラクタ
 	~Weapon();
 // 操作

@@ -24,7 +24,7 @@ BatChasing::BatChasing(Bat* bat)
 {
 	//プレイヤーオブジェクトを取得
 	Messenger* messenger = Messenger::GetInstance();
-	m_pPlayer = messenger->GetObject(messenger->GetPlayerObjectID());
+	m_pPlayer = messenger->GetObject(messenger->GetPlayerObjectID())->Cast<GameObject3D>();
 }
 /**
  * @brief デストラクタ
@@ -141,10 +141,10 @@ void BatChasing::Movement()
 	//速度を設定
 	m_bat->SetVelocity(velocity);
 	//座標更新
-	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
+	m_bat->SetLocalPosition(m_bat->GetLocalPosition() + m_bat->GetVelocity());
 
 	// 姿勢に回転を加える
-	m_bat->SetQuaternion(rotate);
+	m_bat->SetLocalQuaternion(rotate);
 }
 
 /**

@@ -5,7 +5,7 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/18
+ * @date   日付　2026/04/15
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -20,15 +20,15 @@
  * @param[in] scale     拡大率
  * @param[in] anchor    アンカー
  *
- * @return 宝石選択UIクラス
+ * @return UIクラス
  */
 std::unique_ptr<UserInterface> UIFactory::CreateUserInterface(
 	const wchar_t* path, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, const UserInterface::ANCHOR& anchor)
 {
 	//「UI」の生成
-	std::unique_ptr<UserInterface> ui = std::make_unique<UserInterface>();
-	ui->SetWindowSize(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y);
-	ui->Create(path, position, scale, anchor);
+	std::unique_ptr<UserInterface> ui = std::make_unique<UserInterface>(nullptr,position,scale);
+	ui->SetBaseWindowSize(UIManager::WINDOW_SIZE_X, UIManager::WINDOW_SIZE_Y);
+	ui->Create(path,anchor);
 	ui->Initialize();
 
 	return ui;
@@ -293,7 +293,7 @@ std::unique_ptr<Key> UIFactory::CreateKeyUI(const std::vector<DirectX::Keyboard:
 	std::unique_ptr<Key> key = std::make_unique<Key>(respoceKey);
 	//初期化
 	key->Initialize();
-	key->Create(path,position,scale,anchor);
+	key->Create(path,anchor);
 	return key;
 }
 

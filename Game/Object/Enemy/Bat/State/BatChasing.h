@@ -15,7 +15,7 @@
 #include "Game/Interface/IState.h"
 // クラスの宣言 ===============================================================
 class Bat;
-class GameObject;
+class GameObject3D;
 // クラスの定義 ===============================================================
 /**
   * @brief コウモリの追跡状態
@@ -63,6 +63,6 @@ private:
 	// コウモリのポインタ
 	Bat* m_bat;
 	//プレイヤーのポインタ
-	const GameObject* m_pPlayer;
+	const GameObject3D* m_pPlayer;
 };
 #endif		// BAT_CHASING_DEFINED

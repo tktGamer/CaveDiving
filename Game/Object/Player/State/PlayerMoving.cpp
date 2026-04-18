@@ -75,7 +75,7 @@ void PlayerMoving::Update(const float& elapsedTime)
 	//‘¬“x‚ðŽæ“¾
 	DirectX::SimpleMath::Vector3 velocity = m_pPlayer->GetVelocity();
 	//Šp“x‚ðl—¶‚µ‚Ä‘¬“x‚É‰ÁŽZ
-	velocity += DirectX::SimpleMath::Vector3::Transform(direction*Player::MOVE_SPEED * elapsedTime, m_pPlayer->GetQuaternion());
+	velocity += DirectX::SimpleMath::Vector3::Transform(direction*Player::MOVE_SPEED * elapsedTime, m_pPlayer->GetLocalQuaternion());
 	
 
 	//–€ŽC
@@ -87,7 +87,7 @@ void PlayerMoving::Update(const float& elapsedTime)
 
 	//‘¬“x‚ðÝ’è
 	m_pPlayer->SetVelocity(velocity);
-	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_pPlayer->GetVelocity());
+	m_pPlayer->SetLocalPosition(m_pPlayer->GetLocalPosition() + m_pPlayer->GetVelocity());
 }
 
 /**

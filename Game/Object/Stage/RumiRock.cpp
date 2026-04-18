@@ -22,12 +22,12 @@
  * @param[in] initialPosition
  * @param[in] initialAngle
  */
-RumiRock::RumiRock(const ModelShader::PointLightCB& lightData, const int& id, const GameObject* parent,
-	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+RumiRock::RumiRock(const ModelShader::PointLightCB& lightData, const int& id, const GameObject3D* parent,
+	const Transform& transform)
 	:
-	GameObject{ Tag::ObjectType::Rock,parent,initialPosition,initialAngle },
+	GameObject3D{ Tag::ObjectType::Rock,parent,transform },
 	m_id{id},
-	m_box{ GetPosition(),BOX_COLLISION_SIZE },
+	m_box{ GetLocalPosition(),BOX_COLLISION_SIZE },
 	m_color{},
 	m_messageID{},
 	m_isOn{},
@@ -41,7 +41,7 @@ RumiRock::RumiRock(const ModelShader::PointLightCB& lightData, const int& id, co
 	//テクスチャ設定
 	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::ROCK));
 	//モデル設定
-	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::RUMI_ROCK));
+	SetModel(*resourceManager->RequestModel(ResourcePath::MODEL::RUMI_ROCK));
 	m_LightOnSound = std::make_unique<Sound>(resourceManager->RequestSound(ResourcePath::SOUND::LUMI_ROCK_RIGHT_ON));
 	//メッセンジャークラスに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
@@ -83,15 +83,16 @@ void RumiRock::Initialize()
  *
  * @return なし
  */
-void RumiRock::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void RumiRock::Update()
 {
-	//位置の更新
-	SetCurrentPosition( GetPosition() + currentPosition);
-	//角度の更新
-	SetCurrentAngle( GetQuaternion() * currentAngle);
-
+	////位置の更新
+	//SetCurrentPosition( GetPosition() + currentPosition);
+	////角度の更新
+	//SetCurrentAngle( GetQuaternion() * currentAngle);
+	CalculationWorldMatrix();
+	DecomposeMatrix();
 	//ライトの更新
-	m_light->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	m_light->Update(GetCurrentPosition());
 	//当たり判定の更新
 	m_box.SetCenter(GetCurrentPosition());
 }
@@ -114,7 +115,7 @@ void RumiRock::Draw()
 
 
 	//ワールド行列を計算
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 	//	シェーダーに渡す追加のバッファを作成する。
 	ModelShader::ModelCB cbuff;
 	cbuff.matWorld = world.Transpose();
@@ -136,29 +137,21 @@ void RumiRock::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
-
 			//シェーダーの設定
 			shader->StartShader(ShaderManager::Rock_Model);
-
 			//頂点情報を設定
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::ShaderType::Rock_Model));
-
 		});
 	shader->EndShader();
 
@@ -197,7 +190,7 @@ void RumiRock::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void RumiRock::CollisionResponce(GameObject* other)
+void RumiRock::CollisionResponce(GameObject3D* other)
 {
 	switch (other->GetObjectType())
 	{

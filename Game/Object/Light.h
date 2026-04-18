@@ -10,7 +10,6 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Object/GameObject.h"
 #include"Game/Shader/Model/ModelShader.h"
 // クラスの宣言 ===============================================================
 
@@ -18,7 +17,7 @@
 /**
   * @brief ライト
   */
-class Light : public GameObject
+class Light
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -36,22 +35,16 @@ public:
 	void SetLightColor(const DirectX::SimpleMath::Vector3& color);
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	Light(const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	Light();
 	// デストラクタ
 	~Light();
 // 操作
 	//初期化
 	void Initialize();
 	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
-	//描画
-	void Draw() override;
+	void Update(const DirectX::SimpleMath::Vector3& positon);
 	//終了
 	void Finalize();
-	// メッセージを取得する
-	void OnMessegeAccepted(Message::MessageID messageID);
-	//衝突応答分岐
-	void CollisionResponce(GameObject* other) override;
 	//ライトを点ける
 	void LightOn();
 //　内部操作
@@ -59,9 +52,7 @@ private:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	// メッセージID
-	Message::MessageID m_messageID;
-	//ライトのデータ
+	//ライト情報
 	ModelShader::PointLightCB  m_pointLight;
 	//ライトのオンオフ状態
 	bool m_isOn;

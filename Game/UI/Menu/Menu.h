@@ -18,7 +18,7 @@ class Sound;
 /**
   * @brief メニューUI
   */
-class Menu : public IUI
+class Menu : public GameObject2D
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -38,7 +38,8 @@ public:
 // コンストラクタ/デストラクタ
 public:
 	//コンストラクタ
-	Menu(DirectX::SoundEffect* cursolSound);
+	Menu(DirectX::SoundEffect* cursolSound, const GameObject2D* parent,
+		const DirectX::SimpleMath::Vector2& initialPosition, const DirectX::SimpleMath::Vector2& initialScale);
 	//デストラクタ
 	~Menu();
 	//初期化
@@ -53,6 +54,10 @@ public:
 		const DirectX::SimpleMath::Vector2& scale,
 		const UserInterface::ANCHOR& anchor);
 	void Add(const MunuUIInfo& info);
+
+	// メッセージを取得する
+	void OnMessegeAccepted(Message::MessageID messageID);
+
 // データメンバの宣言 -----------------------------------------------
 private:
 

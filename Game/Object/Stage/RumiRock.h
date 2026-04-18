@@ -10,7 +10,7 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Object/GameObject.h"
+#include"Game/Object/GameObject3D.h"
 #include"Game/Common/Collision/Box.h"
 #include"Game/Object/Light.h"
 #include"Game/Common/Sound.h"
@@ -20,7 +20,7 @@
 /**
   * @brief 光る石
   */
-class RumiRock : public GameObject
+class RumiRock : public GameObject3D
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -41,15 +41,15 @@ public:
 	bool IsBloom() override;
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	RumiRock(const ModelShader::PointLightCB& lightData,const int& id,const GameObject* parent,
-		const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	RumiRock(const ModelShader::PointLightCB& lightData,const int& id,const GameObject3D* parent,
+		const Transform& transform);
 	// デストラクタ
 	~RumiRock();
 // 操作
 	//初期化
 	void Initialize();
 	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	void Update() override;
 	//描画
 	void Draw() override;
 	//終了
@@ -57,7 +57,7 @@ public:
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 	//衝突応答分岐
-	void CollisionResponce(GameObject* other) override;
+	void CollisionResponce(GameObject3D* other) override;
 	//ライトをオンにする
 	void OnLight();
 //　内部操作

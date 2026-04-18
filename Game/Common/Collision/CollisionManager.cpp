@@ -65,7 +65,7 @@ CollisionManager::~CollisionManager()
  *
  * @return なし
  */
-void CollisionManager::Register(GameObject* obj)
+void CollisionManager::Register(GameObject3D* obj)
 {
 	m_objects.push_back(obj);
 }
@@ -77,7 +77,7 @@ void CollisionManager::Register(GameObject* obj)
  *
  * @return なし
  */
-void CollisionManager::UnRegister(GameObject* obj)
+void CollisionManager::UnRegister(GameObject3D* obj)
 {
 	m_objects.remove(obj);
 }
@@ -114,7 +114,7 @@ void CollisionManager::CollisionCheck()
 	//m_objects.remove(nullptr);
 
 	// 登録されたすべてのオブジェクトに対して当たり判定を行う
-	for (std::list<GameObject*>::iterator it1 = m_objects.begin(); it1 != m_objects.end(); ++it1)
+	for (std::list<GameObject3D*>::iterator it1 = m_objects.begin(); it1 != m_objects.end(); ++it1)
 	{
 		//当たり判定が有効ではなかったらスキップ
 		if (!(*it1)->GetShape()->IsEnabled() || !(*it1)->IsAlive()) 
@@ -123,7 +123,7 @@ void CollisionManager::CollisionCheck()
 		}
 		
 		//it1より後ろのオブジェクトと当たり判定を行う
-		for (std::list<GameObject*>::iterator it2 = std::next(it1); it2 != m_objects.end(); ++it2)
+		for (std::list<GameObject3D*>::iterator it2 = std::next(it1); it2 != m_objects.end(); ++it2)
 		{
 			//当たり判定が有効ではなかったらスキップ
 			if (!(*it2)->GetShape()->IsEnabled() || !(*it2)->IsAlive())
@@ -132,8 +132,8 @@ void CollisionManager::CollisionCheck()
 			}
 
 
-			GameObject* obj1 = *it1;
-			GameObject* obj2 = *it2;
+			GameObject3D* obj1 = *it1;
+			GameObject3D* obj2 = *it2;
 			// オブジェクト同士の当たり判定を行う
 			if (obj1->GetShape()->Intersects(obj2->GetShape())) 
 			{

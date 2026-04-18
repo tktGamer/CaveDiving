@@ -22,12 +22,12 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Item::Item(const ItemInfo& itemInfo, const GameObject* parent,
-	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Item::Item(const ItemInfo& itemInfo, const GameObject3D* parent,
+	const Transform& transform)
 	:
-	GameObject{ Tag::ObjectType::Item,parent,initialPosition,initialAngle },
+	GameObject3D{ Tag::ObjectType::Item,parent,transform },
 	m_itemInfomation{itemInfo},
-	m_box{ initialPosition,BOX_COLLISION_SIZE },
+	m_box{ GetLocalPosition(),BOX_COLLISION_SIZE},
 	m_isGet{ false },
 	m_color{ DirectX::Colors::White },
 	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
@@ -36,7 +36,7 @@ Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 	//モデル設定
-	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::ITEM));
+	SetModel(*resourceManager->RequestModel(ResourcePath::MODEL::ITEM));
 	//テクスチャ設定
 	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::ITEM));
 	//当たり判定設定
@@ -62,17 +62,20 @@ Item::~Item()
  *
  * @return なし
  */
-void Item::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Item::Update()
 {
 	//アイテムが取られたら更新しない
 	if(!IsAlive())
 	{
 		 return;
 	}
-	//位置の更新
-	SetCurrentPosition( currentPosition + GetPosition());
-	//角度の更新
-	SetCurrentAngle(GetQuaternion() * currentAngle );
+	GetParentObject();
+	////位置の更新
+	//SetCurrentPosition( currentPosition + GetPosition());
+	////角度の更新
+	//SetCurrentAngle(GetQuaternion() * currentAngle );
+	CalculationWorldMatrix();
+	DecomposeMatrix();
 	//当たり判定更新
 	UpdateCollision(GetCurrentPosition());
 }
@@ -99,7 +102,7 @@ void Item::Draw()
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 	ShaderManager* shader = ShaderManager::GetInstance();
 
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 	//	シェーダーに渡す追加のバッファを作成する。
 	ModelShader::ItemCB cbuff;
 	cbuff.matWorld = world.Transpose();
@@ -122,7 +125,7 @@ void Item::Draw()
 				//	読み込んだ画像をピクセルシェーダに伝える
 				//	自作VSはt0を使っているため、
 				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
@@ -170,7 +173,7 @@ void Item::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void Item::CollisionResponce(GameObject* other)
+void Item::CollisionResponce(GameObject3D* other)
 {
 	switch (other->GetObjectType())
 	{

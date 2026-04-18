@@ -238,10 +238,10 @@ void TitleScene::Render()
 
 	
 	//UI•`‰æ	
-	m_loadCheckUI->Render();
+	m_loadCheckUI->Draw();
 	if (m_isLoadPlayerHoldGem) 
 	{
-		m_checkUI->Render();
+		m_checkUI->Draw();
 	}
 	UIManager::GetInstance()->Render();
 }

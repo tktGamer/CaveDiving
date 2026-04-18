@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/25
+ * @date   日付  2026/04/09
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -22,10 +22,9 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-Weapon::Weapon(Character* owner, Tag::ObjectType type,const GameObject* parent, 
-	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+Weapon::Weapon(Character* owner, const Tag::ObjectType& type, const GameObject3D* parent, const Transform& transform)
 	:
-	GameObject{type,parent,initialPosition,initialAngle},
+	GameObject3D{type,parent,transform},
 	m_owner{owner}
 {
 }

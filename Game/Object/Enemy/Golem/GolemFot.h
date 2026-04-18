@@ -39,14 +39,14 @@ public:
 	void SetMotionAngle(const DirectX::SimpleMath::Quaternion& angle);
 	// コンストラクタ/デストラクタ
 		// コンストラクタ
-	GolemFot(Character* root, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	GolemFot(Character* root, const GameObject3D* parent, const Transform& transform);
 	// デストラクタ
 	~GolemFot();
 	// 操作
 		//初期化
 	void Initialize() override;
 	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	void Update() override;
 	//描画
 	void Draw() override;
 	//終了
@@ -54,7 +54,7 @@ public:
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 	//衝突応答分岐
-	void CollisionResponce(GameObject* other) override;
+	void CollisionResponce(GameObject3D* other) override;
 	//　内部操作
 private:
 

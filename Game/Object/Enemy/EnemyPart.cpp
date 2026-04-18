@@ -16,13 +16,11 @@
  *
  * @param[in] root  所有されているクラス
  * @param[in] parent　親クラスのポインタ
- * @param[in] initialPosition　初期位置
- * @param[in] initialAngle　初期角度（ラジアン）
+ * @param[in] transform  
  */
-EnemyPart::EnemyPart(Character* root,const GameObject* parent,
-	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+EnemyPart::EnemyPart(Character* root, const GameObject3D* parent, const Transform& transform)
 	:
-	PartObject{root,parent,initialPosition,initialAngle}
+	PartObject{root,parent,transform}
 {
 }
 

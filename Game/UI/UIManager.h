@@ -13,6 +13,7 @@
 #include"../Common/SceneManager.h"
 #include"Game/GameData.h"
 #include"Game/Interface/IUI.h"
+#include"Game/Object/GameObject2D.h"
 #include"Game/UI/Menu/Menu.h"
 #include"Game/UI/GemSelect/ChangeConfirm.h"
 #include"Game/UI/GemSelect/GemSelect.h"
@@ -50,7 +51,7 @@ public:
 	void PushUI();
 
 	//UIの追加リクエスト
-	void RequestAddUI(std::unique_ptr<IUI> ui, bool isOnlyDraw = false);
+	void RequestAddUI(std::unique_ptr<GameObject2D> ui, bool isOnlyDraw = false);
 	//UIの消去リクエスト
 	void RequestPopUI();
 	//UIの全消去リクエスト
@@ -109,6 +110,6 @@ private:
 
 
 	//UIのスタック
-	std::vector<std::unique_ptr<IUI>> m_uiStack;
+	std::vector<std::unique_ptr<GameObject2D>> m_uiStack;
 
 };

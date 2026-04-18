@@ -29,9 +29,9 @@ const PartObject::RotationLimit PartObject::RotationLimit::OFF =
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　初期角度（ラジアン）
  */
-PartObject::PartObject(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+PartObject::PartObject(Character* root,const GameObject3D* parent, const Transform& transform)
 	:
-	GameObject{ Tag::ObjectPart,parent,initialPosition,initialAngle },
+	GameObject3D{ Tag::ObjectPart,parent,transform },
 	m_parentCharacter{ root },
     m_rotationLimit{}
 {
@@ -108,7 +108,7 @@ void PartObject::SetLocalRotationEuler(const DirectX::SimpleMath::Vector3& euler
         result.z);
 
     //ローカル回転を更新
-    SetQuaternion(quaternion); 
+    SetLocalQuaternion(quaternion); 
 }
 
 /**

@@ -55,7 +55,7 @@ GolemSlammedDownPreparingMotion::~GolemSlammedDownPreparingMotion()
 void GolemSlammedDownPreparingMotion::Initialize()
 {
 	//スタート位置とゴール位置
-	m_handStartPosition = m_pRightGolemArm->GetPosition();
+	m_handStartPosition = m_pRightGolemArm->GetLocalPosition();
 	m_handGoalPosition = m_handStartPosition + SLAM_PREPARE_MOVE;
 
 	SetMotionLerp(0.0f);

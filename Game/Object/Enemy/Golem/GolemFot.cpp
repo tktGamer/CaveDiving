@@ -24,12 +24,11 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　   初期角度
  */
-GolemFot::GolemFot(Character* root,const GameObject* parent, 
-	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+GolemFot::GolemFot(Character* root,const GameObject3D* parent, const Transform& transform)
 	:
-	EnemyPart(root,parent,initialPosition,initialAngle),
+	EnemyPart(root,parent,transform),
 	m_motionAngle{},
-	m_box{initialPosition,GOLEM_FOT_COLLISION_SIZE},
+	m_box{GetLocalPosition(),GOLEM_FOT_COLLISION_SIZE},
 	m_display{ Graphics::GetInstance()->GetDeviceResources()->GetD3DDevice(),
 Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 
@@ -39,7 +38,7 @@ Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext() }
 	//テクスチャ設定
 	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::GOLEM_FOT));
 	//モデル設定
-	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::GOLEM_FOT));
+	SetModel(*resourceManager->RequestModel(ResourcePath::MODEL::GOLEM_FOT));
 	//メッセンジャーに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 	//当たり判定セット
@@ -72,13 +71,14 @@ void GolemFot::Initialize()
  *
  * @return なし
  */
-void GolemFot::Update( const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void GolemFot::Update()
 {
-	//位置の更新
-	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition);
-	//角度の更新
-	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
-	
+	////位置の更新
+	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition);
+	////角度の更新
+	//SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
+	CalculationWorldMatrix();
+	DecomposeMatrix();
 	//当たり判定の更新
 	m_box.SetCenter(GetCurrentPosition());
 }
@@ -100,7 +100,7 @@ void GolemFot::Draw()
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
 	//ワールド行列を計算
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 
 	//アウトライン描画
 	if (Messenger::GetInstance()->IsOutLineActive()) 
@@ -127,9 +127,7 @@ void GolemFot::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
@@ -183,7 +181,7 @@ void GolemFot::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void GolemFot::CollisionResponce(GameObject* other)
+void GolemFot::CollisionResponce(GameObject3D* other)
 {
 	switch (other->GetObjectType())
 	{
@@ -202,7 +200,7 @@ void GolemFot::CollisionResponce(GameObject* other)
 		Character* rootObject = GetRootCharacter();
 		//ステージとの衝突応答　押し出し
 		DirectX::SimpleMath::Vector3 newPosition = CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()), &m_box);
-		rootObject->SetPosition(rootObject->GetCurrentPosition()+newPosition-GetCurrentPosition());
+		rootObject->SetLocalPosition(rootObject->GetCurrentPosition()+newPosition-GetCurrentPosition());
 
 		//Yの速度をリセット
 		DirectX::SimpleMath::Vector3 velocity = rootObject->GetVelocity();

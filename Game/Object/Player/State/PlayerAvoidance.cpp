@@ -71,7 +71,7 @@ void PlayerAvoidance::PreUpdate()
 	direction *= DODGE_SPEED;
 
 	//‰ñ”ð•ûŒü‚ðŒˆ’è
-	m_dodgeDirection = DirectX::SimpleMath::Vector3::Transform(direction, m_pPlayer->GetQuaternion());
+	m_dodgeDirection = DirectX::SimpleMath::Vector3::Transform(direction, m_pPlayer->GetLocalQuaternion());
 }
 
 /**
@@ -85,7 +85,7 @@ void PlayerAvoidance::Update(const float& elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
-	m_pPlayer->SetPosition(m_pPlayer->GetPosition() + m_dodgeDirection);
+	m_pPlayer->SetLocalPosition(m_pPlayer->GetLocalPosition() + m_dodgeDirection);
 
 	m_dodgeTime += elapsedTime;
 

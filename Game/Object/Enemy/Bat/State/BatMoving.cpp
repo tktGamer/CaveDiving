@@ -64,10 +64,11 @@ void BatMoving::PreUpdate()
 
 	//目標の角度
 	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, angle);
-	m_bat->SetQuaternion(rotate);
+	m_bat->SetLocalQuaternion(rotate);
 
 	//向いている方向に進む
-	m_bat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * MOVING_SPEED * Messenger::GetInstance()->GetElapsedTime(), m_bat->GetQuaternion()));
+	m_bat->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * MOVING_SPEED *
+		Messenger::GetInstance()->GetElapsedTime(), m_bat->GetLocalQuaternion()));
 }
 
 /**
@@ -82,7 +83,7 @@ void BatMoving::Update(const float& elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 
 	//座標更新
-	m_bat->SetPosition(m_bat->GetPosition() + m_bat->GetVelocity());
+	m_bat->SetLocalPosition(m_bat->GetLocalPosition() + m_bat->GetVelocity());
 
 	//一定時間経ったら遷移
 	if (m_bat->GetFrameCount() >= CHANGE_IDLING_TIME) 
@@ -98,7 +99,7 @@ void BatMoving::Update(const float& elapsedTime)
 	if (pPlayer && pPlayer->GetObjectType() == Tag::Player)
 	{
 		//現在位置とプレイヤーの位置の距離
-		DirectX::SimpleMath::Vector3 playerPos = pPlayer->GetCurrentPosition();
+		DirectX::SimpleMath::Vector3 playerPos = pPlayer->Cast<GameObject3D>()->GetCurrentPosition();
 		float distance = DirectX::SimpleMath::Vector3::Distance(playerPos, m_bat->GetCurrentPosition());
 		//範囲内なら遷移
 		if (distance < Bat::CHASE_RANGE)

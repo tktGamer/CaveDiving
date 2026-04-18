@@ -160,7 +160,7 @@ void UIManager::Finalize()
  *
  * @return ‚È‚µ
  */
-void UIManager::RequestAddUI(std::unique_ptr<IUI> ui, bool isOnlyDraw)
+void UIManager::RequestAddUI(std::unique_ptr<GameObject2D> ui, bool isOnlyDraw)
 {
 	m_uiStack.push_back(std::move(ui));
 	m_isDrawOnlyCurrentUI = isOnlyDraw;

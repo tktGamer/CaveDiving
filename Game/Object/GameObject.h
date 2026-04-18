@@ -5,26 +5,23 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付　2026/01/25
+ * @date   日付　2026/04/08
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include"Game/Common/Graphics.h"
-#include"Game/Common/ResourceManager.h"
 #include"Game/Message/Messenger.h"
-#include"Game/Interface/IState.h"
-#include"Game/Interface/IComponent.h"
-#include"Game/Common/Collision/Shape.h"
+#include"Game/Interface/IGameObject.h"
 #include"Game/Tag.h"
 #include"Game/World.h"
+#include <wrl/client.h>
 // クラスの宣言 ===============================================================
 
 // クラスの定義 ===============================================================
 /**
   * @brief オブジェクトの基底
   */
-class GameObject : public IComponent
+class GameObject : public IGameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -32,95 +29,31 @@ public:
 // メンバ関数の宣言 -------------------------------------------------
 //　取得・設定
 public:
-	//親オブジェクトを取得
-	const GameObject* GetParentObject() const { return m_parent; };
 	//生きているか
 	virtual bool IsAlive() const { return true; };
-
 	//テクスチャの設定
-	void SetTexture(ID3D11ShaderResourceView** tex) { m_texture = tex; };
+	void SetTexture(const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& tex) { m_texture = tex; };
 	//テクスチャの取得
-	ID3D11ShaderResourceView** GetTexture() const { return m_texture; };
-	//モデルの設定
-	void SetModel(DirectX::Model* model) { m_model = model; };
-	// モデルデータの取得
-	DirectX::Model* GetModel() const { return m_model; }
-	//座標の設定
-	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_position = position; }
-	// モデルの位置の取得
-	const DirectX::SimpleMath::Vector3& GetPosition() const { return m_position; }
-	//回転の設定
-	void SetQuaternion(const DirectX::SimpleMath::Quaternion& q) { m_quaternion = q; }
-	// モデルの回転の取得
-	const DirectX::SimpleMath::Quaternion& GetQuaternion() const { return m_quaternion; }
-	//拡大率の設定
-	void SetScale(const DirectX::SimpleMath::Vector3& scale) { m_scale = scale; }
-	// モデルの拡大率の取得
-	const DirectX::SimpleMath::Vector3& GetScale() const { return m_scale; }
-	//現在位置の設定
-	void SetCurrentPosition(const DirectX::SimpleMath::Vector3& currentPosition) { m_currentPosition = currentPosition; };
-	//現在位置の取得
-	const DirectX::SimpleMath::Vector3& GetCurrentPosition() const { return m_currentPosition; }
-	//現在角度の設定
-	void SetCurrentAngle(const DirectX::SimpleMath::Quaternion& currentAngle) { m_currentAngle = currentAngle; };
-	//現在角度の取得
-	const DirectX::SimpleMath::Quaternion& GetCurrentQuaternion() const { return m_currentAngle; }
-
-	// 当たり判定用の形状を設定
-	void SetShape(Shape* shape) { m_shape = shape; }
-	// 当たり判定用の形状を取得
-	Shape* GetShape() const { return m_shape; }
-
+	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetTexture() const { return m_texture; };
 	// オブジェクトの種類を取得する
-	Tag::ObjectType GetObjectType() const;
-	// 状態を取得する
-	IState* GetState() const { return m_pCurrentState; }
-	// 状態を設定する
-	void SetState(IState* state) { m_pCurrentState = state; }
-	// 現在の状態を変更する
-	void ChangeState(IState* state)
-	{
-		// 新規の状態遷移前に事後更新を行う
-		m_pCurrentState->PostUpdate();
-		// 新規の状態を現在の状態に設定する
-		m_pCurrentState = state;
-		// 新規の状態遷移後に事前更新を行う
-		m_pCurrentState->PreUpdate();
-	}
-	// メッセージを取得する
-	Message GetCurrentMessage() const { return m_currentMessage; }
-	// メッセージを設定する
-	void SetCurrentMessage(Message currentMessage) { m_currentMessage = currentMessage; }
+	const Tag::ObjectType& GetObjectType() const { return m_objectType; };
+	//派生クラスにキャスト
+	template<typename T>
+	T* Cast();
 
 	//オブジェクト番号をリセットする
 	static void ResetObjectNumber();
 	// オブジェクトをカウントアップする
 	static int CountUpNumber();
 	//オブジェクトの番号を取得
-	const int GetObjectNumber() const;
-
-	//ブルーム処理するか
-	virtual bool IsBloom() { return false; };
+	const int& GetObjectNumber() const { return m_objectNumber; };
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	GameObject(Tag::ObjectType objectType,const GameObject* parent,
-		const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	GameObject(const Tag::ObjectType& objectType);
 	// デストラクタ
 	virtual ~GameObject();
 // 操作
-	//初期化
-	virtual void Initialize();
-	//更新
-	virtual void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)=0;
-	//描画
-	virtual void Draw()=0;
-	//終了
-	void Finalize();
-	//衝突応答分岐
-	virtual void CollisionResponce(GameObject* other)=0;
-	//派生クラスにキャスト
-	template<typename T>
-	T* Cast();
+	
 //　内部操作
 private:
 
@@ -130,33 +63,10 @@ private:
 	static int s_objectNumber;
 	// オブジェクト番号
 	int m_objectNumber;
-
-	// ステート
-	IState* m_pCurrentState;
-	// 現在のメッセージ
-	Message m_currentMessage;
 	// オブジェクトの種類
 	Tag::ObjectType m_objectType;
-	// 当たり判定用の形状
-	Shape* m_shape;
-
 	//テクスチャ
-	ID3D11ShaderResourceView** m_texture;
-	// モデルデータ
-	DirectX::Model* m_model;
-	// モデルの位置
-	DirectX::SimpleMath::Vector3 m_position = { 0.0f,0.0f,0.0f };
-	// モデルの回転
-	DirectX::SimpleMath::Quaternion m_quaternion = { 0.0f,0.0f,0.0f,1.0f }; // モデルのクォータニオン回転
-	// モデルの拡大率
-	DirectX::SimpleMath::Vector3 m_scale = { 1.0f,1.0f,1.0f };
-
-	// 親オブジェクトへのポインタ
-	const GameObject* m_parent;
-	// 現在の位置
-	DirectX::SimpleMath::Vector3 m_currentPosition;
-	// 現在の回転角
-	DirectX::SimpleMath::Quaternion m_currentAngle;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 };
 
 // メンバ関数の定義 ===========================================================

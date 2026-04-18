@@ -23,11 +23,10 @@
  *
  * @param[in] root　パーツをもつオブジェクトの根
  * @param[in] parent　親オブジェクトのポインタ
- * @param[in] initialPosition　初期座標
- * @param[in] initialAngle　　 初期角度
+ * @param[in] transform　
  */
-Hand::Hand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
-	: PartObject(root,parent,initialPosition,initialAngle)
+Hand::Hand(Character* root,const GameObject3D* parent, const Transform& transform)
+	: PartObject{root,parent,transform}
 	,m_motionAngle{}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
@@ -74,16 +73,18 @@ void Hand::Initialize()
  *
  * @return なし
  */
-void Hand::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Hand::Update()
 {
 	//現在位置の更新
-	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle)+ currentPosition );
-	//現在角度の更新
-	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle );
+	CalculationWorldMatrix();
+	DecomposeMatrix();
+	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle)+ currentPosition );
+	////現在角度の更新
+	//SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle );
 	
 	//武器を持っていたら更新
 	if(m_weapon)
-	m_weapon->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	m_weapon->Update();
 }
 
 
@@ -105,7 +106,7 @@ void Hand::Draw()
 	DirectX::SimpleMath::Matrix  view = graphics->GetViewMatrix();
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 	//ワールド行列を計算
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 
 
 	//アウトライン描画
@@ -127,8 +128,6 @@ void Hand::Draw()
 	GetModel()->Draw(context, *states, world, view, proj, false, [&]()
 		{
 			//	モデル表示をするための自作シェーダに関連する設定を行う
-
-
 			//	画像用サンプラーの登録
 			ID3D11SamplerState* sampler[1] = { states->PointWrap() };
 			context->PSSetSamplers(0, 1, sampler);
@@ -136,27 +135,21 @@ void Hand::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				//	自作VSはt0を使っているため、
-				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
-
 			//	透明判定処理
 			context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-
 			//	深度バッファに書き込み参照する
 			context->OMSetDepthStencilState(states->DepthDefault(), 0);
-
 			//	カリングはなし
 			context->RSSetState(states->CullClockwise());
-
+			//シェーダーを設定
 			shader->StartShader(ShaderManager::Model);
 
 			context->IASetInputLayout(shader->GetInputLayout(ShaderManager::Model));
-
 		});
 	//シェーダー解放
 	shader->EndShader();
@@ -200,7 +193,7 @@ void Hand::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void Hand::CollisionResponce(GameObject* other)
+void Hand::CollisionResponce(GameObject3D* other)
 {
 	UNREFERENCED_PARAMETER(other);
 

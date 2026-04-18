@@ -35,7 +35,7 @@ Number::Number(const std::string& texturepath, DirectX::SimpleMath::Vector2 text
 	m_renderRatioOffset{ 0.0f }
 
 {
-	m_pNumberTexture=ResourceManager::GetInstance()->RequestTexture(texturepath);
+	m_pNumberTexture = ResourceManager::GetInstance()->RequestTexture(texturepath);
 	//	プリミティブバッチの作成
 	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(Graphics::GetInstance()->GetDeviceResources()->GetD3DDeviceContext());
 

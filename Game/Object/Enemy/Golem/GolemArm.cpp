@@ -24,11 +24,11 @@
  * @param[in] initialPosition　初期位置
  * @param[in] initialAngle　   初期角度
  */
-GolemArm::GolemArm(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+GolemArm::GolemArm(Character* root,const GameObject3D* parent, const Transform& transform)
 	:
-	EnemyPart(root,parent,initialPosition,initialAngle),
+	EnemyPart(root,parent,transform),
 	m_motionAngle{},
-	m_sphere{initialPosition,GOLEM_ARM_SPHERE_SIZE},
+	m_sphere{GetLocalPosition(),GOLEM_ARM_SPHERE_SIZE},
 	m_hand{}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
@@ -36,7 +36,7 @@ GolemArm::GolemArm(Character* root,const GameObject* parent, const DirectX::Simp
 	//テクスチャ設定
 	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::GOLEM_ARM));
 	//モデル設定
-	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::GOLEM_ARM));
+	SetModel(*resourceManager->RequestModel(ResourcePath::MODEL::GOLEM_ARM));
 	//メッセンジャーに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 	//当たり判定セット
@@ -74,17 +74,18 @@ void GolemArm::Initialize()
  *
  * @return なし
  */
-void GolemArm::Update( const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void GolemArm::Update()
 {
-	//位置の更新
-	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition);
-	//角度の更新
-	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
-	
+	////位置の更新
+	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform(GetPosition(), m_motionAngle * currentAngle) + currentPosition);
+	////角度の更新
+	//SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
+	CalculationWorldMatrix();
+	DecomposeMatrix();
 	//当たり判定の更新
 	m_sphere.SetCenter(GetCurrentPosition());
 	//手の更新
-	m_hand->Update(GetCurrentPosition(),GetCurrentQuaternion());
+	m_hand->Update();
 }
 
 /**
@@ -104,7 +105,7 @@ void GolemArm::Draw()
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
 	//ワールド行列を計算
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world =GetWorldMatrix();
 
 	//アウトライン描画
 	if (Messenger::GetInstance()->IsOutLineActive()) 
@@ -132,7 +133,7 @@ void GolemArm::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 
 			//	半透明描画指定
@@ -188,7 +189,7 @@ void GolemArm::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void GolemArm::CollisionResponce(GameObject* other)
+void GolemArm::CollisionResponce(GameObject3D* other)
 {
 	UNREFERENCED_PARAMETER(other);
 

@@ -49,7 +49,7 @@ public:
 	//頂点があるか
 	bool HasVertex() const;
 	//テクスチャの取得
-	ID3D11ShaderResourceView** GetTexture() const;
+	const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>& GetTexture() const;
 // コンストラクタ/デストラクタ
 public:
 	//コンストラクタ
@@ -104,7 +104,7 @@ private:
 	//	頂点情報のリスト
 	std::vector<DirectX::VertexPositionColorTexture> m_vertices;
 	// テクスチャハンドル
-	ID3D11ShaderResourceView** m_texture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 	//パーティクルのリスト
 	std::list<std::unique_ptr<Particle>> m_particles;
 };

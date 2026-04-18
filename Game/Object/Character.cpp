@@ -5,7 +5,7 @@
  *
  * @author 制作者名 福地貴翔
  *
- * @date   日付  2026/01/23
+ * @date   日付  2026/04/09
  */
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
@@ -24,14 +24,12 @@
  * @param[in] deffence　防御力
  * @param[in] type　オブジェクトの種類
  * @param[in] parent　親クラスのポインタ
- * @param[in] initialPosition　初期位置
- * @param[in] initialAngle　初期角度（ラジアン）
+ * @param[in] transform　トランスフォーム
  */
-Character::Character(int hp, int attack, int diffence, Tag::ObjectType type,
-	const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
-	const std::vector<int>& gemID)
+Character::Character(const int& hp,const int& attack,const int& diffence, const Tag::ObjectType& type,
+	const GameObject3D* parent, const Transform& transform,const std::vector<int>& gemID)
 	:
-	GameObject{type,parent,initialPosition,initialAngle},
+	GameObject3D{type,parent,transform},
 	m_hp{hp},
 	m_currentHp{hp},
 	m_attackPower{attack},
@@ -61,7 +59,7 @@ Character::~Character()
  *
  * @return なし
  */
-void Character::OnDamage(GameObject* other)
+void Character::OnDamage(GameObject3D* attacker)
 {
 	//無敵なら処理を飛ばす
 	if (IsInvincible())
@@ -69,13 +67,14 @@ void Character::OnDamage(GameObject* other)
 		return;
 	}
 	//当たった攻撃の方向
-	m_damageDirection = GetCurrentPosition() - other->GetCurrentPosition();
+	m_damageDirection = GetCurrentPosition() - attacker->GetCurrentPosition();
 	m_damageDirection.Normalize();
 
 	// ダメージを受ける
-	int damage = TakeDamage(other->Cast<Character>());
+	int damage = TakeDamage(attacker->Cast<Character>());
 	//ダメージ数値描画をリクエストする
-	ParticleManager::GetInstance()->RequestDamageParticle(CollisionManager::GetInstance()->CheckContactPoint(this->GetShape(), other->GetShape()),{2,2,1},damage);
+	ParticleManager::GetInstance()->RequestDamageParticle(CollisionManager::GetInstance()->CheckContactPoint(this->GetShape(),
+															attacker->GetShape()),{2,2,1},damage);
 	//ダメージ状態へ遷移
 	OnMessegeAccepted(Message::DAMAGED);
 	//無敵になる

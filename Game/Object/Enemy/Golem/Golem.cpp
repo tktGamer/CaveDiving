@@ -33,10 +33,10 @@
  * @param[in] initialAngle　初期角度（ラジアン）
  */
 Golem::Golem(EnemyManager* enemyManager, 
-	const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const GameObject3D* parent, const Transform& transform,
 	const std::vector<int>& gemID)
-	:Enemy{ enemyManager,GOLEM_BASE_HP,GOLEM_BASE_ATTACK,GOLEM_BASE_DIFFENCE,parent, initialPosition, initialAngle,gemID },
-	m_box{ GetPosition(), GOLEM_COLLISION_SIZE }, // 初期位置とサイズを設定
+	:Enemy{ enemyManager,GOLEM_BASE_HP,GOLEM_BASE_ATTACK,GOLEM_BASE_DIFFENCE,parent,transform,gemID },
+	m_box{ GetLocalPosition(), GOLEM_COLLISION_SIZE }, // 初期位置とサイズを設定
 	m_frameCount{},
 	m_messageID{},
 	m_parts{},
@@ -117,7 +117,7 @@ void Golem::Initialize()
  *
  * @return なし
  */
-void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Golem::Update()
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 	//生きていない場合更新しない
@@ -127,7 +127,7 @@ void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 	}
 
 	//現在の状態を更新
-	GetState()->Update(elapsedTime);
+	GetState()->Update();
 
 	if (!DamageFlashUpdate())
 	{
@@ -136,17 +136,18 @@ void Golem::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Di
 	}
 
 	//位置の更新
-	SetCurrentPosition(currentPosition + GetPosition());
-	//角度の更新
-	SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle);
-
+	//SetCurrentPosition(currentPosition + GetPosition());
+	////角度の更新
+	//SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle);
+	CalculationWorldMatrix();
+	DecomposeMatrix();
 	//当たり判定更新
 	m_box.SetCenter(GetCurrentPosition());
 
 	//子クラス更新
 	for (std::unique_ptr<PartObject>& part : m_parts) 
 	{
-		part->Update(GetCurrentPosition(), GetCurrentQuaternion());
+		part->Update();
 	}
 
 	//時間経過
@@ -179,7 +180,7 @@ void Golem::Draw()
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 	ShaderManager* shader = ShaderManager::GetInstance();
 
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 
 	//アウトライン描画
 	if (Messenger::GetInstance()->IsOutLineActive())
@@ -208,7 +209,7 @@ void Golem::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
@@ -261,22 +262,22 @@ void Golem::OnMessegeAccepted(Message::MessageID messageID)
 	switch (messageID)
 	{
 	case Message::IDLING:
-		GameObject::ChangeState(m_idlingState.get());
+		GameObject3D::RequestChangeState(m_idlingState.get());
 		break;
 	case Message::MOVING:
-		GameObject::ChangeState(m_movingState.get());
+		GameObject3D::RequestChangeState(m_movingState.get());
 		break;
 	case Message::ATTACK:
-		GameObject::ChangeState(m_attackState.get());
+		GameObject3D::RequestChangeState(m_attackState.get());
 		break;
 	case Message::DAMAGED:
-		//GameObject::ChangeState(m_damagedState.get());
+		//GameObject3D::RequestChangeState(m_damagedState.get());
 		break;
 	case Message::CHASING:
-		GameObject::ChangeState(m_chasingState.get());
+		GameObject3D::RequestChangeState(m_chasingState.get());
 		break;
 	case Message::ATTACKPREPARING:
-		GameObject::ChangeState(m_attackPreaparing.get());
+		GameObject3D::RequestChangeState(m_attackPreaparing.get());
 		break;
 
 	default:
@@ -292,7 +293,7 @@ void Golem::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void Golem::CollisionResponce(GameObject* other)
+void Golem::CollisionResponce(GameObject3D* other)
 {
 	switch (other->GetObjectType())
 	{
@@ -310,7 +311,7 @@ void Golem::CollisionResponce(GameObject* other)
 		{
 			//ステージとの衝突応答　押し出し
 			DirectX::SimpleMath::Vector3 newPosition = CollisionManager::GetInstance()->PushOut(dynamic_cast<Box*>(other->GetShape()),&m_box);
-			SetPosition(newPosition);
+			SetLocalPosition(newPosition);
 			//m_box.SetCenter(GetCurrentPosition());
 
 			//Yの速度をリセット
@@ -348,7 +349,7 @@ void Golem::CollisionResponce(GameObject* other)
  *
  * @return なし
  */
-void Golem::OnDamage(GameObject* other)
+void Golem::OnDamage(GameObject3D* other)
 {
 	Character::OnDamage(other);
 	//死んでいたらエフェクトを出す

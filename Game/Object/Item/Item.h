@@ -10,7 +10,7 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 // ヘッダファイルの読み込み ===================================================
-#include "../GameObject.h"
+#include "../GameObject3D.h"
 #include "Game/Common/Collision/Box.h"
 // クラスの宣言 ===============================================================
 
@@ -18,7 +18,7 @@
 /**
   * @brief アイテム
   */
-class Item : public GameObject
+class Item : public GameObject3D
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -66,18 +66,18 @@ public:
 // コンストラクタ/デストラクタ
 	// コンストラクタ
 	Item(const ItemInfo& itemInfo,
-		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+		const GameObject3D* parent, const Transform& initialTransform);
 	// デストラクタ
 	virtual ~Item();
 // 操作
 	//更新
-	virtual void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	virtual void Update() override;
 	//描画
 	virtual void Draw() override;
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 	//衝突応答分岐
-	void CollisionResponce(GameObject* other);
+	void CollisionResponce(GameObject3D* other) override;
 	//当たり範囲更新
 	void UpdateCollision(const DirectX::SimpleMath::Vector3& center);
 //　内部操作

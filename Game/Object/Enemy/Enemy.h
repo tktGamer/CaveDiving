@@ -28,7 +28,7 @@ public:
 public:
 	// コンストラクタ
 	Enemy(EnemyManager* enemyManager, int hp, int attack, int diffence,
-		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+		const GameObject3D* parent, const Transform& transform,
 		const std::vector<int>& gemID);
 
 	// デストラクタ

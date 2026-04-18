@@ -1,7 +1,7 @@
 /**
- * @file   IComponent.h
+ * @file   IGameObject.h
  *
- * @brief  コンポーネントのインターフェイスの定義に関するヘッダファイル
+ * @brief  オブジェクトのインターフェイスの定義に関するヘッダファイル
  *
  * @author 制作者名  福地貴翔
  *
@@ -9,8 +9,8 @@
  */
  // 多重インクルードの防止 =====================================================
 #pragma once
-#ifndef COMPONENT_DEFINED
-#define COMPONENT_DEFINED
+#ifndef OBJECT_DEFINED
+#define OBJECT_DEFINED
 // ヘッダファイルの読み込み ===================================================
 #include"Game/Interface/IObserver.h"
 #include <SimpleMath.h>
@@ -20,23 +20,23 @@
 /**
   * @brief コンポーネントインターフェイスを定義する
   */
-class IComponent :public IObserver
+class IGameObject :public IObserver
 {
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 // 仮想デストラクタ
-	virtual ~IComponent() = default;
+	virtual ~IGameObject() = default;
 // 操作
 public:
 	// 初期化する 
 	virtual void Initialize() = 0;
 	// 処理を実行する
-	virtual void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) = 0;
+	virtual void Update() = 0;
 	// テクスチャを描画する
 	virtual void Draw() = 0;
 	// 後始末をする
 	virtual void Finalize() = 0;
 };
 
-#endif // COMPONENT_DEFINED
+#endif // OBJECT_DEFINED

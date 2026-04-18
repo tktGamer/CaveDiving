@@ -12,6 +12,7 @@
 #include "ModelShader.h"
 #include "Game/Common/ResourceManager.h"
 #include"Game/Object/Light.h"
+#include "Game/Message/Messenger.h"
 // クラス定数の定義 ===========================================================
 
 //頂点関数
@@ -85,7 +86,7 @@ void ModelShader::StartShader()
 	ID3D11Buffer* lb[1] = { m_lBuffer.Get() };
 	context->PSSetConstantBuffers(1, 1, lb);
 	//明るさによって適用するTexを変えるテクスチャ
-	context->PSSetShaderResources(1, 1, ResourceManager::GetInstance()->RequestTexture(ResourcePath::TEXTURE::TOON_MAP));
+	context->PSSetShaderResources(1, 1, ResourceManager::GetInstance()->RequestTexture(ResourcePath::TEXTURE::TOON_MAP).GetAddressOf());
 	
 	//	シェーダーにバッファを渡す
 	ID3D11Buffer* cb[1] = { GetConstantBuffer()};

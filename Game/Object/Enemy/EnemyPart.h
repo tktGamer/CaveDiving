@@ -27,8 +27,7 @@ public:
 public:
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	EnemyPart(Character* root,
-		const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	EnemyPart(Character* root, const GameObject3D* parent, const Transform& transform);
 	// デストラクタ
 	virtual ~EnemyPart();
 // 操作

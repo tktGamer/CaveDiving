@@ -19,24 +19,22 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] root　　		   このクラスを一部とするクラスの最上位の親
- * @param[in] parent　		   親クラスのポインタ
- * @param[in] initialPosition　初期位置
- * @param[in] initialAngle　   初期角度
+ * @param[in] root　    このクラスを一部とするクラスの最上位の親
+ * @param[in] parent　	親クラスのポインタ
+ * @param[in] transform トランスフォーム
  */
-GolemHand::GolemHand(Character* root,const GameObject* parent,
-	const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle)
+GolemHand::GolemHand(Character* root, const GameObject3D* parent, const Transform& transform)
 	:
-	EnemyPart(root,parent,initialPosition,initialAngle),
+	EnemyPart{root,parent,transform},
 	m_motionAngle{},
-	m_sphere{initialPosition,GOLEM_HAND_SPHERE_SIZE}
+	m_sphere{GetLocalPosition(),GOLEM_HAND_SPHERE_SIZE}
 {
 	ResourceManager* resourceManager = ResourceManager::GetInstance();
 
 	//テクスチャ設定
 	SetTexture(resourceManager->RequestTexture(ResourcePath::TEXTURE::GOLEM_HAND));
 	//モデル設定
-	SetModel(resourceManager->RequestModel(ResourcePath::MODEL::GOLEM_HAND));
+	SetModel(*resourceManager->RequestModel(ResourcePath::MODEL::GOLEM_HAND));
 	//メッセンジャーに登録
 	Messenger::GetInstance()->Register(GetObjectNumber(), this);
 	//当たり判定セット
@@ -69,19 +67,21 @@ void GolemHand::Initialize()
  *
  * @return なし
  */
-void GolemHand::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void GolemHand::Update()
 {
-	//位置の更新
-	SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform( GetPosition(), m_motionAngle * currentAngle) + currentPosition);
-	//角度の更新
-	SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
-	
+	////位置の更新
+	//SetCurrentPosition(DirectX::SimpleMath::Vector3::Transform( GetPosition(), m_motionAngle * currentAngle) + currentPosition);
+	////角度の更新
+	//SetCurrentAngle(GetQuaternion() * m_motionAngle * currentAngle);
+	CalculationWorldMatrix();
+	DecomposeMatrix();
+
 	//当たり判定の更新
 	m_sphere.SetCenter(GetCurrentPosition());
 
 	//武器をもっていたら更新
 	if(m_weapon)
-	m_weapon->Update(GetCurrentPosition(), GetCurrentQuaternion());
+	m_weapon->Update();
 }
 
 /**
@@ -101,7 +101,7 @@ void GolemHand::Draw()
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 
 	//ワールド行列を計算
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 
 	//アウトライン描画
 	if (Messenger::GetInstance()->IsOutLineActive()) 
@@ -130,7 +130,7 @@ void GolemHand::Draw()
 				//	読み込んだ画像をピクセルシェーダに伝える
 				//	自作VSはt0を使っているため、
 				//	t0がメインで使われていると勝手に想定。
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 
 			//	半透明描画指定
@@ -194,7 +194,7 @@ void GolemHand::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void GolemHand::CollisionResponce(GameObject* other)
+void GolemHand::CollisionResponce(GameObject3D* other)
 {
 	UNREFERENCED_PARAMETER(other);
 

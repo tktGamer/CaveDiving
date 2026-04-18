@@ -18,8 +18,10 @@
  *
  * @param[in] cursolSound
  */
-Menu::Menu(DirectX::SoundEffect* cursolSound)
+Menu::Menu(DirectX::SoundEffect* cursolSound, const GameObject2D* parent,
+    const DirectX::SimpleMath::Vector2& initialPosition, const DirectX::SimpleMath::Vector2& initialScale)
     : 
+    GameObject2D{Tag::ObjectType::UI, parent, initialPosition, initialScale},
     m_menuIndex(0),
     m_baseTexturePath(nullptr),
     m_cursorSound{},
@@ -99,7 +101,8 @@ void Menu::Update()
     //  選択中の初期サイズを取得する
     DirectX::SimpleMath::Vector2 select = m_userInterface[m_menuIndex]->GetBaseScale();
     //  選択状態とするための変化用サイズを算出する
-    DirectX::SimpleMath::Vector2 selectScale = DirectX::SimpleMath::Vector2::Lerp(m_userInterface[m_menuIndex]->GetBaseScale(), DirectX::SimpleMath::Vector2::One, 1);
+    DirectX::SimpleMath::Vector2 selectScale = DirectX::SimpleMath::Vector2::Lerp(m_userInterface[m_menuIndex]->GetBaseScale(),
+        DirectX::SimpleMath::Vector2::One, 1);
     //  選択状態は初期状態＋30％の大きさとする
     select += selectScale * 0.3f;
     //  算出後のサイズを現在のサイズとして設定する
@@ -120,9 +123,9 @@ void Menu::Render()
     for (int i = 0; i < m_userInterface.size(); i++)
     {
         //  アイテム用ウィンドウ背景を表示
-        m_base[i]->Render();
+        m_base[i]->Draw();
         //  実際に表示したいアイテム画像を表示
-        m_userInterface[i]->Render();
+        m_userInterface[i]->Draw();
     }
 }
 

@@ -66,11 +66,11 @@ void GolemMoving::PreUpdate()
 	//目標の角度
 	DirectX::SimpleMath::Quaternion rotate = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, angle);
 
-	m_golem->SetQuaternion(rotate);
+	m_golem->SetLocalQuaternion(rotate);
 
 
 	//向いている方向に進む
-	m_golem->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 5.0f * Messenger::GetInstance()->GetElapsedTime(), m_golem->GetQuaternion()));
+	m_golem->SetVelocity(DirectX::SimpleMath::Vector3::Transform(Character::MOVE::FRONT * 5.0f * Messenger::GetInstance()->GetElapsedTime(), m_golem->GetLocalQuaternion()));
 	//モーション初期化
 	m_walkMotion->Initialize();
 }
@@ -87,7 +87,7 @@ void GolemMoving::Update(const float& elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 
 	//座標更新
-	m_golem->SetPosition(m_golem->GetPosition() + m_golem->GetVelocity());
+	m_golem->SetLocalPosition(m_golem->GetLocalPosition() + m_golem->GetVelocity());
 
 	//一定時間経ったら遷移
 	if (m_golem->GetFrameCount() >= CHANGE_IDLING_TIME)

@@ -28,15 +28,14 @@
  * @brief コンストラクタ
  *
  * @param[in] parent　親クラスのポインタ
- * @param[in] initialPosition　初期位置
- * @param[in] initialAngle　初期角度（ラジアン）
+ * @param[in] transform 
  */
-Bat::Bat(EnemyManager* enemyManager, const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+Bat::Bat(EnemyManager* enemyManager, const GameObject3D* parent, const Transform& transform,
 	const std::vector<int>& gemID)
 	: 
 	Enemy(enemyManager,BAT_BASE_HP,BAT_BASE_ATTACK,BAT_BASE_DIFFENCE
-				, parent, initialPosition, initialAngle,gemID),
-	m_sphere{ GetPosition(), BAT_SPHERE_SIZE },
+				, parent, transform,gemID),
+	m_sphere{ GetLocalPosition(), BAT_SPHERE_SIZE },
 	m_messageID{},
 	m_frameCount{},
 	m_motionAngle{},
@@ -52,7 +51,7 @@ Bat::Bat(EnemyManager* enemyManager, const GameObject* parent, const DirectX::Si
 	//テクスチャ設定
 	SetTexture(ResourceManager::GetInstance()->RequestTexture(ResourcePath::TEXTURE::BAT));
 	//モデル設定
-	SetModel(ResourceManager::GetInstance()->RequestModel(ResourcePath::MODEL::BAT));
+	SetModel(*ResourceManager::GetInstance()->RequestModel(ResourcePath::MODEL::BAT));
 	//当たり判定設定
 	SetShape(&m_sphere);
 
@@ -89,14 +88,7 @@ void Bat::Initialize()
 
 	//初期状態設定
 	SetState(m_idlingState.get());
-	//角度設定
-	SetQuaternion(DirectX::SimpleMath::Quaternion::Identity);
-	//大きさ設定
-	SetScale(DirectX::SimpleMath::Vector3::One);
 
-	//現在位置・角度設定
-	SetCurrentPosition(GetPosition());
-	SetCurrentAngle(GetQuaternion());
 }
 
 /**
@@ -107,7 +99,7 @@ void Bat::Initialize()
  *
  * @return なし
  */
-void Bat::Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
+void Bat::Update()
 {
 	float elapsedTime = Messenger::GetInstance()->GetElapsedTime();
 
@@ -118,14 +110,16 @@ void Bat::Update(const DirectX::SimpleMath::Vector3& currentPosition, const Dire
 	}
 
 	//現在の状態を更新
-	GetState()->Update(elapsedTime);
+	GetState()->Update();
 	//ダメージ演出更新
 	DamageFlashUpdate();
 
+	CalculationWorldMatrix();
+	DecomposeMatrix();
 	//位置の更新
-	SetCurrentPosition(currentPosition + GetPosition());
-	//角度の更新
-	SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle);
+	//SetCurrentPosition(currentPosition + GetPosition());
+	////角度の更新
+	//SetCurrentAngle(m_motionAngle * GetQuaternion() * currentAngle);
 	
 	//当たり判定更新
 	m_sphere.SetCenter(GetCurrentPosition());
@@ -159,7 +153,7 @@ void Bat::Draw()
 	DirectX::SimpleMath::Matrix  proj = graphics->GetProjectionMatrix();
 	ShaderManager* shader = ShaderManager::GetInstance();
 	///ワールド行列を計算
-	DirectX::SimpleMath::Matrix world = TKTLib::GetWorldMatrix(GetCurrentPosition(), GetCurrentQuaternion(), GetScale());
+	DirectX::SimpleMath::Matrix world = GetWorldMatrix();
 	//アウトラインの描画
 	if (Messenger::GetInstance()->IsOutLineActive()) 
 	{
@@ -185,7 +179,7 @@ void Bat::Draw()
 			if (GetTexture() != nullptr)
 			{
 				//	読み込んだ画像をピクセルシェーダに伝える
-				context->PSSetShaderResources(0, 1, GetTexture());
+				context->PSSetShaderResources(0, 1, GetTexture().GetAddressOf());
 			}
 			//	半透明描画指定
 			ID3D11BlendState* blendstate = states->NonPremultiplied();
@@ -233,27 +227,27 @@ void Bat::OnMessegeAccepted(Message::MessageID messageID)
 	{
 		//待機
 	case Message::IDLING:
-		GameObject::ChangeState(m_idlingState.get());
+		GameObject3D::RequestChangeState(m_idlingState.get());
 		break;
 		//移動
 	case Message::MOVING:
-		GameObject::ChangeState(m_movingState.get());
+		GameObject3D::RequestChangeState(m_movingState.get());
 		break;
 		//攻撃
 	case Message::ATTACK:
-		GameObject::ChangeState(m_attackState.get());
+		GameObject3D::RequestChangeState(m_attackState.get());
 		break;
 		//ダメージ
 	case Message::DAMAGED:
-		GameObject::ChangeState(m_damagedState.get());
+		GameObject3D::RequestChangeState(m_damagedState.get());
 		break;
 		//追跡
 	case Message::CHASING:
-		GameObject::ChangeState(m_chasingState.get());
+		GameObject3D::RequestChangeState(m_chasingState.get());
 		break;
 		//攻撃準備
 	case Message::ATTACKPREPARING:
-		GameObject::ChangeState(m_attackPreaparing.get());
+		GameObject3D::RequestChangeState(m_attackPreaparing.get());
 		break;
 
 	default:
@@ -268,7 +262,7 @@ void Bat::OnMessegeAccepted(Message::MessageID messageID)
  *
  * @return なし
  */
-void Bat::CollisionResponce(GameObject* other)
+void Bat::CollisionResponce(GameObject3D* other)
 {
 	switch (other->GetObjectType())
 	{
@@ -280,13 +274,13 @@ void Bat::CollisionResponce(GameObject* other)
 		case Tag::Enemy:
 		{
 			//敵同士の衝突処理　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
+			SetLocalPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 		}
 		break;
 		case Tag::ObjectType::Ground:
 		{
 			//ステージとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
+			SetLocalPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 			//Yの速度をリセット
 			DirectX::SimpleMath::Vector3 velocity = GetVelocity();
 			velocity.y = 0.0f;
@@ -309,9 +303,9 @@ void Bat::CollisionResponce(GameObject* other)
 			}
 
 			//ステージ壁との衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushBack(&m_sphere, dynamic_cast<Sphere*>(other->GetShape())));
+			SetLocalPosition(CollisionManager::GetInstance()->PushBack(&m_sphere, dynamic_cast<Sphere*>(other->GetShape())));
 			
-			m_sphere.SetCenter(GetPosition());
+			m_sphere.SetCenter(GetLocalPosition());
 		}
 		break;
 		//武器と
@@ -326,7 +320,7 @@ void Bat::CollisionResponce(GameObject* other)
 		case Tag::ObjectType::Light:
 		{
 			//ライトオブジェクトとの衝突応答　押し出し
-			SetPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
+			SetLocalPosition(CollisionManager::GetInstance()->PushOut(other->GetShape(), &m_sphere));
 		}
 	default:
 		break;

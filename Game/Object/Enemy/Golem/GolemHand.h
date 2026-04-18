@@ -5,12 +5,10 @@
  *
  * @author 制作者名　福地貴翔
  *
- * @date   日付  2026/01/19
+ * @date   日付  2026/04/16
  */
-
  // 多重インクルードの防止 =====================================================
 #pragma once
-
 // ヘッダファイルの読み込み ===================================================
 #include"../EnemyPart.h"
 #include"Game/Common/Collision/Sphere.h"
@@ -39,14 +37,14 @@ public:
 	void SetMotionAngle(DirectX::SimpleMath::Quaternion angle);
 // コンストラクタ/デストラクタ
 	// コンストラクタ
-	GolemHand(Character* root,const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle);
+	GolemHand(Character* root,const GameObject3D* parent, const Transform& transform);
 	// デストラクタ
 	~GolemHand();
 // 操作
 	//初期化
 	void Initialize() override;
 	//更新
-	void Update(const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle) override;
+	void Update() override;
 	//描画
 	void Draw() override;
 	//終了
@@ -54,7 +52,7 @@ public:
 	// メッセージを取得する
 	void OnMessegeAccepted(Message::MessageID messageID);
 	//衝突応答分岐
-	void CollisionResponce(GameObject* other) override;
+	void CollisionResponce(GameObject3D* other) override;
 	//武器を持たせる
 	bool HaveWeapon(std::unique_ptr<Weapon> weapon);
 //　内部操作

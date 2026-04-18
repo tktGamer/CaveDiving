@@ -16,20 +16,19 @@
 /**
  * @brief コンストラクタ
  *
- * @param[in] enemyManager     管理クラスのポインタ
- * @param[in] hp			   体力
- * @param[in] attack		   攻撃力
- * @param[in] diffence		   防御力
- * @param[in] parent		   親クラスのポインタ
- * @param[in] initailPosition  初期位置
- * @param[in] initialAngle  　 初期角度
- * @param[in] gemID  　　　　　所持宝石のIDリスト
+ * @param[in] enemyManager  管理クラスのポインタ
+ * @param[in] hp			体力
+ * @param[in] attack		攻撃力
+ * @param[in] diffence		防御力
+ * @param[in] parent		親クラスのポインタ
+ * @param[in] transform		トランスフォーム
+ * @param[in] gemID  　　　	所持宝石のIDリスト
  */
 Enemy::Enemy(EnemyManager* enemyManager, int hp, int attack, int diffence,
-	const GameObject* parent, const DirectX::SimpleMath::Vector3& initialPosition, const DirectX::SimpleMath::Quaternion& initialAngle,
+	const GameObject3D* parent, const Transform& transform,
 	const std::vector<int>& gemID)
 	:
-	Character{hp,attack,diffence,Tag::ObjectType::Enemy,parent,initialPosition,initialAngle,gemID},
+	Character{hp,attack,diffence,Tag::ObjectType::Enemy,parent,transform,gemID},
 	m_pEnemyManager{enemyManager}
 {
 
